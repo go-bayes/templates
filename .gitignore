@@ -1,0 +1,16 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+
+
+/.quarto/
+
+
+# data_raw
+data/*
+docs/*
+mods/*
+figs/*
+#scripts/*

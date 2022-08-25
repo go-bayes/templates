@@ -1,6 +1,5 @@
-#libs.R
 
-#libraries ised
+#libraries used
 library("dplyr") # data wrangling
 library("tidyr") # data wrangling
 library("janitor") # clean var names

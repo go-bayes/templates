@@ -1,0 +1,1994 @@
+#template_outcomewide.R
+
+# read libraries
+source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/libs.R")
+
+# read functions
+source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/funs.R")
+
+
+
+###### READ THIS DATA IN   #########
+# You should make a data folder and put your data in it.
+
+# data before mice, for tables
+
+# Imputed data in long format
+ccf <- readh("ccf")
+
+# Imputed data in mice format -- this is the sort of data format that we will use for models
+ccu <- readh("ccu")
+
+
+# Confounding control variables  ---------------------------------------------------------
+# These variables can be modified depending on your model and assumptions.
+#  Here, we use vanderweele's "disjunctive cause criterion"
+
+# FROM Outcomewide longitudinal designs: https://doi.org/10.1214/19-STS728
+#" A modified disjunctive cause criterion that might thus be more useful in practice could articulated as follows (VanderWeele, 2019): control for each covari- ate that is a cause of the exposure, or of the outcome, or of both; exclude from this set any variable known to be an instrumental variable; and include as a covariate any proxy for an unmeasured variable that is a common cause of both the exposure and the outcome." p.443
+
+# TYLERS LIST,  https://doi.org/10.1214/19-STS728 p.442
+# *** Demographic
+# Race
+# Age
+# Gender Marital Status
+# *** Economic, Social and Political
+# Income
+# Education
+# Employment
+# Social integration Neighborhood
+# Religious service attendance Political affiliation
+### *** Health
+# Self-rated health
+# Number of health conditions
+# Exercise
+# Smoking
+# Alcohol consumption Depression
+# Happiness Loneliness
+# Parental warmth Purpose/Meaning Big five personality
+
+# EVALUES FOR CONTINOUS VARS - p.448
+# For a continuous outcome, with a standardized effect size “d” (obtained by dividing the mean difference on the outcome variable between exposure groups by the pooled standard deviation of the outcome) and a stan- dard error for this effect size sd , an approximate E-value can be obtained (VanderWeele and Ding, 2017) by ap- plying the approximation RR ≈ exp(0.91 × d) and then using the E-value formula above (E-value = RRobs + √RRobs(RRobs − 1)). An approximate confidence inter- val can be found using the approximation
+# 􏰛exp{0.91×d −1.78×sd},exp{0.91×d +1.78×sd}􏰜
+
+
+baselinevars = c(
+"AGREEABLENESS_z",
+"CONSCIENTIOUSNESS_z",
+"EXTRAVERSION_z",
+"HONESTY_HUMILITY_z",
+"NEUROTICISM_z",
+"OPENNESS_z",
+"Age_z",
+"Alcohol.Frequency_z",
+"Alcohol.Intensity_log_z",
+"Bodysat_z",
+"BornNZ_z",
+"Believe.God_z",
+"Believe.Spirit_z",
+"BELONG_z",
+"CharityDonate_log_z",
+"ChildrenNum_z",
+"Church_z",
+"community",
+"Edu_z",
+"Employed_z",
+"EthCat",
+"GRATITUDE_z",
+"HomeOwner_z",
+"Hours.Exercise_log_z",
+"Hours.Work_z",
+"HLTH.BMI_z",
+"HLTH.Disability_z",
+"HLTH.Fatigue_z",
+"HLTH.SleepHours_z",
+"ImpermeabilityGroup_z",
+"income_log_z",
+"KESSLER6sum_z",
+"LIFEMEANING_z",
+"LIFESAT_z",
+"Male_z",
+"NZdep_z",
+"NWI_z",
+"NZSEI13_z",
+"Parent_z",
+"Partner_z",
+"PERFECTIONISM_z",
+"PermeabilityIndividual_z",
+"Pol.Orient_z",
+"POWERDEPENDENCE1_z",
+"POWERDEPENDENCE2_z",
+"Relid_z",
+"Church_z",
+"Religion.Prayer2_z",
+"Religion.Scripture2_z",
+"Respect.Self_z",
+"retired",
+"Rumination_z",
+"RWA_z",
+"SDO_z",
+"SELF.CONTROL_z",
+"SELF.ESTEEM_z",
+"semiretired",
+"SexualSatisfaction_z",
+"SFHEALTH_z",
+"Smoker_z",
+"Spiritual.Identification_z",
+"Standard.Living_z",
+"SUPPORT_z",
+"Urban_z",
+"VENGEFUL.RUMIN_z",
+"Volunteers_z",
+"Your.Health_z",
+"Your.Future.Security_z",
+"Your.Personal.Relationships_z"
+)
+
+## STATEMENT OF VANDERWEELE-EVALUE FROM TYLER
+
+# “With an observed risk ratio of RR = XX, an unmeasured confounder that was associated with both the outcome and the exposure by a risk ratio of XX -fold each, above and beyond the measured confounders, could explain away the estimate, but weaker joint confounder associations could not; to move the confidence interval to include the null, an unmeasured confounder that was associated with the outcome and the exposure by a risk ratio of XX -fold each could do so, but weaker joint confounder associations could not.”
+
+# We could include statements like this in all empirical papers
+
+# Evalue code
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+
+# GENERAL SET UP ----------------------------------------------------------
+
+ylim = c(-.4, .4)  # SET AS YOU LIKE -- here, how much movement across a standard deviation unit of the outcome
+ylim_contrast <- c(.6,2.5 )  # SET AS YOU LIKE (FOR CONTRASTS )
+
+# data
+df <-  ccu   # SET DATA -- USE THE MICE IMPUTED DATA
+
+# n imputations
+m = 10
+
+# standard deviation of the outcome (for evalues)
+sd = sd
+
+#SET UP  ---------------------------------------------------------------
+# THE EXPOSURE Variable
+X = "Church_lead1"
+
+#EXPOSURE VARIABLE LABEL
+xlab = "Church attendance (0-8)"
+
+# RANGE OF X
+min= 0
+max = 8
+
+# baseline setting of X
+r = 0
+
+# focal contrast for X
+f = 4
+
+# full range of X
+x =  min:max
+
+# for model functions
+c = x
+
+# contrast for graphs -- absolute distance from baseline
+p = c(0,4) #
+
+# This is not really used. Only for contrast graphs with two points
+s = c(0,1) # slot for contrast graph
+
+#
+delta = 4 # need for EVALUES
+
+
+## Also use
+round( EValue::evalues.OLS( ESTIMATE_GOES_HERE, se = GOES_HERE, sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+# HEALTH  INDICATORS ------------------------------------------------------------------
+
+
+### MANY OUTCOMES
+
+
+# alcohol freq ------------------------------------------------------------
+#How often do you have a drink containing alcohol?
+Y = "Alcohol.Frequency_lead2ord_z"
+main = "Alcohol Frequency"
+ylab = "Alcohol Frequency (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct
+
+alcoholfreq_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+
+# show table
+alcoholfreq_t
+# graph
+alcoholfreq_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+alcoholfreq_p
+
+# coef + estimate
+alcoholfreq_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+alcoholfreq_c
+
+# Alcohol.Intensity ----------------------------------------------------------
+#How many drinks containing alcohol do you have on a typical day when drinking?
+
+Y ="Alcohol.Intensity_log_lead2_z"
+main = "Alcohol Intensity"
+ylab = "Alcohol Intensity (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+
+alcoholintensity_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+alcoholintensity_t
+# graph
+alcoholintensity_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+alcoholintensity_p
+
+# coef + estimate
+alcoholintensity_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+alcoholintensity_c
+
+
+
+# bmi ---------------------------------------------------------------------
+# What is your height? (metres)
+# What is your weight? (kg)
+# Kg/(m*m)
+
+
+Y = "HLTH.BMI_lead2_z"
+main = "BMI"
+ylab = "BMI (SD)"
+
+# run model
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+# summary(pool(out_m))
+## contrasts
+out_ct <- pool_stglm_contrast(out_m, df = df, m = m,  X = X, x = c, r= r)
+# g-computation - contrasts
+#table
+bmi_t <- out_ct %>%
+  slice(1:8) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f + 1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+bmi_t
+bmi_p <- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1) #+ expand_limits(x = 0, y = 0)
+bmi_p
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+# coef + estimate
+bmi_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+bmi_c
+
+
+# exercise ---------------------------------------------------------------
+# Hours spent … exercising/physical activity
+Y = "Hours.Exercise_lead2_log_z"
+main = "Log Hours Exercise"
+ylab = "Log Hours Exercise (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+
+#contrast
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+excercise_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+excercise_t
+# graph
+exercise_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+exercise_p
+
+# coef + estimate
+exercise_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+exercise_c
+
+
+# sf-health ---------------------------------------------------------------
+# Short-Form Subjective Health Scale (General Health Perception Subscale)
+# In general, would you say your health is...
+# I seem to get sick a little easier than other people.
+# I expect my health to get worse.
+
+
+Y = "SFHEALTH_lead2_z"
+main = "SF Health"
+ylab = "SF Health (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+sfhealth_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+sfhealth_t
+# graph
+sfhealth_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+sfhealth_p
+
+# coef + estimate
+sfhealth_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+sfhealth_c
+
+
+# HLTH.Sleep --------------------------------------------------------------
+#During the past month, on average, how many hours of actual sleep did you get per night?
+
+Y = "HLTH.SleepHours_lead2_z"
+main = "Hours Sleep (SD)"
+ylab = "Hours Sleep (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+sleep_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+sleep_t
+# graph
+sleep_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+sleep_p
+
+# coef + estimate
+sleep_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+sleep_c
+
+
+# sf-health ---------------------------------------------------------------
+# Short-Form Subjective Health Scale (General Health Perception Subscale)
+# In general, would you say your health is...
+# I seem to get sick a little easier than other people.
+# I expect my health to get worse.
+
+
+Y = "SFHEALTH_lead2_z"
+main = "SF Health"
+ylab = "SF Health (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+sfhealth_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+sfhealth_t
+# graph
+sfhealth_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+sfhealth_p
+
+# coef + estimate
+sfhealth_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+sfhealth_c
+
+# smoker ------------------------------------------------------------------
+#Do you currently smoke?
+Y = "Smoker_lead2"
+family = "binomial" # could be binomial if binary utcome is rare
+main = "Smoking Risk"
+ylab = "Smoking Risk"
+# clean oven
+rm(out_m)
+rm(out_ct)
+# bake
+out_m <- mice_generalised(df = df, X = X, Y = Y, family = family)
+out_m
+## contrasts
+out_ct <- pool_stglm_contrast_ratio(out_m, df = df, m = m,  X = X, x = c, r= r)
+# g-computation - contrasts
+#table
+smoker_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+smoker_t
+smoker_p <- ggplot_stglm(out_ct, ylim = ylim_contrast, main, xlab, ylab, min = min, p=p, r= 1) + expand_limits(x = 0, y = 0)
+smoker_p
+
+out_ct
+
+# coef + estimate
+smoker_c <- vanderweelevalue_rr(out_ct, f)
+smoker_c
+
+
+# table for health outcomes -----------------------------------------------
+
+
+main = "Health outcome effects estimates / Evalues"
+h_tab <- rbind(alcoholfreq_c,
+      alcoholintensity_c,
+      bmi_c,
+      exercise_c,
+      sfhealth_c,
+      sleep_c,
+      sfhealth_c,
+      smoker_c)
+
+h_tab |>
+kbl(caption = main,
+    digits = 3,
+    "html") |>
+  kable_styling() %>%
+  row_spec(c(1), bold = T, color = "black", background = "bold") |>
+  kable_minimal(full_width = F)
+
+
+### EMBODIED WELL BEING ----------------------------------------------------
+
+
+# body satisfaction -------------------------------------------------------
+
+Y = "Bodysat_lead2_z"
+main = "Body Satisfaction"
+ylab = "Body Satisfaction (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+bodysat_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+bodysat_t
+# graph
+bodysat_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+bodysat_p
+
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+# kessler 6 ---------------------------------------------------------------
+
+# Kessler-6
+# During the last 30 days, how often did.... you feel hopeless?
+#   During the last 30 days, how often did.... you feel so depressed that nothing could cheer you up?
+#   During the last 30 days, how often did.... you feel restless or fidgety?
+#   During the last 30 days, how often did.... you feel that everything was an effort?
+#   During the last 30 days, how often did.... you feel worthless?
+#   During the last 30 days, how often did.... you feel nervous?
+
+Y = "KESSLER6sum_lead2"
+main = "Kessler 6 Distress"
+ylab = "Kessler 6 Distress (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+distress_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+distress_t
+# graph
+distress_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+distress_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+# fatigue -----------------------------------------------------------------
+#During the last 30 days, how often did.... you feel exhausted?
+
+Y = "HLTH.Fatigue_lead2_z"
+main = "Fatigue"
+ylab = "Fatigue (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+fatigue_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+fatigue_t
+# graph
+fatigue_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+fatigue_p
+ylim
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+# rumination --------------------------------------------------------------
+# During the last 30 days, how often did.... you have negative thoughts that repeated over and over?
+
+Y = "Rumination_lead2ord_z"
+main = "Rumination"
+ylab = "Rumination (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+rumination_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+rumination_t
+# graph
+rumination_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+rumination_p
+
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+# sex satisfaction --------------------------------------------------------
+# How satisfied are you with your sex life?
+Y = "SexualSatisfaction_lead2_z"
+main = "Sexual Satisfaction (SD)"
+ylab = "Sexual Satisfaction (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+sexualsat_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+sexualsat_t
+# graph
+sexualsat_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+sexualsat_p
+
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+# REFLECTIVE WELL-BEING ---------------------------------------------------
+
+
+
+# gratitude ---------------------------------------------------------------
+# Gratitude
+# I have much in my life to be thankful for.
+# When I look at the world, I don’t see much to be grateful for.
+# I am grateful to a wide variety of people.
+
+Y = "GRATITUDE_lead2_z"
+main = "Gratitude"
+ylab = "Gratitude (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+gratitude_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+gratitude_t
+# graph
+gratitude_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+gratitude_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+
+# perm group ------------------------------------------------------------
+#The current income gap between New Zealand Europeans and other ethnic groups would be very hard to change.
+Y = "ImpermeabilityGroup_lead2_z"
+main = "Impermeability Group"
+ylab = "Impermeability Group (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+groupimperm_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+groupimperm_t
+# graph
+groupimperm_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+groupimperm_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# permeability self ----------------------------------------------------------------
+#I believe I am capable, as an individual, of improving my status in society.
+
+Y = "PermeabilityIndividual_lead2_z"
+main = "Permeability of Individual"
+ylab = "Permeability of Individual (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+selfperm_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+selfperm_t
+# graph
+selfperm_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+selfperm_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# life sat ----------------------------------------------------------------
+# Satisfaction with life
+# I am satisfied with my life.
+# In most ways my life is close to ideal.
+
+Y = "LIFESAT_lead2_z"
+main = "Life Satisfaction"
+ylab = "Life Satisfaction (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+lifesat_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+lifesat_t
+# graph
+lifesat_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+lifesat_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# life meaning ------------------------------------------------------------
+# Meaning in Life
+# My life has a clear sense of purpose.
+# I have a good sense of what makes my life meaningful.
+
+Y = "LIFEMEANING_lead2ord_z"
+main = "Life Meaning"
+ylab = "Life Meaning (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+meaning_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+meaning_t
+# graph
+meaning_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+meaning_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+# perfectionism  ----------------------------------------------------------
+# Perfectionism Discrepancy Subscale
+# Doing my best never seems to be enough.
+# My performance rarely measures up to my standards.
+# I am hardly ever satisfied with my performance.
+
+Y = "PERFECTIONISM_lead2_z"
+main = "Perfectionism"
+ylab = "Perfectionism (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+perfect_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+perfect_t
+# graph
+perfect_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+perfect_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+
+# PWI ---------------------------------------------------------
+#Your health.
+#Your standard of living.
+#Your future security.
+#Your personal relationships.
+
+Y = "PWI_lead2_z"
+main = "Person Wellbeing Index"
+ylab = "PWI (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+pwi_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+pwi_t
+# graph
+pwi_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+pwi_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# power dependence 1 ------------------------------------------------------
+# I do not have enough power or control over important parts of my life.
+Y = "POWERDEPENDENCE1_lead2_z"
+main = "Power Dependence 1"
+ylab = "Power Dependence 1(SD)"
+
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+powerdependence1_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+powerdependence1_t
+# graph
+powerdependence1_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+powerdependence1_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+
+# power dependence 2 ------------------------------------------------------
+#Other people have too much power or control over important parts of my life.
+
+Y = "POWERDEPENDENCE2_lead2_z"
+main = "Power Dependence 2"
+ylab = "Power Dependence 2(SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+powerdependence2_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+powerdependence2_t
+# graph
+powerdependence2_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+powerdependence2_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# self esteem -------------------------------------------------------------
+# Self-esteem
+# On the whole am satisfied with myself.
+# Take a positive attitude toward myself.
+# Am inclined to feel that I am a failure.
+
+Y = "SELF.ESTEEM_lead2_z"
+main = "Self Esteem"
+ylab = "Self Esteem (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+selfesteem_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+selfesteem_t
+# graph
+selfesteem_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+selfesteem_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+
+
+# veng rumination ---------------------------------------------------------
+# Forgivingness versus Vengeful Rumination
+# Sometimes I can't sleep because of thinking about past wrongs I have suffered.
+# I can usually forgive and forget when someone does me wrong.
+# I find myself regularly thinking about past times that I have been wronged.
+
+Y = "VENGEFUL.RUMIN_lead2_z"
+main = "Vengefulness (anti-Foregiveness)"
+ylab = "Vengefulness (anti-Foregiveness) (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+veng_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+veng_t
+# graph
+veng_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+veng_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+
+# Work-life balance -------------------------------------------------------
+# note-- we have no measure currently at baseline, so less confoundign control
+# I have a good balance between work and other important things in my life.
+
+Y = "Emp.WorkLifeBalance_lead2_z"
+main = "Work Life Balance"
+ylab = "Work Life Balance (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+worklife_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+worklife_t
+# graph
+worklife_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+worklife_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# SOCIAL CONNECTION AND BELONGING -----------------------------------------
+
+###
+# belonging ---------------------------------------------------------------
+# Felt belongingness
+# Know that people in my life accept and value me.
+# Feel like an outsider.
+# Know that people around me share my attitudes and beliefs.
+
+
+Y= "BELONG_lead2_z"
+main = "Social Belonging"
+ylab = "Social Belonging (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+belong_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+belong_t
+# graph
+belong_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+belong_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# community ----------------------------------------------------------
+#I feel a sense of community with others in my local neighbourhood.
+Y = "community_lead2_z"
+main = "Community"
+ylab = "Community (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+community_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+community_t
+# graph
+community_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+community_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# national wellbeing ------------------------------------------------------
+
+# National Wellbeing Index
+# The economic situation in New Zealand.
+# The social conditions in New Zealand.
+# Business in New Zealand.
+
+Y = "NWI_lead2_z"
+main = "National Well Being"
+ylab = "National Well Being (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+nwi_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+nwi_t
+# graph
+nwi_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+nwi_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+# soc support -------------------------------------------------------------
+# Perceived social support
+# There are people I can depend on to help me if I really need it.
+# There is no one I can turn to for guidance in times of stress.
+# I know there are people I can turn to when I need help.
+## fit
+Y = "SUPPORT_lead2_z"
+main = "Social Support"
+ylab = "Social Support (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+support_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+support_t
+# graph
+support_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+support_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+
+#### CHARITABLE BEHAVIOURS  --------------------------------------------------
+# honesty humility --------------------------------------------------------
+
+# Mini-IPIP6 Honesty-Humility (item overlap with Psychological Entitlement)
+# Would like to be seen driving around in a very expensive car.
+# Would get a lot of pleasure from owning expensive luxury goods.
+# Feel entitled to more of everything.
+# Deserve more things in life.
+
+Y = "HONESTY_HUMILITY_lead2_z"
+main = "Honesty Humility"
+ylab = "Honesty Humility (SD)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+humility_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+humility_t
+# graph
+humility_p <- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+humility_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# charity donate ----------------------------------------------------------
+#How much money have you donated to charity in the last year?
+
+Y = "CharityDonate_log_lead2_z"
+main = "Charity Donations (annual)"
+ylab = "Charity Donations (annual)"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+charity_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+charity_t
+# graph
+charity_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+charity_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# volunteers --------------------------------------------------------------
+#Hours spent in activities
+#Hours spent … voluntary/charitable work
+
+Y = "Volunteers_lead2"
+main = "Volunteer Rate"
+ylab = "Volunteer Rate"
+family = "poisson" # binary outcome not rare
+# clean oven
+rm(out_m)
+rm(out_ct)
+# fit regression model
+out_m <- mice_generalised(df = df, X = X, Y = Y, family = family)
+# g-computation - contrasts
+out_ct <- pool_stglm_contrast_ratio(out_m, df = df, m = 10,  X = X, x = c, r= r)
+#table
+volunteers_t<- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+volunteers_t
+volunteers_p<- ggplot_stglm(out_ct, ylim =c(.9,2), main, xlab, ylab, min = min, p=p, r= 1)
+volunteers_p
+
+#round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+
+
+round( EValue::evalues.RR( , lo =  , hi = , true = 1), 4) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  kable_minimal(full_width = F)
+
+
+
+
+### ECONOMIC INDICATORS -----------------------------------------------------
+
+
+# log household income --------------------------------------------------------------
+Y = "income_log_lead2"
+main = "Occupational Status/10"
+ylab = "Occupational Status/10"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+income_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+income_t
+# graph
+income_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+income_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+# Promotion NZSEI ---------------------------------------------------------------
+#Occupational prestige/status
+#NZSEI06 (NZ Socio-economic index) Milne, B. J., Byun, U., & Lee, A. (2013). New Zealand socio-economic index 2006. Wellington: Statistics New Zealand.
+#NZSEI13 (NZ Socio-economic index) Fahy, K. M., Lee, A., & Milne, B. J. (2017). New Zealand socio-economic index 2013. Wellington: Statistics New Zealand.
+#NZSEI18 (NZ Socio-economic index) Boven, N., Shackleton, N., Bolton, L., Milne, B. (2021). The 2018 New Zealand Socioeconomic Index (NZSEI-19): A brief technical summary. Compass Research Centre.
+
+Y = "NZSEI13_lead2_10_z"
+main = "Occupational Status/10"
+ylab = "Occupational Status/10"
+
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+nzsei_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+nzsei_t
+# graph
+nzsei_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+nzsei_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+# stand living ------------------------------------------------------------
+# Part of pwi
+# Personal Wellbeing Index
+# Your health.
+# Your standard of living.
+# Your future security.
+# Your personal relationships.
+
+Y = "Standard.Living_lead2ord_z"
+main = "Standard Living"
+ylab = "Standard Living (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+standardliving_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+standardliving_t
+# graph
+standardliving_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+standardliving_p
+
+round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+# GRAPHS HEALTH -----------------------------------------------------------
+
+health_plots <- alcoholfreq_p +
+  alcoholintensity_p +
+  bmi_p +
+  exercise_p +
+  smoker_p +
+  sfhealth_p +
+  plot_annotation(title = "Causal effects of XX on health outcomes",
+                  subtitle = "xyz",
+                  tag_levels = "A") + plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
+
+# view
+health_plots
+
+#save
+
+ggsave(
+  health_plots,
+  path = here::here(here::here("figs", "examples")),
+  width = 16,
+  height = 9,
+  units = "in",
+  filename = "health_plots.jpg",
+  device = 'jpeg',
+  limitsize = FALSE,
+  dpi = 1200
+)
+
+dev.off()
+
+
+# GRAPHS EMBODIED  --------------------------------------------------------
+
+embody_plots <-
+  bodysat_p +
+  distress_p +
+  fatigue_p +
+  rumination_p +
+  sleep_p +
+  sexualsat_p + plot_annotation(title = "Causal effects of XX on embodied wellbeing",
+                                subtitle = "xyz",
+                                tag_levels = "A") +
+  plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
+
+embody_plots
+
+ggsave(
+  embody_plots,
+  path = here::here(here::here("figs", "examples")),
+  width = 16,
+  height = 9,
+  units = "in",
+  filename = "embody_plots.jpg",
+  device = 'jpeg',
+  limitsize = FALSE,
+  dpi = 1200
+)
+
+
+
+
+# GRAPHS REFLECTIVE WELL-BEING ------------------------------------------------
+
+reflective_plots <- gratitude_p +
+  groupimperm_p +
+  selfperm_p +
+  lifesat_p +
+  meaning_p +
+  perfect_p +
+  pwi_p +
+  powerdependence1_p +
+  powerdependence2_p +
+  selfesteem_p +
+  veng_p +
+  plot_annotation(title = "Causal effects of XX on reflective wellbeing",
+                  subtitle = "xyz") +
+  plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
+
+# view
+reflective_plots
+
+# save
+
+ggsave(
+  reflective_plots,
+  path = here::here(here::here("figs", "examples")),
+  width = 16,
+  height = 9,
+  units = "in",
+  filename = "reflective_plots.jpg",
+  device = 'jpeg',
+  limitsize = FALSE,
+  dpi = 1200
+)
+
+
+# GRAPHS SOCIAL WELL-BEING ------------------------------------------------
+
+social_plots <- belong_p +
+  community_p +
+  nwi_p +
+  support_p + plot_annotation(title = "Causal effects of XX on social wellbeing"
+                              subtitle = "xyz") +
+  plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
+
+# view
+social_plots
+
+ggsave(
+  social_plots,
+  path = here::here(here::here("figs", "examples")),
+  width = 16,
+  height = 9,
+  units = "in",
+  filename = "social_plots.jpg",
+  device = 'jpeg',
+  limitsize = FALSE,
+  dpi = 1200
+)
+
+social_plots
+dev.off()
+
+
+
+### ECONOMIC_SUCCESS GRAPHS ------------------------------------------------
+
+econ_plots <-  income_p +  nzsei_p +  standardliving_p + worklife_p +
+  plot_annotation(title = "Causal effects of XX on economic wellbeing"
+                  subtitle = "xyz") +
+  plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
+
+# view
+econ_plots
+
+ggsave(
+  econ_plots,
+  path = here::here(here::here("figs", "examples")),
+  width = 16,
+  height = 9,
+  units = "in",
+  filename = "econ_plots.jpg",
+  device = 'jpeg',
+  limitsize = FALSE,
+  dpi = 1200
+)
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
+# STATEMENT OF EVALUE -----------------------------------------------------
+
+# “With an observed risk ratio of RR=0.28, an unmeasured confounder that was associated with both the outcome and the exposure by a risk ratio of 6.6-fold each, above and beyond the measured confounders, could explain away the estimate, but weaker joint confounder associations could not; to move the confidence interval to include the null, an unmeasured confounder that was associated with the outcome and the exposure by a risk ratio of 3.1-fold each could do so, but weaker joint confounder associations could not.”
+
+
+
+
+
+
+#COVID19.Timeline
+# bels:
+#   value                                                                                              label
+# 0.0                                                                                   The Before Times
+# 1.0                                31.12.2019 -- 27.02.2020 [First cluster of cases in Wuhan reported]
+# 1.1                                      28.02.2020 -- 25.02.2020 [First case recorded in New Zealand]
+# 1.2                                                           26.03.2020 -- 27.04-2020 [Alert Level 4]
+# 1.3                                                           28.04.2020 -- 13.05.2020 [Alert Level 3]
+# 1.4                                                          14.05.2020 -- 08.06.2020 [Alert Level 2].
+# 1.5                                                           09.06.2020 -- 11.08.2020 [Alert Level 1]
+# 2.1 12.08.2020 -- 30.08.2020 [Second Outbreak - Auckland Alert Level 3, Rest of Country Alert Level 2]
+# 2.2                 30.08.2020 -- 21.09.2020 [Auckland Alert Level 2.5, Rest of Country Alert Level 2]
+# 2.3                    22.09.2020 -- 07.10.2020 [Auckland Alert Level 2, Rest of Country Alert Level 1
+# 2.4                                                              08.10.2020 -- onwards [Alert Level 1]
+
+# dat$REGC_2018
+
+# labels:
+#   value                     label
+# 1          Northland Region
+# 2           Auckland Region
+# 3            Waikato Region
+# 4      Bay of Plenty Region
+# 5           Gisborne Region
+# 6         Hawkes Bay Region
+# 7           Taranaki Region
+# 8 Manawatu-Whanganui Region
+# 9         Wellington Region
+# 12         West Coast Region
+# 13         Canterbury Region
+# 14              Otago Region
+# 15          Southland Region
+# 16             Tasman Region
+# 17             Nelson Region
+# 18        Marlborough Region
+# 99       Area Outside Region
+
+
+#How many times did you pray in the last week?
+
+
+
+# honesty humility --------------------------------------------------------
+
+# Mini-IPIP6 Honesty-Humility (item overlap with Psychological Entitlement)
+# Would like to be seen driving around in a very expensive car.
+# Would get a lot of pleasure from owning expensive luxury goods.
+# Feel entitled to more of everything.
+# Deserve more things in life.
+#
+# Y = "HONESTY_HUMILITY_lead2_z"
+# main = "Honesty Humility"
+# ylab = "Honesty Humility (SD)"
+#
+#
+# # regression
+# out_m <- mice_gaussian(df = df, X = X, Y = Y)
+#
+# ## g-computation
+# out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+# out_ct %>%
+#   slice(f+1) |>
+#   kbl(digits = 3, "markdown")
+#
+# humility_t <- out_ct %>%
+#   slice(1:9) |>
+#   tibble() |>
+#   rename(Contrast = row,
+#          Estimate = est,
+#          Std_error = se,
+#          CI_hi = ui,
+#          CI_lo = li) |>
+#   kbl(caption = main,
+#       digits = 3,
+#       "html") |>
+#   kable_styling() %>%
+#   row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+#   kable_minimal(full_width = F)
+# # show table
+# humility_t
+# # graph
+# humility_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+# humility_p
+#
+# round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+# round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
