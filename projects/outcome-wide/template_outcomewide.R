@@ -9,9 +9,13 @@ source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/funs
 
 
 ###### READ THIS DATA IN   #########
-# You should make a data folder and put your data in it.
+# You should make a data folder and put the data I send you in it.
+# Once you have the data you can run this script without very few modifications.
+# The key modification is the "X" variable that is your exposure, highlighted below
+
 
 # data before mice, for tables
+df_cr <- readh("df_cr")
 
 # Imputed data in long format
 ccf <- readh("ccf")
@@ -47,112 +51,125 @@ ccu <- readh("ccu")
 # Happiness Loneliness
 # Parental warmth Purpose/Meaning Big five personality
 
+# NOTE: WE USE MORE VARIABLES
+
+
+baselinevars = c(
+  "AGREEABLENESS_z",
+  "CONSCIENTIOUSNESS_z",
+  "EXTRAVERSION_z",
+  "HONESTY_HUMILITY_z",
+  "NEUROTICISM_z",
+  "OPENNESS_z",
+  "Age_z",
+  "Alcohol.Frequency_z",
+  "Alcohol.Intensity_log_z",
+  "Bodysat_z",
+  "BornNZ_z",
+  "Believe.God_z",
+  "Believe.Spirit_z",
+  "BELONG_z",
+  "CharityDonate_log_z",
+  "ChildrenNum_z",
+  "Church_z",
+  "community",
+  "Edu_z",
+  "Employed_z",
+  "EthCat",
+  "GRATITUDE_z",
+  "HomeOwner_z",
+  "Hours.Exercise_log_z",
+  "Hours.Work_z",
+  "HLTH.BMI_z",
+  "HLTH.Disability_z",
+  "HLTH.Fatigue_z",
+  "HLTH.SleepHours_z",
+  "ImpermeabilityGroup_z",
+  "income_log_z",
+  "KESSLER6sum_z",
+  "LIFEMEANING_z",
+  "LIFESAT_z",
+  "Male_z",
+  "NZdep_z",
+  "NWI_z",
+  "NZSEI13_z",
+  "Parent_z",
+  "Partner_z",
+  "PERFECTIONISM_z",
+  "PermeabilityIndividual_z",
+  "Pol.Orient_z",
+  "POWERDEPENDENCE1_z",
+  "POWERDEPENDENCE2_z",
+  "Relid_z",
+  "Church_z",
+  "Religion.Prayer2_z",
+  "Religion.Scripture2_z",
+  "Respect.Self_z",
+  "retired",
+  "Rumination_z",
+  "RWA_z",
+  "SDO_z",
+  "SELF.CONTROL_z",
+  "SELF.ESTEEM_z",
+  "semiretired",
+  "SexualSatisfaction_z",
+  "SFHEALTH_z",
+  "Smoker_z",
+  "Spiritual.Identification_z",
+  "Standard.Living_z",
+  "SUPPORT_z",
+  "Urban_z",
+  "VENGEFUL.RUMIN_z",
+  "Volunteers_z",
+  "Your.Health_z",
+  "Your.Future.Security_z",
+  "Your.Personal.Relationships_z"
+)
+
+## STATEMENT OF "VANDERWEEL-EVALUE FROM TYLER
+
+# “With an observed risk ratio of RR = XX, an unmeasured confounder that was associated with both the outcome and the exposure by a risk ratio of XX -fold each, above and beyond the measured confounders, could explain away the estimate, but weaker joint confounder associations could not; to move the confidence interval to include the null, an unmeasured confounder that was associated with the outcome and the exposure by a risk ratio of XX -fold each could do so, but weaker joint confounder associations could not.”
+
 # EVALUES FOR CONTINOUS VARS - p.448
 # For a continuous outcome, with a standardized effect size “d” (obtained by dividing the mean difference on the outcome variable between exposure groups by the pooled standard deviation of the outcome) and a stan- dard error for this effect size sd , an approximate E-value can be obtained (VanderWeele and Ding, 2017) by ap- plying the approximation RR ≈ exp(0.91 × d) and then using the E-value formula above (E-value = RRobs + √RRobs(RRobs − 1)). An approximate confidence inter- val can be found using the approximation
 # 􏰛exp{0.91×d −1.78×sd},exp{0.91×d +1.78×sd}􏰜
 
-
-baselinevars = c(
-"AGREEABLENESS_z",
-"CONSCIENTIOUSNESS_z",
-"EXTRAVERSION_z",
-"HONESTY_HUMILITY_z",
-"NEUROTICISM_z",
-"OPENNESS_z",
-"Age_z",
-"Alcohol.Frequency_z",
-"Alcohol.Intensity_log_z",
-"Bodysat_z",
-"BornNZ_z",
-"Believe.God_z",
-"Believe.Spirit_z",
-"BELONG_z",
-"CharityDonate_log_z",
-"ChildrenNum_z",
-"Church_z",
-"community",
-"Edu_z",
-"Employed_z",
-"EthCat",
-"GRATITUDE_z",
-"HomeOwner_z",
-"Hours.Exercise_log_z",
-"Hours.Work_z",
-"HLTH.BMI_z",
-"HLTH.Disability_z",
-"HLTH.Fatigue_z",
-"HLTH.SleepHours_z",
-"ImpermeabilityGroup_z",
-"income_log_z",
-"KESSLER6sum_z",
-"LIFEMEANING_z",
-"LIFESAT_z",
-"Male_z",
-"NZdep_z",
-"NWI_z",
-"NZSEI13_z",
-"Parent_z",
-"Partner_z",
-"PERFECTIONISM_z",
-"PermeabilityIndividual_z",
-"Pol.Orient_z",
-"POWERDEPENDENCE1_z",
-"POWERDEPENDENCE2_z",
-"Relid_z",
-"Church_z",
-"Religion.Prayer2_z",
-"Religion.Scripture2_z",
-"Respect.Self_z",
-"retired",
-"Rumination_z",
-"RWA_z",
-"SDO_z",
-"SELF.CONTROL_z",
-"SELF.ESTEEM_z",
-"semiretired",
-"SexualSatisfaction_z",
-"SFHEALTH_z",
-"Smoker_z",
-"Spiritual.Identification_z",
-"Standard.Living_z",
-"SUPPORT_z",
-"Urban_z",
-"VENGEFUL.RUMIN_z",
-"Volunteers_z",
-"Your.Health_z",
-"Your.Future.Security_z",
-"Your.Personal.Relationships_z"
-)
-
-## STATEMENT OF VANDERWEELE-EVALUE FROM TYLER
-
-# “With an observed risk ratio of RR = XX, an unmeasured confounder that was associated with both the outcome and the exposure by a risk ratio of XX -fold each, above and beyond the measured confounders, could explain away the estimate, but weaker joint confounder associations could not; to move the confidence interval to include the null, an unmeasured confounder that was associated with the outcome and the exposure by a risk ratio of XX -fold each could do so, but weaker joint confounder associations could not.”
-
 # We could include statements like this in all empirical papers
 
-# Evalue code
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+# NOTE THAT I HAVE WRITTEN WRAPPER FUNCTIONS TO AUTOMATE REPORTING OF EVALUES, ALSO TO CREATE TABLES -- YOUR WORK IS LIGHT!
+# however the code is:
 
+
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
 # GENERAL SET UP ----------------------------------------------------------
 
 ylim = c(-.4, .4)  # SET AS YOU LIKE -- here, how much movement across a standard deviation unit of the outcome
-ylim_contrast <- c(.6,2.5 )  # SET AS YOU LIKE (FOR CONTRASTS )
+ylim_contrast <- c(.6, 2.5)  # SET AS YOU LIKE (FOR CONTRASTS )
 
-# data
-df <-  ccu   # SET DATA -- USE THE MICE IMPUTED DATA
+# mice imputed data
+df <-
+  ccu   # SET DATA -- USE THE MICE IMPUTED DATA: YOUR MICE DATA WILL HAVE A DIFFERENT NAME
 
 # n imputations
 m = 10
 
 # standard deviation of the outcome (for evalues)
-sd = sd
+# We have stanadardised the (non-binary) outcomes for comparable effect sizes.
+sd = 1
 
-#SET UP  ---------------------------------------------------------------
+#INDIVIDUAL SET UP FOR YOUR EXPOSURE VARIABLE  ---------------------------------------------------------------
+
 # THE EXPOSURE Variable
 X = "Church_lead1"
 
@@ -160,7 +177,7 @@ X = "Church_lead1"
 xlab = "Church attendance (0-8)"
 
 # RANGE OF X
-min= 0
+min = 0
 max = 8
 
 # baseline setting of X
@@ -176,25 +193,33 @@ x =  min:max
 c = x
 
 # contrast for graphs -- absolute distance from baseline
-p = c(0,4) #
+p = c(0, 4) #
 
 # This is not really used. Only for contrast graphs with two points
-s = c(0,1) # slot for contrast graph
+s = c(0, 1) # slot for contrast graph
 
-#
-delta = 4 # need for EVALUES
+# Needed for EVALUES -- how much do we move on the X scale to obtain our effect?
+delta = 4 #
 
 
 ## Also use
-round( EValue::evalues.OLS( ESTIMATE_GOES_HERE, se = GOES_HERE, sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(
+  EValue::evalues.OLS(
+    ESTIMATE_GOES_HERE,
+    se = GOES_HERE,
+    sd = sd,
+    delta = delta,
+    true = 0
+  ),
+  3
+)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
+## BELOW THE MANY OUTCOMES!
+
+# note that many
 
 # HEALTH  INDICATORS ------------------------------------------------------------------
-
-
-### MANY OUTCOMES
-
 
 # alcohol freq ------------------------------------------------------------
 #How often do you have a drink containing alcohol?
@@ -206,28 +231,51 @@ ylab = "Alcohol Frequency (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct
 
 alcoholfreq_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 
 # show table
 alcoholfreq_t
 # graph
-alcoholfreq_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+alcoholfreq_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 alcoholfreq_p
 
 # coef + estimate
@@ -237,7 +285,7 @@ alcoholfreq_c
 # Alcohol.Intensity ----------------------------------------------------------
 #How many drinks containing alcohol do you have on a typical day when drinking?
 
-Y ="Alcohol.Intensity_log_lead2_z"
+Y = "Alcohol.Intensity_log_lead2_z"
 main = "Alcohol Intensity"
 ylab = "Alcohol Intensity (SD)"
 
@@ -245,26 +293,49 @@ ylab = "Alcohol Intensity (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 
 alcoholintensity_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 alcoholintensity_t
 # graph
-alcoholintensity_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+alcoholintensity_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 alcoholintensity_p
 
 # coef + estimate
@@ -287,28 +358,57 @@ ylab = "BMI (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 # summary(pool(out_m))
 ## contrasts
-out_ct <- pool_stglm_contrast(out_m, df = df, m = m,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = m,
+    X = X,
+    x = c,
+    r = r
+  )
 # g-computation - contrasts
 #table
 bmi_t <- out_ct %>%
   slice(1:8) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 bmi_t
-bmi_p <- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1) #+ expand_limits(x = 0, y = 0)
+bmi_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  ) #+ expand_limits(x = 0, y = 0)
 bmi_p
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 # coef + estimate
 bmi_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -325,31 +425,54 @@ ylab = "Log Hours Exercise (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 
 #contrast
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 excercise_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 excercise_t
 # graph
-exercise_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+exercise_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 exercise_p
 
 # coef + estimate
@@ -372,29 +495,52 @@ ylab = "SF Health (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 sfhealth_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 sfhealth_t
 # graph
-sfhealth_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+sfhealth_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 sfhealth_p
 
 # coef + estimate
@@ -414,29 +560,52 @@ ylab = "Hours Sleep (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 sleep_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 sleep_t
 # graph
-sleep_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+sleep_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 sleep_p
 
 # coef + estimate
@@ -459,29 +628,52 @@ ylab = "SF Health (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 sfhealth_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 sfhealth_t
 # graph
-sfhealth_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+sfhealth_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 sfhealth_p
 
 # coef + estimate
@@ -498,28 +690,54 @@ ylab = "Smoking (Risk Ratio)"
 rm(out_m)
 rm(out_ct)
 # bake
-out_m <- mice_generalised(df = df, X = X, Y = Y, family = family)
+out_m <- mice_generalised(df = df,
+                          X = X,
+                          Y = Y,
+                          family = family)
 out_m
 ## contrasts
-out_ct <- pool_stglm_contrast_ratio(out_m, df = df, m = m,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast_ratio(
+    out_m,
+    df = df,
+    m = m,
+    X = X,
+    x = c,
+    r = r
+  )
 # g-computation - contrasts
 #table
 smoker_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 smoker_t
-smoker_p <- ggplot_stglm(out_ct, ylim = ylim_contrast, main, xlab, ylab, min = min, p=p, r= 1) + expand_limits(x = 0, y = 0)
+smoker_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim_contrast,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  ) + expand_limits(x = 0, y = 0)
 smoker_p
 
 out_ct
@@ -542,9 +760,17 @@ ylab = "Body Satisfaction (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -555,26 +781,47 @@ bodysat_c
 bodysat_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 bodysat_t
 # graph
-bodysat_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+bodysat_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 bodysat_p
 
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # kessler 6 ---------------------------------------------------------------
@@ -595,9 +842,17 @@ ylab = "Kessler 6 Distress (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -608,25 +863,46 @@ distress_c
 distress_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 distress_t
 # graph
-distress_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+distress_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 distress_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # fatigue -----------------------------------------------------------------
@@ -641,9 +917,17 @@ ylab = "Fatigue (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -653,26 +937,47 @@ fatigue_c
 fatigue_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 fatigue_t
 # graph
-fatigue_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+fatigue_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 fatigue_p
 ylim
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # rumination --------------------------------------------------------------
@@ -685,9 +990,17 @@ ylab = "Rumination (SD)"
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 
@@ -698,26 +1011,47 @@ rumination_c
 rumination_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 rumination_t
 # graph
-rumination_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+rumination_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 rumination_p
 
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -732,9 +1066,17 @@ ylab = "Self Control (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -744,21 +1086,36 @@ selfcontrol_c
 selfcontrol_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 selfcontrol_t
 # graph
-selfcontrol_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+selfcontrol_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 selfcontrol_p
 
 
@@ -772,9 +1129,17 @@ ylab = "Sexual Satisfaction (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -784,26 +1149,47 @@ sexualsat_c
 sexualsat_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 sexualsat_t
 # graph
-sexualsat_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+sexualsat_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 sexualsat_p
 
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # REFLECTIVE WELL-BEING ---------------------------------------------------
@@ -824,9 +1210,17 @@ ylab = "Gratitude (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -836,25 +1230,46 @@ gratitude_c
 gratitude_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 gratitude_t
 # graph
-gratitude_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+gratitude_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 gratitude_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -870,9 +1285,17 @@ ylab = "Impermeability Group (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 groupimperm_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -881,25 +1304,46 @@ groupimperm_c
 groupimperm_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 groupimperm_t
 # graph
-groupimperm_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+groupimperm_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 groupimperm_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -915,9 +1359,17 @@ ylab = "Permeability of Individual (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 selfperm_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -927,25 +1379,46 @@ selfperm_c
 selfperm_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 selfperm_t
 # graph
-selfperm_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+selfperm_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 selfperm_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -962,9 +1435,17 @@ ylab = "Life Satisfaction (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 lifesat_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -974,25 +1455,46 @@ lifesat_c
 lifesat_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 lifesat_t
 # graph
-lifesat_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+lifesat_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 lifesat_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1010,9 +1512,17 @@ ylab = "Life Meaning (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 meaning_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1022,25 +1532,46 @@ meaning_c
 meaning_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 meaning_t
 # graph
-meaning_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+meaning_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 meaning_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # perfectionism  ----------------------------------------------------------
@@ -1058,9 +1589,17 @@ ylab = "Perfectionism (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 perfect_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1069,25 +1608,46 @@ perfect_c
 perfect_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 perfect_t
 # graph
-perfect_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+perfect_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 perfect_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1106,9 +1666,17 @@ ylab = "PWI (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 pwi_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1117,25 +1685,46 @@ pwi_c
 pwi_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 pwi_t
 # graph
-pwi_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+pwi_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 pwi_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1151,9 +1740,17 @@ ylab = "Power Dependence 1(SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 powerdependence1_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1162,25 +1759,46 @@ powerdependence1_c
 powerdependence1_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 powerdependence1_t
 # graph
-powerdependence1_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+powerdependence1_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 powerdependence1_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1197,9 +1815,17 @@ ylab = "Power Dependence 2(SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 powerdependence2_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1208,25 +1834,46 @@ powerdependence2_c
 powerdependence2_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 powerdependence2_t
 # graph
-powerdependence2_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+powerdependence2_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 powerdependence2_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1245,9 +1892,17 @@ ylab = "Self Esteem (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 selfesteem_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1256,25 +1911,46 @@ selfesteem_c
 selfesteem_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 selfesteem_t
 # graph
-selfesteem_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+selfesteem_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 selfesteem_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1294,9 +1970,17 @@ ylab = "Vengefulness (anti-Foregiveness) (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 veng_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1305,25 +1989,46 @@ veng_c
 veng_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 veng_t
 # graph
-veng_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+veng_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 veng_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1341,9 +2046,17 @@ ylab = "Work Life Balance (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 
@@ -1353,25 +2066,46 @@ worklife_c
 worklife_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 worklife_t
 # graph
-worklife_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+worklife_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 worklife_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1385,7 +2119,7 @@ round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
 # Know that people around me share my attitudes and beliefs.
 
 
-Y= "BELONG_lead2_z"
+Y = "BELONG_lead2_z"
 main = "Social Belonging"
 ylab = "Social Belonging (SD)"
 
@@ -1394,9 +2128,17 @@ ylab = "Social Belonging (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 belong_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1406,25 +2148,46 @@ belong_c
 belong_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 belong_t
 # graph
-belong_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+belong_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 belong_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1438,9 +2201,17 @@ ylab = "Community (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 community_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1449,25 +2220,46 @@ community_c
 community_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 community_t
 # graph
-community_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+community_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 community_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1486,9 +2278,17 @@ ylab = "National Well Being (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 nwi_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1497,25 +2297,46 @@ nwi_c
 nwi_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 nwi_t
 # graph
-nwi_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+nwi_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 nwi_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # soc support -------------------------------------------------------------
@@ -1533,9 +2354,17 @@ ylab = "Social Support (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 
@@ -1546,25 +2375,46 @@ support_c
 support_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 support_t
 # graph
-support_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+support_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 support_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1587,9 +2437,17 @@ ylab = "Honesty Humility (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 
@@ -1599,25 +2457,46 @@ humility_c
 humility_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 humility_t
 # graph
-humility_p <- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+humility_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 humility_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1633,9 +2512,17 @@ ylab = "Charity Donations (annual)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 charity_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1644,25 +2531,46 @@ charity_c
 charity_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 charity_t
 # graph
-charity_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+charity_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 charity_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1678,9 +2586,20 @@ family = "poisson" # binary outcome not rare
 rm(out_m)
 rm(out_ct)
 # fit regression model
-out_m <- mice_generalised(df = df, X = X, Y = Y, family = family)
+out_m <- mice_generalised(df = df,
+                          X = X,
+                          Y = Y,
+                          family = family)
 # g-computation - contrasts
-out_ct <- pool_stglm_contrast_ratio(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast_ratio(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 #table
 
 # coef + estimate
@@ -1688,52 +2607,64 @@ volunteers_c <- vanderweelevalue_rr(out_ct, f)
 volunteers_c
 
 
-volunteers_t<- out_ct %>%
+volunteers_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 volunteers_t
-volunteers_p<- ggplot_stglm(out_ct, ylim =c(.9,2), main, xlab, ylab, min = min, p=p, r= 1)
+volunteers_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = c(.9, 2),
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 volunteers_p
 
 #round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
 
 
-round( EValue::evalues.RR( , lo =  , hi = , true = 1), 4) |>
-  kbl(caption = main,
-      digits = 3,
-      "html") |>
-  kable_styling() %>%
-  kable_minimal(full_width = F)
-
-
-
-
-### ECONOMIC INDICATORS -----------------------------------------------------
 
 
 # log household income --------------------------------------------------------------
-Y = "income_lead2_log"
-main = "Occupational Status/10"
-ylab = "Occupational Status/10"
+Y = "income_lead2_log_z"
+main = "Log Income"
+ylab = "Log Income (SD)"
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 income_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1743,33 +2674,42 @@ income_c
 income_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 income_t
 # graph
-income_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+income_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 income_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
 
 
-# Home Owner --------------------------------------------------------------
-
-
-# volunteers --------------------------------------------------------------
-#Hours spent in activities
-#Hours spent … voluntary/charitable work
+# HOME OWNER --------------------------------------------------------------
+#Do you own your own home? (either partly or fully owned)
 
 Y = "HomeOwner_lead2"
 main = "Home Owner (RR)"
@@ -1779,9 +2719,20 @@ family = "poisson" # binary outcome not rare
 rm(out_m)
 rm(out_ct)
 # fit regression model
-out_m <- mice_generalised(df = df, X = X, Y = Y, family = family)
+out_m <- mice_generalised(df = df,
+                          X = X,
+                          Y = Y,
+                          family = family)
 # g-computation - contrasts
-out_ct <- pool_stglm_contrast_ratio(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast_ratio(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 #table
 
 # coef + estimate
@@ -1789,28 +2740,43 @@ homeowner_c <- vanderweelevalue_rr(out_ct, f)
 homeowner_c
 
 
-homeowner_t<- out_ct %>%
+homeowner_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 homeowner_t
-homeowner_p<- ggplot_stglm(out_ct, ylim =c(.9,2), main, xlab, ylab, min = min, p=p, r= 1)
+homeowner_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = c(.9, 2),
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 homeowner_p
 
 #round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
 
 
-round( EValue::evalues.RR( , lo =  , hi = , true = 1), 4) |>
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
@@ -1835,9 +2801,17 @@ ylab = "Occupational Status/10"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 nzsei_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1846,25 +2820,46 @@ nzsei_c
 nzsei_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 nzsei_t
 # graph
-nzsei_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+nzsei_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 nzsei_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # stand living ------------------------------------------------------------
@@ -1883,9 +2878,17 @@ ylab = "Standard Living (SD)"
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
-out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct <-
+  pool_stglm_contrast(
+    out_m,
+    df = df,
+    m = 10,
+    X = X,
+    x = c,
+    r = r
+  )
 out_ct %>%
-  slice(f+1) |>
+  slice(f + 1) |>
   kbl(digits = 3, "markdown")
 
 standardliving_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
@@ -1894,25 +2897,46 @@ standardliving_c
 standardliving_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
-  rename(Contrast = row,
-         Estimate = est,
-         Std_error = se,
-         CI_hi = ui,
-         CI_lo = li) |>
+  rename(
+    Contrast = row,
+    Estimate = est,
+    Std_error = se,
+    CI_hi = ui,
+    CI_lo = li
+  ) |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  row_spec(c(f + 1),
+           bold = T,
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 # show table
 standardliving_t
 # graph
-standardliving_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+standardliving_p <-
+  ggplot_stglm(
+    out_ct,
+    ylim = ylim,
+    main,
+    xlab,
+    ylab,
+    min = min,
+    p = p,
+    r = 1
+  )
 standardliving_p
 
-round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+round(EValue::evalues.OLS(
+  ,
+  se = ,
+  sd = sd,
+  delta = delta,
+  true = 0
+), 3)
+round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1922,21 +2946,26 @@ round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
 
 
 main = "Health outcome estimands / Evalues"
-h_tab <- rbind(alcoholfreq_c,
-               alcoholintensity_c,
-               bmi_c,
-               exercise_c,
-               sfhealth_c,
-               selfcontrol_c +
-               sleep_c,
-               smoker_c)
+h_tab <- rbind(
+  alcoholfreq_c,
+  alcoholintensity_c,
+  bmi_c,
+  exercise_c,
+  sfhealth_c,
+  selfcontrol_c +
+    sleep_c,
+  smoker_c
+)
 
 h_tab |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1), bold = T, color = "black", background = "bold") |>
+  row_spec(c(1),
+           bold = T,
+           color = "black",
+           background = "bold") |>
   kable_minimal(full_width = F)
 
 
@@ -1956,7 +2985,10 @@ embody_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-   row_spec(c(2), bold = F, color = "black", background = "italics") |>
+  row_spec(c(2),
+           bold = F,
+           color = "black",
+           background = "italics") |>
   kable_minimal(full_width = F)
 
 
@@ -1966,26 +2998,37 @@ embody_tab |>
 
 
 main = "Reflective wellbeing estimands / Evalues"
-reflect_tab <- rbind(gratitude_c,
-                     groupimperm_c,
-                     selfperm_c,
-                     lifesat_c,
-                     meaning_c,
-                     perfect_c,
-                     pwi_c,
-                     powerdependence1_c,
-                     powerdependence2_c,
-                     selfesteem_c,
-                     veng_c)
+reflect_tab <- rbind(
+  gratitude_c,
+  groupimperm_c,
+  selfperm_c,
+  lifesat_c,
+  meaning_c,
+  perfect_c,
+  pwi_c,
+  powerdependence1_c,
+  powerdependence2_c,
+  selfesteem_c,
+  veng_c
+)
 
 reflect_tab |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-   row_spec(c(5), bold = T, color = "black", background = "bold") |>
-  row_spec(c(7), bold = T, color = "black", background = "bold") |>
-  row_spec(c(11), bold = T, color = "black", background = "bold") |>
+  row_spec(c(5),
+           bold = T,
+           color = "black",
+           background = "bold") |>
+  row_spec(c(7),
+           bold = T,
+           color = "black",
+           background = "bold") |>
+  row_spec(c(11),
+           bold = T,
+           color = "black",
+           background = "bold") |>
   kable_minimal(full_width = F)
 
 
@@ -2004,26 +3047,35 @@ social_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-   row_spec(c(1), bold = T, color = "black", background = "bold") |>
-  row_spec(c(4), bold = T, color = "black", background = "bold") |>
+  row_spec(c(1),
+           bold = T,
+           color = "black",
+           background = "bold") |>
+  row_spec(c(4),
+           bold = T,
+           color = "black",
+           background = "bold") |>
   kable_minimal(full_width = F)
 
 
-# TABLE ECONOMIC WELLBEING  ------------------------------------------------
+# TABLE ECONOMIC WELLBEING and Charity ------------------------------------------------
 
 main = "Economic wellbeing estimands / Evalues"
-econ_tab <- rbind(#income_c,
+econ_tab <- rbind(income_c,
+  charity_c,
   homeowner_c,
   nzsei_c,
   standardliving_c,
-  worklife_c)
+  worklife_c,
+  volunteers_c)
 
 econ_tab |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  # row_spec(c(1), bold = T, color = "black", background = "bold") |>
+  row_spec(c(2), bold = T, color = "black", background = "bold") |>
+  row_spec(c(7), bold = T, color = "black", background = "bold") |>
   kable_minimal(full_width = F)
 
 # GRAPHS EMBODIED --------------------------------------------
@@ -2033,7 +3085,7 @@ embody_plots <-
   distress_p +
   fatigue_p +
   rumination_p +
-  selfcontrol_p+
+  selfcontrol_p +
   sleep_p +
   sexualsat_p + plot_annotation(title = "Causal effects of XX on embodied wellbeing",
                                 subtitle = "xyz",
@@ -2154,8 +3206,14 @@ dev.off()
 
 ### GRAPHS ECONOMIC_SUCCESS GRAPHS ------------------------------------------------
 
-econ_plots <-  income_p +  nzsei_p +  standardliving_p + worklife_p +
-  plot_annotation(title = "Causal effects of XX on economic wellbeing"
+econ_plots <-
+  income_p +
+  charity_p +
+  nzsei_p +
+  standardliving_p +
+  worklife_p +
+  volunteers_p +
+  plot_annotation(title = "Causal effects of XX on economic wellbeing",
                   subtitle = "xyz") +
   plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
@@ -2175,12 +3233,6 @@ ggsave(
 )
 
 dev.off()
-
-
-
-
-
-
 
 
 
@@ -2280,4 +3332,3 @@ dev.off()
 #
 # round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
 # round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
-

@@ -308,7 +308,8 @@ df_cr <- tab_in %>%
   arrange(Id)
 
 
-
+# save
+saveh(df_cr, "df_cr")
 # MICE --------------------------------------------------------------------
 
 
@@ -354,7 +355,7 @@ skimr::skim(cc_l) |>
   arrange(n_missing)
 
 N <- length(unique(df_cr$Id))
-N  # 5452
+N  # 11953
 # create variables in z score
 cc_l2 <- cc_l %>%
   dplyr::mutate(income_log = log(Household.INC + 1)) |>
@@ -468,6 +469,7 @@ cc_l2 <- cc_l2 %>% mutate_if(is.matrix, as.vector)
 
 ccu <- mice::as.mids(cc_l2)
 ccf <- mice::complete(ccu, "long", inc = F)
+
 
 ## SAVE DATA
 saveh(ccf, "ccf")
