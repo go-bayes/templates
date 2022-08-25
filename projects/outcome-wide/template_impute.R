@@ -79,6 +79,9 @@ df_cr <- tab_in %>%
     YearMeasured,
     Wave,
     Age,
+    Male,
+    Edu,
+    EthCat,
     AGREEABLENESS,
     CONSCIENTIOUSNESS,
     EXTRAVERSION,
@@ -95,15 +98,13 @@ df_cr <- tab_in %>%
     BornNZ,
     CharityDonate,
     ChildrenNum,
-    Edu,
-  #  Emp.JobSecure,
+    #  Emp.JobSecure,
     # EmotionRegulation1,
     # EmotionRegulation2,  # measures do not cohere as a scale
     # EmotionRegulation3,
     Employed,
     Emp.WorkLifeBalance,
-   # Euro,
-    EthCat,
+    # Euro,
     #  GenCohort,  # might be useful for some models
     GRATITUDE,
     HLTH.BMI,
@@ -117,16 +118,21 @@ df_cr <- tab_in %>%
     Hours.Work,
     ImpermeabilityGroup,
     #  KESSLER6sum,
-    kessler_hopeless, # …  you feel hopeless?
-    kessler_depressed, #…  you feel so depressed that nothing could cheer you up?
-    kessler_restless, #…  you feel restless or fidgety?
-    kessler_effort, #…  you feel that everything was an effort?
-    kessler_worthless, #…  you feel worthless?
-    kessler_nervous, #…  you feel nervous?
+    kessler_hopeless,
+    # …  you feel hopeless?
+    kessler_depressed,
+    #…  you feel so depressed that nothing could cheer you up?
+    kessler_restless,
+    #…  you feel restless or fidgety?
+    kessler_effort,
+    #…  you feel that everything was an effort?
+    kessler_worthless,
+    #…  you feel worthless?
+    kessler_nervous,
+    #…  you feel nervous?
     LIFEMEANING,
     LIFESAT,
     lost_job,
-    Male,
     NWI,
     NZdep,
     NZSEI13,
@@ -170,37 +176,29 @@ df_cr <- tab_in %>%
   dplyr::mutate(Edu = as.numeric(Edu)) %>%
   dplyr::mutate(across(!c(Id, Wave), ~ as.numeric(.x))) %>% # make factors numeric for easy of processing
   arrange(Id, Wave) %>%
-  dplyr::mutate(
-    Edu = as.numeric(Edu),
-  ) %>%
+  dplyr::mutate(Edu = as.numeric(Edu),) %>%
   rename(Church = Religion.Church2) |>
   arrange(Id, Wave)  %>% #
   dplyr::mutate(Church_lead1 = lead(Church, n = 1)) %>%
   dplyr::mutate(across(
     c(
-      AGREEABLENESS,
-      CONSCIENTIOUSNESS,
-      EXTRAVERSION,
-      HONESTY_HUMILITY,
-      NEUROTICISM,
-      OPENNESS,
-    #  began_relationship,
+      #  began_relationship,
       BELONG,
-      Believe.Spirit,
-      Believe.God,
+      # Believe.Spirit,
+      # Believe.God,
       Bodysat,
       CharityDonate,
-      ChildrenNum,
+      #  ChildrenNum,
       community,
-   #   Edu,
-   #   Emp.JobSecure,
+      #   Edu,
+      #   Emp.JobSecure,
       # EmotionRegulation1,
       # EmotionRegulation2,
       # EmotionRegulation3,
-      Employed,
+      # Employed,
       Emp.WorkLifeBalance,
       #EthCat,
-      #  GenCohort,
+      # GenCohort,
       GRATITUDE,
       HLTH.BMI,
       HLTH.Fatigue,
@@ -210,50 +208,55 @@ df_cr <- tab_in %>%
       Household.INC,
       HoursCharity,
       Hours.Exercise,
-      Hours.Work,
+      # Hours.Work,
       ImpermeabilityGroup,
       #  KESSLER6sum,
-      kessler_hopeless, # …  you feel hopeless?
-      kessler_depressed, #…  you feel so depressed that nothing could cheer you up?
-      kessler_restless, #…  you feel restless or fidgety?
-      kessler_effort, #…  you feel that everything was an effort?
-      kessler_worthless, #…  you feel worthless?
-      kessler_nervous, #…  you feel nervous?
+      kessler_hopeless,
+      # …  you feel hopeless?
+      kessler_depressed,
+      #…  you feel so depressed that nothing could cheer you up?
+      kessler_restless,
+      #…  you feel restless or fidgety?
+      kessler_effort,
+      #…  you feel that everything was an effort?
+      kessler_worthless,
+      #…  you feel worthless?
+      kessler_nervous,
+      #…  you feel nervous?
       LIFEMEANING,
       LIFESAT,
-    #  lost_job,
+      #  lost_job,
       Male,
       NWI,
-      NZdep,
+      # NZdep,
       NZSEI13,
-      Parent,
-      Partner,
-    #  partnerlost_job,
+      # Parent,
+      # Partner,
+      # partnerlost_job,
       PERFECTIONISM,
       PermeabilityIndividual,
-      Pol.Orient,
       POWERDEPENDENCE1,
       POWERDEPENDENCE2,
-      Relid,
-    #  Religion.Church2,
-     # Religion.Prayer2,
-   #   Religion.Scripture2,
-    #  Religious,
-      Respect.Self,
-   #   retired,
-      RWA,
+      #  Relid,
+      #  Religion.Church2,
+      # Religion.Prayer2,
+      #   Religion.Scripture2,
+      #  Religious,
+      # Respect.Self, # not exist
+      #   retired,
+      # RWA,
       Rumination,
-      SDO,
-   #   semiretired,
+      # SDO,
+      #   semiretired,
       SELF.CONTROL,
       SELF.ESTEEM,
       SexualSatisfaction,
       SFHEALTH,
       Smoker,
-      Spiritual.Identification,
+      # Spiritual.Identification,
       Standard.Living,
       SUPPORT,
-    #  Urban,
+      #  Urban,
       VENGEFUL.RUMIN,
       Your.Health,
       Your.Future.Security,
@@ -280,25 +283,23 @@ df_cr <- tab_in %>%
   #dplyr::filter(!is.na(Standard.Living) )%>%
   # dplyr::filter(!is.na(Standard.Living_lead1) )%>%
   #  dplyr::filter(semiretired_lead1 != 1) %>%  #needed for the intervention
-  dplyr::select(
-    -c(
-      # EthCat,
-      Religious,
-      Respect.Self_lead2,
-      #  org2018,
-      #  not_euro,
-      #  not_euro_lead2,
-      # hold18,
-      #   Euro,
-      Emp.WorkLifeBalance,  # not at baseline
-      YearMeasured,
-      #HLTH.Disability_lead1,
-      # org2019,
-      # hold19,
-      # retired,
-      # semiretired,
-    )
-  ) %>%
+  dplyr::select(-c(
+    # EthCat,
+    Religious,
+    #  org2018,
+    #  not_euro,
+    #  not_euro_lead2,
+    # hold18,
+    #   Euro,
+    Emp.WorkLifeBalance,
+    # not at baseline
+    YearMeasured,
+    #HLTH.Disability_lead1,
+    # org2019,
+    # hold19,
+    # retired,
+    # semiretired,
+  )) %>%
   #  dplyr::mutate(across(!c(Id,Wave), ~ scale(.x)))%>%  # standarise vars for easy computing-- do this after imputation
   arrange(Id, Wave) %>%
   droplevels() %>%
@@ -326,7 +327,7 @@ naniar::gg_miss_var(mice_cc)
 mice:::find.collinear(mice_cc)
 
 # impute
-mice_cc <- mice::mice(mice_cc,  seed = 0, m = 2)
+mice_cc <- mice::mice(mice_cc,  seed = 0, m = 10)
 
 # save
 saveh(mice_cc, "mice_cc")
@@ -356,10 +357,11 @@ N <- length(unique(df_cr$Id))
 N  # 5452
 # create variables in z score
 cc_l2 <- cc_l %>%
- # dplyr::mutate(income_log = log(Household.INC + 1)) |>
+  dplyr::mutate(income_log = log(Household.INC + 1)) |>
+  dplyr::mutate(income_lead2_log = log(Household.INC_lead2 + 1)) |>
   dplyr::mutate(Church = ifelse(Church > 8, 8, Church)) |>
   dplyr::mutate(Church_lead1 = ifelse(Church_lead1 > 8, 8, Church_lead1)) |>
- # dplyr::mutate( inc_prop = (income_log / (income_log_lead1) - 1)) |>
+  # dplyr::mutate( inc_prop = (income_log / (income_log_lead1) - 1)) |>
   dplyr::mutate(Alcohol.Intensity_lead2 = round(Alcohol.Intensity_lead2, 0)) %>%
   dplyr::mutate(CharityDonate_lead2 = round(CharityDonate_lead2, 0)) %>%
   dplyr::mutate(Volunteers = if_else(HoursCharity > 1, 1, 0)) |>
@@ -379,7 +381,8 @@ cc_l2 <- cc_l %>%
   dplyr::mutate(PERFECTIONISM_lead2ord = as.integer(round(PERFECTIONISM_lead2, digits = 0))) %>%
   dplyr::mutate(VENGEFUL.RUMIN_lead2ord = as.integer(round(VENGEFUL.RUMIN_lead2, digits = 0))) %>%
   dplyr::mutate(Standard.Living_lead2ord = as.integer(round(Standard.Living_lead2, digits = 0))) %>%
-  dplyr::mutate(Your.Personal.Relationships_lead2ord = as.integer(round( Your.Personal.Relationships_lead2, digits = 0
+  dplyr::mutate(Your.Personal.Relationships_lead2ord = as.integer(round(
+    Your.Personal.Relationships_lead2, digits = 0
   ) + 1)) %>%
   dplyr::mutate(LIFEMEANING_lead2ord = as.integer(round(LIFEMEANING_lead2, digits = 0))) %>%
   dplyr::mutate(HLTH.Fatigue_lead2ord = as.integer(round(HLTH.Fatigue_lead2, digits = 0) + 1)) %>%
@@ -389,8 +392,8 @@ cc_l2 <- cc_l %>%
   dplyr::mutate(alcohol_bin2 = if_else(Alcohol.Frequency > 3, 1, 0)) %>%
   dplyr::mutate(alcohol_bin = if_else(Alcohol.Frequency > 2, 1, 0)) %>%
   dplyr::mutate(Hours.Work_10 =  Hours.Work / 10) %>%
- # dplyr::mutate(Hours.Work_lead1_10 =  as.integer(Hours.Work_lead1 / 10)) %>%
- # dplyr::mutate(Hours.Work_lead1_sqrt =  as.integer(sqrt(Hours.Work_lead1))) %>%
+  # dplyr::mutate(Hours.Work_lead1_10 =  as.integer(Hours.Work_lead1 / 10)) %>%
+  # dplyr::mutate(Hours.Work_lead1_sqrt =  as.integer(sqrt(Hours.Work_lead1))) %>%
   dplyr::mutate(NZSEI13_10 =  NZSEI13 / 10) %>%
   dplyr::mutate(NZSEI13_lead2_10 =  as.integer(NZSEI13_lead2 / 10)) %>%
   dplyr::mutate(id = as.factor(rep(1:N, 11))) |> # needed for g-comp
@@ -413,22 +416,36 @@ cc_l2 <- cc_l %>%
     ),
     na.rm = TRUE
   )) |>
-  dplyr::mutate(KESSLER6sum = rowSums(across(c(
-      kessler_hopeless, # …  you feel hopeless?
-      kessler_depressed, #…  you feel so depressed that nothing could cheer you up?
-      kessler_restless, #…  you feel restless or fidgety?
-      kessler_effort, #…  you feel that everything was an effort?
-      kessler_worthless, #…  you feel worthless?
+  dplyr::mutate(KESSLER6sum = rowSums(across(
+    c(
+      kessler_hopeless,
+      # …  you feel hopeless?
+      kessler_depressed,
+      #…  you feel so depressed that nothing could cheer you up?
+      kessler_restless,
+      #…  you feel restless or fidgety?
+      kessler_effort,
+      #…  you feel that everything was an effort?
+      kessler_worthless,
+      #…  you feel worthless?
       kessler_nervous #…  you feel nervous?
-  ))))|>
-  dplyr::mutate(KESSLER6sum_lead2 = rowSums(across(c(
-      kessler_hopeless_lead2, # …  you feel hopeless?
-      kessler_depressed_lead2, #…  you feel so depressed that nothing could cheer you up?
-      kessler_restless_lead2, #…  you feel restless or fidgety?
-      kessler_effort_lead2, #…  you feel that everything was an effort?
-      kessler_worthless_lead2, #…  you feel worthless?
-      kessler_nervous_lead2) #…  you feel nervous?
-  ))  ) |>
+    )
+  ))) |>
+  dplyr::mutate(KESSLER6sum_lead2 = rowSums(across(
+    c(
+      kessler_hopeless_lead2,
+      # …  you feel hopeless?
+      kessler_depressed_lead2,
+      #…  you feel so depressed that nothing could cheer you up?
+      kessler_restless_lead2,
+      #…  you feel restless or fidgety?
+      kessler_effort_lead2,
+      #…  you feel that everything was an effort?
+      kessler_worthless_lead2,
+      #…  you feel worthless?
+      kessler_nervous_lead2
+    ) #…  you feel nervous?
+  ))) |>
   ungroup() |>
   droplevels() |>
   dplyr::mutate(KESSLER6sum = round(as.integer(KESSLER6sum, 0))) %>%
@@ -455,4 +472,3 @@ ccf <- mice::complete(ccu, "long", inc = F)
 ## SAVE DATA
 saveh(ccf, "ccf")
 saveh(ccu, "ccu")
-

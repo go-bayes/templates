@@ -406,7 +406,7 @@ sfhealth_c
 #During the past month, on average, how many hours of actual sleep did you get per night?
 
 Y = "HLTH.SleepHours_lead2_z"
-main = "Hours Sleep (SD)"
+main = "Hours Sleep"
 ylab = "Hours Sleep (SD)"
 
 
@@ -492,8 +492,8 @@ sfhealth_c
 #Do you currently smoke?
 Y = "Smoker_lead2"
 family = "binomial" # could be binomial if binary utcome is rare
-main = "Smoking Risk"
-ylab = "Smoking Risk"
+main = "Smoking (RR)"
+ylab = "Smoking (Risk Ratio)"
 # clean oven
 rm(out_m)
 rm(out_ct)
@@ -529,28 +529,6 @@ smoker_c <- vanderweelevalue_rr(out_ct, f)
 smoker_c
 
 
-# table for health outcomes -----------------------------------------------
-
-
-main = "Health outcome effects estimates / Evalues"
-h_tab <- rbind(alcoholfreq_c,
-      alcoholintensity_c,
-      bmi_c,
-      exercise_c,
-      sfhealth_c,
-      sleep_c,
-      sfhealth_c,
-      smoker_c)
-
-h_tab |>
-kbl(caption = main,
-    digits = 3,
-    "html") |>
-  kable_styling() %>%
-  row_spec(c(1), bold = T, color = "black", background = "bold") |>
-  kable_minimal(full_width = F)
-
-
 ### EMBODIED WELL BEING ----------------------------------------------------
 
 
@@ -568,6 +546,11 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+# coef + estimate
+bodysat_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+bodysat_c
+
 
 bodysat_t <- out_ct %>%
   slice(1:9) |>
@@ -617,6 +600,11 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+# coef + estimate
+distress_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+distress_c
+
+
 distress_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -658,6 +646,10 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+# coef + estimate
+fatigue_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+fatigue_c
+
 fatigue_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -698,6 +690,11 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+
+# coef + estimate
+rumination_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+rumination_c
+
 rumination_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -723,10 +720,52 @@ round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
 round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
 
 
+
+# self control ------------------------------------------------------------
+#In general, I have a lot of self-control.
+#I wish I had more self-discipline.
+Y = "SELF.CONTROL_lead2_z"
+main = "Self Control"
+ylab = "Self Control (SD)"
+
+# regression
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
+
+## g-computation
+out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+out_ct %>%
+  slice(f+1) |>
+  kbl(digits = 3, "markdown")
+
+# coef + estimate
+selfcontrol_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+selfcontrol_c
+
+selfcontrol_t <- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         Std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+# show table
+selfcontrol_t
+# graph
+selfcontrol_p<- ggplot_stglm(out_ct, ylim = ylim, main, xlab, ylab, min = min, p=p, r= 1)
+selfcontrol_p
+
+
 # sex satisfaction --------------------------------------------------------
 # How satisfied are you with your sex life?
 Y = "SexualSatisfaction_lead2_z"
-main = "Sexual Satisfaction (SD)"
+main = "Sexual Satisfaction"
 ylab = "Sexual Satisfaction (SD)"
 
 # regression
@@ -737,6 +776,10 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+# coef + estimate
+sexualsat_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+sexualsat_c
 
 sexualsat_t <- out_ct %>%
   slice(1:9) |>
@@ -786,6 +829,10 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+# coef + estimate
+gratitude_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+gratitude_c
+
 gratitude_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -827,6 +874,9 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+groupimperm_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+groupimperm_c
 
 groupimperm_t <- out_ct %>%
   slice(1:9) |>
@@ -870,6 +920,10 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+selfperm_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+selfperm_c
+
+
 selfperm_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -912,6 +966,10 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+lifesat_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+lifesat_c
+
 
 lifesat_t <- out_ct %>%
   slice(1:9) |>
@@ -957,6 +1015,10 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+meaning_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+meaning_c
+
+
 meaning_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -1000,6 +1062,9 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+perfect_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+perfect_c
 
 perfect_t <- out_ct %>%
   slice(1:9) |>
@@ -1046,6 +1111,9 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+pwi_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+pwi_c
+
 pwi_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -1088,6 +1156,9 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+powerdependence1_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+powerdependence1_c
+
 powerdependence1_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -1114,6 +1185,7 @@ round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
 
 
 
+
 # power dependence 2 ------------------------------------------------------
 #Other people have too much power or control over important parts of my life.
 
@@ -1129,6 +1201,9 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+powerdependence2_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+powerdependence2_c
 
 powerdependence2_t <- out_ct %>%
   slice(1:9) |>
@@ -1174,6 +1249,9 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+selfesteem_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+selfesteem_c
 
 selfesteem_t <- out_ct %>%
   slice(1:9) |>
@@ -1221,6 +1299,9 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+veng_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+veng_c
+
 veng_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -1264,6 +1345,10 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+
+worklife_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+worklife_c
 
 worklife_t <- out_ct %>%
   slice(1:9) |>
@@ -1314,6 +1399,10 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+belong_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+belong_c
+
+
 belong_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -1353,6 +1442,9 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+community_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+community_c
 
 community_t <- out_ct %>%
   slice(1:9) |>
@@ -1399,6 +1491,9 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+nwi_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+nwi_c
+
 nwi_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -1442,6 +1537,11 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+
+support_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+support_c
+
 
 support_t <- out_ct %>%
   slice(1:9) |>
@@ -1492,6 +1592,10 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+
+humility_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+humility_c
+
 humility_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -1534,6 +1638,9 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+charity_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+charity_c
+
 charity_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -1564,8 +1671,8 @@ round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
 #Hours spent … voluntary/charitable work
 
 Y = "Volunteers_lead2"
-main = "Volunteer Rate"
-ylab = "Volunteer Rate"
+main = "Volunteer (RR)"
+ylab = "Volunteer (Risk Ratio)"
 family = "poisson" # binary outcome not rare
 # clean oven
 rm(out_m)
@@ -1575,6 +1682,12 @@ out_m <- mice_generalised(df = df, X = X, Y = Y, family = family)
 # g-computation - contrasts
 out_ct <- pool_stglm_contrast_ratio(out_m, df = df, m = 10,  X = X, x = c, r= r)
 #table
+
+# coef + estimate
+volunteers_c <- vanderweelevalue_rr(out_ct, f)
+volunteers_c
+
+
 volunteers_t<- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -1610,7 +1723,7 @@ round( EValue::evalues.RR( , lo =  , hi = , true = 1), 4) |>
 
 
 # log household income --------------------------------------------------------------
-Y = "income_log_lead2"
+Y = "income_lead2_log"
 main = "Occupational Status/10"
 ylab = "Occupational Status/10"
 
@@ -1622,6 +1735,10 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+income_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+income_c
+
 
 income_t <- out_ct %>%
   slice(1:9) |>
@@ -1647,6 +1764,62 @@ round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
 round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
 
 
+# Home Owner --------------------------------------------------------------
+
+
+# volunteers --------------------------------------------------------------
+#Hours spent in activities
+#Hours spent … voluntary/charitable work
+
+Y = "HomeOwner_lead2"
+main = "Home Owner (RR)"
+ylab = "Home Owner (Risk Ratio)"
+family = "poisson" # binary outcome not rare
+# clean oven
+rm(out_m)
+rm(out_ct)
+# fit regression model
+out_m <- mice_generalised(df = df, X = X, Y = Y, family = family)
+# g-computation - contrasts
+out_ct <- pool_stglm_contrast_ratio(out_m, df = df, m = 10,  X = X, x = c, r= r)
+#table
+
+# coef + estimate
+homeowner_c <- vanderweelevalue_rr(out_ct, f)
+homeowner_c
+
+
+homeowner_t<- out_ct %>%
+  slice(1:9) |>
+  tibble() |>
+  rename(Contrast = row,
+         Estimate = est,
+         std_error = se,
+         CI_hi = ui,
+         CI_lo = li) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(f+1), bold = T, color = "white", background = "dodgerblue") |>
+  kable_minimal(full_width = F)
+homeowner_t
+homeowner_p<- ggplot_stglm(out_ct, ylim =c(.9,2), main, xlab, ylab, min = min, p=p, r= 1)
+homeowner_p
+
+#round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
+
+
+round( EValue::evalues.RR( , lo =  , hi = , true = 1), 4) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  kable_minimal(full_width = F)
+
+
+
+
 # Promotion NZSEI ---------------------------------------------------------------
 #Occupational prestige/status
 #NZSEI06 (NZ Socio-economic index) Milne, B. J., Byun, U., & Lee, A. (2013). New Zealand socio-economic index 2006. Wellington: Statistics New Zealand.
@@ -1666,6 +1839,9 @@ out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
 out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
+
+nzsei_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+nzsei_c
 
 nzsei_t <- out_ct %>%
   slice(1:9) |>
@@ -1712,6 +1888,9 @@ out_ct %>%
   slice(f+1) |>
   kbl(digits = 3, "markdown")
 
+standardliving_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+standardliving_c
+
 standardliving_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -1735,6 +1914,145 @@ standardliving_p
 round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
 round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
 
+
+
+## TABLE HEALTH
+
+# TABLE  HEALTH  -----------------------------------------------
+
+
+main = "Health outcome estimands / Evalues"
+h_tab <- rbind(alcoholfreq_c,
+               alcoholintensity_c,
+               bmi_c,
+               exercise_c,
+               sfhealth_c,
+               selfcontrol_c +
+               sleep_c,
+               smoker_c)
+
+h_tab |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  row_spec(c(1), bold = T, color = "black", background = "bold") |>
+  kable_minimal(full_width = F)
+
+
+
+# TABLE EMBODIED ----------------------------------------------------------
+
+main = "Embodied wellbeing estimands / Evalues"
+embody_tab <- rbind(bodysat_c,
+                    distress_c,
+                    fatigue_c,
+                    rumination_c,
+                    sleep_c,
+                    sexualsat_c)
+#
+embody_tab |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+   row_spec(c(2), bold = F, color = "black", background = "italics") |>
+  kable_minimal(full_width = F)
+
+
+
+
+# TABLE REFLECTIVE WELLBEING ----------------------------------------------
+
+
+main = "Reflective wellbeing estimands / Evalues"
+reflect_tab <- rbind(gratitude_c,
+                     groupimperm_c,
+                     selfperm_c,
+                     lifesat_c,
+                     meaning_c,
+                     perfect_c,
+                     pwi_c,
+                     powerdependence1_c,
+                     powerdependence2_c,
+                     selfesteem_c,
+                     veng_c)
+
+reflect_tab |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+   row_spec(c(5), bold = T, color = "black", background = "bold") |>
+  row_spec(c(7), bold = T, color = "black", background = "bold") |>
+  row_spec(c(11), bold = T, color = "black", background = "bold") |>
+  kable_minimal(full_width = F)
+
+
+
+# TABLE SOCIAL WELLBEING --------------------------------------------------
+
+
+main = "Social wellbeing estimands / Evalues"
+social_tab <- rbind(belong_c,
+                    community_c,
+                    nwi_c,
+                    support_c)
+
+social_tab |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+   row_spec(c(1), bold = T, color = "black", background = "bold") |>
+  row_spec(c(4), bold = T, color = "black", background = "bold") |>
+  kable_minimal(full_width = F)
+
+
+# TABLE ECONOMIC WELLBEING  ------------------------------------------------
+
+main = "Economic wellbeing estimands / Evalues"
+econ_tab <- rbind(#income_c,
+  homeowner_c,
+  nzsei_c,
+  standardliving_c,
+  worklife_c)
+
+econ_tab |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  # row_spec(c(1), bold = T, color = "black", background = "bold") |>
+  kable_minimal(full_width = F)
+
+# GRAPHS EMBODIED --------------------------------------------
+
+embody_plots <-
+  bodysat_p +
+  distress_p +
+  fatigue_p +
+  rumination_p +
+  selfcontrol_p+
+  sleep_p +
+  sexualsat_p + plot_annotation(title = "Causal effects of XX on embodied wellbeing",
+                                subtitle = "xyz",
+                                tag_levels = "A") +
+  plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
+
+embody_plots
+
+ggsave(
+  embody_plots,
+  path = here::here(here::here("figs", "examples")),
+  width = 16,
+  height = 9,
+  units = "in",
+  filename = "embody_plots.jpg",
+  device = 'jpeg',
+  limitsize = FALSE,
+  dpi = 1200
+)
 
 
 # GRAPHS HEALTH -----------------------------------------------------------
@@ -1767,34 +2085,6 @@ ggsave(
 )
 
 dev.off()
-
-
-# GRAPHS EMBODIED  --------------------------------------------------------
-
-embody_plots <-
-  bodysat_p +
-  distress_p +
-  fatigue_p +
-  rumination_p +
-  sleep_p +
-  sexualsat_p + plot_annotation(title = "Causal effects of XX on embodied wellbeing",
-                                subtitle = "xyz",
-                                tag_levels = "A") +
-  plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
-
-embody_plots
-
-ggsave(
-  embody_plots,
-  path = here::here(here::here("figs", "examples")),
-  width = 16,
-  height = 9,
-  units = "in",
-  filename = "embody_plots.jpg",
-  device = 'jpeg',
-  limitsize = FALSE,
-  dpi = 1200
-)
 
 
 
@@ -1833,7 +2123,6 @@ ggsave(
   dpi = 1200
 )
 
-
 # GRAPHS SOCIAL WELL-BEING ------------------------------------------------
 
 social_plots <- belong_p +
@@ -1863,7 +2152,7 @@ dev.off()
 
 
 
-### ECONOMIC_SUCCESS GRAPHS ------------------------------------------------
+### GRAPHS ECONOMIC_SUCCESS GRAPHS ------------------------------------------------
 
 econ_plots <-  income_p +  nzsei_p +  standardliving_p + worklife_p +
   plot_annotation(title = "Causal effects of XX on economic wellbeing"
