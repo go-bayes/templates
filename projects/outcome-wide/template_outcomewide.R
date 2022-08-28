@@ -141,15 +141,15 @@ baselinevars = c(
 # however the code is:
 
 
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
+# round(EValue::evalues.OLS(
+#   ,
+#   se = ,
+#   sd = sd,
+#   delta = delta,
+#   true = 0
+# ), 3)
+# round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
+#
 
 
 # GENERAL SET UP ----------------------------------------------------------
@@ -158,8 +158,7 @@ ylim = c(-.4, .4)  # SET AS YOU LIKE -- here, how much movement across a standar
 ylim_contrast <- c(.6, 2.5)  # SET AS YOU LIKE (FOR CONTRASTS )
 
 # mice imputed data
-df <-
-  ccu   # SET DATA -- USE THE MICE IMPUTED DATA: YOUR MICE DATA WILL HAVE A DIFFERENT NAME
+df <- ccu   # SET DATA -- USE THE MICE IMPUTED DATA: YOUR MICE DATA WILL HAVE A DIFFERENT NAME
 
 # n imputations
 m = 10
@@ -170,7 +169,7 @@ sd = 1
 
 #INDIVIDUAL SET UP FOR YOUR EXPOSURE VARIABLE  ---------------------------------------------------------------
 
-# THE EXPOSURE Variable
+# THE EXPOSURE Variable  - you will pick one that is relevant to your work. Here this example works through church attendance.
 X = "Church_lead1"
 
 #EXPOSURE VARIABLE LABEL
@@ -203,21 +202,21 @@ delta = 4 #
 
 
 ## Also use
-round(
-  EValue::evalues.OLS(
-    ESTIMATE_GOES_HERE,
-    se = GOES_HERE,
-    sd = sd,
-    delta = delta,
-    true = 0
-  ),
-  3
-)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
+# round(
+#   EValue::evalues.OLS(
+#     ESTIMATE_GOES_HERE,
+#     se = GOES_HERE,
+#     sd = sd,
+#     delta = delta,
+#     true = 0
+#   ),
+#   3
+# )
+# round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
-## BELOW THE MANY OUTCOMES!
 
-# note that many
+
+################# BELOW THE MANY OUTCOMES!  ########################################
 
 # HEALTH  INDICATORS ------------------------------------------------------------------
 
@@ -242,6 +241,15 @@ out_ct <-
   )
 out_ct
 
+
+# coef + estimate for the contrast of interest # We  will combine the coeffients
+#  into a large table, later.
+alcoholfreq_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+alcoholfreq_c
+
+
+
+## table for all contrasts (exploratory )
 alcoholfreq_t <- out_ct %>%
   slice(1:9) |>
   tibble() |>
@@ -258,8 +266,7 @@ alcoholfreq_t <- out_ct %>%
   kable_styling() %>%
   row_spec(c(f + 1),
            bold = T,
-           color = "white",
-           background = "dodgerblue") |>
+           color = "white", background = "dodgerblue") |>
   kable_minimal(full_width = F)
 
 # show table
@@ -278,9 +285,7 @@ alcoholfreq_p <-
   )
 alcoholfreq_p
 
-# coef + estimate
-alcoholfreq_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
-alcoholfreq_c
+
 
 # Alcohol.Intensity ----------------------------------------------------------
 #How many drinks containing alcohol do you have on a typical day when drinking?
@@ -302,6 +307,10 @@ out_ct <-
     x = c,
     r = r
   )
+
+# coef + estimate
+alcoholintensity_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+alcoholintensity_c
 
 alcoholintensity_t <- out_ct %>%
   slice(1:9) |>
@@ -338,9 +347,7 @@ alcoholintensity_p <-
   )
 alcoholintensity_p
 
-# coef + estimate
-alcoholintensity_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
-alcoholintensity_c
+
 
 
 
@@ -2964,7 +2971,11 @@ h_tab |>
   kable_styling() %>%
   row_spec(c(1),
            bold = T,
-           color = "black",
+          # color = "black",
+           background = "bold") |>
+  row_spec(c(2),
+           bold = T,
+         #  color = "black",
            background = "bold") |>
   kable_minimal(full_width = F)
 
