@@ -126,7 +126,7 @@ baselinevars = c(
   "Your.Personal.Relationships_z"
 )
 
-## STATEMENT OF "VANDERWEEL-EVALUE FROM TYLER
+## STATEMENT OF "VANDERWEEL-E-VALUE FROM TYLER
 
 # “With an observed risk ratio of RR = XX, an unmeasured confounder that was associated with both the outcome and the exposure by a risk ratio of XX -fold each, above and beyond the measured confounders, could explain away the estimate, but weaker joint confounder associations could not; to move the confidence interval to include the null, an unmeasured confounder that was associated with the outcome and the exposure by a risk ratio of XX -fold each could do so, but weaker joint confounder associations could not.”
 
@@ -158,6 +158,8 @@ ylim = c(-.4, .4)  # SET AS YOU LIKE -- here, how much movement across a standar
 ylim_contrast <- c(.6, 2.5)  # SET AS YOU LIKE (FOR CONTRASTS )
 
 # mice imputed data
+## THIS IS KEY, NAME THE DATA I GAVE YOU "DF"
+
 df <- ccu   # SET DATA -- USE THE MICE IMPUTED DATA: YOUR MICE DATA WILL HAVE A DIFFERENT NAME
 
 # n imputations
@@ -192,14 +194,14 @@ x =  min:max
 c = x
 
 # contrast for graphs -- absolute distance from baseline
-p = c(0, 4) #
+p = c(r, f) #
 
 # This is not really used. Only for contrast graphs with two points
 s = c(0, 1) # slot for contrast graph
 
-# Needed for EVALUES -- how much do we move on the X scale to obtain our effect?
-delta = 4 #
-
+# Needed for E-VALUES -- how much do we move on the X scale to obtain our effect?
+#delta = 4 #
+delta = abs(r-f)
 
 ## Also use
 # round(
@@ -2969,15 +2971,10 @@ h_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1),
+  row_spec(c(1,2,6),  # Bold out the lines where EVALUES do not cross zero or for ratios, 1
            bold = T,
           # color = "black",
-           background = "bold") |>
-  row_spec(c(2),
-           bold = T,
-         #  color = "black",
-           background = "bold") |>
-  kable_minimal(full_width = F)
+           background = "bold")
 
 
 
@@ -3046,7 +3043,6 @@ reflect_tab |>
 
 # TABLE SOCIAL WELLBEING --------------------------------------------------
 
-
 main = "Social wellbeing estimands / Evalues"
 social_tab <- rbind(belong_c,
                     community_c,
@@ -3098,9 +3094,7 @@ embody_plots <-
   rumination_p +
   selfcontrol_p +
   sleep_p +
-  sexualsat_p + plot_annotation(title = "Causal effects of XX on embodied wellbeing",
-                                subtitle = "xyz",
-                                tag_levels = "A") +
+  sexualsat_p + plot_annotation(title = "Causal effects of XX on embodied wellbeing", subtitle = "xyz", tag_levels = "A") +
   plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
 embody_plots

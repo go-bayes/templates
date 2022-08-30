@@ -474,3 +474,116 @@ ccf <- mice::complete(ccu, "long", inc = F)
 ## SAVE DATA
 saveh(ccf, "ccf")
 saveh(ccu, "ccu")
+
+
+
+
+# EXAMPLE DEMOGRAPHIC TABLE -----------------------------------------------
+
+
+df_crr <-  df_cr |>
+  dplyr::mutate(Volunteers= if_else(HoursCharity >0, 1, 0))
+
+df_crr<- df_cr |> dplyr::group_by(Id) |> mutate(PWI = mean(
+  c(
+    Your.Future.Security,
+    Your.Personal.Relationships,
+    Your.Health,
+    Standard.Living
+  ),
+  na.rm = TRUE
+))
+
+df_crr$Male <- factor(df_cr$Male, labels = c("No", "Yes"))
+df_crr$EthCat <-factor(df_cr$EthCat, labels = c("Euro", "Maori", "Pacific", "Asian"))
+df_crt$Believe.Spirit <-factor(df_cr$Believe.Spirit, labels = c("No", "Yes"))
+df_crt$Believe.God <-factor(df_cr$Believe.God, labels = c("No", "Yes"))
+df_crt$Employed <-factor(df_cr$Employed, labels = c("No", "Yes"))
+df_crt$Volunteers <-factor(df_crt$Volunteers, labels = c("No", "Yes"))
+df_crt$Parent <-factor(df_cr$Parent, labels = c("No", "Yes"))
+df_crt$Partner <-factor(df_cr$Partner, labels = c("No", "Yes"))
+df_crt$Retired <-factor(df_cr$retired, labels = c("No", "Yes"))
+df_crt$SemiRetired <-factor(df_cr$semiretired, labels = c("No", "Yes"))
+df_crt$Urban <-factor(df_cr$Urban, labels = c("No", "Yes"))
+df_crt$BigDoms <-factor(df_cr$BigDoms, labels = c("Buddhist", "Christian","Muslim","TheOthers"))
+df_crt$NeighbourhoodCommunity <-df_cr$community
+df_crt$MajorDenominations <-df_cr$BigDoms
+
+
+
+
+
+#and continue this way to obtain factor labels ...etc.
+
+table1::table1(
+  ~ Age +
+    BornNZ +
+    Edu +
+    Employed +
+    EthCat +
+    NZdep +
+    NZSEI13 +
+    Parent +
+    Partner +
+    Pol.Orient +
+    Male +
+    Urban,
+  data = df_crr,
+  transpose = F
+)
+
+
+# Personality
+
+
+table1::table1( ~ AGREEABLENESS +
+                  CONSCIENTIOUSNESS +
+                  EXTRAVERSION +
+                  HONESTY_HUMILITY +
+                  NEUROTICISM +
+                  OPENNESS +
+                  KESSLER6sum,
+                data = df_crr,
+                transpose = F
+)
+
+
+
+
+table1::table1( ~ LIFESAT +
+                  PWI +
+                  Respect.Self +
+                  RWA +
+                  SDO +
+                  SELF.CONTROL+
+                  SELF.ESTEEM +
+                  SFHEALTH,
+                data = df_crr,
+                transpose = F
+)
+
+# religious
+table1::table1( ~ Religion.CongregationSize +
+                  Relid +
+                  Believe.Spirit +
+                  Believe.God +
+                  Church +
+                  Religion.Prayer +
+                  Religion.Scripture +
+                  MajorDenominations,
+                data = df_crr,
+                transpose = F
+)
+
+
+# Social variables
+
+table1::table1( ~ BELONG +
+                  NeighbourhoodCommunity +
+                  SUPPORT +
+                  National.Identity +
+                  PATRIOT,
+                data = df_crr,
+                transpose = F
+)
+
