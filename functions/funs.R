@@ -248,7 +248,7 @@ plot_stglm_contrast <- function(out, ylim, main, xlab, ylab) {
 }
 
 # function for ggplot g-comp -- used occasionally
-ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, r) {
+ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, r, sub) {
   require(ggplot2)
   g1 <- out[match(p, x),]
   g1
@@ -261,7 +261,7 @@ ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, r) {
     labs(
       title = main,
      # subtitle = "Marginal predictions by g-computation",
-     subtitle = "Marginal contrasts relative to baseline by g-computation",
+      subtitle = sub,
       x = xlab,
       y = ylab
     ) +

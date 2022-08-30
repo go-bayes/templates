@@ -155,7 +155,7 @@ baselinevars = c(
 # GENERAL SET UP ----------------------------------------------------------
 
 ylim = c(-.4, .4)  # SET AS YOU LIKE -- here, how much movement across a standard deviation unit of the outcome
-ylim_contrast <- c(.6, 2.5)  # SET AS YOU LIKE (FOR CONTRASTS )
+ylim_contrast= c(0, 2)  # SET AS YOU LIKE (FOR CONTRASTS )
 
 # mice imputed data
 ## THIS IS KEY, NAME THE DATA I GAVE YOU "DF"
@@ -190,18 +190,21 @@ f = 4
 # full range of X
 x =  min:max
 
+
 # for model functions
 c = x
 
 # contrast for graphs -- absolute distance from baseline
 p = c(r, f) #
 
+
 # This is not really used. Only for contrast graphs with two points
-s = c(0, 1) # slot for contrast graph
+#s = c(0, 1) # slot for contrast graph
 
 # Needed for E-VALUES -- how much do we move on the X scale to obtain our effect?
 #delta = 4 #
 delta = abs(r-f)
+
 
 ## Also use
 # round(
@@ -227,11 +230,13 @@ delta = abs(r-f)
 Y = "Alcohol.Frequency_lead2ord_z"
 main = "Alcohol Frequency"
 ylab = "Alcohol Frequency (SD)"
-
+sub = "How often do you have a drink containing alcohol?"
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
+summary(pool(out_m))
 ## g-computation
+
 out_ct <-
   pool_stglm_contrast(
     out_m,
@@ -243,17 +248,16 @@ out_ct <-
   )
 out_ct
 
-
 # coef + estimate for the contrast of interest # We  will combine the coeffients
 #  into a large table, later.
-alcoholfreq_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+alcoholfreq_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 alcoholfreq_c
 
 
 
 ## table for all contrasts (exploratory )
 alcoholfreq_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -266,7 +270,7 @@ alcoholfreq_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white", background = "dodgerblue") |>
   kable_minimal(full_width = F)
@@ -283,8 +287,10 @@ alcoholfreq_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
+
 alcoholfreq_p
 
 
@@ -295,6 +301,7 @@ alcoholfreq_p
 Y = "Alcohol.Intensity_log_lead2_z"
 main = "Alcohol Intensity"
 ylab = "Alcohol Intensity (SD)"
+sub = "How many drinks containing alcohol do you have on a typical day when drinking?"
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -311,11 +318,11 @@ out_ct <-
   )
 
 # coef + estimate
-alcoholintensity_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+alcoholintensity_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 alcoholintensity_c
 
 alcoholintensity_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -328,7 +335,7 @@ alcoholintensity_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -345,7 +352,8 @@ alcoholintensity_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 alcoholintensity_p
 
@@ -358,10 +366,11 @@ alcoholintensity_p
 # What is your weight? (kg)
 # Kg/(m*m)
 
-
 Y = "HLTH.BMI_lead2_z"
 main = "BMI"
 ylab = "BMI (SD)"
+sub = " What is your height? (metres)\What is your weight? (kg)\nKg/(m*m)"
+
 
 # run model
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -392,7 +401,7 @@ bmi_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -407,20 +416,13 @@ bmi_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = 1,
+    sub = sub
   ) #+ expand_limits(x = 0, y = 0)
 bmi_p
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 # coef + estimate
-bmi_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+bmi_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 bmi_c
 
 
@@ -429,6 +431,7 @@ bmi_c
 Y = "Hours.Exercise_lead2_log_z"
 main = "Log Hours Exercise"
 ylab = "Log Hours Exercise (SD)"
+sub = "Hours spent … exercising/physical activity"
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -446,11 +449,11 @@ out_ct <-
 
 #contrast
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
-
+max
 excercise_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -463,7 +466,7 @@ excercise_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -480,12 +483,13 @@ exercise_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 exercise_p
 
 # coef + estimate
-exercise_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+exercise_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 exercise_c
 
 
@@ -495,6 +499,7 @@ exercise_c
 # I seem to get sick a little easier than other people.
 # I expect my health to get worse.
 
+sub = "In general, would you say your health is...\nI seem to get sick a little easier than other people.\nI expect my health to get worse."
 
 Y = "SFHEALTH_lead2_z"
 main = "SF Health"
@@ -514,11 +519,11 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 sfhealth_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -531,7 +536,7 @@ sfhealth_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -548,12 +553,13 @@ sfhealth_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 sfhealth_p
 
 # coef + estimate
-sfhealth_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+sfhealth_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 sfhealth_c
 
 
@@ -563,7 +569,7 @@ sfhealth_c
 Y = "HLTH.SleepHours_lead2_z"
 main = "Hours Sleep"
 ylab = "Hours Sleep (SD)"
-
+sub ="During the past month, on average, how many hours\nof actual sleep did you get per night?"
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -579,11 +585,11 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 sleep_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -596,7 +602,7 @@ sleep_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -613,88 +619,24 @@ sleep_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 sleep_p
 
 # coef + estimate
-sleep_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+sleep_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 sleep_c
 
 
-# sf-health ---------------------------------------------------------------
-# Short-Form Subjective Health Scale (General Health Perception Subscale)
-# In general, would you say your health is...
-# I seem to get sick a little easier than other people.
-# I expect my health to get worse.
-
-
-Y = "SFHEALTH_lead2_z"
-main = "SF Health"
-ylab = "SF Health (SD)"
-
-# regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y)
-
-## g-computation
-out_ct <-
-  pool_stglm_contrast(
-    out_m,
-    df = df,
-    m = 10,
-    X = X,
-    x = c,
-    r = r
-  )
-out_ct %>%
-  slice(f + 1) |>
-  kbl(digits = 3, "markdown")
-
-sfhealth_t <- out_ct %>%
-  slice(1:9) |>
-  tibble() |>
-  rename(
-    Contrast = row,
-    Estimate = est,
-    Std_error = se,
-    CI_hi = ui,
-    CI_lo = li
-  ) |>
-  kbl(caption = main,
-      digits = 3,
-      "html") |>
-  kable_styling() %>%
-  row_spec(c(f + 1),
-           bold = T,
-           color = "white",
-           background = "dodgerblue") |>
-  kable_minimal(full_width = F)
-# show table
-sfhealth_t
-# graph
-sfhealth_p <-
-  ggplot_stglm(
-    out_ct,
-    ylim = ylim,
-    main,
-    xlab,
-    ylab,
-    min = min,
-    p = p,
-    r = 1
-  )
-sfhealth_p
-
-# coef + estimate
-sfhealth_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
-sfhealth_c
-
 # smoker ------------------------------------------------------------------
 #Do you currently smoke?
+
 Y = "Smoker_lead2"
 family = "binomial" # could be binomial if binary utcome is rare
 main = "Smoking (RR)"
 ylab = "Smoking (Risk Ratio)"
+sub = "Do you currently smoke?"
 # clean oven
 rm(out_m)
 rm(out_ct)
@@ -717,7 +659,7 @@ out_ct <-
 # g-computation - contrasts
 #table
 smoker_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -730,7 +672,7 @@ smoker_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -745,11 +687,11 @@ smoker_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   ) + expand_limits(x = 0, y = 0)
 smoker_p
 
-out_ct
 
 # coef + estimate
 smoker_c <- vanderweelevalue_rr(out_ct, f)
@@ -760,10 +702,11 @@ smoker_c
 
 
 # body satisfaction -------------------------------------------------------
-
+# Am satisfied with the appearance, size and shape of my body.
 Y = "Bodysat_lead2_z"
 main = "Body Satisfaction"
 ylab = "Body Satisfaction (SD)"
+sub = "Am satisfied with the appearance,\nsize and shape of my body."
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -779,16 +722,16 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
-bodysat_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+bodysat_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 bodysat_c
 
 
 bodysat_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -801,7 +744,7 @@ bodysat_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -818,19 +761,10 @@ bodysat_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 bodysat_p
-
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # kessler 6 ---------------------------------------------------------------
@@ -843,13 +777,14 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 #   During the last 30 days, how often did.... you feel worthless?
 #   During the last 30 days, how often did.... you feel nervous?
 
-Y = "KESSLER6sum_lead2"
+Y = "KESSLER6sum_lead2_z"
 main = "Kessler 6 Distress"
 ylab = "Kessler 6 Distress (SD)"
+sub = "During the last 30 days, how often did....\nyou feel hopeless?\nyou feel so depressed that nothing could cheer you up?\nyou feel restless or fidgety?\nyou feel that everything was an effort?\nyou feel worthless?\nyou feel nervous?"
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
-
+summary(pool(out_m))
 ## g-computation
 out_ct <-
   pool_stglm_contrast(
@@ -860,17 +795,18 @@ out_ct <-
     x = c,
     r = r
   )
+
 out_ct %>%
-  slice(f + 1) |>
+  slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
-distress_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+distress_c <- vanderweelevalue_ols(out_ct, f - min, delta, sd)
 distress_c
-
+distress_p
 
 distress_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -883,7 +819,7 @@ distress_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -900,10 +836,10 @@ distress_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 distress_p
-
 round(EValue::evalues.OLS(
   ,
   se = ,
@@ -920,6 +856,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "HLTH.Fatigue_lead2_z"
 main = "Fatigue"
 ylab = "Fatigue (SD)"
+sub = "During the last 30 days, how often did....\nyou feel exhausted?"
 
 
 # regression
@@ -936,15 +873,16 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
-fatigue_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+fatigue_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 fatigue_c
 
+
 fatigue_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -957,7 +895,7 @@ fatigue_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -974,19 +912,10 @@ fatigue_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 fatigue_p
-ylim
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # rumination --------------------------------------------------------------
@@ -995,6 +924,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "Rumination_lead2ord_z"
 main = "Rumination"
 ylab = "Rumination (SD)"
+sub = "During the last 30 days, how often did....\nyou have negative thoughts that repeated over and over?"
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -1009,16 +939,16 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 
 # coef + estimate
-rumination_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+rumination_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 rumination_c
 
 rumination_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1031,7 +961,7 @@ rumination_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1048,20 +978,10 @@ rumination_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 rumination_p
-
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
 
 
 # self control ------------------------------------------------------------
@@ -1070,6 +990,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "SELF.CONTROL_lead2_z"
 main = "Self Control"
 ylab = "Self Control (SD)"
+sub = "In general, I have a lot of self-control.\nI wish I had more self-discipline."
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -1085,15 +1006,16 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
-selfcontrol_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+
+selfcontrol_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 selfcontrol_c
 
 selfcontrol_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1106,7 +1028,7 @@ selfcontrol_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1123,7 +1045,8 @@ selfcontrol_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 selfcontrol_p
 
@@ -1133,7 +1056,7 @@ selfcontrol_p
 Y = "SexualSatisfaction_lead2_z"
 main = "Sexual Satisfaction"
 ylab = "Sexual Satisfaction (SD)"
-
+sub = "How satisfied are you with your sex life?"
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
@@ -1148,15 +1071,15 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
-sexualsat_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+sexualsat_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 sexualsat_c
 
 sexualsat_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1169,7 +1092,7 @@ sexualsat_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1186,19 +1109,10 @@ sexualsat_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 sexualsat_p
-
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # REFLECTIVE WELL-BEING ---------------------------------------------------
@@ -1214,6 +1128,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "GRATITUDE_lead2_z"
 main = "Gratitude"
 ylab = "Gratitude (SD)"
+sub = "I have much in my life to be thankful for.\nWhen I look at the world, I don’t see much to be grateful for.\nI am grateful to a wide variety of people."
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -1229,15 +1144,15 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
-gratitude_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+gratitude_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 gratitude_c
 
 gratitude_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1250,7 +1165,7 @@ gratitude_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1267,18 +1182,10 @@ gratitude_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 gratitude_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1288,6 +1195,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "ImpermeabilityGroup_lead2_z"
 main = "Impermeability Group"
 ylab = "Impermeability Group (SD)"
+sub = "The current income gap between New Zealand Europeans and\nother ethnic groups would be very hard to change."
 
 
 # regression
@@ -1304,14 +1212,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-groupimperm_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+groupimperm_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 groupimperm_c
 
 groupimperm_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1324,7 +1232,7 @@ groupimperm_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1341,27 +1249,19 @@ groupimperm_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 groupimperm_p
 
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
-
 
 # permeability self ----------------------------------------------------------------
-#I believe I am capable, as an individual, of improving my status in society.
+#I believe I am capable, as an individual\nof improving my status in society.
 
 Y = "PermeabilityIndividual_lead2_z"
 main = "Permeability of Individual"
 ylab = "Permeability of Individual (SD)"
+sub = "I believe I am capable, as an individual,\nof improving my status in society."
 
 
 # regression
@@ -1378,15 +1278,15 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-selfperm_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+selfperm_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 selfperm_c
 
 
 selfperm_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1399,7 +1299,7 @@ selfperm_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1416,20 +1316,10 @@ selfperm_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 selfperm_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
-
 
 # life sat ----------------------------------------------------------------
 # Satisfaction with life
@@ -1439,6 +1329,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "LIFESAT_lead2_z"
 main = "Life Satisfaction"
 ylab = "Life Satisfaction (SD)"
+sub = "I am satisfied with my life.\nIn most ways my life is close to ideal."
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -1454,15 +1345,15 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-lifesat_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+lifesat_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 lifesat_c
 
 
 lifesat_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1475,7 +1366,7 @@ lifesat_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1492,19 +1383,10 @@ lifesat_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 lifesat_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
 
 
 # life meaning ------------------------------------------------------------
@@ -1512,10 +1394,10 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 # My life has a clear sense of purpose.
 # I have a good sense of what makes my life meaningful.
 
-Y = "LIFEMEANING_lead2ord_z"
+Y = "LIFEMEANING_lead2_z"
 main = "Life Meaning"
 ylab = "Life Meaning (SD)"
-
+sub = "My life has a clear sense of purpose.\nI have a good sense of what makes my life meaningful."
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -1531,15 +1413,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-meaning_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+meaning_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 meaning_c
 
-
 meaning_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1552,7 +1433,7 @@ meaning_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1569,19 +1450,10 @@ meaning_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 meaning_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
 
 # perfectionism  ----------------------------------------------------------
 # Perfectionism Discrepancy Subscale
@@ -1592,7 +1464,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "PERFECTIONISM_lead2_z"
 main = "Perfectionism"
 ylab = "Perfectionism (SD)"
-
+sub = "Doing my best never seems to be enough.\nMy performance rarely measures up to my standards.\nI am hardly ever satisfied with my performance"
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -1608,14 +1480,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-perfect_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+perfect_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 perfect_c
 
 perfect_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1628,7 +1500,7 @@ perfect_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1645,21 +1517,10 @@ perfect_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 perfect_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
-
-
 
 # PWI ---------------------------------------------------------
 #Your health.
@@ -1667,9 +1528,11 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 #Your future security.
 #Your personal relationships.
 
+
 Y = "PWI_lead2_z"
 main = "Person Wellbeing Index"
 ylab = "PWI (SD)"
+sub = "How satisfied are you with ...\nYour health.\nYour standard of living.\nYour future security.\nYour personal relationships."
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -1685,14 +1548,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-pwi_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+pwi_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 pwi_c
 
 pwi_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1705,7 +1568,7 @@ pwi_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1722,7 +1585,8 @@ pwi_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 pwi_p
 
@@ -1738,10 +1602,11 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # power dependence 1 ------------------------------------------------------
-# I do not have enough power or control over important parts of my life.
+# I do not have enough power or control over\nimportant parts of my life.
 Y = "POWERDEPENDENCE1_lead2_z"
 main = "Power Dependence 1"
 ylab = "Power Dependence 1(SD)"
+sub = "I do not have enough power or control\nover important parts of my life."
 
 
 
@@ -1759,14 +1624,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-powerdependence1_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+powerdependence1_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 powerdependence1_c
 
 powerdependence1_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1779,7 +1644,7 @@ powerdependence1_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1796,29 +1661,20 @@ powerdependence1_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 powerdependence1_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
-
 
 
 
 # power dependence 2 ------------------------------------------------------
-#Other people have too much power or control over important parts of my life.
+#Other people have too much power or control over\nimportant parts of my life.
 
 Y = "POWERDEPENDENCE2_lead2_z"
 main = "Power Dependence 2"
 ylab = "Power Dependence 2(SD)"
+sub = "Other people have too much power or control\nover important parts of my life."
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -1834,14 +1690,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-powerdependence2_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+powerdependence2_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 powerdependence2_c
 
 powerdependence2_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1854,7 +1710,7 @@ powerdependence2_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1871,20 +1727,10 @@ powerdependence2_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 powerdependence2_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
-
 
 # self esteem -------------------------------------------------------------
 # Self-esteem
@@ -1892,9 +1738,11 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 # Take a positive attitude toward myself.
 # Am inclined to feel that I am a failure.
 
+
 Y = "SELF.ESTEEM_lead2_z"
 main = "Self Esteem"
 ylab = "Self Esteem (SD)"
+sub = "On the whole am satisfied with myself.\nTake a positive attitude toward myself.\nAm inclined to feel that I am a failure."
 
 
 # regression
@@ -1911,14 +1759,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-selfesteem_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+selfesteem_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 selfesteem_c
 
 selfesteem_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1931,7 +1779,7 @@ selfesteem_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -1948,20 +1796,10 @@ selfesteem_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 selfesteem_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
-
 
 
 
@@ -1974,6 +1812,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "VENGEFUL.RUMIN_lead2_z"
 main = "Vengefulness (anti-Foregiveness)"
 ylab = "Vengefulness (anti-Foregiveness) (SD)"
+sub = "Sometimes I can't sleep because of thinking about\npast wrongs I have suffered.\nI can usually forgive and forget when someone does me wrong.\nI find myself regularly thinking about past times that I have been wronged."
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -1989,14 +1828,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-veng_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+veng_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 veng_c
 
 veng_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2009,7 +1848,7 @@ veng_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2026,18 +1865,10 @@ veng_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 veng_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -2049,6 +1880,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "Emp.WorkLifeBalance_lead2_z"
 main = "Work Life Balance"
 ylab = "Work Life Balance (SD)"
+sub = "I have a good balance between work and\nother important things in my life."
 
 
 # regression
@@ -2065,15 +1897,15 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 
-worklife_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+worklife_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 worklife_c
 
 worklife_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2086,7 +1918,7 @@ worklife_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2103,7 +1935,8 @@ worklife_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 worklife_p
 
@@ -2131,6 +1964,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "BELONG_lead2_z"
 main = "Social Belonging"
 ylab = "Social Belonging (SD)"
+sub = " Know that people in my life accept and value me.\nFeel like an outsider.\nKnow that people around me share my attitudes and beliefs."
 
 
 # regression
@@ -2147,15 +1981,15 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-belong_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+belong_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 belong_c
 
 
 belong_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2168,7 +2002,7 @@ belong_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2185,18 +2019,10 @@ belong_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 belong_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -2205,6 +2031,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "community_lead2_z"
 main = "Community"
 ylab = "Community (SD)"
+sub = "I feel a sense of community with others\nin my local neighbourhood."
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -2220,14 +2047,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-community_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+community_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 community_c
 
 community_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2240,7 +2067,7 @@ community_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2257,19 +2084,10 @@ community_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 community_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
 
 
 # national wellbeing ------------------------------------------------------
@@ -2279,9 +2097,12 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 # The social conditions in New Zealand.
 # Business in New Zealand.
 
+
 Y = "NWI_lead2_z"
 main = "National Well Being"
 ylab = "National Well Being (SD)"
+sub = "Satisfied with ...\nThe economic situation in New Zealand.\nThe social conditions in New Zealand.\nBusiness in New Zealand."
+
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -2294,17 +2115,18 @@ out_ct <-
     m = 10,
     X = X,
     x = c,
-    r = r
+    r = r,
+    sub = sub
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-nwi_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+nwi_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 nwi_c
 
 nwi_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2317,7 +2139,7 @@ nwi_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2334,19 +2156,10 @@ nwi_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 nwi_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
 
 # soc support -------------------------------------------------------------
 # Perceived social support
@@ -2357,6 +2170,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "SUPPORT_lead2_z"
 main = "Social Support"
 ylab = "Social Support (SD)"
+sub = 'There are people I can depend on to help me if I really need it.\nThere is no one I can turn to for guidance in times of stress.\nI know there are people I can turn to when I need help.'
 
 
 # regression
@@ -2373,16 +2187,16 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 
-support_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+support_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 support_c
 
 
 support_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2395,7 +2209,7 @@ support_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2412,7 +2226,8 @@ support_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 support_p
 
@@ -2430,84 +2245,75 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 #### CHARITABLE BEHAVIOURS  --------------------------------------------------
 # honesty humility --------------------------------------------------------
-
-# Mini-IPIP6 Honesty-Humility (item overlap with Psychological Entitlement)
-# Would like to be seen driving around in a very expensive car.
-# Would get a lot of pleasure from owning expensive luxury goods.
-# Feel entitled to more of everything.
-# Deserve more things in life.
-
-Y = "HONESTY_HUMILITY_lead2_z"
-main = "Honesty Humility"
-ylab = "Honesty Humility (SD)"
-
-
-# regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y)
-
-## g-computation
-out_ct <-
-  pool_stglm_contrast(
-    out_m,
-    df = df,
-    m = 10,
-    X = X,
-    x = c,
-    r = r
-  )
-out_ct %>%
-  slice(f + 1) |>
-  kbl(digits = 3, "markdown")
-
-
-humility_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
-humility_c
-
-humility_t <- out_ct %>%
-  slice(1:9) |>
-  tibble() |>
-  rename(
-    Contrast = row,
-    Estimate = est,
-    Std_error = se,
-    CI_hi = ui,
-    CI_lo = li
-  ) |>
-  kbl(caption = main,
-      digits = 3,
-      "html") |>
-  kable_styling() %>%
-  row_spec(c(f + 1),
-           bold = T,
-           color = "white",
-           background = "dodgerblue") |>
-  kable_minimal(full_width = F)
-# show table
-humility_t
-# graph
-humility_p <-
-  ggplot_stglm(
-    out_ct,
-    ylim = ylim,
-    main,
-    xlab,
-    ylab,
-    min = min,
-    p = p,
-    r = 1
-  )
-humility_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
-
+#
+# # Mini-IPIP6 Honesty-Humility (item overlap with Psychological Entitlement)
+# # Would like to be seen driving around in a very expensive car.
+# # Would get a lot of pleasure from owning expensive luxury goods.
+# # Feel entitled to more of everything.
+# # Deserve more things in life.
+# Y = "HONESTY_HUMILITY_lead2_z"
+# main = "Honesty Humility"
+# ylab = "Honesty Humility (SD)"
+# sub = "Would like to be seen driving around in a very expensive car.\nWould get a lot of pleasure from owning expensive luxury goods.\nFeel entitled to more of everything.\nDeserve more things in life."
+#
+#
+# # regression
+# out_m <- mice_gaussian(df = df, X = X, Y = Y)
+#
+# ## g-computation
+# out_ct <-
+#   pool_stglm_contrast(
+#     out_m,
+#     df = df,
+#     m = 10,
+#     X = X,
+#     x = c,
+#     r = r
+#   )
+# out_ct %>%
+#    slice( f + 1 - min) |>
+#   kbl(digits = 3, "markdown")
+#
+#
+# humility_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
+# humility_c
+#
+# humility_t <- out_ct %>%
+#   slice(1:max) |>
+#   tibble() |>
+#   rename(
+#     Contrast = row,
+#     Estimate = est,
+#     Std_error = se,
+#     CI_hi = ui,
+#     CI_lo = li
+#   ) |>
+#   kbl(caption = main,
+#       digits = 3,
+#       "html") |>
+#   kable_styling() %>%
+#   row_spec(c(f + 1 - min),
+#            bold = T,
+#            color = "white",
+#            background = "dodgerblue") |>
+#   kable_minimal(full_width = F)
+# # show table
+# humility_t
+# # graph
+# humility_p <-
+#   ggplot_stglm(
+#     out_ct,
+#     ylim = ylim,
+#     main,
+#     xlab,
+#     ylab,
+#     min = min,
+#     p = p,
+#     r = r,
+#     sub = sub
+#   )
+# humility_p
+#
 
 # charity donate ----------------------------------------------------------
 #How much money have you donated to charity in the last year?
@@ -2515,7 +2321,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 Y = "CharityDonate_log_lead2_z"
 main = "Charity Donations (annual)"
 ylab = "Charity Donations (annual)"
-
+sub = "How much money have you donated to charity in the last year?"
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -2531,14 +2337,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-charity_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+charity_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 charity_c
 
 charity_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2551,7 +2357,7 @@ charity_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2568,19 +2374,10 @@ charity_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 charity_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
 
 
 # volunteers --------------------------------------------------------------
@@ -2591,6 +2388,7 @@ Y = "Volunteers_lead2"
 main = "Volunteer (RR)"
 ylab = "Volunteer (Risk Ratio)"
 family = "poisson" # binary outcome not rare
+sub = "Hours spent … voluntary/charitable work"
 # clean oven
 rm(out_m)
 rm(out_ct)
@@ -2617,7 +2415,7 @@ volunteers_c
 
 
 volunteers_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2630,7 +2428,7 @@ volunteers_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2639,14 +2437,15 @@ volunteers_t
 volunteers_p <-
   ggplot_stglm(
     out_ct,
-    ylim = c(.9, 2),
+    ylim = ylim_contrast,
     main,
     xlab,
     ylab,
     min = min,
     p = p,
-    r = 1
-  )
+    r = r,
+    sub = sub
+  ) +  expand_limits(x = 0, y = 0)
 volunteers_p
 
 #round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
@@ -2655,10 +2454,11 @@ volunteers_p
 
 
 # log household income --------------------------------------------------------------
+# Please estimate your total household income (before tax) for the last year.
 Y = "income_lead2_log_z"
 main = "Log Income"
 ylab = "Log Income (SD)"
-
+sub = "Please estimate your total household income (before tax) for the last year."
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
@@ -2673,15 +2473,15 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-income_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+income_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 income_c
 
 
 income_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2694,7 +2494,7 @@ income_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2711,7 +2511,8 @@ income_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 income_p
 
@@ -2724,6 +2525,7 @@ Y = "HomeOwner_lead2"
 main = "Home Owner (RR)"
 ylab = "Home Owner (Risk Ratio)"
 family = "poisson" # binary outcome not rare
+sub = "Do you own your own home? (either partly or fully owned)"
 # clean oven
 rm(out_m)
 rm(out_ct)
@@ -2750,7 +2552,7 @@ homeowner_c
 
 
 homeowner_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2763,7 +2565,7 @@ homeowner_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2772,25 +2574,16 @@ homeowner_t
 homeowner_p <-
   ggplot_stglm(
     out_ct,
-    ylim = c(.9, 2),
+    ylim = ylim_contrast,
     main,
     xlab,
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 homeowner_p
-
-#round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-
-
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4) |>
-  kbl(caption = main,
-      digits = 3,
-      "html") |>
-  kable_styling() %>%
-  kable_minimal(full_width = F)
 
 
 
@@ -2804,6 +2597,7 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4) |>
 Y = "NZSEI13_lead2_10_z"
 main = "Occupational Status/10"
 ylab = "Occupational Status/10"
+sub = "NZ Socio-economic index 2013: Occupational Prestige"
 
 
 # regression
@@ -2820,14 +2614,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-nzsei_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+nzsei_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 nzsei_c
 
 nzsei_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2840,7 +2634,7 @@ nzsei_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2857,19 +2651,10 @@ nzsei_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 nzsei_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
 
 # stand living ------------------------------------------------------------
 # Part of pwi
@@ -2879,10 +2664,10 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 # Your future security.
 # Your personal relationships.
 
-Y = "Standard.Living_lead2ord_z"
+Y = "Standard.Living_lead2_z"
 main = "Standard Living"
 ylab = "Standard Living (SD)"
-
+sub  = "Your standard of living."
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
@@ -2897,14 +2682,14 @@ out_ct <-
     r = r
   )
 out_ct %>%
-  slice(f + 1) |>
+   slice( f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-standardliving_c <- vanderweelevalue_ols(out_ct, f, delta, sd)
+standardliving_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 standardliving_c
 
 standardliving_t <- out_ct %>%
-  slice(1:9) |>
+  slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2917,7 +2702,7 @@ standardliving_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1),
+  row_spec(c(f + 1 - min),
            bold = T,
            color = "white",
            background = "dodgerblue") |>
@@ -2934,20 +2719,10 @@ standardliving_p <-
     ylab,
     min = min,
     p = p,
-    r = 1
+    r = r,
+    sub = sub
   )
 standardliving_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
-
 
 ## TABLE HEALTH
 
@@ -2961,7 +2736,6 @@ h_tab <- rbind(
   bmi_c,
   exercise_c,
   sfhealth_c,
-  selfcontrol_c +
     sleep_c,
   smoker_c
 )
@@ -2971,7 +2745,7 @@ h_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1,2,6),  # Bold out the lines where EVALUES do not cross zero or for ratios, 1
+  row_spec(c(1,2),  # Bold out the lines where EVALUES do not cross zero or for ratios, 1
            bold = T,
           # color = "black",
            background = "bold")
@@ -2985,6 +2759,7 @@ embody_tab <- rbind(bodysat_c,
                     distress_c,
                     fatigue_c,
                     rumination_c,
+                    selfcontrol_c,
                     sleep_c,
                     sexualsat_c)
 #
@@ -3094,7 +2869,8 @@ embody_plots <-
   rumination_p +
   selfcontrol_p +
   sleep_p +
-  sexualsat_p + plot_annotation(title = "Causal effects of XX on embodied wellbeing", subtitle = "xyz", tag_levels = "A") +
+  sexualsat_p + plot_annotation(title = "Causal effects of XX on embodied wellbeing", #subtitle = "xyz",
+                                tag_levels = "A") +
   plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
 embody_plots
@@ -3102,8 +2878,8 @@ embody_plots
 ggsave(
   embody_plots,
   path = here::here(here::here("figs", "examples")),
-  width = 16,
-  height = 9,
+  width = 15
+  height = 12,
   units = "in",
   filename = "embody_plots.jpg",
   device = 'jpeg',
@@ -3121,7 +2897,7 @@ health_plots <- alcoholfreq_p +
   smoker_p +
   sfhealth_p +
   plot_annotation(title = "Causal effects of XX on health outcomes",
-                  subtitle = "xyz",
+                 # subtitle = "xyz",
                   tag_levels = "A") + plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
 # view
@@ -3129,11 +2905,12 @@ health_plots
 
 #save
 
+
 ggsave(
   health_plots,
   path = here::here(here::here("figs", "examples")),
-  width = 16,
-  height = 9,
+  width = 15
+  height = 12,
   units = "in",
   filename = "health_plots.jpg",
   device = 'jpeg',
@@ -3160,7 +2937,8 @@ reflective_plots <- gratitude_p +
   selfesteem_p +
   veng_p +
   plot_annotation(title = "Causal effects of XX on reflective wellbeing",
-                  subtitle = "xyz") +
+                #  subtitle = "xyz"
+                  ) +
   plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
 # view
@@ -3171,8 +2949,8 @@ reflective_plots
 ggsave(
   reflective_plots,
   path = here::here(here::here("figs", "examples")),
-  width = 16,
-  height = 9,
+  width = 15
+  height = 12,
   units = "in",
   filename = "reflective_plots.jpg",
   device = 'jpeg',
@@ -3186,7 +2964,8 @@ social_plots <- belong_p +
   community_p +
   nwi_p +
   support_p + plot_annotation(title = "Causal effects of XX on social wellbeing"
-                              subtitle = "xyz") +
+                             # subtitle = "xyz"
+                              ) +
   plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
 # view
@@ -3195,8 +2974,8 @@ social_plots
 ggsave(
   social_plots,
   path = here::here(here::here("figs", "examples")),
-  width = 16,
-  height = 9,
+  width = 15
+  height = 12,
   units = "in",
   filename = "social_plots.jpg",
   device = 'jpeg',
@@ -3219,7 +2998,8 @@ econ_plots <-
   worklife_p +
   volunteers_p +
   plot_annotation(title = "Causal effects of XX on economic wellbeing",
-                  subtitle = "xyz") +
+                #  subtitle = "xyz"
+                  ) +
   plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
 # view
@@ -3228,8 +3008,8 @@ econ_plots
 ggsave(
   econ_plots,
   path = here::here(here::here("figs", "examples")),
-  width = 16,
-  height = 9,
+  width = 15
+  height = 12,
   units = "in",
   filename = "econ_plots.jpg",
   device = 'jpeg',
@@ -3316,7 +3096,7 @@ dev.off()
 #   kbl(digits = 3, "markdown")
 #
 # humility_t <- out_ct %>%
-#   slice(1:9) |>
+#   slice(1:max) |>
 #   tibble() |>
 #   rename(Contrast = row,
 #          Estimate = est,
