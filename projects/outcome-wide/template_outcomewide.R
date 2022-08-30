@@ -69,6 +69,7 @@ baselinevars = c(
   "Believe.God_z",
   "Believe.Spirit_z",
   "BELONG_z",
+  "Bigger_Doms",  # need to re-impute for my students to include this
   "CharityDonate_log_z",
   "ChildrenNum_z",
   "Church_z",
@@ -79,7 +80,7 @@ baselinevars = c(
   "GRATITUDE_z",
   "HomeOwner_z",
   "Hours.Exercise_log_z",
-  "Hours.Work_z",
+  "Hours.Work_10_z",
   "HLTH.BMI_z",
   "HLTH.Disability_z",
   "HLTH.Fatigue_z",
@@ -100,6 +101,7 @@ baselinevars = c(
   "Pol.Orient_z",
   "POWERDEPENDENCE1_z",
   "POWERDEPENDENCE2_z",
+ # "PWI_z",
   "Relid_z",
   "Church_z",
   "Religion.Prayer2_z",
@@ -840,14 +842,6 @@ distress_p <-
     sub = sub
   )
 distress_p
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 # fatigue -----------------------------------------------------------------
@@ -1532,7 +1526,7 @@ perfect_p
 Y = "PWI_lead2_z"
 main = "Person Wellbeing Index"
 ylab = "PWI (SD)"
-sub = "How satisfied are you with ...\nYour health.\nYour standard of living.\nYour future security.\nYour personal relationships."
+sub = "Satisfied with...\nYour health.\nYour standard of living.\nYour future security.\nYour personal relationships."
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -1589,15 +1583,6 @@ pwi_p <-
     sub = sub
   )
 pwi_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -1940,16 +1925,6 @@ worklife_p <-
   )
 worklife_p
 
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
-
-
 
 # SOCIAL CONNECTION AND BELONGING -----------------------------------------
 
@@ -2096,7 +2071,7 @@ community_p
 # The economic situation in New Zealand.
 # The social conditions in New Zealand.
 # Business in New Zealand.
-
+#Please rate your level of satisfaction with the following aspects of your life and New Zealand.
 
 Y = "NWI_lead2_z"
 main = "National Well Being"
@@ -2667,7 +2642,7 @@ nzsei_p
 Y = "Standard.Living_lead2_z"
 main = "Standard Living"
 ylab = "Standard Living (SD)"
-sub  = "Your standard of living."
+sub  = "Satisfied with ...Your standard of living."
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
@@ -2745,7 +2720,7 @@ h_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1,2),  # Bold out the lines where EVALUES do not cross zero or for ratios, 1
+  row_spec(c(1),  # Bold out the lines where EVALUES do not cross zero or for ratios, 1
            bold = T,
           # color = "black",
            background = "bold")
@@ -2800,15 +2775,7 @@ reflect_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(5),
-           bold = T,
-           color = "black",
-           background = "bold") |>
-  row_spec(c(7),
-           bold = T,
-           color = "black",
-           background = "bold") |>
-  row_spec(c(11),
+  row_spec(c(7,11),
            bold = T,
            color = "black",
            background = "bold") |>

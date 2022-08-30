@@ -2,10 +2,6 @@
 
 # set up digits
 options(scipen = 999)
-library("fs")
-library("devtools")
-library("here")
-
 # read libraries
 source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/libs.R")
 
@@ -18,9 +14,7 @@ pull_path <- here::here("data", my_data)
 
 dff <- readRDS(pull_path)
 
-
 # Worked example selecting waves 2018 -- 2020 with exposure year as 2019
-
 
 tab_in <- dff %>%
   dplyr::mutate(Euro = if_else(EthCat == 1, 1, 0)) %>%
@@ -82,6 +76,7 @@ df_cr <- tab_in %>%
     Male,
     Edu,
     EthCat,
+    Bigger_Doms,
     AGREEABLENESS,
     CONSCIENTIOUSNESS,
     EXTRAVERSION,
@@ -174,7 +169,8 @@ df_cr <- tab_in %>%
   ) %>%
   dplyr::rename(community = SWB.SoC01) %>%
   dplyr::mutate(Edu = as.numeric(Edu)) %>%
-  dplyr::mutate(across(!c(Id, Wave), ~ as.numeric(.x))) %>% # make factors numeric for easy of processing
+ dplyr::mutate(across(!c(Id, Wave, Bigger_Doms), ~ as.numeric(.x))) %>% # make factors numeric for easy of processing
+ # dplyr::mutate(across(!c(Id, Wave), ~ as.numeric(.x))) %>% # make factors numeric for easy of processing
   arrange(Id, Wave) %>%
   dplyr::mutate(Edu = as.numeric(Edu),) %>%
   rename(Church = Religion.Church2) |>
@@ -226,7 +222,6 @@ df_cr <- tab_in %>%
       LIFEMEANING,
       LIFESAT,
       #  lost_job,
-      Male,
       NWI,
       # NZdep,
       NZSEI13,
@@ -317,7 +312,11 @@ saveh(df_cr, "df_cr")
 library(mice)
 
 mice_cc <- df_cr %>%
-  dplyr::select(-c(Wave, Id))  # won't otherwise run
+  dplyr::mutate(across(!c(Id, Wave), ~ as.numeric(.x))) %>%
+  #  mutate(across(where(is.double), as.numeric)) |>
+  dplyr::select(-c(Wave, Id)) |> data.frame()
+
+
 
 library(naniar)
 naniar::gg_miss_var(mice_cc)
@@ -331,7 +330,7 @@ mice:::find.collinear(mice_cc)
 mice_cc <- mice::mice(mice_cc,  seed = 0, m = 10)
 
 # save
-saveh(mice_cc, "mice_cc")
+saveh(mice_cc, "mice_church")
 # checks
 outlist2 <-
   row.names(mice_cc)[mice_cc$outflux < 0.5]
@@ -341,7 +340,7 @@ length(outlist2)
 head(mice_cc$loggedEvents, 10)
 
 # read
-mice_cc <- readh("mice_cc")
+mice_cc <- readh("mice_church")
 
 # we create two completed data sets -- the one without the missing data will be useful for
 # determing causal contrasts -- which we'll describe below.
@@ -453,7 +452,9 @@ cc_l2 <- cc_l %>%
   dplyr::mutate(KESSLER6sum_lead2 = round(as.integer(KESSLER6sum_lead2, 0))) %>%
   dplyr::mutate(across(where(is.numeric), ~ scale(.x), .names = "{col}_z")) %>%
   select(-c(.imp_z, .id_z)) %>%
-  dplyr::mutate(EthCat = as.factor(EthCat)) # labels = c("Euro", "Maori", "Pacific", "Asian")
+  dplyr::mutate(EthCat = as.factor(EthCat)) |>  # labels = c("Euro", "Maori", "Pacific", "Asian")
+  dplyr::mutate(Bigger_Doms = as.factor(Bigger_Doms)) |>   droplevels() # labels = c("Euro", "Maori", "Pacific", "Asian")
+
 
 # Check
 # cc_l2 %>%
