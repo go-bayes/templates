@@ -302,7 +302,7 @@ df_cr <- tab_in %>%
   mutate(across(where(is.double), as.numeric)) %>%
   arrange(Id)
 
-
+df_cr$Bigger_Doms
 # save
 saveh(df_cr, "df_cr")
 # MICE --------------------------------------------------------------------
@@ -315,7 +315,6 @@ mice_cc <- df_cr %>%
   dplyr::mutate(across(!c(Id, Wave), ~ as.numeric(.x))) %>%
   #  mutate(across(where(is.double), as.numeric)) |>
   dplyr::select(-c(Wave, Id)) |> data.frame()
-
 
 
 library(naniar)

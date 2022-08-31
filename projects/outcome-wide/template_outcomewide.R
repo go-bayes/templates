@@ -69,7 +69,7 @@ baselinevars = c(
   "Believe.God_z",
   "Believe.Spirit_z",
   "BELONG_z",
-  "Bigger_Doms",  # need to re-impute for my students to include this
+  #  "Bigger_Doms",  # need to re-impute for my students to include this
   "CharityDonate_log_z",
   "ChildrenNum_z",
   "Church_z",
@@ -101,7 +101,7 @@ baselinevars = c(
   "Pol.Orient_z",
   "POWERDEPENDENCE1_z",
   "POWERDEPENDENCE2_z",
- # "PWI_z",
+  # "PWI_z",
   "Relid_z",
   "Church_z",
   "Religion.Prayer2_z",
@@ -157,12 +157,13 @@ baselinevars = c(
 # GENERAL SET UP ----------------------------------------------------------
 
 ylim = c(-.4, .4)  # SET AS YOU LIKE -- here, how much movement across a standard deviation unit of the outcome
-ylim_contrast= c(0, 2)  # SET AS YOU LIKE (FOR CONTRASTS )
+ylim_contrast = c(0, 2)  # SET AS YOU LIKE (FOR CONTRASTS )
 
 # mice imputed data
 ## THIS IS KEY, NAME THE DATA I GAVE YOU "DF"
 
-df <- ccu   # SET DATA -- USE THE MICE IMPUTED DATA: YOUR MICE DATA WILL HAVE A DIFFERENT NAME
+df <-
+  ccu   # SET DATA -- USE THE MICE IMPUTED DATA: YOUR MICE DATA WILL HAVE A DIFFERENT NAME
 
 # n imputations
 m = 10
@@ -205,7 +206,7 @@ p = c(r, f) #
 
 # Needed for E-VALUES -- how much do we move on the X scale to obtain our effect?
 #delta = 4 #
-delta = abs(r-f)
+delta = abs(r - f)
 
 
 ## Also use
@@ -274,7 +275,8 @@ alcoholfreq_t <- out_ct %>%
   kable_styling() %>%
   row_spec(c(f + 1 - min),
            bold = T,
-           color = "white", background = "dodgerblue") |>
+           color = "white",
+           background = "dodgerblue") |>
   kable_minimal(full_width = F)
 
 # show table
@@ -289,7 +291,6 @@ alcoholfreq_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 
@@ -320,7 +321,8 @@ out_ct <-
   )
 
 # coef + estimate
-alcoholintensity_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
+alcoholintensity_c <-
+  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 alcoholintensity_c
 
 alcoholintensity_t <- out_ct %>%
@@ -354,7 +356,6 @@ alcoholintensity_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 alcoholintensity_p
@@ -418,7 +419,6 @@ bmi_p <-
     ylab,
     min = min,
     p = p,
-    r = 1,
     sub = sub
   ) #+ expand_limits(x = 0, y = 0)
 bmi_p
@@ -451,7 +451,7 @@ out_ct <-
 
 #contrast
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 max
 excercise_t <- out_ct %>%
@@ -485,7 +485,6 @@ exercise_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 exercise_p
@@ -521,7 +520,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 sfhealth_t <- out_ct %>%
@@ -555,7 +554,6 @@ sfhealth_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 sfhealth_p
@@ -571,7 +569,7 @@ sfhealth_c
 Y = "HLTH.SleepHours_lead2_z"
 main = "Hours Sleep"
 ylab = "Hours Sleep (SD)"
-sub ="During the past month, on average, how many hours\nof actual sleep did you get per night?"
+sub = "During the past month, on average, how many hours\nof actual sleep did you get per night?"
 
 # regression
 out_m <- mice_gaussian(df = df, X = X, Y = Y)
@@ -587,7 +585,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 sleep_t <- out_ct %>%
@@ -621,7 +619,6 @@ sleep_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 sleep_p
@@ -689,7 +686,6 @@ smoker_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   ) + expand_limits(x = 0, y = 0)
 smoker_p
@@ -724,7 +720,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -763,7 +759,6 @@ bodysat_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 bodysat_p
@@ -799,7 +794,7 @@ out_ct <-
   )
 
 out_ct %>%
-  slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -838,7 +833,6 @@ distress_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 distress_p
@@ -867,7 +861,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -906,7 +900,6 @@ fatigue_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 fatigue_p
@@ -933,7 +926,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 
@@ -972,7 +965,6 @@ rumination_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 rumination_p
@@ -1000,7 +992,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -1039,7 +1031,6 @@ selfcontrol_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 selfcontrol_p
@@ -1065,7 +1056,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -1103,7 +1094,6 @@ sexualsat_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 sexualsat_p
@@ -1138,7 +1128,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 # coef + estimate
@@ -1176,7 +1166,6 @@ gratitude_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 gratitude_p
@@ -1206,7 +1195,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 groupimperm_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -1243,7 +1232,6 @@ groupimperm_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 groupimperm_p
@@ -1272,7 +1260,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 selfperm_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -1310,7 +1298,6 @@ selfperm_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 selfperm_p
@@ -1339,7 +1326,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 lifesat_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -1377,7 +1364,6 @@ lifesat_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 lifesat_p
@@ -1407,7 +1393,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 meaning_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -1444,7 +1430,6 @@ meaning_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 meaning_p
@@ -1474,7 +1459,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 perfect_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -1511,7 +1496,6 @@ perfect_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 perfect_p
@@ -1542,7 +1526,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 pwi_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -1579,7 +1563,6 @@ pwi_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 pwi_p
@@ -1609,10 +1592,11 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-powerdependence1_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
+powerdependence1_c <-
+  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 powerdependence1_c
 
 powerdependence1_t <- out_ct %>%
@@ -1646,7 +1630,6 @@ powerdependence1_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 powerdependence1_p
@@ -1675,10 +1658,11 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-powerdependence2_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
+powerdependence2_c <-
+  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 powerdependence2_c
 
 powerdependence2_t <- out_ct %>%
@@ -1712,7 +1696,6 @@ powerdependence2_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 powerdependence2_p
@@ -1744,7 +1727,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 selfesteem_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -1781,7 +1764,6 @@ selfesteem_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 selfesteem_p
@@ -1813,7 +1795,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 veng_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -1850,7 +1832,6 @@ veng_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 veng_p
@@ -1882,7 +1863,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 
@@ -1920,7 +1901,6 @@ worklife_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 worklife_p
@@ -1956,7 +1936,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 belong_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -1994,7 +1974,6 @@ belong_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 belong_p
@@ -2022,7 +2001,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 community_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -2059,13 +2038,12 @@ community_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 community_p
 
 
-# national wellbeing ------------------------------------------------------
+# NWI national wellbeing ------------------------------------------------------
 
 # National Wellbeing Index
 # The economic situation in New Zealand.
@@ -2090,11 +2068,10 @@ out_ct <-
     m = 10,
     X = X,
     x = c,
-    r = r,
-    sub = sub
+    r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 nwi_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -2131,7 +2108,6 @@ nwi_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 nwi_p
@@ -2162,7 +2138,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 
@@ -2201,19 +2177,9 @@ support_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 support_p
-
-round(EValue::evalues.OLS(
-  ,
-  se = ,
-  sd = sd,
-  delta = delta,
-  true = 0
-), 3)
-round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 
 
 
@@ -2284,7 +2250,6 @@ round(EValue::evalues.RR(, lo =  , hi = , true = 1), 4)
 #     ylab,
 #     min = min,
 #     p = p,
-#     r = r,
 #     sub = sub
 #   )
 # humility_p
@@ -2312,7 +2277,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 charity_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -2349,7 +2314,6 @@ charity_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 charity_p
@@ -2418,13 +2382,9 @@ volunteers_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   ) +  expand_limits(x = 0, y = 0)
 volunteers_p
-
-#round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
-
 
 
 
@@ -2448,7 +2408,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 income_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -2486,7 +2446,6 @@ income_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 income_p
@@ -2555,7 +2514,6 @@ homeowner_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 homeowner_p
@@ -2589,7 +2547,7 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
 nzsei_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
@@ -2626,7 +2584,6 @@ nzsei_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 nzsei_p
@@ -2657,10 +2614,11 @@ out_ct <-
     r = r
   )
 out_ct %>%
-   slice( f + 1 - min) |>
+  slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-standardliving_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
+standardliving_c <-
+  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 standardliving_c
 
 standardliving_t <- out_ct %>%
@@ -2694,7 +2652,6 @@ standardliving_p <-
     ylab,
     min = min,
     p = p,
-    r = r,
     sub = sub
   )
 standardliving_p
@@ -2705,15 +2662,13 @@ standardliving_p
 
 
 main = "Health outcome estimands / Evalues"
-h_tab <- rbind(
-  alcoholfreq_c,
-  alcoholintensity_c,
-  bmi_c,
-  exercise_c,
-  sfhealth_c,
-    sleep_c,
-  smoker_c
-)
+h_tab <- rbind(alcoholfreq_c,
+               alcoholintensity_c,
+               bmi_c,
+               exercise_c,
+               sfhealth_c,
+               sleep_c,
+               smoker_c)
 
 h_tab |>
   kbl(caption = main,
@@ -2722,7 +2677,7 @@ h_tab |>
   kable_styling() %>%
   row_spec(c(1),  # Bold out the lines where EVALUES do not cross zero or for ratios, 1
            bold = T,
-          # color = "black",
+           # color = "black",
            background = "bold")
 
 
@@ -2730,13 +2685,16 @@ h_tab |>
 # TABLE EMBODIED ----------------------------------------------------------
 
 main = "Embodied wellbeing estimands / Evalues"
-embody_tab <- rbind(bodysat_c,
-                    distress_c,
-                    fatigue_c,
-                    rumination_c,
-                    selfcontrol_c,
-                    sleep_c,
-                    sexualsat_c)
+embody_tab <- rbind(
+  bodysat_c,
+  distress_c,
+  exercise_c,
+  fatigue_c,
+  rumination_c,
+  selfcontrol_c,
+  sleep_c,
+  sexualsat_c
+)
 #
 embody_tab |>
   kbl(caption = main,
@@ -2775,7 +2733,7 @@ reflect_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(7,11),
+  row_spec(c(7, 11),
            bold = T,
            color = "black",
            background = "bold") |>
@@ -2800,31 +2758,35 @@ social_tab |>
            bold = T,
            color = "black",
            background = "bold") |>
-  row_spec(c(4),
-           bold = T,
-           color = "black",
-           background = "bold") |>
   kable_minimal(full_width = F)
 
 
 # TABLE ECONOMIC WELLBEING and Charity ------------------------------------------------
 
 main = "Economic wellbeing estimands / Evalues"
-econ_tab <- rbind(income_c,
+econ_tab <- rbind(
+  income_c,
   charity_c,
   homeowner_c,
   nzsei_c,
   standardliving_c,
   worklife_c,
-  volunteers_c)
+  volunteers_c
+)
 
 econ_tab |>
   kbl(caption = main,
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(2), bold = T, color = "black", background = "bold") |>
-  row_spec(c(7), bold = T, color = "black", background = "bold") |>
+  row_spec(c(2),
+           bold = T,
+           color = "black",
+           background = "bold") |>
+  row_spec(c(7),
+           bold = T,
+           color = "black",
+           background = "bold") |>
   kable_minimal(full_width = F)
 
 # GRAPHS EMBODIED --------------------------------------------
@@ -2845,7 +2807,7 @@ embody_plots
 ggsave(
   embody_plots,
   path = here::here(here::here("figs", "examples")),
-  width = 15
+  width = 15,
   height = 12,
   units = "in",
   filename = "embody_plots.jpg",
@@ -2864,7 +2826,7 @@ health_plots <- alcoholfreq_p +
   smoker_p +
   sfhealth_p +
   plot_annotation(title = "Causal effects of XX on health outcomes",
-                 # subtitle = "xyz",
+                  # subtitle = "xyz",
                   tag_levels = "A") + plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
 # view
@@ -2876,7 +2838,7 @@ health_plots
 ggsave(
   health_plots,
   path = here::here(here::here("figs", "examples")),
-  width = 15
+  width = 15,
   height = 12,
   units = "in",
   filename = "health_plots.jpg",
@@ -2903,12 +2865,9 @@ reflective_plots <- gratitude_p +
   powerdependence2_p +
   selfesteem_p +
   veng_p +
-  plot_annotation(title = "Causal effects of XX on reflective wellbeing",
-                #  subtitle = "xyz"
-                  ) +
-  plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
+  plot_annotation(title = "Causal effects of XX on reflective wellbeing")
+plot_layout(guides = 'collect')
 
-# view
 reflective_plots
 
 # save
@@ -2916,7 +2875,7 @@ reflective_plots
 ggsave(
   reflective_plots,
   path = here::here(here::here("figs", "examples")),
-  width = 15
+  width = 15,
   height = 12,
   units = "in",
   filename = "reflective_plots.jpg",
@@ -2930,18 +2889,15 @@ ggsave(
 social_plots <- belong_p +
   community_p +
   nwi_p +
-  support_p + plot_annotation(title = "Causal effects of XX on social wellbeing"
-                             # subtitle = "xyz"
-                              ) +
+  support_p + plot_annotation(title = "Causal effects of XX on social wellbeing") +
   plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
-# view
 social_plots
 
 ggsave(
   social_plots,
   path = here::here(here::here("figs", "examples")),
-  width = 15
+  width = 15,
   height = 12,
   units = "in",
   filename = "social_plots.jpg",
@@ -2964,9 +2920,8 @@ econ_plots <-
   standardliving_p +
   worklife_p +
   volunteers_p +
-  plot_annotation(title = "Causal effects of XX on economic wellbeing",
-                #  subtitle = "xyz"
-                  ) +
+  plot_annotation(title = "Causal effects of XX on economic wellbeing") +
+
   plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
 # view
@@ -2975,7 +2930,7 @@ econ_plots
 ggsave(
   econ_plots,
   path = here::here(here::here("figs", "examples")),
-  width = 15
+  width = 15,
   height = 12,
   units = "in",
   filename = "econ_plots.jpg",

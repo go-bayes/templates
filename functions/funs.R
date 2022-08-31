@@ -28,7 +28,7 @@ push_figs <- here::here("figs")
 ## function for saving
 saveh <- function(df, name) {
   x = df
-  saveRDS( x,  here::here(push_mods,  paste0(name, '')))
+  saveRDS(x,  here::here(push_mods,  paste0(name, '')))
 }
 
 
@@ -110,15 +110,23 @@ plot_stglm <- function(out, ylim, main, xlab, ylab) {
 
 pool_stglm_contrast <- function(out, df, m, x, X, r) {
   nx <- length(x)
-  est.all <- matrix(nrow=nx, ncol=m)
-  var.all <- matrix(nrow=nx, ncol=m)
-  for(i in 1:m){
-    g.comp <- stdGlm(fit=out$analyses[[i]], data=complete(df, i), X= X, x=x)
-    ss <- summary(object=g.comp, contrast="difference", reference=r)
+  est.all <- matrix(nrow = nx, ncol = m)
+  var.all <- matrix(nrow = nx, ncol = m)
+  for (i in 1:m) {
+    g.comp <-
+      stdGlm(
+        fit = out$analyses[[i]],
+        data = complete(df, i),
+        X = X,
+        x = x
+      )
+    ss <- summary(object = g.comp,
+                  contrast = "difference",
+                  reference = r)
     #est.all[, i] <- g.comp$est
     est.all[, i] <- ss$est.table[, "Estimate"]
     #var.all[, i] <- diag(g.comp$vcov)
-    var.all[, i] <- ss$est.table[, "Std. Error"]^2
+    var.all[, i] <- ss$est.table[, "Std. Error"] ^ 2
   }
 
   #estimate
@@ -128,16 +136,16 @@ pool_stglm_contrast <- function(out, df, m, x, X, r) {
   W <- rowMeans(var.all)
 
   #between-variance
-  B <- apply(X=est.all, MARGIN=1, FUN=var)
+  B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
   #total variance
-  var <- W+(1+1/m)*B
+  var <- W + (1 + 1 / m) * B
 
   #total standard error
   se <- sqrt(var)
 
   #confidence intervals
-  ci <- cbind(est-1.96*se, est+1.96*se)
+  ci <- cbind(est - 1.96 * se, est + 1.96 * se)
 
   # lower interval
   ui <- est + (1.96 * se)
@@ -154,15 +162,23 @@ pool_stglm_contrast <- function(out, df, m, x, X, r) {
 
 pool_stglm_contrast_ratio <- function(out, df, m, x, X, r) {
   nx <- length(x)
-  est.all <- matrix(nrow=nx, ncol=m)
-  var.all <- matrix(nrow=nx, ncol=m)
-  for(i in 1:m){
-    g.comp <- stdGlm(fit=out$analyses[[i]], data=complete(df, i), X= X, x=x)
-    ss <- summary(object=g.comp, contrast="ratio", reference=r)
+  est.all <- matrix(nrow = nx, ncol = m)
+  var.all <- matrix(nrow = nx, ncol = m)
+  for (i in 1:m) {
+    g.comp <-
+      stdGlm(
+        fit = out$analyses[[i]],
+        data = complete(df, i),
+        X = X,
+        x = x
+      )
+    ss <- summary(object = g.comp,
+                  contrast = "ratio",
+                  reference = r)
     #est.all[, i] <- g.comp$est
     est.all[, i] <- ss$est.table[, "Estimate"]
     #var.all[, i] <- diag(g.comp$vcov)
-    var.all[, i] <- ss$est.table[, "Std. Error"]^2
+    var.all[, i] <- ss$est.table[, "Std. Error"] ^ 2
   }
 
   #estimate
@@ -172,16 +188,16 @@ pool_stglm_contrast_ratio <- function(out, df, m, x, X, r) {
   W <- rowMeans(var.all)
 
   #between-variance
-  B <- apply(X=est.all, MARGIN=1, FUN=var)
+  B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
   #total variance
-  var <- W+(1+1/m)*B
+  var <- W + (1 + 1 / m) * B
 
   #total standard error
   se <- sqrt(var)
 
   #confidence intervals
-  ci <- cbind(est-1.96*se, est+1.96*se)
+  ci <- cbind(est - 1.96 * se, est + 1.96 * se)
 
   # lower interval
   ui <- est + (1.96 * se)
@@ -207,8 +223,8 @@ plot_stglm <- function(out, ylim, main, xlab, ylab) {
     xlab = xlab,
     ylab = ylab,
     col.main = "black",
-    sub="Marginal predictions by g-computation",
-    col.sub="black",
+    sub = "Marginal predictions by g-computation",
+    col.sub = "black",
     col.lab = "black",
     cex.lab = 0.75
   )
@@ -233,8 +249,8 @@ plot_stglm_contrast <- function(out, ylim, main, xlab, ylab) {
     xlab = xlab,
     ylab = ylab,
     col.main = "black",
-    sub="Marginal contrasts relative to baseline by g-computation",
-    col.sub="black",
+    sub = "Marginal contrasts relative to baseline by g-computation",
+    col.sub = "black",
     col.lab = "black",
     cex.lab = 0.75
   )
@@ -247,67 +263,48 @@ plot_stglm_contrast <- function(out, ylim, main, xlab, ylab) {
   lines(out$row, out$ui, col = "red", lty = 2)
 }
 
-# function for ggplot g-comp -- used occasionally
-ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, r, sub) {
+# function for ggplot g-comp
+
+ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
   require(ggplot2)
-  g1 <- out[match(p, x),]
+  g1 <- out[match(p, x), ]
   g1
-  g2 <- out[match(r, x),]
-  g2
   ggplot2::ggplot(out, aes(x = row, y = est)) +
     geom_point() +
     geom_pointrange(aes(ymin =  li, ymax = ui), colour = "darkgray")  +
     scale_y_continuous(limits = ylim) +
     labs(
       title = main,
-     # subtitle = "Marginal predictions by g-computation",
       subtitle = sub,
       x = xlab,
       y = ylab
     ) +
-    geom_pointrange(data=g1, aes(ymin = li, ymax = ui), colour="red") +  # highlight contrast
-   # geom_pointrange(data=g2, aes(ymin = li, ymax = ui), colour="black") +  # highlight contrast
+    geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
     theme_classic()
 }
 
 
-# function for ggplot contrast
 
-ggplot_stglm_contrast <- function(out, ylim, main, xlab, ylab, s) {
-  require(ggplot2)
-  g1 <- out[match(s, x),]
-  g1
-  ggplot2::ggplot(out, aes(x = row, y = est)) +
-    geom_point(colour = "black") +
-    geom_pointrange(aes(ymin =  li, ymax = ui))  +
-    scale_y_continuous(limits = ylim) +
-    labs(
-      title = main,
-      subtitle = "Marginal contrasts relative to baseline by g-computation",
-      x = xlab,
-      y = ylab
-    ) + geom_pointrange(data=g1, aes(ymin = li, ymax = ui), colour="red") +  # highlight contrast
-    # this adds a red point geom_text(data=g1, label="Contrast", vjust=1) + # this adds a label for the red point
-    theme_classic()
-}
+# ggplot_stglm_contrast <- function(out, ylim, main, xlab, ylab, s) {
+#   require(ggplot2)
+#   g1 <- out[match(s, x),]
+#   g1
+#   ggplot2::ggplot(out, aes(x = row, y = est)) +
+#     geom_point(colour = "black") +
+#     geom_pointrange(aes(ymin =  li, ymax = ui))  +
+#     scale_y_continuous(limits = ylim) +
+#     labs(
+#       title = main,
+#       subtitle = "Marginal contrasts relative to baseline by g-computation",
+#       x = xlab,
+#       y = ylab
+#     ) + geom_pointrange(data=g1, aes(ymin = li, ymax = ui), colour="red") +  # highlight contrast
+#     # this adds a red point geom_text(data=g1, label="Contrast", vjust=1) + # this adds a label for the red point
+#     theme_classic()
+# }
 
 
-ggplot_stglm_contrast2 <- function(out, ylim, main, xlab, ylab, r) {
-  require(ggplot2)
-  out <- out[2,]
-  ggplot2::ggplot(out, aes(x = row, y = est)) +
-    geom_point(colour = "black") +
-    geom_pointrange(aes(ymin =  li, ymax = ui))  +
-    scale_y_continuous(limits = ylim) +
-    geom_hline(yintercept=r, colour = "red") +
-    labs(
-      title = main,
-      subtitle = "Marginal contrasts relative to baseline by g-computation",
-      x = xlab,
-      y = ylab
-    ) +
-    theme_classic()
-}
+
 
 
 
@@ -319,29 +316,25 @@ ggplot_stglm_contrast2 <- function(out, ylim, main, xlab, ylab, r) {
 # we assume a spline model
 
 mice_gaussian = function(df, X, Y) {
-    require("splines")
-    require("mice")
-  out <- with(df, glm(as.formula(
-    paste(
-      paste(Y, "~ bs(", X , ")+"),
-      paste(baselinevars,
-            collapse = "+")
-    )
-  )))
+  require("splines")
+  require("mice")
+  out <- with(df, glm(as.formula(paste(
+    paste(Y, "~ bs(", X , ")+"),
+    paste(baselinevars,
+          collapse = "+")
+  ))))
   out
 }
 
 
 mice_generalised = function(df, X, Y, family) {
-    require("splines")
-    require("mice")
-  out <- with(df, glm(as.formula(
-    paste(
-      paste(Y, "~ bs(", X , ")+"),
-      paste(baselinevars,
-            collapse = "+")
-    )
-  ), family = family ))
+  require("splines")
+  require("mice")
+  out <- with(df, glm(as.formula(paste(
+    paste(Y, "~ bs(", X , ")+"),
+    paste(baselinevars,
+          collapse = "+")
+  )), family = family))
   out
 }
 
@@ -353,13 +346,23 @@ vanderweelevalue_ols = function(out_ct, f, delta, sd) {
   coef <- round(out_ct, 3) %>%
     slice(f + 1) |>
     select(-row)
-  evalout <- as.data.frame(round( EValue::evalues.OLS( coef[1,1], se =coef[1,2], sd = 1, delta = delta, true = 0), 3))
-  evalout2 <- subset(evalout[2,])
-  evalout3<- evalout2 |>
-    select_if(~ !any(is.na(.)))
-  colnames(evalout3) <- c("E-value","threshold")
+  evalout <-
+    as.data.frame(round(
+      EValue::evalues.OLS(
+        coef[1, 1],
+        se = coef[1, 2],
+        sd = 1,
+        delta = delta,
+        true = 0
+      ),
+      3
+    ))
+  evalout2 <- subset(evalout[2, ])
+  evalout3 <- evalout2 |>
+    select_if( ~ !any(is.na(.)))
+  colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
-  rownames(tab)<- main
+  rownames(tab) <- main
   return(tab)
 }
 
@@ -369,12 +372,18 @@ vanderweelevalue_rr = function(out_ct, f) {
   coef <- round(out_ct, 3) %>%
     slice(f + 1) |>
     select(-row)
-  evalout <- as.data.frame(round( EValue::evalues.RR(coef[1,1] , lo =  coef[1,4], hi =coef[1,3], true = 1), 3))
-  evalout2 <- subset(evalout[2,])
-  evalout3<- evalout2 |>
-    select_if(~ !any(is.na(.)))
-    colnames(evalout3) <- c("E-value","threshold")
+  evalout <-
+    as.data.frame(round(EValue::evalues.RR(
+      coef[1, 1] ,
+      lo =  coef[1, 4],
+      hi = coef[1, 3],
+      true = 1
+    ), 3))
+  evalout2 <- subset(evalout[2, ])
+  evalout3 <- evalout2 |>
+    select_if( ~ !any(is.na(.)))
+  colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
-  rownames(tab)<- c(main)
+  rownames(tab) <- c(main)
   return(tab)
 }
