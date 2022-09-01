@@ -7,11 +7,12 @@ source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/libs
 source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/funs.R")
 
 
-###### MAKE FOLDER CALLED "data" in your rstudio project directory #########
 
-###### MAKE FOLDER CALLED "figs" in your rstudio project directory #########
+###### MAKE FOLDER CALLED "data"  #########
 
-###### READ YOUR DATA IN using the functions below   #########
+###### MAKE FOLDER CALLED "figs"  #########
+
+###### READ THIS DATA IN   #########
 
 # data before mice, used for tables for tables
 data_raw <- read_raw()
@@ -19,35 +20,23 @@ data_raw <- read_raw()
 # Imputed data in long format
 data_long  <- read_long()
 
-
-# for multilevvel models -- sensitivity checks (optional)
-
-data_ml <- read_ml()
-
-
-
 # Imputed data in mice format -- this is the sort of data format that we will use for models
-
 data_imputed <- read_imputed()
 
 
-###############  RENAME YOUR IMPUTED DATASET  'df"  ###############  ###############  ###############
-###############   IMPORANT DO THIS   ###############  ###############  ###############  ###############
+###############  RENAME YOUR IMPUTED DATASET  'df"
 
 df <- data_imputed
 
-############### SET YOUR EXPOSURE VARIABLE, ###############  ###############  ###############
 
+############### SET YOUR EXPOSURE VARIABLE, in this case "WORK one year after baseline
 ## HERE WE USE THE EXAMPLE OF HOURS WORK / 10
-###############   IMPORTANT SET YOUR EXPOSURE VARIABLE
-
 X = "Hours.Work_lead1_10"
 
 
 ############### NEXT SET UP VARIABLES FOR MODELS AND GRAPHS
 
 # You may set your label for your graphs  HERE WE STICK TO THE EXAMPLE OF WORK
-
 xlab = "Weekly Hours Work/ 10"  ## Weekly hours devided by 10
 
 
@@ -58,11 +47,6 @@ max = 8
 
 # set full range of X
 x =  min:max
-
-
-# range for some graphs
-minmax <- paste(c(x), sep = ",")
-
 
 # baseline condition here is 20 hours of work.  We could make it different
 r = 0
@@ -98,7 +82,7 @@ sd = 1
 
 ##### BASELINE VARIABLES
 
-cvars = c(
+baselinevars = c(
   "AGREEABLENESS_z",
   "CONSCIENTIOUSNESS_z",
   "EXTRAVERSION_z",
@@ -123,12 +107,11 @@ cvars = c(
   "EmotionRegulation1_z",
   "EmotionRegulation2_z",
   "EmotionRegulation3_z",
-  #"Euro_z",
-  "EthCat",
+  "Euro_z",
   "GRATITUDE_z",
   "HomeOwner_z",
   "Hours.Exercise_log_z",
-  "Hours.Work_10_z",
+  "Hours.Work_z",
   "HLTH.BMI_z",
   "HLTH.Disability_z",
   "HLTH.Fatigue_z",
@@ -170,82 +153,6 @@ cvars = c(
   "Your.Future.Security_z",
   "Your.Personal.Relationships_z"
 )
-
-
-#
-# ### BASELINE for ML models
-#
-# cvars1 = c(
-#   "AGREEABLENESS_z",
-#   "CONSCIENTIOUSNESS_z",
-#   "EXTRAVERSION_z",
-#   "HONESTY_HUMILITY_z",
-#   "NEUROTICISM_z",
-#   "OPENNESS_z",
-#   "Age_z",
-#   "Alcohol.Frequency_z",
-#   "Alcohol.Intensity_log_z",
-#   "Bodysat_z",
-#   "BornNZ_z",
-#   "Believe.God_z",
-#   "Believe.Spirit_z",
-#   "BELONG_z",
-#   "CharityDonate_log_z",
-#   "ChildrenNum_z",
-#   "Church_z",
-#   "community",
-#   "Edu_z",
-#   "Employed_z",
-#   "Emp.JobSecure_z",
-#   "EmotionRegulation1_z",
-#   "EmotionRegulation2_z",
-#   "EmotionRegulation3_z",
-#   "Euro_z",
-#   "GRATITUDE_z",
-#   "HomeOwner_z",
-#   "Hours.Exercise_log_z",
-#   "Hours.Work_z",
-#   "HLTH.BMI_z",
-#   "HLTH.Disability_z",
-#   "HLTH.Fatigue_z",
-#   "HLTH.SleepHours_z",
-#   "ImpermeabilityGroup_z",
-#   "income_log_z",
-#   "KESSLER6sum_z",
-#   "LIFEMEANING_z",
-#   "LIFESAT_z",
-#   "lost_job_z",
-#   "Male_z",
-#   "NZdep_z",
-#   "NWI_z",
-#   "NZSEI13_z",
-#   "Parent_z",
-#   "Partner_z",
-#   "PERFECTIONISM_z",
-#   "PermeabilityIndividual_z",
-#   "Pol.Orient_z",
-#   "POWERDEPENDENCE1_z",
-#   "POWERDEPENDENCE2_z",
-#   "Relid_z",
-#   "Respect.Self_z",
-#   "retired",
-#   "Rumination_z",
-#   "SELF.CONTROL_z",
-#   "SELF.ESTEEM_z",
-#   "semiretired",
-#   "SexualSatisfaction_z",
-#   "SFHEALTH_z",
-#   "Smoker_z",
-#   "Spiritual.Identification_z",
-#   "Standard.Living_z",
-#   "SUPPORT_z",
-#   "Urban_z",
-#   "VENGEFUL.RUMIN_z",
-#   "Volunteers_z",
-#   "Your.Health_z",
-#   "Your.Future.Security_z",
-#   "Your.Personal.Relationships_z"
-# )
 
 
 #*** Demographic
@@ -306,7 +213,7 @@ main = "Alcohol Frequency"
 ylab = "Alcohol Frequency (SD)"
 sub = "How often do you have a drink containing alcohol?"
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 summary(pool(out_m))
 ## g-computation
@@ -318,6 +225,7 @@ out_ct <-
     m = 10,
     X = X,
     x = x,
+    ,
     r = r
   )
 out_ct
@@ -377,18 +285,8 @@ main = "Alcohol Intensity"
 ylab = "Alcohol Intensity (SD)"
 sub = "How many drinks containing alcohol do you have on a typical day when drinking?"
 
-mice_gaussian = function(df, X, Y, cvars) {
-  require("splines")
-  require("mice")
-  out <- with(df, glm(as.formula(paste(
-    paste(Y, "~ bs(", X , ")+"),
-    paste(cvars,
-          collapse = "+")
-  ))))
-  out
-}
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -398,6 +296,7 @@ out_ct <-
     m = 10,
     X = X,
     x = x,
+    ,
     r = r
   )
 
@@ -457,7 +356,7 @@ sub = " What is your height? (metres)\What is your weight? (kg)\nKg/(m*m)"
 
 
 # run model
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 # summary(pool(out_m))
 ## contrasts
 out_ct <-
@@ -517,7 +416,7 @@ ylab = "Log Hours Exercise (SD)"
 sub = "Hours spent … exercising/physical activity"
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -588,7 +487,7 @@ main = "SF Health"
 ylab = "SF Health (SD)"
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -653,7 +552,7 @@ ylab = "Hours Sleep (SD)"
 sub = "During the past month, on average, how many hours\nof actual sleep did you get per night?"
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -724,7 +623,6 @@ rm(out_ct)
 out_m <- mice_generalised(df = df,
                           X = X,
                           Y = Y,
-                          cvars = cvars,
                           family = family)
 out_m
 ## contrasts
@@ -789,7 +687,7 @@ ylab = "Body Satisfaction (SD)"
 sub = "Am satisfied with the appearance,\nsize and shape of my body."
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -862,7 +760,7 @@ ylab = "Kessler 6 Distress (SD)"
 sub = "During the last 30 days, how often did....\nyou feel hopeless?\nyou feel so depressed that nothing could cheer you up?\nyou feel restless or fidgety?\nyou feel that everything was an effort?\nyou feel worthless?\nyou feel nervous?"
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 summary(pool(out_m))
 ## g-computation
 out_ct <-
@@ -930,7 +828,7 @@ sub = "During the last 30 days, how often did....\nyou feel exhausted?"
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -996,7 +894,7 @@ ylab = "Rumination (SD)"
 sub = "During the last 30 days, how often did....\nyou have negative thoughts that repeated over and over?"
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 ## g-computation
 out_ct <-
   pool_stglm_contrast(
@@ -1061,7 +959,7 @@ ylab = "Self Control (SD)"
 sub = "In general, I have a lot of self-control.\nI wish I had more self-discipline."
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1125,7 +1023,7 @@ main = "Sexual Satisfaction"
 ylab = "Sexual Satisfaction (SD)"
 sub = "How satisfied are you with your sex life?"
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1197,7 +1095,7 @@ ylab = "Gratitude (SD)"
 sub = "I have much in my life to be thankful for.\nWhen I look at the world, I don’t see much to be grateful for.\nI am grateful to a wide variety of people."
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1264,7 +1162,7 @@ sub = "The current income gap between New Zealand Europeans and\nother ethnic gr
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1329,7 +1227,7 @@ sub = "I believe I am capable, as an individual,\nof improving my status in soci
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1395,7 +1293,7 @@ ylab = "Life Satisfaction (SD)"
 sub = "I am satisfied with my life.\nIn most ways my life is close to ideal."
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1462,7 +1360,7 @@ ylab = "Life Meaning (SD)"
 sub = "My life has a clear sense of purpose.\nI have a good sense of what makes my life meaningful."
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1528,7 +1426,7 @@ ylab = "Perfectionism (SD)"
 sub = "Doing my best never seems to be enough.\nMy performance rarely measures up to my standards.\nI am hardly ever satisfied with my performance"
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1595,7 +1493,7 @@ ylab = "PWI (SD)"
 sub = "Satisfied with...\nYour health.\nYour standard of living.\nYour future security.\nYour personal relationships."
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1661,7 +1559,7 @@ sub = "I do not have enough power or control\nover important parts of my life."
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1727,7 +1625,7 @@ ylab = "Power Dependence 2(SD)"
 sub = "Other people have too much power or control\nover important parts of my life."
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1796,7 +1694,7 @@ sub = "On the whole am satisfied with myself.\nTake a positive attitude toward m
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1864,7 +1762,7 @@ ylab = "Vengefulness (anti-Foregiveness) (SD)"
 sub = "Sometimes I can't sleep because of thinking about\npast wrongs I have suffered.\nI can usually forgive and forget when someone does me wrong.\nI find myself regularly thinking about past times that I have been wronged."
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -1932,7 +1830,7 @@ sub = "I have a good balance between work and\nother important things in my life
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -2005,7 +1903,7 @@ sub = " Know that people in my life accept and value me.\nFeel like an outsider.
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -2070,7 +1968,7 @@ ylab = "Community (SD)"
 sub = "I feel a sense of community with others\nin my local neighbourhood."
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -2140,7 +2038,7 @@ sub = "Satisfied with ...\nThe economic situation in New Zealand.\nThe social co
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -2207,7 +2105,7 @@ sub = 'There are people I can depend on to help me if I really need it.\nThere i
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -2281,7 +2179,7 @@ support_p
 #
 #
 # # regression
-# out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+# out_m <- mice_gaussian(df = df, X = X, Y = Y)
 #
 # ## g-computation
 # out_ct <-
@@ -2346,7 +2244,7 @@ ylab = "Charity Donations (annual)"
 sub = "How much money have you donated to charity in the last year?"
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -2417,7 +2315,6 @@ rm(out_ct)
 out_m <- mice_generalised(df = df,
                           X = X,
                           Y = Y,
-                          cvars = cvars,
                           family = family)
 # g-computation - contrasts
 out_ct <-
@@ -2478,7 +2375,7 @@ main = "Log Income"
 ylab = "Log Income (SD)"
 sub = "Please estimate your total household income (before tax) for the last year."
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -2550,7 +2447,6 @@ rm(out_ct)
 out_m <- mice_generalised(df = df,
                           X = X,
                           Y = Y,
-                          cvars = cvars,
                           family = family)
 # g-computation - contrasts
 out_ct <-
@@ -2603,6 +2499,8 @@ homeowner_p <-
 homeowner_p
 
 
+
+
 # Promotion NZSEI ---------------------------------------------------------------
 #Occupational prestige/status
 #NZSEI06 (NZ Socio-economic index) Milne, B. J., Byun, U., & Lee, A. (2013). New Zealand socio-economic index 2006. Wellington: Statistics New Zealand.
@@ -2616,7 +2514,7 @@ sub = "NZ Socio-economic index 2013: Occupational Prestige"
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -2683,7 +2581,7 @@ main = "Standard Living"
 ylab = "Standard Living (SD)"
 sub  = "Satisfied with ...Your standard of living."
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -2741,6 +2639,8 @@ standardliving_p
 ## TABLE HEALTH
 
 # TABLE  HEALTH  -----------------------------------------------
+
+
 main = "Health outcome estimands / Evalues"
 h_tab <- rbind(alcoholfreq_c,
                alcoholintensity_c,
@@ -2781,11 +2681,12 @@ embody_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1:4,7),
-           bold = T,
+  row_spec(c(2),
+           bold = F,
            color = "black",
-           background = "bold") |>
+           background = "italics") |>
   kable_minimal(full_width = F)
+
 
 
 
@@ -2833,7 +2734,7 @@ social_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1,2),
+  row_spec(c(1),
            bold = T,
            color = "black",
            background = "bold") |>
@@ -2846,11 +2747,11 @@ main = "Economic wellbeing estimands / Evalues"
 econ_tab <- rbind(
   income_c,
   charity_c,
-#  homeowner_c,
+  homeowner_c,
   nzsei_c,
   standardliving_c,
-  worklife_c#,
-#  volunteers_c
+  worklife_c,
+  volunteers_c
 )
 
 econ_tab |>
@@ -2862,10 +2763,14 @@ econ_tab |>
            bold = T,
            color = "black",
            background = "bold") |>
+  row_spec(c(7),
+           bold = T,
+           color = "black",
+           background = "bold") |>
   kable_minimal(full_width = F)
 
-
 # GRAPHS EMBODIED --------------------------------------------
+
 embody_plots <-
   bodysat_p +
   distress_p +
@@ -2906,6 +2811,9 @@ health_plots <- alcoholfreq_p +
 
 # view
 health_plots
+
+#save
+
 
 ggsave(
   health_plots,
@@ -2982,6 +2890,12 @@ social_plots
 dev.off()
 
 
+
+
+
+
+
+
 ### GRAPHS ECONOMIC_SUCCESS GRAPHS ------------------------------------------------
 
 econ_plots <-
@@ -3012,6 +2926,9 @@ ggsave(
 
 dev.off()
 
+
+
+
 # EXAMPLE OF A COMPARISON STUDY -------------------------------------------
 #During the last 30 days, how often did.... you feel exhausted?
 
@@ -3022,7 +2939,7 @@ sub = "During the last 30 days, how often did....\nyou feel exhausted?"
 
 
 # regression
-out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+out_m <- mice_gaussian(df = df, X = X, Y = Y)
 
 ## g-computation
 out_ct <-
@@ -3182,7 +3099,7 @@ fatigue_BAD +fatigue_p_raw
 #
 #
 # # regression
-# out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
+# out_m <- mice_gaussian(df = df, X = X, Y = Y)
 #
 # ## g-computation
 # out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X,  x = x,,r= r)
