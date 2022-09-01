@@ -365,48 +365,48 @@ out
 }
 
 
-lmer_generalised = function(data_raw, xlmer, ylmer, cvars_sans, family) {
-  require("splines")
-  require("lme4")
-  out <- lme4::glmer(as.formula(paste(
-    paste(ylmer, "~ bs(", xlmer , ")+"),
-    paste(cvars_sans,
-          collapse = "+"),
-    paste(cvars_sans,
-          collapse = "+ (1|Id)"),
-    family = family
-  ))))
-out
-}
+# lmer_generalised = function(data_raw, xlmer, ylmer, cvars_sans, family) {
+#   require("splines")
+#   require("lme4")
+#   out <- lme4::glmer(as.formula(paste(
+#     paste(ylmer, "~ bs(", xlmer , ")+"),
+#     paste(cvars_sans,
+#           collapse = "+"),
+#     paste(cvars_sans,
+#           collapse = "+ (1|Id)"),
+#     family = family
+#   ))))
+# out
+# }
 
 
-ggplot_lmer <- function(model, xlmer, minmax, title) {
-  # note the var "x" is the range
-  out <- ggeffects::ggpredict(
-    model = model,
-    terms = paste(ylmer, xlmer, minmax)
-    ci.lvl = 0.95,
-    type = "fe",
-    typical = "mean",
-    back.transform = TRUE,
-    ppd = FALSE,
-    plot(out, facets = F)  +  theme_classic() + ggtitle(paste(title))
-}
+# ggplot_lmer <- function(model, xlmer, minmax, title) {
+#   # note the var "x" is the range
+#   out <- ggeffects::ggpredict(
+#     model = model,
+#     terms = paste(ylmer, xlmer, minmax)
+#     ci.lvl = 0.95,
+#     type = "fe",
+#     typical = "mean",
+#     back.transform = TRUE,
+#     ppd = FALSE,
+#     plot(out, facets = F)  +  theme_classic() + ggtitle(paste(title))
+# }
 
 
 
-ggplot_lmer <- function(model, timevar, xlmer, minmax, title) {
-  # note the var "x" is the range
-  out <- ggeffects::ggpredict(
-    model = model,
-    terms = paste(ylmer, xlmer, minmax)
-    ci.lvl = 0.95,
-    type = "fe",
-    typical = "mean",
-    back.transform = FALSE,
-    ppd = FALSE,
-    plot(out, facets = F)  +  theme_classic() + ggtitle(paste(title))
-}
+# ggplot_lmer <- function(model, timevar, xlmer, minmax, title) {
+#   # note the var "x" is the range
+#   out <- ggeffects::ggpredict(
+#     model = model,
+#     terms = paste(ylmer, xlmer, minmax)
+#     ci.lvl = 0.95,
+#     type = "fe",
+#     typical = "mean",
+#     back.transform = FALSE,
+#     ppd = FALSE,
+#     plot(out, facets = F)  +  theme_classic() + ggtitle(paste(title))
+# }
 
 
 
