@@ -25,7 +25,6 @@ data_long  <- read_long()
 data_ml <- read_ml()
 
 
-
 # Imputed data in mice format -- this is the sort of data format that we will use for models
 
 data_imputed <- read_imputed()
@@ -53,7 +52,7 @@ xlab = "Weekly Hours Work/ 10"  ## Weekly hours devided by 10
 
 # SET THE RANGE OF WORK HOURS FROM ZERO TO 80
 min = 0
-max = 8
+max = 7
 
 
 # set full range of X
@@ -65,10 +64,10 @@ minmax <- paste(c(x), sep = ",")
 
 
 # baseline condition here is 20 hours of work.  We could make it different
-r = 0
+r = 2
 
 # focal contrast for X  Someone who goes from 20 to 60 hours of work.
-f = 6
+f = 5
 
 # REQUIRED for certain model model functions
 c = x
@@ -82,7 +81,7 @@ p = c(r, f) #
 delta = abs(r - f)
 
 ylim = c(-.3, .3)  # SET AS YOU LIKE -- here, how much movement across a standard deviation unit of the outcome
-ylim_contrast = c(0, 2)  # SET AS YOU LIKE (FOR CONTRASTS )
+ylim_contrast = c(0, 3)  # SET AS YOU LIKE (FOR CONTRASTS )
 
 # mice imputed data
 ## THIS IS KEY, NAME THE DATA I GAVE YOU "DF"
@@ -175,77 +174,78 @@ cvars = c(
 #
 # ### BASELINE for ML models
 #
-# cvars1 = c(
-#   "AGREEABLENESS_z",
-#   "CONSCIENTIOUSNESS_z",
-#   "EXTRAVERSION_z",
-#   "HONESTY_HUMILITY_z",
-#   "NEUROTICISM_z",
-#   "OPENNESS_z",
-#   "Age_z",
-#   "Alcohol.Frequency_z",
-#   "Alcohol.Intensity_log_z",
-#   "Bodysat_z",
-#   "BornNZ_z",
-#   "Believe.God_z",
-#   "Believe.Spirit_z",
-#   "BELONG_z",
-#   "CharityDonate_log_z",
-#   "ChildrenNum_z",
-#   "Church_z",
-#   "community",
-#   "Edu_z",
-#   "Employed_z",
-#   "Emp.JobSecure_z",
-#   "EmotionRegulation1_z",
-#   "EmotionRegulation2_z",
-#   "EmotionRegulation3_z",
-#   "Euro_z",
-#   "GRATITUDE_z",
-#   "HomeOwner_z",
-#   "Hours.Exercise_log_z",
-#   "Hours.Work_z",
-#   "HLTH.BMI_z",
-#   "HLTH.Disability_z",
-#   "HLTH.Fatigue_z",
-#   "HLTH.SleepHours_z",
-#   "ImpermeabilityGroup_z",
-#   "income_log_z",
-#   "KESSLER6sum_z",
-#   "LIFEMEANING_z",
-#   "LIFESAT_z",
-#   "lost_job_z",
-#   "Male_z",
-#   "NZdep_z",
-#   "NWI_z",
-#   "NZSEI13_z",
-#   "Parent_z",
-#   "Partner_z",
-#   "PERFECTIONISM_z",
-#   "PermeabilityIndividual_z",
-#   "Pol.Orient_z",
-#   "POWERDEPENDENCE1_z",
-#   "POWERDEPENDENCE2_z",
-#   "Relid_z",
-#   "Respect.Self_z",
-#   "retired",
-#   "Rumination_z",
-#   "SELF.CONTROL_z",
-#   "SELF.ESTEEM_z",
-#   "semiretired",
-#   "SexualSatisfaction_z",
-#   "SFHEALTH_z",
-#   "Smoker_z",
-#   "Spiritual.Identification_z",
-#   "Standard.Living_z",
-#   "SUPPORT_z",
-#   "Urban_z",
-#   "VENGEFUL.RUMIN_z",
-#   "Volunteers_z",
-#   "Your.Health_z",
-#   "Your.Future.Security_z",
-#   "Your.Personal.Relationships_z"
-# )
+cvars_sans = c(
+  "Hours.Work_10_z",
+  "AGREEABLENESS_z",
+  "CONSCIENTIOUSNESS_z",
+  "EXTRAVERSION_z",
+  "HONESTY_HUMILITY_z",
+  "NEUROTICISM_z",
+  "OPENNESS_z",
+  "Age_z",
+  "Alcohol.Frequency_z",
+  "Alcohol.Intensity_log_z",
+  "Bodysat_z",
+  "BornNZ_z",
+  "Believe.God_z",
+  "Believe.Spirit_z",
+  "BELONG_z",
+  "CharityDonate_log_z",
+  "ChildrenNum_z",
+  "Church_z",
+  "community",
+  "Edu_z",
+  "Employed_z",
+  "Emp.JobSecure_z",
+  "EmotionRegulation1_z",
+  "EmotionRegulation2_z",
+  "EmotionRegulation3_z",
+  "Euro_z",
+  "GRATITUDE_z",
+  "HomeOwner_z",
+  "Hours.Exercise_log_z",
+#  "Hours.Work_z",
+  "HLTH.BMI_z",
+  "HLTH.Disability_z",
+  "HLTH.Fatigue_z",
+  "HLTH.SleepHours_z",
+  "ImpermeabilityGroup_z",
+  "income_log_z",
+  "KESSLER6sum_z",
+  "LIFEMEANING_z",
+  "LIFESAT_z",
+  "lost_job_z",
+  "Male_z",
+  "NZdep_z",
+  "NWI_z",
+  "NZSEI13_z",
+  "Parent_z",
+  "Partner_z",
+  "PERFECTIONISM_z",
+  "PermeabilityIndividual_z",
+  "Pol.Orient_z",
+  "POWERDEPENDENCE1_z",
+  "POWERDEPENDENCE2_z",
+  "Relid_z",
+  "Respect.Self_z",
+  "retired",
+  "Rumination_z",
+  "SELF.CONTROL_z",
+  "SELF.ESTEEM_z",
+  "semiretired",
+  "SexualSatisfaction_z",
+  "SFHEALTH_z",
+  "Smoker_z",
+  "Spiritual.Identification_z",
+  "Standard.Living_z",
+  "SUPPORT_z",
+  "Urban_z",
+  "VENGEFUL.RUMIN_z",
+  "Volunteers_z",
+  "Your.Health_z",
+  "Your.Future.Security_z",
+  "Your.Personal.Relationships_z"
+)
 
 
 #*** Demographic
@@ -328,10 +328,9 @@ alcoholfreq_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 alcoholfreq_c
 
 
-
 ## table for all contrasts (exploratory )
 alcoholfreq_t <- out_ct %>%
-  slice(1:max) |>
+ # #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -407,7 +406,7 @@ alcoholintensity_c <-
 alcoholintensity_c
 
 alcoholintensity_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -453,7 +452,7 @@ alcoholintensity_p
 Y = "HLTH.BMI_lead2_z"
 main = "BMI"
 ylab = "BMI (SD)"
-sub = " What is your height? (metres)\What is your weight? (kg)\nKg/(m*m)"
+sub = " What is your height? (metres)\What is your weight? (kg)\nKg *1/(m*m)"
 
 
 # run model
@@ -536,7 +535,7 @@ out_ct %>%
   kbl(digits = 3, "markdown")
 max
 excercise_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -605,7 +604,7 @@ out_ct %>%
   kbl(digits = 3, "markdown")
 
 sfhealth_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -670,7 +669,7 @@ out_ct %>%
   kbl(digits = 3, "markdown")
 
 sleep_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -740,7 +739,7 @@ out_ct <-
 # g-computation - contrasts
 #table
 smoker_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -811,7 +810,7 @@ bodysat_c
 
 
 bodysat_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -885,7 +884,7 @@ distress_c
 distress_p
 
 distress_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -952,7 +951,7 @@ fatigue_c
 
 
 fatigue_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1017,7 +1016,7 @@ rumination_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 rumination_c
 
 rumination_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1083,7 +1082,7 @@ selfcontrol_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 selfcontrol_c
 
 selfcontrol_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1146,7 +1145,7 @@ sexualsat_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 sexualsat_c
 
 sexualsat_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1218,7 +1217,7 @@ gratitude_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 gratitude_c
 
 gratitude_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1284,7 +1283,7 @@ groupimperm_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 groupimperm_c
 
 groupimperm_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1350,7 +1349,7 @@ selfperm_c
 
 
 selfperm_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1416,7 +1415,7 @@ lifesat_c
 
 
 lifesat_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1482,7 +1481,7 @@ meaning_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 meaning_c
 
 meaning_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1548,7 +1547,7 @@ perfect_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 perfect_c
 
 perfect_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1615,7 +1614,7 @@ pwi_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 pwi_c
 
 pwi_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1682,7 +1681,7 @@ powerdependence1_c <-
 powerdependence1_c
 
 powerdependence1_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1748,7 +1747,7 @@ powerdependence2_c <-
 powerdependence2_c
 
 powerdependence2_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1816,7 +1815,7 @@ selfesteem_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 selfesteem_c
 
 selfesteem_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1884,7 +1883,7 @@ veng_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 veng_c
 
 veng_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1953,7 +1952,7 @@ worklife_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 worklife_c
 
 worklife_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -1977,7 +1976,7 @@ worklife_t
 worklife_p <-
   ggplot_stglm(
     out_ct,
-    ylim = ylim,
+    ylim = c(-1,.3),
     main,
     xlab,
     ylab,
@@ -2026,7 +2025,7 @@ belong_c
 
 
 belong_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2090,7 +2089,7 @@ community_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 community_c
 
 community_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2160,7 +2159,7 @@ nwi_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 nwi_c
 
 nwi_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2229,7 +2228,7 @@ support_c
 
 
 support_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2302,7 +2301,7 @@ support_p
 # humility_c
 #
 # humility_t <- out_ct %>%
-#   slice(1:max) |>
+#    #slice(1:max) |>
 #   tibble() |>
 #   rename(
 #     Contrast = row,
@@ -2366,7 +2365,7 @@ charity_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 charity_c
 
 charity_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2437,7 +2436,7 @@ volunteers_c
 
 
 volunteers_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2499,7 +2498,7 @@ income_c
 
 
 income_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2570,7 +2569,7 @@ homeowner_c
 
 
 homeowner_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2636,7 +2635,7 @@ nzsei_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 nzsei_c
 
 nzsei_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2704,7 +2703,7 @@ standardliving_c <-
 standardliving_c
 
 standardliving_t <- out_ct %>%
-  slice(1:max) |>
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -2755,7 +2754,7 @@ h_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1),  # Bold out the lines where EVALUES do not cross zero or for ratios, 1
+  row_spec(c(1:7),  # Bold out the lines where EVALUES do not cross zero or for ratios, 1
            bold = T,
            # color = "black",
            background = "bold")
@@ -2781,7 +2780,7 @@ embody_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1:4,7),
+  row_spec(c(3,4,7),
            bold = T,
            color = "black",
            background = "bold") |>
@@ -2812,7 +2811,7 @@ reflect_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(7, 11),
+  row_spec(c(3),
            bold = T,
            color = "black",
            background = "bold") |>
@@ -2833,7 +2832,7 @@ social_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1,2),
+  row_spec(c(0),
            bold = T,
            color = "black",
            background = "bold") |>
@@ -2858,7 +2857,7 @@ econ_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(2),
+  row_spec(c(1,2,5),
            bold = T,
            color = "black",
            background = "bold") |>
@@ -2873,7 +2872,7 @@ embody_plots <-
   rumination_p +
   selfcontrol_p +
   sleep_p +
-  sexualsat_p + plot_annotation(title = "Causal effects of XX on embodied wellbeing", #subtitle = "xyz",
+  sexualsat_p + plot_annotation(title = "Causal effects of work hours on embodied wellbeing", #subtitle = "xyz",
                                 tag_levels = "A") +
   plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
@@ -2900,7 +2899,7 @@ health_plots <- alcoholfreq_p +
   exercise_p +
   smoker_p +
   sfhealth_p +
-  plot_annotation(title = "Causal effects of XX on health outcomes",
+  plot_annotation(title = "Causal effects of work hours on health outcomes",
                   # subtitle = "xyz",
                   tag_levels = "A") + plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
@@ -2937,7 +2936,7 @@ reflective_plots <- gratitude_p +
   powerdependence2_p +
   selfesteem_p +
   veng_p +
-  plot_annotation(title = "Causal effects of XX on reflective wellbeing")
+  plot_annotation(title = "Causal effects of work hours on reflective wellbeing")
 plot_layout(guides = 'collect')
 
 reflective_plots
@@ -2961,7 +2960,7 @@ ggsave(
 social_plots <- belong_p +
   community_p +
   nwi_p +
-  support_p + plot_annotation(title = "Causal effects of XX on social wellbeing") +
+  support_p + plot_annotation(title = "Causal effects of work hours on social wellbeing") +
   plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
 
 social_plots
@@ -2985,15 +2984,14 @@ dev.off()
 ### GRAPHS ECONOMIC_SUCCESS GRAPHS ------------------------------------------------
 
 econ_plots <-
-  income_p +
+ ( income_p +
   charity_p +
   nzsei_p +
   standardliving_p +
-  worklife_p +
-  volunteers_p +
+  volunteers_p)/  worklife_p +
   plot_annotation(title = "Causal effects of XX on economic wellbeing") +
 
-  plot_layout(guides = 'collect') #+ plot_layout(nrow = 3, byrow = T)
+  plot_layout(guides = 'collect') + plot_layout(ncol = 2)
 
 # view
 econ_plots
@@ -3015,10 +3013,10 @@ dev.off()
 # EXAMPLE OF A COMPARISON STUDY -------------------------------------------
 #During the last 30 days, how often did.... you feel exhausted?
 
-Y = "HLTH.Fatigue_lead2_z"
-main = "Fatigue"
-ylab = "Fatigue (SD)"
-sub = "During the last 30 days, how often did....\nyou feel exhausted?"
+Y = "KESSLER6sum_lead2_z"
+main = "Kessler 6 Distress"
+ylab = "Kessler 6 Distress (SD)"
+sub = "During the last 30 days, how often did....\nyou feel ...?"
 
 
 # regression
@@ -3026,25 +3024,20 @@ out_m <- mice_gaussian(df = df, X = X, Y = Y, cvars = cvars)
 
 ## g-computation
 out_ct <-
-  pool_stglm_contrast(
+  pool_stglm(
     out_m,
     df = df,
     m = 10,
     X = X,
-    x = x,
-    r = r
-  )
+    x = x  )
 out_ct %>%
   slice(f + 1 - min) |>
   kbl(digits = 3, "markdown")
 
-# coef + estimate
-fatigue_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
-fatigue_c
 
 
-fatigue_t <- out_ct %>%
-  slice(1:max) |>
+d_t <- out_ct %>%
+   #slice(1:max) |>
   tibble() |>
   rename(
     Contrast = row,
@@ -3057,15 +3050,14 @@ fatigue_t <- out_ct %>%
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(f + 1 - min),
-           bold = T,
-           color = "white",
-           background = "dodgerblue") |>
+  # row_spec(c(f + 1 - min),
+  #          bold = T,
+  #          color = "white") |>
   kable_minimal(full_width = F)
 # show table
-fatigue_t
+d_t
 # graph
-fatigue_p <-
+d_p <-
   ggplot_stglm(
     out_ct,
     ylim = ylim,
@@ -3076,7 +3068,7 @@ fatigue_p <-
     p = p,
     sub = sub
   )
-fatigue_p
+d_p
 
 
 ### COMPARE
@@ -3091,30 +3083,164 @@ out_ct2 <-
 
 
 
-fatigue_p_raw <- ggplot_stglm(out_ct2, ylim = ylim, main, xlab, ylab, min = min, p=p, sub = sub)
-fatigue_p_raw
+d_p_raw <- ggplot_stglm(out_ct2, ylim = ylim, main, xlab, ylab, min = min, p=p, sub = sub)
+d_p_raw
+d_p + d_p_raw
 
 
 
-library(lme4)
+## GLM NO CONTROL
 data_raw1 <- data_raw |>
-  mutate(HLTH.Fatigue_lead2_z = scale(HLTH.Fatigue_lead2, scale = TRUE, center = TRUE),
+  mutate(KESSLER6sum_lead2_z = scale(KESSLER6sum_lead2, scale = TRUE, center = TRUE),
          Hours.Work_lead1_10 = Hours.Work_lead1/10
   )
 
-predict_fatigue <- glm(HLTH.Fatigue_lead2_z ~  bs(Hours.Work_lead1_10), data = data_raw1 )
+predict_k <- glm(KESSLER6sum_lead2_z ~  bs(Hours.Work_lead1_10), data = data_raw1 )
 
 
-fatigue_BAD <- plot(
-  ggeffects::ggpredict(predict_fatigue, terms = "Hours.Work_lead1_10[0:8]")
+k_BAD <- plot(
+  ggeffects::ggpredict(predict_k, terms = "Hours.Work_lead1_10[0:7]")
 ) + scale_y_continuous(limits = ylim) + theme_classic()
 
-fatigue_BAD
-fatigue_BAD +fatigue_p_raw
+k_BAD
+k_BAD +d_p
+
+# Try lmer
+
+cvars_sans = c(
+# "Hours.Work_10_z",
+  "AGREEABLENESS_z",
+  "CONSCIENTIOUSNESS_z",
+  "EXTRAVERSION_z",
+  "HONESTY_HUMILITY_z",
+  "NEUROTICISM_z",
+  "OPENNESS_z",
+  "Age_z",
+  "Alcohol.Frequency_z",
+  "Alcohol.Intensity_log_z",
+  "Bodysat_z",
+  "BornNZ_z",
+  "Believe.God_z",
+  "Believe.Spirit_z",
+   "BELONG_z",
+  # "CharityDonate_log_z",
+  "ChildrenNum_z",
+  "Church_z",
+  "community",
+  "Edu_z",
+  "Employed_z",
+  "Emp.JobSecure_z",
+  "EmotionRegulation1_z",
+  "EmotionRegulation2_z",
+  "EmotionRegulation3_z",
+  "Euro_z",
+  "GRATITUDE_z",
+  "HomeOwner_z",
+  "Hours.Exercise_log_z",
+  #  "Hours.Work_z",
+  "HLTH.BMI_z",
+  "HLTH.Disability_z",
+  "HLTH.Fatigue_z",
+  "HLTH.SleepHours_z",
+  "ImpermeabilityGroup_z",
+  "income_log_z",
+  "KESSLER6sum_z",
+  "LIFEMEANING_z",
+  "LIFESAT_z",
+  "lost_job_z",
+  "Male_z",
+  "NZdep_z",
+  "NWI_z",
+  "NZSEI13_z",
+  "Parent_z",
+  "Partner_z",
+  "PERFECTIONISM_z",
+  "PermeabilityIndividual_z",
+  "Pol.Orient_z",
+  "POWERDEPENDENCE1_z",
+  "POWERDEPENDENCE2_z",
+  "Relid_z",
+  "Respect.Self_z",
+  "retired",
+  "Rumination_z",
+  "SELF.CONTROL_z",
+  "SELF.ESTEEM_z",
+  "semiretired",
+  "SexualSatisfaction_z",
+  "SFHEALTH_z",
+  "Smoker_z",
+  "Spiritual.Identification_z",
+  "Standard.Living_z",
+  "SUPPORT_z",
+  "Urban_z",
+  "VENGEFUL.RUMIN_z",
+  "Volunteers_z",
+  "Your.Health_z",
+  "Your.Future.Security_z",
+  "Your.Personal.Relationships_z"
+)
+
+cov<- paste(cvars_sans, collapse = "+")
+
+data_ml<- read_ml()
+
+
+k_lmer <- lme4::lmer(KESSLER6sum_z ~ wave + bs(Hours.Work_10)+
+                       AGREEABLENESS_z+
+                       CONSCIENTIOUSNESS_z+
+                       EXTRAVERSION_z+
+                       HONESTY_HUMILITY_z+
+                       NEUROTICISM_z+
+                       OPENNESS_z+
+                       Age_z+
+                       BornNZ_z+
+                       ChildrenNum_z+
+                       Church_z+
+                       Edu_z+
+                       Employed_z+
+                       Emp.JobSecure_z+
+                       EmotionRegulation1_z+
+                       as.factor(EthCat) +
+                       income_log_z+
+                       Male_z+
+                       NZdep_z+
+                       NZSEI13_z+
+                       Parent_z+
+                       Partner_z+
+                       Pol.Orient_z+
+                       Relid_z+
+                       Urban_z+ (1|Id),
+                     data = data_ml)
 
 
 
+k_ml<- plot(
+ ggeffects::ggpredict(k_lmer, terms = c("Hours.Work_10[0:7]")
+)) + scale_y_continuous(limits = ylim) + theme_classic()
+ml_tab
+k_ml
+k_BAD + k_ml + d_p
 
+
+# table for ML model
+k_ml_tab <- ml_tab %>%
+  select(-group) |>
+  kbl(caption = main,
+      digits = 3,
+      "html") |>
+  kable_styling() %>%
+  # #row_spec(c(f + 1 - min),
+  #          bold = T,
+  #          color = "white")|>
+  kable_minimal(full_width = F)
+
+
+# Compare tables   note that for multi-level model, stress only kicks in after 60 hours of work
+# These are very different models
+# gcomp
+d_t
+# Ml
+k_ml_tab
 
 
 # STATEMENT OF EVALUE -----------------------------------------------------
@@ -3191,7 +3317,7 @@ fatigue_BAD +fatigue_p_raw
 #   kbl(digits = 3, "markdown")
 #
 # humility_t <- out_ct %>%
-#   slice(1:max) |>
+#    #slice(1:max) |>
 #   tibble() |>
 #   rename(Contrast = row,
 #          Estimate = est,

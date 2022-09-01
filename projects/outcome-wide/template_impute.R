@@ -235,8 +235,6 @@ data_start <- tab_in %>%
     .names = "{col}_lead2"
   )) %>% # make leads
   dplyr::filter(Wave == 2018) %>%
-  #  dplyr::filter(retired != 1) %>%
-  #  dplyr::filter(semiretired != 1) %>%
   dplyr::filter(Household.INC >= 30975) %>% # min income
   dplyr::filter(!is.na(Hours.Work)) %>%
   dplyr::filter(!is.na(Hours.Work_lead1)) %>%
@@ -661,6 +659,8 @@ data_ml <- tab_in |>
          PermeabilityIndividual,
          ImpermeabilityGroup,
          Emp.JobSecure) |>
+  dplyr::rename(community = SWB.SoC01) %>%
+  dplyr::mutate(Edu = as.numeric(Edu)) %>%
   dplyr::mutate(wave = as.numeric(Wave)-1) |>
   dplyr::mutate(income_log = log(Household.INC + 1)) |>
   dplyr::mutate(Church = ifelse(Religion.Church > 8, 8, Religion.Church)) |>
@@ -687,6 +687,7 @@ data_ml <- tab_in |>
   # dplyr::mutate(Hours.Work_lead1_10 =  as.integer(Hours.Work_lead1 / 10)) %>%
   # dplyr::mutate(Hours.Work_lead1_sqrt =  as.integer(sqrt(Hours.Work_lead1))) %>%
   dplyr::mutate(NZSEI13_10 =  NZSEI13 / 10) %>%
+  dplyr::mutate(Hours.Work_10 =  Hours.Work / 10) %>%
   dplyr::group_by(Id, Wave) |>
   dplyr::mutate(PWI = mean(
     c(
@@ -715,8 +716,14 @@ data_ml <- tab_in |>
   ungroup() |>
   droplevels() |>
   dplyr::mutate(KESSLER6sum = round(as.integer(KESSLER6sum, 0))) %>%
+  dplyr::mutate(across(!c(Id, Wave, EthCat), ~ as.numeric(.x))) %>% # make factors numeric for easy of
   dplyr::mutate(across(where(is.numeric), ~ scale(.x), .names = "{col}_z")) %>%
   dplyr::mutate(EthCat = as.factor(EthCat))  # labels = c("Euro", "Maori", "Pacific", "Asian")
+
+
+
+table1::table1(~ KESSLER6sum_z |Wave, data = data_ml)
+
 
 saveRDS(data_ml, here::here("data","data_ml"))
 
