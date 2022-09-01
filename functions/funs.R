@@ -4,20 +4,34 @@ library("fs")
 library("stdReg")
 library("ggplot2")
 library("mice")
-#library("gghighlight")
 library("conflicted")
 #conflict_prefer("pool", "mice")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 #conflict_prefer("cbind", "base")
 
-# set paths for pushing files (off of github)  ## for jb only -- use your own methods
 
-
-# set for yourself or use
-
+# set paths
 push_mods <- here::here("mods")
 push_figs <- here::here("figs")
+
+
+# read raw data
+read_raw <- function(){
+  readRDS(here::here( "data", "data_raw"))
+}
+
+# read  imputed data
+read_imputed <- function(){
+  readRDS(here::here( "data", "data_imputed"))
+
+}
+
+# read imputated dat long
+
+read_long <- function(){
+  readRDS(here::here( "data", "data_long"))
+}
 
 
 # or avoids to avoid pushing/ pulling large objects on github use something like the following
@@ -337,6 +351,37 @@ mice_generalised = function(df, X, Y, family) {
   )), family = family))
   out
 }
+
+
+
+mice_gaussian_pre = function(df, X, Y, pre_y) {
+  require("splines")
+  require("mice")
+  out <- with(df, glm(as.formula(paste(
+    paste(Y, "~ bs(", X , ")+"),
+    paste(pre_y, ")+"),
+    paste(baselinevars,
+          collapse = "+")
+  ))))
+  out
+}
+
+
+
+mice_generalised_pre = function(df, X, Y, pre_x, family) {
+  require("splines")
+  require("mice")
+  out <- with(df, glm(as.formula(paste(
+    paste(Y, "~ bs(", X , ")+"),
+    paste(pre_x, ")+"),
+    paste(baselinevars,
+          collapse = "+")
+  )), family = family))
+  out
+}
+
+
+
 
 
 ## create table with evalues

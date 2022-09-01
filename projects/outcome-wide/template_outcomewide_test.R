@@ -24,39 +24,51 @@ data_long  <- read_long
 data_imputed <- read_imputed()
 
 
-# Confounding control variables  ---------------------------------------------------------
-# These variables can be modified depending on your model and assumptions.
-#  Here, we use vanderweele's "disjunctive cause criterion"
 
-# FROM Outcomewide longitudinal designs: https://doi.org/10.1214/19-STS728
-#" A modified disjunctive cause criterion that might thus be more useful in practice could articulated as follows (VanderWeele, 2019): control for each covari- ate that is a cause of the exposure, or of the outcome, or of both; exclude from this set any variable known to be an instrumental variable; and include as a covariate any proxy for an unmeasured variable that is a common cause of both the exposure and the outcome." p.443
+###############  RENAME YOUR IMPUTED DATASET  'df"
 
-# TYLERS LIST,  https://doi.org/10.1214/19-STS728 p.442
-# *** Demographic
-# Race
-# Age
-# Gender
-# Marital Status
-# *** Economic, Social and Political
-# Income
-# Education
-# Employment
-# Social integration Neighborhood
-# Religious service attendance
-# Political affiliation
-### *** Health
-# Self-rated health
-# Number of health conditions
-# Exercise
-# Smoking
-# Alcohol consumption
-# Depression
-# Happiness Loneliness
-# Parental warmth Purpose/Meaning Big five personality
-
-# NOTE: WE USE MORE VARIABLES
+df <- data_imputed
 
 
+############### SET YOUR EXPOSURE VARIABLE, in this case "WORK one year after baseline
+## HERE WE USE THE EXAMPLE OF HOURS WORK / 10
+X = "Hours.Work_lead1_10"
+
+
+############### NEXT SET UP VARIABLES FOR MODELS AND GRAPHS
+
+# You may set your label for your graphs  HERE WE STICK TO THE EXAMPLE OF WORK
+xlab = "Weekly Hours Work/ 10"  ## Weekly hours devided by 10
+
+
+# SET THE RANGE OF WORK HOURS FROM ZERO TO 80
+min = 0
+max = 8
+
+
+# set full range of X
+x =  min:max
+
+# baseline condition here is 20 hours of work.  We could make it different
+r = 2
+
+# focal contrast for X  Someone who goes from 20 to 60 hours of work.
+f = 6
+
+# REQUIRED for certain model model functions
+c = x
+
+# contrast for graphs -- absolute distance from baseline
+p = c(r, f) #
+
+
+# Needed for E-VALUES -- how much do we move on the X scale to obtain our effect?
+#delta = 4 #
+delta = abs(r - f)
+
+
+
+##### BASELINE VARIABLES
 baselinevars = c(
   "AGREEABLENESS_z",
   "CONSCIENTIOUSNESS_z",
@@ -273,7 +285,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct
@@ -343,7 +355,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 
@@ -412,7 +424,7 @@ out_ct <-
     df = df,
     m = m,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 # g-computation - contrasts
@@ -472,7 +484,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 
@@ -543,7 +555,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -608,7 +620,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -679,7 +691,7 @@ out_ct <-
     df = df,
     m = m,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 # g-computation - contrasts
@@ -743,7 +755,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -816,7 +828,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 
@@ -884,7 +896,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -949,7 +961,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1015,7 +1027,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1079,7 +1091,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1151,7 +1163,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1218,7 +1230,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1283,7 +1295,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1349,7 +1361,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1416,7 +1428,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1482,7 +1494,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1549,7 +1561,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1615,7 +1627,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1681,7 +1693,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1750,7 +1762,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1818,7 +1830,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1886,7 +1898,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -1959,7 +1971,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -2024,7 +2036,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -2094,7 +2106,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -2161,7 +2173,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -2235,7 +2247,7 @@ support_p
 #     df = df,
 #     m = 10,
 #     X = X,
-#     x = c,
+#     x = x
 #     r = r
 #   )
 # out_ct %>%
@@ -2300,7 +2312,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -2370,7 +2382,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 #table
@@ -2431,7 +2443,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -2502,7 +2514,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 #table
@@ -2570,7 +2582,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -2637,7 +2649,7 @@ out_ct <-
     df = df,
     m = 10,
     X = X,
-    x = c,
+    x = x
     r = r
   )
 out_ct %>%
@@ -3039,7 +3051,7 @@ dev.off()
 # out_m <- mice_gaussian(df = df, X = X, Y = Y)
 #
 # ## g-computation
-# out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = c, r= r)
+# out_ct <- pool_stglm_contrast(out_m, df = df, m = 10,  X = X, x = x r= r)
 # out_ct %>%
 #   slice(f+1) |>
 #   kbl(digits = 3, "markdown")
@@ -3066,3 +3078,40 @@ dev.off()
 #
 # round( EValue::evalues.OLS( , se = , sd = sd, delta = delta, true = 0), 3)
 # round( EValue::evalues.RR( , lo =  , hi =, true = 1), 4)
+
+
+
+
+
+##
+# Confounding control variables  ---------------------------------------------------------
+# These variables can be modified depending on your model and assumptions.
+#  Here, we use vanderweele's "disjunctive cause criterion"
+
+# FROM Outcomewide longitudinal designs: https://doi.org/10.1214/19-STS728
+#" A modified disjunctive cause criterion that might thus be more useful in practice could articulated as follows (VanderWeele, 2019): control for each covari- ate that is a cause of the exposure, or of the outcome, or of both; exclude from this set any variable known to be an instrumental variable; and include as a covariate any proxy for an unmeasured variable that is a common cause of both the exposure and the outcome." p.443
+
+# TYLERS LIST,  https://doi.org/10.1214/19-STS728 p.442
+# *** Demographic
+# Race
+# Age
+# Gender
+# Marital Status
+# *** Economic, Social and Political
+# Income
+# Education
+# Employment
+# Social integration Neighborhood
+# Religious service attendance
+# Political affiliation
+### *** Health
+# Self-rated health
+# Number of health conditions
+# Exercise
+# Smoking
+# Alcohol consumption
+# Depression
+# Happiness Loneliness
+# Parental warmth Purpose/Meaning Big five personality
+
+# NOTE: WE USE MORE VARIABLES

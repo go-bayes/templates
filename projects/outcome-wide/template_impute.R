@@ -8,7 +8,8 @@ source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/libs
 # read functions
 source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/funs.R")
 
-# n
+# for original NZAVS data -- need to contact Chris Sibley for access
+
 my_data <- "dff"  # whatever your object is called here
 pull_path <- here::here("data", my_data)
 
@@ -66,7 +67,7 @@ tab_in %>%
 # select-variables  -------------------------------------------------------
 
 ## select vars
-df_cr <- tab_in %>%
+data_raw <- tab_in %>%
   # dplyr::filter(Id != 9630) %>% # problematic
   select(
     Id,
@@ -87,13 +88,13 @@ df_cr <- tab_in %>%
     Alcohol.Intensity,
     began_relationship,
     BELONG,
-    Believe.Spirit,
-    Believe.God,
+  #  Believe.Spirit,
+  #  Believe.God,
     Bodysat,
     BornNZ,
     CharityDonate,
     ChildrenNum,
-    #  Emp.JobSecure,
+    # Emp.JobSecure,
     # EmotionRegulation1,
     # EmotionRegulation2,  # measures do not cohere as a scale
     # EmotionRegulation3,
@@ -112,18 +113,18 @@ df_cr <- tab_in %>%
     Hours.Exercise,
     Hours.Work,
     ImpermeabilityGroup,
-    #  KESSLER6sum,
-    kessler_hopeless,
+    KESSLER6sum,
+   # kessler_hopeless,
     # …  you feel hopeless?
-    kessler_depressed,
+   # kessler_depressed,
     #…  you feel so depressed that nothing could cheer you up?
-    kessler_restless,
+  #  kessler_restless,
     #…  you feel restless or fidgety?
-    kessler_effort,
+  #  kessler_effort,
     #…  you feel that everything was an effort?
-    kessler_worthless,
+  #  kessler_worthless,
     #…  you feel worthless?
-    kessler_nervous,
+  #  kessler_nervous,
     #…  you feel nervous?
     LIFEMEANING,
     LIFESAT,
@@ -143,7 +144,7 @@ df_cr <- tab_in %>%
     Religion.Church2,
     Religion.Prayer2,
     Religion.Scripture2,
-    Religious,
+  #  Religious,
     Respect.Self,
     retired,
     RWA,
@@ -163,9 +164,7 @@ df_cr <- tab_in %>%
     VENGEFUL.RUMIN,
     Your.Health,
     Your.Future.Security,
-    Your.Personal.Relationships,
-    Alcohol.Frequency,
-    Alcohol.Intensity,
+    Your.Personal.Relationships
   ) %>%
   dplyr::rename(community = SWB.SoC01) %>%
   dplyr::mutate(Edu = as.numeric(Edu)) %>%
@@ -242,7 +241,7 @@ df_cr <- tab_in %>%
       # RWA,
       Rumination,
       # SDO,
-      #   semiretired,
+      # semiretired,
       SELF.CONTROL,
       SELF.ESTEEM,
       SexualSatisfaction,
@@ -273,8 +272,8 @@ df_cr <- tab_in %>%
   # dplyr::filter(income_log_lead1 > income_log) %>%
   dplyr::filter(!is.na(Church)) %>%
   dplyr::filter(!is.na(Church_lead1)) %>%
-  dplyr::mutate(Religious = as.numeric(Religious) - 1) |>
-  dplyr::filter(Religious == 1) %>%  # ONlY RELIGIOUS IN THIS EXAMPLE
+#  dplyr::mutate(Religious = as.numeric(Religious) - 1) |>
+  dplyr::filter(Relid > 0) %>%  # ONlY RELIGIOUS IN THIS EXAMPLE
   #dplyr::filter(!is.na(Standard.Living) )%>%
   # dplyr::filter(!is.na(Standard.Living_lead1) )%>%
   #  dplyr::filter(semiretired_lead1 != 1) %>%  #needed for the intervention
@@ -302,9 +301,8 @@ df_cr <- tab_in %>%
   mutate(across(where(is.double), as.numeric)) %>%
   arrange(Id)
 
-df_cr$Bigger_Doms
 # save
-saveh(df_cr, "df_cr")
+saveh(df_cr, "data_raw")
 # MICE --------------------------------------------------------------------
 
 
