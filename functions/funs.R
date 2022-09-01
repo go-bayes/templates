@@ -343,11 +343,7 @@ vanderweelevalue_ols = function(out_ct, f, delta, sd) {
   return(tab)
 }
 
-
-
-
 # multi-level model -------------------------------------------------------
-
 #
 # lmer_gaussian = function(data_raw, xlmer, ylmer, cvars_sans) {
 #   require("splines")
@@ -359,8 +355,6 @@ vanderweelevalue_ols = function(out_ct, f, delta, sd) {
 #   ))))
 # out
 # }
-
-
 # lmer_generalised = function(data_raw, xlmer, ylmer, cvars_sans, family) {
 #   require("splines")
 #   require("lme4")
@@ -374,8 +368,6 @@ vanderweelevalue_ols = function(out_ct, f, delta, sd) {
 #   ))))
 # out
 # }
-
-
 # ggplot_lmer <- function(model, xlmer, minmax, title) {
 #   # note the var "x" is the range
 #   out <- ggeffects::ggpredict(
@@ -388,9 +380,6 @@ vanderweelevalue_ols = function(out_ct, f, delta, sd) {
 #     ppd = FALSE,
 #     plot(out, facets = F)  +  theme_classic() + ggtitle(paste(title))
 # }
-
-
-
 # ggplot_lmer <- function(model, timevar, xlmer, minmax, title) {
 #   # note the var "x" is the range
 #   out <- ggeffects::ggpredict(
@@ -403,66 +392,59 @@ vanderweelevalue_ols = function(out_ct, f, delta, sd) {
 #     ppd = FALSE,
 #     plot(out, facets = F)  +  theme_classic() + ggtitle(paste(title))
 # }
-
-
-
-
 # unused plots ------------------------------------------------------------
-
-
 # base R plot for mice pool_stglm outputs  (above)
-
-# not used
-plot_stglm <- function(out, ylim, main, xlab, ylab) {
-  plot(
-    out$row,
-    out$est,
-    type = "l",
-    ylim = ylim,
-    main = main,
-    xlab = xlab,
-    ylab = ylab,
-    col.main = "black",
-    sub = "Marginal predictions by g-computation",
-    col.sub = "black",
-    col.lab = "black",
-    cex.lab = 0.75
-  )
-  polygon(c(x, rev(x)),
-          c(out$li, rev(out$ui)),
-          col = "grey75",
-          border = FALSE)
-  lines(out$row, out$est, lwd = 1)
-  lines(out$row, out$li, col = "red", lty = 2)
-  lines(out$row, out$ui, col = "red", lty = 2)
-}
-
-
-## Contrast plot not used
-plot_stglm_contrast <- function(out, ylim, main, xlab, ylab) {
-  plot(
-    out$row,
-    out$est,
-    type = "l",
-    ylim = ylim,
-    main = main,
-    xlab = xlab,
-    ylab = ylab,
-    col.main = "black",
-    sub = "Marginal contrasts relative to baseline by g-computation",
-    col.sub = "black",
-    col.lab = "black",
-    cex.lab = 0.75
-  )
-  polygon(c(x, rev(x)),
-          c(out$li, rev(out$ui)),
-          col = "grey75",
-          border = FALSE)
-  lines(out$row, out$est, lwd = 1)
-  lines(out$row, out$li, col = "red", lty = 2)
-  lines(out$row, out$ui, col = "red", lty = 2)
-}
-
+#
+# # not used
+# plot_stglm <- function(out, ylim, main, xlab, ylab) {
+#   plot(
+#     out$row,
+#     out$est,
+#     type = "l",
+#     ylim = ylim,
+#     main = main,
+#     xlab = xlab,
+#     ylab = ylab,
+#     col.main = "black",
+#     sub = "Marginal predictions by g-computation",
+#     col.sub = "black",
+#     col.lab = "black",
+#     cex.lab = 0.75
+#   )
+#   polygon(c(x, rev(x)),
+#           c(out$li, rev(out$ui)),
+#           col = "grey75",
+#           border = FALSE)
+#   lines(out$row, out$est, lwd = 1)
+#   lines(out$row, out$li, col = "red", lty = 2)
+#   lines(out$row, out$ui, col = "red", lty = 2)
+# }
+#
+#
+# ## Contrast plot not used
+# plot_stglm_contrast <- function(out, ylim, main, xlab, ylab) {
+#   plot(
+#     out$row,
+#     out$est,
+#     type = "l",
+#     ylim = ylim,
+#     main = main,
+#     xlab = xlab,
+#     ylab = ylab,
+#     col.main = "black",
+#     sub = "Marginal contrasts relative to baseline by g-computation",
+#     col.sub = "black",
+#     col.lab = "black",
+#     cex.lab = 0.75
+#   )
+#   polygon(c(x, rev(x)),
+#           c(out$li, rev(out$ui)),
+#           col = "grey75",
+#           border = FALSE)
+#   lines(out$row, out$est, lwd = 1)
+#   lines(out$row, out$li, col = "red", lty = 2)
+#   lines(out$row, out$ui, col = "red", lty = 2)
+# }
 # function for ggplot g-comp
 # ggplot_stglm_contrast <- function(out, ylim, main, xlab, ylab, s) {
 #   require(ggplot2)
@@ -481,10 +463,7 @@ plot_stglm_contrast <- function(out, ylim, main, xlab, ylab) {
 #     # this adds a red point geom_text(data=g1, label="Contrast", vjust=1) + # this adds a label for the red point
 #     theme_classic()
 # }
-
-
 ## FUNCTION FOR OUTCOME WIDE REGRESSION
-
 # Y is the outcome
 # df is the dataframe -- a mice object
 # X is the exposure,
