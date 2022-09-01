@@ -66,8 +66,7 @@ mice_gaussian = function(df, X, Y, cvars) {
   require("mice")
   out <- with(df, glm(as.formula(paste(
     paste(Y, "~ bs(", X , ")+"),
-    paste(cvars,
-          collapse = "+")
+    paste(cvars, collapse = "+")
   ))))
   out
 }
@@ -78,8 +77,7 @@ mice_generalised = function(df, X, Y, cvars, family) {
   require("mice")
   out <- with(df, glm(as.formula(paste(
     paste(Y, "~ bs(", X , ")+"),
-    paste(cvars,
-          collapse = "+")
+    paste(cvars,collapse = "+")
   )), family = family))
   out
 }
@@ -92,8 +90,7 @@ mice_gaussian_pre = function(df, X, Y, cvars, pre_y) {
   out <- with(df, glm(as.formula(paste(
     paste(Y, "~ bs(", X , ")+"),
     paste(pre_y, "+"),
-    paste(cvars,
-          collapse = "+")
+    paste(cvars, collapse = "+")
   ))))
   out
 }
@@ -106,8 +103,7 @@ mice_generalised_pre = function(df, X, Y, cvars, pre_x, family) {
   out <- with(df, glm(as.formula(paste(
     paste(Y, "~ bs(", X , ")+"),
     paste(pre_x, "+"),
-    paste(cvars,
-          collapse = "+")
+    paste(cvars, collapse = "+")
   )), family = family))
   out
 }
@@ -468,9 +464,6 @@ plot_stglm_contrast <- function(out, ylim, main, xlab, ylab) {
 }
 
 # function for ggplot g-comp
-
-
-
 # ggplot_stglm_contrast <- function(out, ylim, main, xlab, ylab, s) {
 #   require(ggplot2)
 #   g1 <- out[match(s, x),]
