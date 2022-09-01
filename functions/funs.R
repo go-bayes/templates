@@ -352,17 +352,17 @@ vanderweelevalue_ols = function(out_ct, f, delta, sd) {
 
 # multi-level model -------------------------------------------------------
 
-
-lmer_gaussian = function(data_raw, xlmer, ylmer, cvars_sans) {
-  require("splines")
-  require("lme4")
-  out <- lme4::lmer(as.formula(paste(
-    paste(ylmer, "~ bs(", xlmer , ")+"),
-    paste(cvars_sans,
-          collapse = "+")
-  ))))
-out
-}
+#
+# lmer_gaussian = function(data_raw, xlmer, ylmer, cvars_sans) {
+#   require("splines")
+#   require("lme4")
+#   out <- lme4::lmer(as.formula(paste(
+#     paste(ylmer, "~ bs(", xlmer , ")+"),
+#     paste(cvars_sans,
+#           collapse = "+")
+#   ))))
+# out
+# }
 
 
 # lmer_generalised = function(data_raw, xlmer, ylmer, cvars_sans, family) {
