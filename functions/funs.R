@@ -359,7 +359,7 @@ mice_gaussian_pre = function(df, X, Y, pre_y) {
   require("mice")
   out <- with(df, glm(as.formula(paste(
     paste(Y, "~ bs(", X , ")+"),
-    paste(pre_y, ")+"),
+    paste(pre_y, "+"),
     paste(baselinevars,
           collapse = "+")
   ))))
@@ -373,7 +373,7 @@ mice_generalised_pre = function(df, X, Y, pre_x, family) {
   require("mice")
   out <- with(df, glm(as.formula(paste(
     paste(Y, "~ bs(", X , ")+"),
-    paste(pre_x, ")+"),
+    paste(pre_x, "+"),
     paste(baselinevars,
           collapse = "+")
   )), family = family))
