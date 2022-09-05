@@ -66,10 +66,11 @@ mice_gaussian = function(df, X, Y, cvars) {
   require("mice")
   out <- with(df, glm(as.formula(paste(
     paste(Y, "~ bs(", X , ")+"),
-    paste(cvars, collapse = "+")
-  ))))
+    paste(cvars, collapse = "+")  ))))
   out
 }
+
+
 
 
 mice_generalised = function(df, X, Y, cvars, family) {
@@ -107,6 +108,29 @@ mice_generalised_pre = function(df, X, Y, cvars, pre_x, family) {
   )), family = family))
   out
 }
+
+
+
+mice_gaussian_iptw = function(df, X, Y) {
+  require("splines")
+  require("mice")
+  out <- with(df, glm(as.formula(paste(
+    paste(Y, "~ bs(", X , ")+"),
+  ))))
+  out
+}
+
+
+
+mice_generalised_iptw = function(df, X, Y) {
+  require("splines")
+  require("mice")
+  out <- with(df, glm(as.formula(paste(
+    paste(Y, "~ bs(", X , ")+"),
+  )), family = family))
+  out
+}
+
 
 
 
