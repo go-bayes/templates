@@ -5,10 +5,10 @@ library("stdReg")
 library("ggplot2")
 library("mice")
 library("conflicted")
-#conflict_prefer("pool", "mice")
+conflict_prefer("pool", "mice")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
-#conflict_prefer("cbind", "base")
+conflict_prefer("cbind", "base")
 
 
 # set paths
