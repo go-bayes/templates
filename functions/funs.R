@@ -111,24 +111,19 @@ mice_generalised_pre = function(df, X, Y, cvars, pre_x, family) {
 
 
 
-mice_gaussian_iptw = function(df, X, Y) {
+mice_iptw = function(X,Y,df, family = family) {
+  # requires that a MATCH THEM dataset is converted to a mice object
+  # weights must be called "weights)
   require("splines")
   require("mice")
-  out <- with(df, glm(as.formula(paste(Y, "~ bs(", X , ")"),
-  )))
-  out
+  out_m <- with(df, glm(
+    as.formula(paste(Y, "~ bs(", X , ")")),
+    weights = weights,
+    family = family
+  ))
+  return(out_m)
 }
 
-
-
-mice_generalised_iptw = function(df, X, Y) {
-  require("splines")
-  require("mice")
-  out <- with(df, glm(as.formula(paste(
-    paste(Y, "~ bs(", X , ")"),
-  )), family = family))
-  out
-}
 
 
 
