@@ -114,9 +114,8 @@ mice_generalised_pre = function(df, X, Y, cvars, pre_x, family) {
 mice_gaussian_iptw = function(df, X, Y) {
   require("splines")
   require("mice")
-  out <- with(df, glm(as.formula(paste(
-    paste(Y, "~ bs(", X , ")"),
-  ))))
+  out <- with(df, glm(as.formula(paste(Y, "~ bs(", X , ")"),
+  )))
   out
 }
 
