@@ -452,7 +452,7 @@ alcoholintensity_p
 Y = "HLTH.BMI_lead2_z"
 main = "BMI"
 ylab = "BMI (SD)"
-sub = " What is your height? (metres)\What is your weight? (kg)\nKg *1/(m*m)"
+sub = "What is your height? (metres)\nWhat is your weight? (kg)\nKg *1/(m*m)"
 
 
 # run model

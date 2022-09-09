@@ -83,6 +83,16 @@ mice_generalised = function(df, X, Y, cvars, family) {
   out
 }
 
+mice_generalised_lin = function(df, X, Y, cvars, family) {
+  require("splines")
+  require("mice")
+  out <- with(df, glm(as.formula(paste(
+    paste(Y,"~", X,"+"),
+    paste(cvars,collapse = "+")
+  )), family = family))
+  out
+}
+
 
 
 mice_gaussian_pre = function(df, X, Y, cvars, pre_y) {
@@ -126,9 +136,17 @@ mice_iptw = function(X,Y,df, family = family) {
 
 
 
-
-
-
+# for regression without mi
+glm_nomi = function(X,Y,df, cvars, family = family) {
+  # requires that a MATCH THEM dataset is converted to a mice object
+  # weights must be called "weights)
+  require("splines")
+  out_m <- glm(as.formula(paste(
+    paste(Y, "~ bs(", X , ")+"),
+    paste(cvars, collapse = "+")
+  )), family = family, data = df)
+  return(out_m)
+}
 
 
 
@@ -305,6 +323,39 @@ ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
     theme_classic()
 }
 
+out_ct
+# plots for no mi impute
+# plots
+
+ggplot_stglm_nomi <- function(out_ct, ylim, main, xlab, ylab, min, p, sub) {
+  require(ggplot2)
+  out <-  out_ct
+  out$row <- 1:nrow(out)
+  out <- out |> dplyr::rename(est = "Estimate",
+                              li = "lower.0.95",
+                              ui = "upper.0.95",
+                              se = "Std..Error")
+  g1 <- out[match(p, x),]
+  g1
+  ggplot2::ggplot(out, aes(x = row, y = est)) +
+    geom_point() +
+    geom_pointrange(aes(ymin =  li, ymax = ui), colour = "darkgray")  +
+    scale_y_continuous(limits = ylim) +
+    labs(
+      title = main,
+      subtitle = sub,
+      x = xlab,
+      y = ylab
+    ) +
+    geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+    theme_classic()
+}
+
+
+
+
+
+
 
 
 
@@ -361,6 +412,52 @@ vanderweelevalue_ols = function(out_ct, f, delta, sd) {
   return(tab)
 }
 
+
+
+vanderweelevalue_ols_nomi = function(out_ct, f, delta, sd) {
+  coef <- round(out_ct,3)  |>  slice(f + 1)
+  evalout <-
+    as.data.frame(round(
+      EValue::evalues.OLS(
+        coef[1, 1],
+        se = coef[1, 2],
+        sd = 1,
+        delta = delta,
+        true = 0
+      ),
+      3
+    ))
+  evalout2 <- subset(evalout[2,])
+  evalout2
+  evalout3 <- evalout2 |>
+    select_if(~ !any(is.na(.)))
+  evalout3
+  colnames(evalout3) <- c("E-value", "threshold")
+  evalout3
+  tab <- round(cbind.data.frame(coef, evalout3),3)
+  rownames(tab) <- main
+  return(tab)
+}
+
+
+vanderweelevalue_rr_nomi = function(out_ct, f) {
+  require("EValue")
+  coef <- round(out_ct, 3) |>  slice(f + 1)
+  evalout <-
+    as.data.frame(round(EValue::evalues.RR(
+      coef[1, 1] ,
+      lo =  coef[1, 3],
+      hi = coef[1, 4],
+      true = 1
+    ), 3))
+  evalout2 <- subset(evalout[2, ])
+  evalout3 <- evalout2 |>
+    select_if( ~ !any(is.na(.)))
+  colnames(evalout3) <- c("E-value", "threshold")
+  tab <- cbind.data.frame(coef, evalout3)
+  rownames(tab) <- c(main)
+  return(tab)
+}
 # multi-level model -------------------------------------------------------
 #
 # lmer_gaussian = function(data_raw, xlmer, ylmer, cvars_sans) {
