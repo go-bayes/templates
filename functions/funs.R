@@ -323,7 +323,6 @@ ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
     theme_classic()
 }
 
-out_ct
 # plots for no mi impute
 # plots
 

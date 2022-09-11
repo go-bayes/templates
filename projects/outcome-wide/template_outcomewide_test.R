@@ -84,8 +84,8 @@ baselinevars = c(
  # "Believe.God_z",
  # "Believe.Spirit_z",
   "BELONG_z",
-  #  "Bigger_Doms",  # need to re-impute for my students to include this
-  #"CharityDonate_log_z",
+ #  "Bigger_Doms",  # need to re-impute for my students to include this
+ #"CharityDonate_log_z",
  # "ChildrenNum_z",
   "Church_z",
   "community",
