@@ -326,9 +326,9 @@ ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
 # plots for no mi impute
 # plots
 
-ggplot_stglm_nomi <- function(out_ct, ylim, main, xlab, ylab, min, p, sub) {
+ggplot_stglm_nomi <- function(out, ylim, main, xlab, ylab, min, p, sub) {
   require(ggplot2)
-  out <-  out_ct
+  out <-  out
   out$row <- 1:nrow(out)
   out <- out |> dplyr::rename(est = "Estimate",
                               li = "lower.0.95",
@@ -362,9 +362,9 @@ ggplot_stglm_nomi <- function(out_ct, ylim, main, xlab, ylab, min, p, sub) {
 
 
 # Create risk ratio table
-vanderweelevalue_rr = function(out_ct, f) {
+vanderweelevalue_rr = function(out, f) {
   require("EValue")
-  coef <- round(out_ct, 3) %>%
+  coef <- round(out, 3) %>%
     slice(f + 1) |>
     select(-row)
   evalout <-
@@ -386,9 +386,9 @@ vanderweelevalue_rr = function(out_ct, f) {
 
 ## create table with evalues
 
-vanderweelevalue_ols = function(out_ct, f, delta, sd) {
+vanderweelevalue_ols = function(out, f, delta, sd) {
   require("EValue")
-  coef <- round(out_ct, 3) %>%
+  coef <- round(out, 3) %>%
     slice(f + 1) |>
     select(-row)
   evalout <-
@@ -413,8 +413,8 @@ vanderweelevalue_ols = function(out_ct, f, delta, sd) {
 
 
 
-vanderweelevalue_ols_nomi = function(out_ct, f, delta, sd) {
-  coef <- round(out_ct,3)  |>  slice(f + 1)
+vanderweelevalue_ols_nomi = function(out, f, delta, sd) {
+  coef <- round(out,3)  |>  slice(f + 1)
   evalout <-
     as.data.frame(round(
       EValue::evalues.OLS(
@@ -439,9 +439,9 @@ vanderweelevalue_ols_nomi = function(out_ct, f, delta, sd) {
 }
 
 
-vanderweelevalue_rr_nomi = function(out_ct, f) {
+vanderweelevalue_rr_nomi = function(out, f) {
   require("EValue")
-  coef <- round(out_ct, 3) |>  slice(f + 1)
+  coef <- round(out, 3) |>  slice(f + 1)
   evalout <-
     as.data.frame(round(EValue::evalues.RR(
       coef[1, 1] ,
