@@ -16,10 +16,14 @@ pull_path <- here::here("data", my_data)
 dff <- readRDS(pull_path)
 
 # Worked example selecting waves 2018 -- 2020 with exposure year as 2019
+table(dff$GendAll)
 
 tab_in <- dff %>%
-  dplyr::mutate(Euro = if_else(EthCat == 1, 1, 0)) %>%
-  dplyr::mutate(Male = ifelse(GendAll == 1, 1, 0)) %>%
+  dplyr::mutate(Euro = if_else(EthCat == 1, 1, 0),
+                SexualOrientation = as.factor(if_else(SexualOrientationL1 == 1,
+                                                      "Heterosexual",
+                                                      if_else(SexualOrientationL1==2, "Homosexual", "OtherSexuality" )))) %>%
+  dplyr::mutate(Gender3 = as.factor(ifelse(GendAll == 0, "Female", if_else(GendAll == 1, "Male", "GenderDiverse")))) %>%
   dplyr::rename(
     kessler_hopeless = SWB.Kessler01,
     # …  you feel hopeless?
@@ -53,6 +57,7 @@ tab_in <- dff %>%
   arrange(Id, Wave)
 
 
+
 # check n # 34782
 length(unique(tab_in$Id)) # 34783
 
@@ -66,12 +71,8 @@ tab_in %>%
 
 # select-variables  -------------------------------------------------------
 ## select vars
-data_start <- tab_in %>%
-  dplyr::filter((Wave == 2018  & YearMeasured  == 1) |
-                  (Wave == 2019  &
-                     YearMeasured  == 1) |
-                  (Wave == 2020))  %>% # Eligibility criteria
-  #dplyr::filter(Id != 9630) %>% # problematic
+df_cr <- tab_in %>%
+  #dplyr::filter(Id != 9630) %>% # problematic income
   select(
     Id,
     YearMeasured,
@@ -79,7 +80,8 @@ data_start <- tab_in %>%
     Partner,
     EthCat,
     Age,
-    Male,
+    Gender3,
+    SexualOrientation,
     NZSEI13,
     CONSCIENTIOUSNESS,
     OPENNESS,
@@ -98,6 +100,7 @@ data_start <- tab_in %>%
     Household.INC,
     Parent,
     Relid,
+    Religious,
     Religion.Church,
     Believe.Spirit,
     Believe.God,
@@ -160,22 +163,19 @@ data_start <- tab_in %>%
     PERFECTIONISM,
     PermeabilityIndividual,
     ImpermeabilityGroup,
-    Emp.JobSecure,
-    Volunteers,
+    SWB.SoC01
   ) %>%
   dplyr::rename(community = SWB.SoC01) %>%
   dplyr::mutate(Edu = as.numeric(Edu)) %>%
-  dplyr::mutate(across(!c(Id, Wave), ~ as.numeric(.x))) %>% # make factors numeric for easy of
+  #  dplyr::mutate(Volunteers = if_else(HoursCharity == 1, 1, 0),
+  dplyr::mutate(Edu = as.numeric(Edu)) %>%
+  dplyr::mutate(across(!c(Id, Wave, Gender3, SexualOrientation), ~ as.numeric(.x))) %>% # make factors numeric for easy of processing
   arrange(Id, Wave) %>%
-  dplyr::mutate(
-    Volunteers = if_else(HoursCharity == 1, 1, 0),
-    Church = ifelse(Religion.Church > 8, 8, Religion.Church),
-  ) %>%
-  arrange(Id, Wave)  %>% # dplyr::mutate(Hours.Work_lead1 = lead(Hours.Work, n = 1)) %>%
-  dplyr::mutate(across(c(Hours.Work,
-                         HLTH.Disability),
-                       ~ lead(.x, n = 1),
-                       .names = "{col}_lead1")) %>% # make leads
+  dplyr::mutate(Edu = as.numeric(Edu))|>
+  arrange(Id, Wave)  %>%
+  dplyr::mutate(Church = ifelse(Religion.Church > 8, 8, Religion.Church)) %>%
+  dplyr::mutate(Church_lead1 = lead(Church, n = 1)) %>%
+  # inc_prop = (income_log / (income_log_lead1) - 1),
   dplyr::mutate(across(
     c(
       NZSEI13,
@@ -228,39 +228,58 @@ data_start <- tab_in %>%
       PERFECTIONISM,
       PermeabilityIndividual,
       ImpermeabilityGroup,
-      HomeOwner,
-      Volunteers
     ),
     ~ lead(.x, n = 2),
     .names = "{col}_lead2"
   )) %>% # make leads
   dplyr::filter(Wave == 2018) %>%
-  dplyr::filter(Household.INC >= 30975) %>% # min income
-  dplyr::filter(!is.na(Hours.Work)) %>%
-  dplyr::filter(!is.na(Hours.Work_lead1)) %>%
+  dplyr::mutate(Retiredp = if_else((retired == 1 |
+                                      semiretired == 1), 1, 0)) %>%
+  dplyr::filter(!is.na(Church)) %>%
+  dplyr::filter(!is.na(Church_lead1)) %>%
+  #  dplyr::mutate(Religious = as.numeric(Religious) - 1) |>
+  #dplyr::filter(Religious == 1) %>%
   dplyr::select(
     -c(
       Religion.Church,
-      HoursCharity,
+      # EthCat,
+      Religious,
+      #  HoursCharity,
       Respect.Self_lead2,
-      # not there
+      #  org2018,
+      #  not_euro,
+      #  not_euro_lead2,
+      # hold18,
+      #   Euro,
+      retired,
+      semiretired,
       Emp.WorkLifeBalance,
-      # not at baseline
-      YearMeasured,
-      HLTH.Disability_lead1
-    )
-  ) %>%
-  #  dplyr::mutate(across(!c(Id,Wave), ~ scale(.x)))%>%  # standarise vars for easy computing-- do this after imputation
+      YearMeasured)) %>%
+  # dplyr::mutate(across(!c(Id,Wave), ~ scale(.x)))%>%  # standarise vars for easy computing-- do this after imputation
   arrange(Id, Wave) %>%
+  droplevels() %>%
   data.frame() %>%
   mutate(across(where(is.double), as.numeric)) %>%
   arrange(Id)
 
 
+table1::table1(~ Church + Church_lead1 +  factor(Retiredp) |
+                 Wave ,
+               data = df_cr,
+               overall = FALSE)#11953
+
+
+
+
 # number of ids
 length(unique(data_start$Id)) #28676
 
-data_start$Hom
+table(data_start$Gender3)
+table(data_start$SexualOrientation)
+
+table(is.na(data_start$SexualOrientation))
+table(is.na(data_start$Gender3))
+
 
 # inspect data, with eye to large missingness
 skim(data_start) |>
@@ -271,7 +290,7 @@ skim(data_start) |>
 library(mice)
 
 mice_cc <- data_start %>%
-  dplyr::mutate(across(!c(Id, Wave), ~ as.numeric(.x))) %>%
+  dplyr::mutate(across(!c(Id, Wave)), ~ as.numeric(.x))) %>%
   #  mutate(across(where(is.double), as.numeric)) |>
   dplyr::select(-c(Wave, Id)) |> data.frame()
 
@@ -296,7 +315,7 @@ length(outlist2)
 head(mice_cc$loggedEvents, 10)
 
 # read your mice model
-mice_cc<- readRDS(here::here("data", "mice_imputed")
+#mice_cc<- readRDS(here::here("data", "mice_imputed")
 
 # we create two completed data sets -- the one without the missing data will be useful for
 # determing causal contrasts -- which we'll describe below.
@@ -411,7 +430,10 @@ cc_l2 <- cc_l %>%
   dplyr::mutate(KESSLER6sum_lead2 = round(as.integer(KESSLER6sum_lead2, 0))) %>%
   dplyr::mutate(across(where(is.numeric), ~ scale(.x), .names = "{col}_z")) %>%
   select(-c(.imp_z, .id_z)) %>%
-  dplyr::mutate(EthCat = as.factor(EthCat))
+  dplyr::mutate(EthCat = as.factor(EthCat),
+                Gender3  = as.factor(Gender3),
+                SexualOrientation  = as.factor(SexualOrientation))
+
 
 
 # Check
@@ -716,13 +738,15 @@ data_ml <- tab_in |>
   ungroup() |>
   droplevels() |>
   dplyr::mutate(KESSLER6sum = round(as.integer(KESSLER6sum, 0))) %>%
-  dplyr::mutate(across(!c(Id, Wave, EthCat), ~ as.numeric(.x))) %>% # make factors numeric for easy of
+  dplyr::mutate(across(!c(Id, Wave, EthCat, SexualOrientation, Gender3), ~ as.numeric(.x))) %>% # make factors numeric for easy of
   dplyr::mutate(across(where(is.numeric), ~ scale(.x), .names = "{col}_z")) %>%
-  dplyr::mutate(EthCat = as.factor(EthCat))  # labels = c("Euro", "Maori", "Pacific", "Asian")
+  dplyr::mutate(EthCat = as.factor(EthCat)) |>
+  # labels = c("Euro", "Maori", "Pacific", "Asian")
 
 
 
-table1::table1(~ KESSLER6sum_z |Wave, data = data_ml)
+
+table1::table1(~ KESSLER6sum_z + EthCat + SexualOrientation + Gender3 |Wave, data = data_ml)
 
 
 saveRDS(data_ml, here::here("data","data_ml"))

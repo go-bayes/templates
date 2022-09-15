@@ -38,8 +38,8 @@ read_ml <- function() {
 }
 
 # or avoids to avoid pushing/ pulling large objects on github use something like the following
-# push_mods <- fs::path_expand("~/The\ Virtues\ Project\ Dropbox/outcomewide/mods")
-# push_figs <- fs::path_expand("~/Users/joseph/The\ Virtues\ Project\ Dropbox/outcomewide/figs")
+ # push_mods <- fs::path_expand("~/The\ Virtues\ Project\ Dropbox/outcomewide/mods")
+ # push_figs <- fs::path_expand("~/Users/joseph/The\ Virtues\ Project\ Dropbox/outcomewide/figs")
 
 
 ## function for saving
