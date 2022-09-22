@@ -14,7 +14,7 @@ my_data <- "dff"  # whatever your object is called here
 pull_path <- here::here("data", my_data)
 
 dff <- readRDS(pull_path)
-
+table(dff$Edu)
 # Worked example selecting waves 2018 -- 2020 with exposure year as 2019
 table(dff$GendAll)
 

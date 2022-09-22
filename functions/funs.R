@@ -384,6 +384,29 @@ vanderweelevalue_rr = function(out, f) {
 }
 
 
+vanderweelevalue_rr_lo = function(out, f) {
+  require("EValue")
+  coef <- round(out, 3) %>%
+    slice(r + 1) |>
+    select(-row)
+  evalout <-
+    as.data.frame(round(EValue::evalues.RR(
+      coef[1, 1] ,
+      lo =  coef[1, 4],
+      hi = coef[1, 3],
+      true = 1
+    ), 3))
+  evalout2 <- subset(evalout[2,])
+  evalout3 <- evalout2 |>
+    select_if(~ !any(is.na(.)))
+  colnames(evalout3) <- c("E-value", "threshold")
+  tab <- cbind.data.frame(coef, evalout3)
+  rownames(tab) <- c(main)
+  return(tab)
+}
+
+
+
 ## create table with evalues
 
 vanderweelevalue_ols = function(out, f, delta, sd) {
@@ -410,6 +433,34 @@ vanderweelevalue_ols = function(out, f, delta, sd) {
   rownames(tab) <- main
   return(tab)
 }
+
+
+
+vanderweelevalue_ols_lo = function(out, f, delta, sd) {
+  require("EValue")
+  coef <- round(out, 3) %>%
+    slice(r + 1) |>
+    select(-row)
+  evalout <-
+    as.data.frame(round(
+      EValue::evalues.OLS(
+        coef[1, 1],
+        se = coef[1, 2],
+        sd = 1,
+        delta = delta,
+        true = 0
+      ),
+      3
+    ))
+  evalout2 <- subset(evalout[2,])
+  evalout3 <- evalout2 |>
+    select_if(~ !any(is.na(.)))
+  colnames(evalout3) <- c("E-value", "threshold")
+  tab <- cbind.data.frame(coef, evalout3)
+  rownames(tab) <- main
+  return(tab)
+}
+
 
 
 
