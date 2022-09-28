@@ -149,9 +149,6 @@ glm_nomi = function(X,Y,df, cvars, family = family) {
 }
 
 
-
-subsetnew = As==0
-
 # g-computation engine ----------------------------------------------------
 
 
