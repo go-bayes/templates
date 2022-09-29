@@ -329,10 +329,14 @@ ggplot_stglm_nomi <- function(out, ylim, main, xlab, ylab, min, p, sub) {
   require(ggplot2)
   out <-  out
   out$row <- 1:nrow(out)
+  # out <- out |> dplyr::rename(est = "Estimate",
+  #                             li = "lower.0.95",
+  #                             ui = "upper.0.95",
+  #                             se = "Std..Error")
   out <- out |> dplyr::rename(est = "Estimate",
-                              li = "lower.0.95",
-                              ui = "upper.0.95",
-                              se = "Std..Error")
+                              li = "lower 0.95",
+                              ui = "upper 0.95",
+                              se = "Std. Error")
   g1 <- out[match(p, x),]
   g1
   ggplot2::ggplot(out, aes(x = row, y = est)) +
