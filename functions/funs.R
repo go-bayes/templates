@@ -328,7 +328,7 @@ ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
 ggplot_stglm_nomi <- function(out, ylim, main, xlab, ylab, min, p, sub) {
   require(ggplot2)
   out <-  out
-  out$row <- 1:nrow(out)
+  out$rows <- 1:nrow(out)
   # out <- out |> dplyr::rename(est = "Estimate",
   #                             li = "lower.0.95",
   #                             ui = "upper.0.95",
@@ -339,7 +339,7 @@ ggplot_stglm_nomi <- function(out, ylim, main, xlab, ylab, min, p, sub) {
                               se = "Std. Error")
   g1 <- out[match(p, x),]
   g1
-  ggplot2::ggplot(out, aes(x = row, y = est)) +
+  ggplot2::ggplot(out, aes(x = rows, y = est)) +
     geom_point() +
     geom_pointrange(aes(ymin =  li, ymax = ui), colour = "darkgray")  +
     scale_y_continuous(limits = ylim) +
