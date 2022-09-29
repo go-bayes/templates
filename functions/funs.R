@@ -327,19 +327,22 @@ ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
 
 ggplot_stglm_nomi <- function(out, ylim, main, xlab, ylab, min, p, sub) {
   require(ggplot2)
-  out <-  out
-  out$rows <- 1:nrow(out)
+  out_p <- as.data.frame(print(summary(out)))
+  rows <- 1:nrow(out_p)
+  rows
+  out_p$rows<- sapply(rows, function(x)x-1)
+  out_p$rows <- 1:nrow(out_p)
   # out <- out |> dplyr::rename(est = "Estimate",
   #                             li = "lower.0.95",
   #                             ui = "upper.0.95",
   #                             se = "Std..Error")
-  out <- out |> dplyr::rename(est = "Estimate",
+  out_p <- out_p |> dplyr::rename(est = "Estimate",
                               li = "lower 0.95",
                               ui = "upper 0.95",
                               se = "Std. Error")
-  g1 <- out[match(p, x),]
+  g1 <- out_p[match(p, x),]
   g1
-  ggplot2::ggplot(out, aes(x = rows, y = est)) +
+  ggplot2::ggplot(out_p, aes(x = rows, y = est)) +
     geom_point() +
     geom_pointrange(aes(ymin =  li, ymax = ui), colour = "darkgray")  +
     scale_y_continuous(limits = ylim) +
