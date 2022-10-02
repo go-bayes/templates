@@ -84,7 +84,6 @@ mice_generalised = function(df, X, Y, cvars, family) {
 }
 
 mice_generalised_lin = function(df, X, Y, cvars, family) {
-  require("splines")
   require("mice")
   out <- with(df, glm(as.formula(paste(
     paste(Y,"~", X,"+"),
