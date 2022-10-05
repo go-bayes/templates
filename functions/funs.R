@@ -658,6 +658,7 @@ vanderweelevalue_rr_nomi_lo = function(out, r) {
   rownames(tab) <- c(main)
   return(tab)
 }
+#
 
 # multi-level model -------------------------------------------------------
 #
@@ -784,3 +785,4 @@ vanderweelevalue_rr_nomi_lo = function(out, r) {
 # df is the dataframe -- a mice object
 # X is the exposure,
 # we assume a spline model
+
