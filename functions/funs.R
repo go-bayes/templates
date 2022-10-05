@@ -134,6 +134,16 @@ mice_iptw = function(X,Y,df, family = family) {
 }
 
 
+mice_iptw_lin = function(X,Y,df, family = "gaussian") {
+  # requires that a MATCH THEM dataset is converted to a mice object
+  # weights must be called "weights)
+  require("mice")
+  out_m <- with(df, glm(
+    as.formula(paste(Y, "~ (", X , ")")),    weights = weights,
+    family = family
+  ))
+  return(out_m)
+}
 
 # for regression without mi
 glm_nomi = function(X,Y,df, cvars, family = family) {
@@ -147,6 +157,26 @@ glm_nomi = function(X,Y,df, cvars, family = family) {
   return(out_m)
 }
 
+
+glm_nomi_lin = function(X,Y,df, cvars, family = family) {
+  # requires that a MATCH THEM dataset is converted to a mice object
+  # weights must be called "weights)
+  out_m <- glm(
+    as.formula(paste(
+    paste(Y, "~ (", X , ")+"),
+    paste(cvars, collapse = "+")
+  )), family = family, data = df)
+  return(out_m)
+}
+
+
+
+require("mice")
+out_m <- with(df, glm(
+  as.formula(paste(Y, "~ (", X , ")")),    weights = weights,
+  family = family
+))
+return(out_m)
 
 # g-computation engine ----------------------------------------------------
 
@@ -468,32 +498,30 @@ vanderweelevalue_ols_lo = function(out, f, delta, sd) {
 
 
 
-
-vanderweelevalue_ols_nomi = function(out, f, delta, sd) {
-  coef <- round(out,3)  |>  slice(f + 1)
-  evalout <-
-    as.data.frame(round(
-      EValue::evalues.OLS(
-        coef[1, 1],
-        se = coef[1, 2],
-        sd = 1,
-        delta = delta,
-        true = 0
-      ),
-      3
-    ))
-  evalout2 <- subset(evalout[2,])
-  evalout2
-  evalout3 <- evalout2 |>
-    select_if(~ !any(is.na(.)))
-  evalout3
-  colnames(evalout3) <- c("E-value", "threshold")
-  evalout3
-  tab <- round(cbind.data.frame(coef, evalout3),3)
-  rownames(tab) <- main
-  return(tab)
-}
-
+ggplot_stglm_nomi <-
+  function(out_ct, ylim, main, xlab, ylab, min, p, sub) {
+    require(ggplot2)
+    out <-  out_ct
+    out$row <- 1:nrow(out)
+    out <- out |> dplyr::rename(est = "Estimate",
+                                li = "lower.0.95",
+                                ui = "upper.0.95",
+                                se = "Std..Error")
+    g1 <- out[match(p, x), ]
+    g1
+    ggplot2::ggplot(out, aes(x = row, y = est)) +
+      geom_point() +
+      geom_pointrange(aes(ymin =  li, ymax = ui), colour = "darkgray")  +
+      scale_y_continuous(limits = ylim) +
+      labs(
+        title = main,
+        subtitle = sub,
+        x = xlab,
+        y = ylab
+      ) +
+      geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+      theme_classic()
+  }
 
 vanderweelevalue_rr_nomi = function(out, f) {
   require("EValue")
