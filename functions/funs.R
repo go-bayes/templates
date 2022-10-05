@@ -171,12 +171,12 @@ glm_nomi_lin = function(X,Y,df, cvars, family = family) {
 
 
 
-require("mice")
-out_m <- with(df, glm(
-  as.formula(paste(Y, "~ (", X , ")")),    weights = weights,
-  family = family
-))
-return(out_m)
+# require("mice")
+# out_m <- with(df, glm(
+#   as.formula(paste(Y, "~ (", X , ")")),    weights = weights,
+#   family = family
+# ))
+# return(out_m)
 
 # g-computation engine ----------------------------------------------------
 
