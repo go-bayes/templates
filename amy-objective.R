@@ -50,7 +50,7 @@ data_ml<- readRDS(here::here("data", "outcomewide", "amy", "data_ml"))
 
 # Imputed data in mice format -- this is the sort of data format that we will use for models
 #data_imputed <- read_imputed()
-
+dev.off()
 hist(data_long$NZSEI13_lead1_10_z)
 sd(data_long$NZSEI13_lead1_10) # 1.5
 mean(data_long$NZSEI13_lead1_10) # 5.7
@@ -3010,7 +3010,7 @@ reflect_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(3,4,7,8),
+  row_spec(c(2,4,8,10,11),
            bold = T,
            color = "black",
            background = "bold") |>
@@ -3031,7 +3031,7 @@ social_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(0),
+  row_spec(c(1),
            bold = T,
            color = "black",
            background = "bold") |>
@@ -3044,7 +3044,7 @@ main = "Economic wellbeing estimands / Evalues"
 econ_tab <- rbind(
   charity_c,
   #  homeowner_c,
-  nzsei_c,
+ # nzsei_c,
   standardliving_c,
   worklife_c#,
   #  volunteers_c
@@ -3055,7 +3055,7 @@ econ_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1:4),
+  row_spec(c(1:2),
            bold = T,
            color = "black",
            background = "bold") |>
@@ -3080,7 +3080,7 @@ pwi_tab |>
       digits = 3,
       "html") |>
   kable_styling() %>%
-  row_spec(c(1,3,4),
+  row_spec(c(3),
            bold = T,
            color = "black",
            background = "bold") |>
