@@ -20,10 +20,17 @@ table(dff$GendAll)
 
 tab_in <- dff %>%
   dplyr::mutate(Euro = if_else(EthCat == 1, 1, 0),
-                SexualOrientation = as.factor(if_else(SexualOrientationL1 == 1,
-                                                      "Heterosexual",
-                                                      if_else(SexualOrientationL1==2, "Homosexual", "OtherSexuality" )))) %>%
-  dplyr::mutate(Gender3 = as.factor(ifelse(GendAll == 0, "Female", if_else(GendAll == 1, "Male", "GenderDiverse")))) %>%
+                SexualOrientation = as.factor(if_else(
+                  SexualOrientationL1 == 1,
+                  "Heterosexual",
+                  if_else(SexualOrientationL1 ==
+                            2, "Homosexual", "OtherSexuality")
+                ))) %>%
+  dplyr::mutate(Gender3 = as.factor(ifelse(
+    GendAll == 0,
+    "Female",
+    if_else(GendAll == 1, "Male", "GenderDiverse")
+  ))) %>%
   dplyr::rename(
     kessler_hopeless = SWB.Kessler01,
     # …  you feel hopeless?
@@ -171,7 +178,7 @@ df_cr <- tab_in %>%
   dplyr::mutate(Edu = as.numeric(Edu)) %>%
   dplyr::mutate(across(!c(Id, Wave, Gender3, SexualOrientation), ~ as.numeric(.x))) %>% # make factors numeric for easy of processing
   arrange(Id, Wave) %>%
-  dplyr::mutate(Edu = as.numeric(Edu))|>
+  dplyr::mutate(Edu = as.numeric(Edu)) |>
   arrange(Id, Wave)  %>%
   dplyr::mutate(Church = ifelse(Religion.Church > 8, 8, Religion.Church)) %>%
   dplyr::mutate(Church_lead1 = lead(Church, n = 1)) %>%
@@ -254,7 +261,9 @@ df_cr <- tab_in %>%
       retired,
       semiretired,
       Emp.WorkLifeBalance,
-      YearMeasured)) %>%
+      YearMeasured
+    )
+  ) %>%
   # dplyr::mutate(across(!c(Id,Wave), ~ scale(.x)))%>%  # standarise vars for easy computing-- do this after imputation
   arrange(Id, Wave) %>%
   droplevels() %>%
@@ -334,15 +343,15 @@ N
 # create variables in z score
 cc_l2 <- cc_l %>%
   dplyr::mutate(income_log = log(Household.INC + 1)) |>
- # dplyr::mutate(income_log_lead1 = log(Household.INC_lead1 + 1)) |>
+  # dplyr::mutate(income_log_lead1 = log(Household.INC_lead1 + 1)) |>
   dplyr::mutate(income_lead2_log = log(Household.INC_lead2 + 1)) |>
   dplyr::mutate(Church = ifelse(Church > 8, 8, Church)) |>
- # dplyr::mutate(Church_lead1 = ifelse(Church_lead1 > 8, 8, Church_lead1)) |>
+  # dplyr::mutate(Church_lead1 = ifelse(Church_lead1 > 8, 8, Church_lead1)) |>
   # dplyr::mutate( inc_prop = (income_log / (income_log_lead1) - 1)) |>
   dplyr::mutate(Alcohol.Intensity_lead2 = round(Alcohol.Intensity_lead2, 0)) %>%
   dplyr::mutate(CharityDonate_lead2 = round(CharityDonate_lead2, 0)) %>%
- # dplyr::mutate(Volunteers = if_else(HoursCharity > 1, 1, 0)) |>
-#  dplyr::mutate(Volunteers_lead2 = if_else(HoursCharity_lead2 > 1, 1, 0)) |>
+  # dplyr::mutate(Volunteers = if_else(HoursCharity > 1, 1, 0)) |>
+  #  dplyr::mutate(Volunteers_lead2 = if_else(HoursCharity_lead2 > 1, 1, 0)) |>
   dplyr::mutate(Hours.Exercise_lead2 = round(Hours.Exercise_lead2, 0)) %>%
   dplyr::mutate(Hours.Exercise_lead2_log = log(Hours.Exercise_lead2 + 1)) %>%
   dplyr::mutate(Alcohol.Intensity = round(Alcohol.Intensity, 0)) %>%
@@ -405,34 +414,36 @@ cc_l2 <- cc_l %>%
   #     kessler_effort,
   #     #…  you feel that everything was an effort?
   #     kessler_worthless,
-  #     #…  you feel worthless?
-  #     kessler_nervous #…  you feel nervous?
-  #   )
-  # ))) |>
-  # dplyr::mutate(KESSLER6sum_lead2 = rowSums(across(
-  #   c(
-  #     kessler_hopeless_lead2,
-  #     # …  you feel hopeless?
-  #     kessler_depressed_lead2,
-  #     #…  you feel so depressed that nothing could cheer you up?
-  #     kessler_restless_lead2,
-  #     #…  you feel restless or fidgety?
-  #     kessler_effort_lead2,
-  #     #…  you feel that everything was an effort?
-  #     kessler_worthless_lead2,
-  #     #…  you feel worthless?
-  #     kessler_nervous_lead2
-  #   ) #…  you feel nervous?
-  # ))) |>
-  ungroup() |>
+#     #…  you feel worthless?
+#     kessler_nervous #…  you feel nervous?
+#   )
+# ))) |>
+# dplyr::mutate(KESSLER6sum_lead2 = rowSums(across(
+#   c(
+#     kessler_hopeless_lead2,
+#     # …  you feel hopeless?
+#     kessler_depressed_lead2,
+#     #…  you feel so depressed that nothing could cheer you up?
+#     kessler_restless_lead2,
+#     #…  you feel restless or fidgety?
+#     kessler_effort_lead2,
+#     #…  you feel that everything was an effort?
+#     kessler_worthless_lead2,
+#     #…  you feel worthless?
+#     kessler_nervous_lead2
+#   ) #…  you feel nervous?
+# ))) |>
+ungroup() |>
   droplevels() |>
   dplyr::mutate(KESSLER6sum = round(as.integer(KESSLER6sum, 0))) %>%
   dplyr::mutate(KESSLER6sum_lead2 = round(as.integer(KESSLER6sum_lead2, 0))) %>%
   dplyr::mutate(across(where(is.numeric), ~ scale(.x), .names = "{col}_z")) %>%
   select(-c(.imp_z, .id_z)) %>%
-  dplyr::mutate(EthCat = as.factor(EthCat),
-                Gender3  = as.factor(Gender3),
-                SexualOrientation  = as.factor(SexualOrientation))
+  dplyr::mutate(
+    EthCat = as.factor(EthCat),
+    Gender3  = as.factor(Gender3),
+    SexualOrientation  = as.factor(SexualOrientation)
+  )
 
 
 
@@ -461,11 +472,9 @@ data_raw <- data_long |>
 
 
 ## SAVE DATA
-saveRDS(data_raw, here::here("data","data_raw"))
-saveRDS(data_long, here::here("data","data_long"))
-saveRDS(data_imputed, here::here("data","data_imputed"))
-
-
+saveRDS(data_raw, here::here("data", "data_raw"))
+saveRDS(data_long, here::here("data", "data_long"))
+saveRDS(data_imputed, here::here("data", "data_imputed"))
 
 
 
@@ -508,10 +517,7 @@ df_crt$NeighbourhoodCommunity <- df_cr$community
 df_crt$MajorDenominations <- df_cr$BigDoms
 
 
-
-
-
-#and continue this way to obtain factor labels ...etc.
+# and continue this way to obtain factor labels ...etc.
 
 table1::table1(
   ~ Age +
@@ -575,7 +581,6 @@ table1::table1(
 
 
 # Social variables
-
 table1::table1(
   ~ BELONG +
     NeighbourhoodCommunity +
@@ -589,101 +594,101 @@ table1::table1(
 
 # MULTILEVEL DATA ---------------------------------------------------------
 
-
-
-### Create multi-level data for comparisions
+# Create multi-level data for comparisions
 data_ml <- tab_in |>
-  select(Id,
-         YearMeasured,
-         Wave,
-         Partner,
-         EthCat,
-         Age,
-         Male,
-         NZSEI13,
-         CONSCIENTIOUSNESS,
-         OPENNESS,
-         HONESTY_HUMILITY,
-         EXTRAVERSION,
-         NEUROTICISM,
-         AGREEABLENESS,
-         Edu,
-         NZdep,
-         Employed,
-         HomeOwner,
-         Pol.Orient,
-         SDO,
-         RWA,
-         Urban,
-         Household.INC,
-         Parent,
-         Relid,
-         Religion.Church,
-         Believe.Spirit,
-         Believe.God,
-         Spiritual.Identification,
-         SWB.SoC01,
-         EmotionRegulation1,
-         EmotionRegulation2,
-         EmotionRegulation3,
-         Bodysat,
-         VENGEFUL.RUMIN,
-         retired,
-         semiretired,
-         BornNZ,
-         KESSLER6sum,
-         HLTH.Fatigue,
-         Rumination,
-         Smoker,
-         ChildrenNum,
-         NWI,
-         BELONG,
-         SUPPORT,
-         CharityDonate,
-         HoursCharity,
-         GRATITUDE,
-         Hours.Work,
-         HLTH.SleepHours,
-         HLTH.Disability,
-         Hours.Exercise,
-         LIFEMEANING,
-         LIFESAT,
-         # PWI,  ##  we use the individual
-         NWI,
-         SFHEALTH,
-         SELF.CONTROL,
-         SFHEALTH,
-         SELF.ESTEEM,
-         Respect.Self,
-         #  GenCohort,
-         SELF.ESTEEM,
-         SELF.CONTROL,
-         Emp.WorkLifeBalance,
-         Alcohol.Frequency,
-         Alcohol.Intensity,
-         HLTH.BMI,
-         Smoker,
-         ChildrenNum,
-         # GenCohort,
-         partnerlost_job,
-         lost_job,
-         began_relationship,
-         Alcohol.Intensity,
-         Alcohol.Frequency,
-         SexualSatisfaction,
-         POWERDEPENDENCE1,
-         POWERDEPENDENCE2,
-         Your.Future.Security,
-         Your.Personal.Relationships,
-         Your.Health,
-         Standard.Living,
-         PERFECTIONISM,
-         PermeabilityIndividual,
-         ImpermeabilityGroup,
-         Emp.JobSecure) |>
+  select(
+    Id,
+    YearMeasured,
+    Wave,
+    Partner,
+    EthCat,
+    Age,
+    Male,
+    NZSEI13,
+    CONSCIENTIOUSNESS,
+    OPENNESS,
+    HONESTY_HUMILITY,
+    EXTRAVERSION,
+    NEUROTICISM,
+    AGREEABLENESS,
+    Edu,
+    NZdep,
+    Employed,
+    HomeOwner,
+    Pol.Orient,
+    SDO,
+    RWA,
+    Urban,
+    Household.INC,
+    Parent,
+    Relid,
+    Religion.Church,
+    Believe.Spirit,
+    Believe.God,
+    Spiritual.Identification,
+    SWB.SoC01,
+    EmotionRegulation1,
+    EmotionRegulation2,
+    EmotionRegulation3,
+    Bodysat,
+    VENGEFUL.RUMIN,
+    retired,
+    semiretired,
+    BornNZ,
+    KESSLER6sum,
+    HLTH.Fatigue,
+    Rumination,
+    Smoker,
+    ChildrenNum,
+    NWI,
+    BELONG,
+    SUPPORT,
+    CharityDonate,
+    HoursCharity,
+    GRATITUDE,
+    Hours.Work,
+    HLTH.SleepHours,
+    HLTH.Disability,
+    Hours.Exercise,
+    LIFEMEANING,
+    LIFESAT,
+    # PWI,  ##  we use the individual
+    NWI,
+    SFHEALTH,
+    SELF.CONTROL,
+    SFHEALTH,
+    SELF.ESTEEM,
+    Respect.Self,
+    #  GenCohort,
+    SELF.ESTEEM,
+    SELF.CONTROL,
+    Emp.WorkLifeBalance,
+    Alcohol.Frequency,
+    Alcohol.Intensity,
+    HLTH.BMI,
+    Smoker,
+    ChildrenNum,
+    # GenCohort,
+    partnerlost_job,
+    lost_job,
+    began_relationship,
+    Alcohol.Intensity,
+    Alcohol.Frequency,
+    SexualSatisfaction,
+    POWERDEPENDENCE1,
+    POWERDEPENDENCE2,
+    Your.Future.Security,
+    Your.Personal.Relationships,
+    Your.Health,
+    Standard.Living,
+    PERFECTIONISM,
+    PermeabilityIndividual,
+    ImpermeabilityGroup,
+    Emp.JobSecure
+  ) |>
   dplyr::rename(community = SWB.SoC01) %>%
   dplyr::mutate(Edu = as.numeric(Edu)) %>%
-  dplyr::mutate(wave = as.numeric(Wave)-1) |>
+  dplyr::mutate(wave = as.numeric(Wave) - 1) |>
   dplyr::mutate(income_log = log(Household.INC + 1)) |>
   dplyr::mutate(Church = ifelse(Religion.Church > 8, 8, Religion.Church)) |>
   # dplyr::mutate( inc_prop = (income_log / (income_log_lead1) - 1)) |>
@@ -692,17 +697,15 @@ data_ml <- tab_in |>
   dplyr::mutate(Hours.Exercise = round(Hours.Exercise, 0)) %>%
   dplyr::mutate(Hours.Exercise_log = log(Hours.Exercise + 1)) %>%
   dplyr::mutate(Alcohol.Intensity = round(Alcohol.Intensity, 0)) %>%
-  dplyr::mutate(CharityDonate_log= log(CharityDonate + 1)) %>%
-  dplyr::mutate(Alcohol.Intensity_log = log(Alcohol.Intensity+ 1)) %>%
-  dplyr::mutate(Exercise_log = log(Hours.Exercise+ 1)) %>%
+  dplyr::mutate(CharityDonate_log = log(CharityDonate + 1)) %>%
+  dplyr::mutate(Alcohol.Intensity_log = log(Alcohol.Intensity + 1)) %>%
+  dplyr::mutate(Exercise_log = log(Hours.Exercise + 1)) %>%
   dplyr::mutate(Rumination_ord = as.integer(round(Rumination, digits = 0) + 1)) %>%  # needs to start at 1
   dplyr::mutate(SUPPORT_ord = as.integer(round(SUPPORT, digits = 0))) %>%
   dplyr::mutate(PERFECTIONISM_ord = as.integer(round(PERFECTIONISM, digits = 0))) %>%
   dplyr::mutate(VENGEFUL.RUMIN_ord = as.integer(round(VENGEFUL.RUMIN, digits = 0))) %>%
   dplyr::mutate(Standard.Living_ord = as.integer(round(Standard.Living, digits = 0))) %>%
-  dplyr::mutate(Your.Personal.Relationships_ord = as.integer(round(
-    Your.Personal.Relationships, digits = 0
-  ) + 1)) %>%
+  dplyr::mutate(Your.Personal.Relationships_ord = as.integer(round(Your.Personal.Relationships, digits = 0) + 1)) %>%
   dplyr::mutate(LIFEMEANING_ord = as.integer(round(LIFEMEANING, digits = 0))) %>%
   dplyr::mutate(HLTH.Fatigue_ord = as.integer(round(HLTH.Fatigue, digits = 0) + 1)) %>%
   dplyr::mutate(Hours.Work_10 =  Hours.Work / 10) %>%
@@ -731,25 +734,24 @@ data_ml <- tab_in |>
   #     kessler_effort,
   #     #…  you feel that everything was an effort?
   #     kessler_worthless,
-  #     #…  you feel worthless?
-  #     kessler_nervous #…  you feel nervous?
-  #   )
-  # ))) |>
-  ungroup() |>
+#     #…  you feel worthless?
+#     kessler_nervous #…  you feel nervous?
+#   )
+# ))) |>
+ungroup() |>
   droplevels() |>
   dplyr::mutate(KESSLER6sum = round(as.integer(KESSLER6sum, 0))) %>%
-  dplyr::mutate(across(!c(Id, Wave, EthCat, SexualOrientation, Gender3), ~ as.numeric(.x))) %>% # make factors numeric for easy of
+  dplyr::mutate(across(
+    !c(Id, Wave, EthCat, SexualOrientation, Gender3),
+    ~ as.numeric(.x)
+  )) %>% # make factors numeric for easy of
   dplyr::mutate(across(where(is.numeric), ~ scale(.x), .names = "{col}_z")) %>%
-  dplyr::mutate(EthCat = as.factor(EthCat)) |>
-  # labels = c("Euro", "Maori", "Pacific", "Asian")
+  dplyr::mutate(EthCat = as.factor(EthCat))
+# labels = c("Euro", "Maori", "Pacific", "Asian")
 
 
+table1::table1(~ KESSLER6sum_z + EthCat + SexualOrientation + Gender3 |
+                 Wave, data = data_ml)
 
 
-table1::table1(~ KESSLER6sum_z + EthCat + SexualOrientation + Gender3 |Wave, data = data_ml)
-
-
-saveRDS(data_ml, here::here("data","data_ml"))
-
-
-
+saveRDS(data_ml, here::here("data", "data_ml"))

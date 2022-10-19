@@ -475,7 +475,6 @@ exercise_p
 exercise_c <-  vanderweelevalue_ols(out_ct, f - min, delta, sd)
 exercise_c
 
-
 # sf-health ---------------------------------------------------------------
 # Short-Form Subjective Health Scale (General Health Perception Subscale)
 # In general, would you say your health is...

@@ -58,6 +58,49 @@ readh <- function(name) {
 
 
 
+
+# forest plots studies ------------------------------------
+
+
+#  Takes a list of ggplot graph objects and creates a combined object
+# e.g. dt_new <- bind_forestplot(list(alcoholfreq_p,alcoholintensity_p, bmi_p))
+
+bind_forestplot = function(x){
+  ls_output  <- lapply(x, function(zed) {
+    dt_zed <- as.data.frame(zed$data)
+    dt_zed$id <- rep(zed$labels$y, nrow(dt_zed))
+    dt_zed
+  })
+  df_output <- do.call( rbind, ls_output)
+  df_output
+}
+
+## creat forest plot, using a "bind_forestplot" object
+
+gcomp_forestplot= function(out, title, ylim, xlab) { # provisional
+  require(ggplot2)
+  require(viridisLite)
+  ggplot(data=out, aes(y=id, x=est, xmin=ui, xmax=li, colour = factor(row))) +
+    geom_point( position = position_dodge(width = 0.1)) +
+    geom_errorbarh(height=.1, position = position_dodge(width = 0.1)) +
+    geom_vline(xintercept = 0, linetype="solid") +
+    geom_vline(xintercept = c(-.5, -.25,.25, .5), linetype="twodash", alpha = .5) + # experimental
+    scale_x_continuous(limits = ylim) +
+    # theme_forest() +
+    theme_classic(base_size = 10) +
+    theme(panel.border=element_blank(),
+          axis.line=element_blank(),
+          panel.background=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()) +
+    #  scale_color_discrete(name = "Change in exposure from baseline (SD)", direction = -1) +
+    scale_color_viridis_d(name = "Change in exposure\nfrom baseline (SD)", direction = -1, option = "D") +
+    labs(x = "Change in outcome (SD)",
+         y = "Many Outcomes",
+         title = title)
+}
+
+
 # mice models -----------------------------------------------------------
 
 
