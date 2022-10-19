@@ -117,7 +117,6 @@ gcomp_forestplot_rr = function(out, title, ylim, xlab) { # provisional
           panel.background=element_blank(),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank()) +
-    #  scale_color_discrete(name = "Change in exposure from baseline (SD)", direction = -1) +
     scale_color_viridis_d(name = "Change in exposure\nfrom baseline (SD)", direction = -1, option = "D") +
     labs(x = "RR of outcome (SD)",
          y = "Many Outcomes",
