@@ -101,6 +101,30 @@ gcomp_forestplot= function(out, title, ylim, xlab) { # provisional
 }
 
 
+
+gcomp_forestplot_rr = function(out, title, ylim, xlab) { # provisional
+  require(ggplot2)
+  require(viridisLite)
+  ggplot(data=out, aes(y=id, x=est, xmin=ui, xmax=li, colour = factor(row))) +
+    geom_point( position = position_dodge(width = 0.1)) +
+    geom_errorbarh(height=.1, position = position_dodge(width = 0.1)) +
+    geom_vline(xintercept = 1, linetype="twodash") +
+    scale_x_continuous(limits = ylim) +
+    # theme_forest() +
+    theme_classic(base_size = 10) +
+    theme(panel.border=element_blank(),
+          axis.line=element_blank(),
+          panel.background=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()) +
+    #  scale_color_discrete(name = "Change in exposure from baseline (SD)", direction = -1) +
+    scale_color_viridis_d(name = "Change in exposure\nfrom baseline (SD)", direction = -1, option = "D") +
+    labs(x = "RR of outcome (SD)",
+         y = "Many Outcomes",
+         title = title)
+}
+
+
 # mice models -----------------------------------------------------------
 
 
