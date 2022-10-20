@@ -221,6 +221,16 @@ mice_iptw = function(X, Y, df, family = "gaussian") {
   return(out_m)
 }
 
+mice_iptw_lin = function(X,Y,df, family) {
+  # requires that a MATCH THEM dataset is converted to a mice object
+  # weights must be called "weights)
+  require("mice")
+  out_m <- with(df, glm(
+    as.formula(paste(Y, "~ (", X , ")")),    weights = weights,
+    family = family
+  ))
+  return(out_m)
+}
 
 # mice_iptw_lin = function(X,Y,df, family = "gaussian") {
 #   # requires that a MATCHTHEM dataset is converted to a mice object
