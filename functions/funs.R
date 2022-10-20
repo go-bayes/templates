@@ -38,8 +38,8 @@ read_ml <- function() {
 }
 
 # or avoids to avoid pushing/ pulling large objects on github use something like the following
- # push_mods <- fs::path_expand("~/The\ Virtues\ Project\ Dropbox/outcomewide/mods")
- # push_figs <- fs::path_expand("~/Users/joseph/The\ Virtues\ Project\ Dropbox/outcomewide/figs")
+# push_mods <- fs::path_expand("~/The\ Virtues\ Project\ Dropbox/outcomewide/mods")
+# push_figs <- fs::path_expand("~/Users/joseph/The\ Virtues\ Project\ Dropbox/outcomewide/figs")
 
 
 ## function for saving
@@ -57,67 +57,89 @@ readh <- function(name) {
 
 
 
-
-
 # forest plots studies ------------------------------------
 
 
 #  Takes a list of ggplot graph objects and creates a combined object
 # e.g. dt_new <- bind_forestplot(list(alcoholfreq_p,alcoholintensity_p, bmi_p))
 
-bind_forestplot = function(x){
+bind_forestplot = function(x) {
   ls_output  <- lapply(x, function(zed) {
     dt_zed <- as.data.frame(zed$data)
     dt_zed$id <- rep(zed$labels$y, nrow(dt_zed))
     dt_zed
   })
-  df_output <- do.call( rbind, ls_output)
+  df_output <- do.call(rbind, ls_output)
   df_output
 }
 
 ## creat forest plot, using a "bind_forestplot" object
 
-gcomp_forestplot= function(out, title, ylim, xlab) { # provisional
+gcomp_forestplot = function(out, title, ylim, xlab) {
+  # provisional
   require(ggplot2)
   require(viridisLite)
-  ggplot(data=out, aes(y=id, x=est, xmin=ui, xmax=li, colour = factor(row))) +
-    geom_point( position = position_dodge(width = 0.1)) +
-    geom_errorbarh(height=.1, position = position_dodge(width = 0.1)) +
-    geom_vline(xintercept = 0, linetype="solid") +
-    geom_vline(xintercept = c(-.5, -.25,.25, .5), linetype="twodash", alpha = .5) + # experimental
+  ggplot(data = out, aes(
+    y = id,
+    x = est,
+    xmin = ui,
+    xmax = li,
+    colour = factor(row)
+  )) +
+    geom_point(position = position_dodge(width = 0.3)) +
+    geom_errorbarh(height = .3, position = position_dodge(width = 0.3)) +
+    geom_vline(xintercept = 0, linetype = "solid") +
+    geom_vline(
+      xintercept = c(-.5,-.25, .25, .5),
+      linetype = "twodash",
+      alpha = .5
+    ) + # experimental
     scale_x_continuous(limits = ylim) +
     # theme_forest() +
     theme_classic(base_size = 10) +
-    theme(panel.border=element_blank(),
-          axis.line=element_blank(),
-          panel.background=element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank()) +
+    theme(
+      panel.border = element_blank(),
+      axis.line = element_blank(),
+      panel.background = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank()
+    ) +
     #  scale_color_discrete(name = "Change in exposure from baseline (SD)", direction = -1) +
-    scale_color_viridis_d(name = "Change in exposure\nfrom baseline (SD)", direction = -1, option = "D") +
+    scale_color_viridis_d(name = "Change in exposure\nfrom baseline (SD)",
+                          direction = -1,
+                          option = "D") +
     labs(x = "Change in outcome (SD)",
          y = "Many Outcomes",
          title = title)
 }
 
 
-
-gcomp_forestplot_rr = function(out, title, ylim, xlab) { # provisional
+gcomp_forestplot_rr = function(out, title, ylim, xlab) {
   require(ggplot2)
   require(viridisLite)
-  ggplot(data=out, aes(y=id, x=est, xmin=ui, xmax=li, colour = factor(row))) +
-    geom_point( position = position_dodge(width = 0.1)) +
-    geom_errorbarh(height=.1, position = position_dodge(width = 0.1)) +
-    geom_vline(xintercept = 1, linetype="twodash") +
+  ggplot(data = out, aes(
+    y = id,
+    x = est,
+    xmin = ui,
+    xmax = li,
+    colour = factor(row)
+  )) +
+    geom_point(position = position_dodge(width = 0.3)) +
+    geom_errorbarh(height = 0.3, position = position_dodge(width = 0.3)) +
+    geom_vline(xintercept = 1, linetype = "twodash") +
     scale_x_continuous(limits = ylim) +
     # theme_forest() +
     theme_classic(base_size = 10) +
-    theme(panel.border=element_blank(),
-          axis.line=element_blank(),
-          panel.background=element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank()) +
-    scale_color_viridis_d(name = "Change in exposure\nfrom baseline (SD)", direction = -1, option = "D") +
+    theme(
+      panel.border = element_blank(),
+      axis.line = element_blank(),
+      panel.background = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank()
+    ) +
+    scale_color_viridis_d(name = "Change in exposure\nfrom baseline (SD)",
+                          direction = -1,
+                          option = "D") +
     labs(x = "RR of outcome (SD)",
          y = "Many Outcomes",
          title = title)
@@ -126,17 +148,15 @@ gcomp_forestplot_rr = function(out, title, ylim, xlab) { # provisional
 
 # mice models -----------------------------------------------------------
 
-
 mice_gaussian = function(df, X, Y, cvars) {
   require("splines")
   require("mice")
   out <- with(df, glm(as.formula(paste(
     paste(Y, "~ bs(", X , ")+"),
-    paste(cvars, collapse = "+")  ))))
+    paste(cvars, collapse = "+")
+  ))))
   out
 }
-
-
 
 
 mice_generalised = function(df, X, Y, cvars, family) {
@@ -144,7 +164,7 @@ mice_generalised = function(df, X, Y, cvars, family) {
   require("mice")
   out <- with(df, glm(as.formula(paste(
     paste(Y, "~ bs(", X , ")+"),
-    paste(cvars,collapse = "+")
+    paste(cvars, collapse = "+")
   )), family = family))
   out
 }
@@ -152,8 +172,8 @@ mice_generalised = function(df, X, Y, cvars, family) {
 mice_generalised_lin = function(df, X, Y, cvars, family) {
   require("mice")
   out <- with(df, glm(as.formula(paste(
-    paste(Y,"~", X,"+"),
-    paste(cvars,collapse = "+")
+    paste(Y, "~", X, "+"),
+    paste(cvars, collapse = "+")
   )), family = family))
   out
 }
@@ -185,34 +205,54 @@ mice_generalised_pre = function(df, X, Y, cvars, pre_x, family) {
 }
 
 
+#  IPTW ----------------------------------------------------------------
+# functions
 
-mice_iptw = function(X,Y,df, family = family) {
+
+
+mice_iptw = function(X, Y, df, family = "gaussian") {
   # requires that a MATCH THEM dataset is converted to a mice object
   # weights must be called "weights)
   require("splines")
   require("mice")
-  out_m <- with(df, glm(
-    as.formula(paste(Y, "~ bs(", X , ")")),
-    weights = weights,
-    family = family
-  ))
+  out_m <- with(df, glm(as.formula(paste(Y, "~ bs(", X , ")")),
+                        weights = weights,
+                        family = family))
   return(out_m)
 }
 
 
-mice_iptw_lin = function(X,Y,df, family = "gaussian") {
+# mice_iptw_lin = function(X,Y,df, family = "gaussian") {
+#   # requires that a MATCHTHEM dataset is converted to a mice object
+#   # weights must be called "weights)
+#   require("mice")
+#   out_m <- with(df, glm(
+#     as.formula(paste(Y, "~ (", X , ")")),    weights = weights,
+#     family = family
+#   ))
+#   return(out_m)
+# }
+
+
+
+mice_iptw_lin = function(X, Y, df, family = "gaussian") {
   # requires that a MATCH THEM dataset is converted to a mice object
   # weights must be called "weights)
   require("mice")
-  out_m <- with(df, glm(
-    as.formula(paste(Y, "~ (", X , ")")),    weights = weights,
-    family = family
-  ))
+  out_m <- with(df, glm(as.formula(paste(Y, "(", X , ")")),
+                        weights = weights,
+                        family = family))
   return(out_m)
 }
 
+
+
+
+# regression without imputation -------------------------------------------
+
+
 # for regression without mi
-glm_nomi = function(X,Y,df, cvars, family = family) {
+glm_nomi = function(X, Y, df, cvars, family = family) {
   # requires that a MATCH THEM dataset is converted to a mice object
   # weights must be called "weights)
   require("splines")
@@ -224,18 +264,15 @@ glm_nomi = function(X,Y,df, cvars, family = family) {
 }
 
 
-glm_nomi_lin = function(X,Y,df, cvars, family = family) {
+glm_nomi_lin = function(X, Y, df, cvars, family = family) {
   # requires that a MATCH THEM dataset is converted to a mice object
   # weights must be called "weights)
-  out_m <- glm(
-    as.formula(paste(
+  out_m <- glm(as.formula(paste(
     paste(Y, "~ (", X , ")+"),
     paste(cvars, collapse = "+")
   )), family = family, data = df)
   return(out_m)
 }
-
-
 
 # require("mice")
 # out_m <- with(df, glm(
@@ -401,7 +438,7 @@ pool_stglm_contrast_ratio <- function(out, df, m, x, X, r) {
 
 ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
   require(ggplot2)
-  g1 <- out[match(p, x),]
+  g1 <- out[match(p, x), ]
   g1
   ggplot2::ggplot(out, aes(x = row, y = est)) +
     geom_point() +
@@ -420,43 +457,38 @@ ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
 # plots for no mi impute
 # plots
 
-ggplot_stglm_nomi <- function(out, ylim, main, xlab, ylab, min, p, sub) {
-  require(ggplot2)
-  out_p <- as.data.frame(print(summary(out)))
-  rows <- 1:nrow(out_p)
-  rows
-  out_p$rows<- sapply(rows, function(x)x-1)
-  out_p$rows <- 1:nrow(out_p)
-  # out <- out |> dplyr::rename(est = "Estimate",
-  #                             li = "lower.0.95",
-  #                             ui = "upper.0.95",
-  #                             se = "Std..Error")
-  out_p <- out_p |> dplyr::rename(est = "Estimate",
-                              li = "lower 0.95",
-                              ui = "upper 0.95",
-                              se = "Std. Error")
-  g1 <- out_p[match(p, x),]
-  g1
-  ggplot2::ggplot(out_p, aes(x = rows, y = est)) +
-    geom_point() +
-    geom_pointrange(aes(ymin =  li, ymax = ui), colour = "darkgray")  +
-    scale_y_continuous(limits = ylim) +
-    labs(
-      title = main,
-      subtitle = sub,
-      x = xlab,
-      y = ylab
-    ) +
-    geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
-    theme_classic()
-}
-
-
-
-
-
-
-
+ggplot_stglm_nomi <-
+  function(out, ylim, main, xlab, ylab, min, p, sub) {
+    require(ggplot2)
+    out_p <- as.data.frame(print(summary(out)))
+    rows <- 1:nrow(out_p)
+    rows
+    out_p$rows <- sapply(rows, function(x)
+      x - 1)
+    out_p$rows <- 1:nrow(out_p)
+    # out <- out |> dplyr::rename(est = "Estimate",
+    #                             li = "lower.0.95",
+    #                             ui = "upper.0.95",
+    #                             se = "Std..Error")
+    out_p <- out_p |> dplyr::rename(est = "Estimate",
+                                    li = "lower 0.95",
+                                    ui = "upper 0.95",
+                                    se = "Std. Error")
+    g1 <- out_p[match(p, x), ]
+    g1
+    ggplot2::ggplot(out_p, aes(x = rows, y = est)) +
+      geom_point() +
+      geom_pointrange(aes(ymin =  li, ymax = ui), colour = "darkgray")  +
+      scale_y_continuous(limits = ylim) +
+      labs(
+        title = main,
+        subtitle = sub,
+        x = xlab,
+        y = ylab
+      ) +
+      geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+      theme_classic()
+  }
 
 
 # vanderweelevalues -------------------------------------------------------
@@ -475,9 +507,9 @@ vanderweelevalue_rr = function(out, f) {
       hi = coef[1, 3],
       true = 1
     ), 3))
-  evalout2 <- subset(evalout[2,])
+  evalout2 <- subset(evalout[2, ])
   evalout3 <- evalout2 |>
-    select_if(~ !any(is.na(.)))
+    select_if( ~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- c(main)
@@ -497,9 +529,9 @@ vanderweelevalue_rr_lo = function(out, f) {
       hi = coef[1, 3],
       true = 1
     ), 3))
-  evalout2 <- subset(evalout[2,])
+  evalout2 <- subset(evalout[2, ])
   evalout3 <- evalout2 |>
-    select_if(~ !any(is.na(.)))
+    select_if( ~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- c(main)
@@ -519,7 +551,7 @@ ggplot_stglm_nomi <-
                                 li = "lower.0.95",
                                 ui = "upper.0.95",
                                 se = "Std..Error")
-    g1 <- out[match(p, x), ]
+    g1 <- out[match(p, x),]
     g1
     ggplot2::ggplot(out, aes(x = row, y = est)) +
       geom_point() +
@@ -545,7 +577,7 @@ ggplot_stglm_nomi <-
                                 li = "lower.0.95",
                                 ui = "upper.0.95",
                                 se = "Std..Error")
-    g1 <- out[match(p, x), ]
+    g1 <- out[match(p, x),]
     g1
     ggplot2::ggplot(out, aes(x = row, y = est)) +
       geom_point() +
@@ -581,9 +613,9 @@ vanderweelevalue_ols = function(out, f, delta, sd) {
       ),
       3
     ))
-  evalout2 <- subset(evalout[2,])
+  evalout2 <- subset(evalout[2, ])
   evalout3 <- evalout2 |>
-    select_if(~ !any(is.na(.)))
+    select_if( ~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- main
@@ -608,18 +640,16 @@ vanderweelevalue_ols_lo = function(out, f, delta, sd) {
       ),
       3
     ))
-  evalout2 <- subset(evalout[2,])
+  evalout2 <- subset(evalout[2, ])
   evalout3 <- evalout2 |>
-    select_if(~ !any(is.na(.)))
+    select_if( ~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- main
   return(tab)
 }
 
-
-
-
+## risk ratio vanderweelevalue
 vanderweelevalue_rr_nomi = function(out, f) {
   require("EValue")
   coef <- round(out, 3) |>  slice(f + 1)
@@ -630,9 +660,9 @@ vanderweelevalue_rr_nomi = function(out, f) {
       hi = coef[1, 4],
       true = 1
     ), 3))
-  evalout2 <- subset(evalout[2, ])
+  evalout2 <- subset(evalout[2,])
   evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
+    select_if(~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- c(main)
@@ -653,10 +683,10 @@ vanderweelevalue_ols_nomi = function(out_ct, f, delta, sd) {
       ),
       3
     ))
-  evalout2 <- subset(evalout[2, ])
+  evalout2 <- subset(evalout[2,])
   evalout2
   evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
+    select_if(~ !any(is.na(.)))
   evalout3
   colnames(evalout3) <- c("E-value", "threshold")
   evalout3
@@ -695,9 +725,9 @@ vanderweelevalue_rr_nomi = function(out_ct, f) {
       hi = coef[1, 4],
       true = 1
     ), 3))
-  evalout2 <- subset(evalout[2, ])
+  evalout2 <- subset(evalout[2,])
   evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
+    select_if(~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- c(main)
@@ -716,9 +746,9 @@ vanderweelevalue_rr_nomi_lo = function(out, r) {
       hi = coef[1, 4],
       true = 1
     ), 3))
-  evalout2 <- subset(evalout[2, ])
+  evalout2 <- subset(evalout[2,])
   evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
+    select_if(~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- c(main)
@@ -851,4 +881,3 @@ vanderweelevalue_rr_nomi_lo = function(out, r) {
 # df is the dataframe -- a mice object
 # X is the exposure,
 # we assume a spline model
-
