@@ -1,5 +1,5 @@
+# useful
 
-#libraries used
 library("dplyr") # data wrangling
 library("tidyr") # data wrangling
 library("janitor") # clean var names
@@ -33,7 +33,6 @@ library("naniar") # missing data
 library("conflicted") # don't have conflicts #
 library("Amelia") # multiple imputation
 library("miceadds") # convert amelia to mice objects and vice versa
-library("fs")
 #conflict_prefer("pool", "mice")
 #conflict_prefer("filter", "dplyr")
 #conflict_prefer("select", "dplyr")
@@ -44,3 +43,37 @@ rstan_options(auto_write = TRUE) # bayesian estimation
 options(mc.cores = parallel::detectCores ()) # use all course
 theme_set(theme_pubclean()) # nice theme
 library(geepack)
+# install packages
+
+# function for installing dependencies
+ipak <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg))
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
+# usage
+packages <- c("tidyverse", "janitor", "here", "purrr", "ggplot2", "stdReg", "mice",
+              "miceadds", "Amelia","conflicted","naniar", "skimr", "naniar","marginaleffects",
+              "splines", "CMAverse", "gghighlight", "formula.tools", "ggpubr", "lme4",
+              "rstan","cmdstanr", "geepack", "brms","ggokabeito", "table1", "kableExtra",
+              "parameters","patchwork","tidyr")
+ipak(packages)
+
+
+# next install rethinking
+if (!require(rethinking)) {
+  devtools::install_github("rmcelreath/rethinking")
+}
+
+if (!require(CMAverse)) {
+  devtools::install_github("BS1125/CMAverse")
+}
+
+
+
+
+# if (!requireNamespace("remotes")) {
+#   install.packages("remotes")
+# }
+# remotes::install_github("paul-buerkner/brms")
