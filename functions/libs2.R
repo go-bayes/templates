@@ -89,6 +89,7 @@ packages <- c("tidyverse",
               "patchwork",
               "tidyr",
               "katex",
+             "ggeffects",
              "lubridate")
 ipak(packages)
 
