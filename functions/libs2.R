@@ -77,17 +77,19 @@ packages <- c("tidyverse",
               "formula.tools",
               "ggpubr",
               "lme4",
-             # "rstan",
+              "rstan",
               "cmdstanr",
               "geepack",
-             # "brms",
+              "brms",
+              "gt",
               "ggokabeito",
               "table1",
               "kableExtra",
               "parameters",
               "patchwork",
               "tidyr",
-              "katex")
+              "katex",
+             "lubridate")
 ipak(packages)
 
 
@@ -102,7 +104,7 @@ if (!require(CMAverse)) {
 
 # install.packages("remotes")
 
-# if (!require(cmdstanr)) {
-#   remotes::install_github("stan-dev/cmdstanr")
-#   install_cmdstan()
-# }
+if (!require(cmdstanr)) {
+  remotes::install_github("stan-dev/cmdstanr")
+  install_cmdstan()
+}
