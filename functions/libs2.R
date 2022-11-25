@@ -73,7 +73,7 @@ packages <- c("tidyverse",
               "marginaleffects",
               "splines",
               # "CMAverse",
-             # "gghighlight",
+              # "gghighlight",
               "formula.tools",
               "ggpubr",
               "lme4",
@@ -90,7 +90,10 @@ packages <- c("tidyverse",
               "tidyr",
               "katex",
              "ggeffects",
-             "lubridate")
+             "lubridate",
+             "katex",
+             "pdftools",
+             "arrow")
 ipak(packages)
 
 
@@ -109,3 +112,10 @@ if (!require(cmdstanr)) {
   remotes::install_github("stan-dev/cmdstanr")
   install_cmdstan()
 }
+
+
+## settings for BMRS
+rstan_options(auto_write = TRUE) # bayesian estimation
+options(mc.cores = parallel::detectCores ()) # use all course
+
+## user needs to configure cmdstanr, instructions: https://mc-stan.org/cmdstanr/
