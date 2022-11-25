@@ -5,6 +5,7 @@ library("stdReg")
 library("ggplot2")
 library("mice")
 library("conflicted")
+library("arrow")
 conflict_prefer("pool", "mice")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
@@ -15,26 +16,25 @@ conflict_prefer("cbind", "base")
 push_mods <- here::here("mods")
 push_figs <- here::here("figs")
 
-
 # read raw data
 read_raw <- function() {
-  readRDS(here::here("data", "data_raw"))
+  arrow::read_parquet(here::here("data", "data_raw"))
 }
 
 # read  imputed data
 read_imputed <- function() {
-  readRDS(here::here("data", "data_imputed"))
+  arrow::read_parquet(here::here("data", "data_imputed"))
 
 }
 
 # read imputated dat long
 
 read_long <- function() {
-  readRDS(here::here("data", "data_long"))
+  arrow::read_parquet(here::here("data", "data_long"))
 }
 
 read_ml <- function() {
-  readRDS(here::here("data", "data_ml"))
+  arrow::read_parquet(here::here("data", "data_ml"))
 }
 
 # or avoids to avoid pushing/ pulling large objects on github use something like the following
@@ -45,13 +45,13 @@ read_ml <- function() {
 ## function for saving
 saveh <- function(df, name) {
   x = df
-  saveRDS(x,  here::here(push_mods,  paste0(name, '')))
+  arrow::write_parquet(x,  here::here(push_mods,  paste0(name, '')))
 }
 
 
 # function for reading
 readh <- function(name) {
-  df = readRDS(here::here(push_mods,  paste0(name, '')))
+  df = arrow::read_parquet(here::here(push_mods,  paste0(name, '')))
   df
 }
 
