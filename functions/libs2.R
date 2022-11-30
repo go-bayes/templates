@@ -73,7 +73,7 @@ packages <- c("tidyverse",
               "marginaleffects",
               "splines",
               # "CMAverse",
-             # "gghighlight",
+              # "gghighlight",
               "formula.tools",
               "ggpubr",
               "lme4",
@@ -92,9 +92,16 @@ packages <- c("tidyverse",
               "tidyr",
               "katex",
              "ggeffects",
+<<<<<<< HEAD
              "lubridate")
 
 # install/load
+=======
+             "lubridate",
+             "katex",
+             "pdftools",
+             "arrow")
+>>>>>>> main
 ipak(packages)
 
 
@@ -114,8 +121,17 @@ if (!require(cmdstanr)) {
   install_cmdstan()
 }
 
+<<<<<<< HEAD
 # brms options
 
 rstan_options(auto_write = TRUE) # bayesian estimation
 options(mc.cores = parallel::detectCores ()) # use all course
 theme_set(theme_pubclean()) # nice theme
+=======
+
+## settings for BMRS
+rstan_options(auto_write = TRUE) # bayesian estimation
+options(mc.cores = parallel::detectCores ()) # use all course
+
+## user needs to configure cmdstanr, instructions: https://mc-stan.org/cmdstanr/
+>>>>>>> main

@@ -3,7 +3,7 @@
 .RData
 .Ruserdata
 
-.DS_Store
+#.DS_Store
 #git rm --cached -f .DS_Store
 /.quarto/
 
