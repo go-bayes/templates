@@ -132,3 +132,4 @@ if (!require(lazerhawk)) {
   devtools::install_github('m-clark/lazerhawk')
   install_cmdstan()
 }
+
