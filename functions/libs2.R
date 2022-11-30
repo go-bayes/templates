@@ -49,52 +49,54 @@
 
 
 # function for installing dependencies
-ipak <- function(pkg){
+ipak <- function(pkg) {
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
   if (length(new.pkg))
     install.packages(new.pkg, dependencies = TRUE)
   sapply(pkg, require, character.only = TRUE)
 }
 # usage
-packages <- c("tidyverse",
-              "remotes",
-              "devtools",
-              "janitor",
-              "here",
-              "purrr",
-              "ggplot2",
-              "stdReg",
-              "mice",
-              "miceadds",
-              "Amelia",
-              "conflicted",
-              "naniar",
-              "skimr",
-              "marginaleffects",
-              "splines",
-              # "CMAverse",
-              # "gghighlight",
-              "formula.tools",
-              "ggpubr",
-              "lme4",
-              "rstan",
-              "cmdstanr",
-              "geepack",
-              "brms",
-              "gt",
-              "ggdist",
-              "ggokabeito",
-              "table1",
-              "kableExtra",
-              "parameters",
-              "patchwork",
-              "tidyr",
-              "katex",
-             "ggeffects",
-             "lubridate",
-             "katex",
-             "pdftools",
-             "arrow")
+packages <- c(
+  "tidyverse",
+  "remotes",
+  "devtools",
+  "janitor",
+  "here",
+  "purrr",
+  "ggplot2",
+  "stdReg",
+  "mice",
+  "miceadds",
+  "Amelia",
+  "conflicted",
+  "naniar",
+  "skimr",
+  "marginaleffects",
+  "splines",
+  # "CMAverse",
+  # "gghighlight",
+  "formula.tools",
+  "ggpubr",
+  "lme4",
+  "rstan",
+  "cmdstanr",
+  "geepack",
+  "brms",
+  "gt",
+  "ggdist",
+  "ggokabeito",
+  "table1",
+  "kableExtra",
+  "parameters",
+  "patchwork",
+  "tidyr",
+  "katex",
+  "ggeffects",
+  "lubridate",
+  "katex",
+  "pdftools",
+  "arrow"
+)
 
 ipak(packages)
 
@@ -130,4 +132,3 @@ if (!require(lazerhawk)) {
   devtools::install_github('m-clark/lazerhawk')
   install_cmdstan()
 }
-
