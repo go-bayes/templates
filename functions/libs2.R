@@ -134,4 +134,10 @@ rstan_options(auto_write = TRUE) # bayesian estimation
 options(mc.cores = parallel::detectCores ()) # use all course
 
 ## user needs to configure cmdstanr, instructions: https://mc-stan.org/cmdstanr/
+
+if (!require(lazerhawk)) {
+  devtools::install_github('m-clark/lazerhawk')
+  install_cmdstan()
+}
+
 >>>>>>> main
