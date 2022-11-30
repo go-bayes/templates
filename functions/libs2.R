@@ -66,7 +66,7 @@ packages <- c("tidyverse",
               "stdReg",
               "mice",
               "miceadds",
-              #"Amelia",
+              "Amelia",
               "conflicted",
               "naniar",
               "skimr",
@@ -82,6 +82,8 @@ packages <- c("tidyverse",
               "geepack",
               "brms",
               "gt",
+              "ggefects",
+              "ggdist",
               "ggokabeito",
               "table1",
               "kableExtra",
@@ -91,6 +93,8 @@ packages <- c("tidyverse",
               "katex",
              "ggeffects",
              "lubridate")
+
+# install/load
 ipak(packages)
 
 
@@ -109,3 +113,9 @@ if (!require(cmdstanr)) {
   remotes::install_github("stan-dev/cmdstanr")
   install_cmdstan()
 }
+
+# brms options
+
+rstan_options(auto_write = TRUE) # bayesian estimation
+options(mc.cores = parallel::detectCores ()) # use all course
+theme_set(theme_pubclean()) # nice theme
