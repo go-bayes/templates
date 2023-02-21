@@ -221,16 +221,35 @@ mice_iptw = function(X, Y, df, family = "gaussian") {
   return(out_m)
 }
 
-mice_iptw_lin = function(X,Y,df, family) {
+
+# modified early 23
+# mice_iptw_lin = function(X,Y,df, family) {
+#   # requires that a MATCH THEM dataset is converted to a mice object
+#   # weights must be called "weights)
+#   require("mice")
+#   out_m <- with(df, glm(
+#     as.formula(paste(Y, "~ (", X , ")")),    weights = weights,
+#     family = family
+#   ))
+#   return(out_m)
+# }
+
+mice_iptw_lin = function(X,Y,df, cvars, family = "gaussian") {
   # requires that a MATCH THEM dataset is converted to a mice object
   # weights must be called "weights)
   require("mice")
   out_m <- with(df, glm(
-    as.formula(paste(Y, "~ (", X , ")")),    weights = weights,
+    as.formula(paste(
+      paste(Y, "~", X, "+"),
+      paste(cvars, collapse = "+"))),
+    weights = weights,
     family = family
   ))
   return(out_m)
 }
+
+
+
 
 # mice_iptw_lin = function(X,Y,df, family = "gaussian") {
 #   # requires that a MATCHTHEM dataset is converted to a mice object
@@ -319,14 +338,11 @@ pool_stglm <- function(models, df, m, x, X) {
   #between-variance
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
-  #total variance
-  var <- W + (1 + 1 / m) * B
-
-# amended see:
- #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://thestatsgeek.com/wp-content/uploads/2023/02/gformulaMI_CSM_2023_02_08.pdf
+  # amended see:
+  #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://thestatsgeek.com/wp-content/uploads/2023/02/gformulaMI_CSM_2023_02_08.pdf
 
   #total variance
-#  var <- ((1 + 1 / m) * B) - W
+  var <- W #+ (1 + 1 / m) * B
 
   #total standard error
   se <- sqrt(var)
@@ -375,7 +391,7 @@ pool_stglm_contrast <- function(out, df, m, x, X, r) {
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
   #total variance
-  var <- W + (1 + 1 / m) * B
+  var <- W #+ (1 + 1 / m) * B  # amended RUBINS rule overstates
 
   #total standard error
   se <- sqrt(var)
@@ -427,7 +443,7 @@ pool_stglm_contrast_ratio <- function(out, df, m, x, X, r) {
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
   #total variance
-  var <- W + (1 + 1 / m) * B
+  var <- W #+ (1 + 1 / m) * B  # amended RUBINS rule overstates
 
   #total standard error
   se <- sqrt(var)
