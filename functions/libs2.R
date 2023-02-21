@@ -117,6 +117,16 @@ if (!require(cmdstanr)) {
   install_cmdstan()
 }
 
+if (!require(CMAverse)) {
+  devtools::install_github("BS1125/CMAverse")
+}
+
+
+# for missing data imputation and gcomputation on the fly
+if(!require(CMAverse)) {
+devtools::install_github("jwb133/gFormulaMI")
+}
+
 # brms options
 
 rstan_options(auto_write = TRUE) # bayesian estimation
