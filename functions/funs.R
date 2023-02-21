@@ -320,13 +320,13 @@ pool_stglm <- function(models, df, m, x, X) {
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
   #total variance
- # var <- W + (1 + 1 / m) * B
+  var <- W + (1 + 1 / m) * B
 
 # amended see:
  #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://thestatsgeek.com/wp-content/uploads/2023/02/gformulaMI_CSM_2023_02_08.pdf
 
   #total variance
-  var <- ((1 + 1 / m) * B) - W
+#  var <- ((1 + 1 / m) * B) - W
 
   #total standard error
   se <- sqrt(var)

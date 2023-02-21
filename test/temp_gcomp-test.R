@@ -5,7 +5,9 @@ options(scipen = 999)
 
 #libraries and functions
 # read libraries
-#source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/libs.R")
+source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/libs2.R")
+
+
 
 # read functions
 #source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/funs.R")
@@ -13,10 +15,10 @@ options(scipen = 999)
 #conflict_prefer("pool", "mice")
 #conflict_prefer("cbind", "base")
 # for saving models
-push_mods <-
-  fs::path_expand("~/The\ Virtues\ Project\ Dropbox/outcomewide/mods")
-push_figs <-
-  fs::path_expand("~/Users/joseph/The\ Virtues\ Project\ Dropbox/outcomewide/figs")
+# push_mods <-
+#   fs::path_expand("~/The\ Virtues\ Project\ Dropbox/outcomewide/mods")
+# push_figs <-
+#   fs::path_expand("~/Users/joseph/The\ Virtues\ Project\ Dropbox/outcomewide/figs")
 
 # read data
 pull_path <-
@@ -24,4 +26,5 @@ pull_path <-
     "~/The\ Virtues\ Project\ Dropbox/Joseph\ Bulbulia/00Bulbulia\ Pubs/2021/DATA/ldf.5"
   )
 
+dt <- readRDS(pull_path)
 
