@@ -322,7 +322,7 @@ pool_stglm <- function(models, df, m, x, X) {
   #total variance
  # var <- W + (1 + 1 / m) * B
 
- # amended see:
+# amended see:
  #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://thestatsgeek.com/wp-content/uploads/2023/02/gformulaMI_CSM_2023_02_08.pdf
 
   #total variance
@@ -375,8 +375,7 @@ pool_stglm_contrast <- function(out, df, m, x, X, r) {
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
   #total variance
-  # var <- W + (1 + 1 / m) * B
-  var <-   ((1 + 1 / m) * B) - W
+  var <- W + (1 + 1 / m) * B
 
   #total standard error
   se <- sqrt(var)
@@ -427,9 +426,8 @@ pool_stglm_contrast_ratio <- function(out, df, m, x, X, r) {
   #between-variance
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
- #total variance # fixed
- # var <- W + (1 + 1 / m) * B
-  var <-   ((1 + 1 / m) * B) - W
+  #total variance
+  var <- W + (1 + 1 / m) * B
 
   #total standard error
   se <- sqrt(var)
