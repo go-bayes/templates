@@ -234,45 +234,34 @@ mice_iptw = function(X, Y, df, family = "gaussian") {
 #   return(out_m)
 # }
 
-mice_iptw_lin = function(X,Y,df, cvars, family = "gaussian") {
+
+mice_iptw_lin = function(X, Y, df, cvars, family = "gaussian") {
   # requires that a MATCH THEM dataset is converted to a mice object
   # weights must be called "weights)
   require("mice")
-  out_m <- with(df, glm(
-    as.formula(paste(
-      paste(Y, "~", X, "+"),
-      paste(cvars, collapse = "+"))),
-    weights = weights,
-    family = family
-  ))
+  out_m <- with(df, glm(as.formula(paste(
+    paste(Y, "~", X, "+"),
+    paste(cvars, collapse = "+")
+  )),
+  weights = weights,
+  family = family))
   return(out_m)
 }
 
 
 
 
-# mice_iptw_lin = function(X,Y,df, family = "gaussian") {
-#   # requires that a MATCHTHEM dataset is converted to a mice object
+
+
+# mice_iptw_lin = function(X, Y, df, family = "gaussian") {
+#   # requires that a MATCH THEM dataset is converted to a mice object
 #   # weights must be called "weights)
 #   require("mice")
-#   out_m <- with(df, glm(
-#     as.formula(paste(Y, "~ (", X , ")")),    weights = weights,
-#     family = family
-#   ))
+#   out_m <- with(df, glm(as.formula(paste(Y, "(", X , ")")),
+#                         weights = weights,
+#                         family = family))
 #   return(out_m)
 # }
-
-
-
-mice_iptw_lin = function(X, Y, df, family = "gaussian") {
-  # requires that a MATCH THEM dataset is converted to a mice object
-  # weights must be called "weights)
-  require("mice")
-  out_m <- with(df, glm(as.formula(paste(Y, "(", X , ")")),
-                        weights = weights,
-                        family = family))
-  return(out_m)
-}
 
 
 
@@ -299,9 +288,25 @@ glm_nomi_lin = function(X, Y, df, cvars, family = family) {
   out_m <- glm(as.formula(paste(
     paste(Y, "~ (", X , ")+"),
     paste(cvars, collapse = "+")
+  )), family = family,
+  weights = weights,
+  data = df)
+  return(out_m)
+}
+
+
+
+glm_nomi_lin = function(X, Y, df, cvars, family = family) {
+  # requires that a MATCH THEM dataset is converted to a mice object
+  # weights must be called "weights)
+  out_m <- glm(as.formula(paste(
+    paste(Y, "~ (", X , ")+"),
+    paste(cvars, collapse = "+")
   )), family = family, data = df)
   return(out_m)
 }
+
+
 
 # require("mice")
 # out_m <- with(df, glm(
