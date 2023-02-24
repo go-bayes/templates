@@ -6,11 +6,15 @@ library("ggplot2")
 library("mice")
 library("conflicted")
 library("arrow")
+
+
+
 conflict_prefer("pool", "mice")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 conflict_prefer("cbind", "base")
-
+conflict_prefer("lead", "dplyr")
+conflict_prefer("lag", "dplyr")
 
 # set paths
 push_mods <- here::here("mods")

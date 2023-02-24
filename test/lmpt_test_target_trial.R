@@ -282,7 +282,7 @@ dp_w <- dp_wide |>
     EthCat = l0_EthCat,
     GenCohort = l0_GenCohort,
     BornNZ = l0_BornNZ,
-    a0 = l0_a_Church,
+    a0 = l0_a_Church, # BASE. # BASELINE
     a1 = l1_a_Church,
     a2 = l2_a_Church,
     a3 = l3_a_Church,

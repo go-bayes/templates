@@ -31,6 +31,31 @@ pull_path <-
 dat <- arrow::read_parquet(pull_path)
 
 
+
+# describe full data set
+
+# example
+dat |>
+  filter(Wave == 2018 & YearMeasured==1) |>
+  select(PERFECTIONISM, Gender, Id, Wave) |>
+  drop_na() |>
+  summarise(count_distinct = n_distinct(Id))
+
+
+# another
+dat |>
+  filter(Wave == 2018 & YearMeasured==1) |>
+  select(PERFECTIONISM, Gender, Id, Wave) |>
+  mutate(Male = as.factor(Gender)) |>
+  drop_na() |>
+  ggplot(aes(x=as.factor(Gender), y=PERFECTIONISM, colour = factor(Gender))) +
+  geom_boxplot(notch = TRUE) + geom_jitter(shape=16, position=position_jitter(0.2), alpha = .1) + labs(
+    title = "Perfectionism by Gender: NZAVS years 2018-2019, N = 47823",
+    y = "Doing my best never seems to be enough.\nMy performance rarely measures up to my standards.\nI am hardly ever satisfied with my performance.",
+    x = "Male coded as 1, other identities coded as 0") + scale_color_viridis_d(option = "D")
+
+
+
 dat_new <- dat %>%
   dplyr::mutate(Euro = if_else(EthCat == 1, 1, 0),
                 SexualOrientation = as.factor(if_else(
@@ -91,9 +116,6 @@ dplyr::filter((Wave == 2015  & YearMeasured  == 1) |
 
 
 ###
-
-
-
 dat_prep  <- dat_new %>%
   arrange(Wave, Id) |>
   mutate(time = as.numeric(Wave) - 1) |>
@@ -622,7 +644,7 @@ Y  = "y2_sf"
 xlab = "Do you have any pets? (lost)"  ## Weekly hours devided by 10
 
 
-# SET THE RANGE OF WORK HOURS FROM ZERO TO 80
+# SET THE RANGE OF EXPOSURE
 min = 0
 max =  1
 
@@ -729,6 +751,9 @@ newmids <- as.mids(alldataset)
 
 
 
+
+# NOAH'S WAY
+
 fits <- lapply(complete(match_pets, "all"), function(d) {
   glm(
     as.formula(paste(
@@ -745,6 +770,7 @@ mice::pool(fits)
 
 
 
+# TWO WAYS TO COMUTE CAUSAL EFFECTS
 
 library("marginaleffects")
 comp.imp <- lapply(fits, function(fit) {
@@ -765,7 +791,7 @@ summary(pooled.comp, conf.int = TRUE,
 
 
 
-## another way
+## another way -- very nice
 library(clarify)
 sim.imp <- misim(fits, n = 1000, vcov = "HC3")
 sim.imp
@@ -829,7 +855,7 @@ pool_stglm_contrast <- function(out, df, m = 50 , x, X, r) {
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
   #total variance
-  var <-  ((1 + 1 / m) * B) + W # amended RUBINS rule overstates
+  var <-  ((1 + 1 / m) * B) + W # need to amend? Does RUBINS rule overstate variance
 
   #total standard error
   se <- sqrt(var)
@@ -1890,6 +1916,11 @@ imps <- gFormulaImpute(
 fits <- with(imps, lm(y_depressed ~ factor(regime)))
 
 syntheticPool(fits)
+
+
+
+
+
 
 
 ## NOT WORKING TRY SOMETHING ELSE
