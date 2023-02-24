@@ -121,9 +121,15 @@ if (!require(CMAverse)) {
   devtools::install_github("BS1125/CMAverse")
 }
 
+# targeted max liklihood
+if (!require(lmtp)) {
+  devtools::install_github("nt-williams/lmtp@sl3")
+}
+
+#devtools::install_github("nt-williams/lmtp@sl3")
 
 # for missing data imputation and gcomputation on the fly
-if(!require(CMAverse)) {
+if(!require(gFormulaMI)) {
 devtools::install_github("jwb133/gFormulaMI")
 }
 
