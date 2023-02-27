@@ -95,7 +95,9 @@ packages <- c(
   "lubridate",
   "katex",
   "pdftools",
-  "arrow"
+  "arrow",
+  "seqHMM",
+  "msm"
 )
 
 ipak(packages)

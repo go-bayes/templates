@@ -605,7 +605,7 @@ ests %>%
   fmt_number(columns = 2:4) |>  #decimals = 1, scale_by=.1) %>%
   cols_merge(columns = 2:4, pattern = c("{1} ({2}, {3})")) %>%
   cols_label(intervention = "Intervention",
-             estimate = "Estimated 7 year depression rate \n(95% CI)")
+             estimate = "Estimated 7 year Depression Rate \n(95% CI)")
 
 
 

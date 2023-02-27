@@ -1,4 +1,5 @@
 # new R template for gcomp.
+# You can find more information about the NZAVS:[HERE](https://www.psych.auckland.ac.nz/en/about/new-zealand-attitudes-and-values-study.html)
 
 
 # step one: import libraries:
@@ -42,6 +43,17 @@ str(dat)
 
 # count unique individuals
 n_unique(dat$Id)
+
+# participants by wave
+dat %>%
+  filter(YearMeasured ==1) %>%
+  droplevels() %>%
+  arrange(Wave) %>%
+  group_by(Wave) %>%
+  count( )
+
+
+
 
 # explore data
 # describe full data set
