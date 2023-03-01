@@ -347,11 +347,11 @@ pool_stglm <- function(models, df, m, x, X) {
   #between-variance
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
-  # amended see:
-  #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://thestatsgeek.com/wp-content/uploads/2023/02/gformulaMI_CSM_2023_02_08.pdf
+# ammend? see:
+#chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://thestatsgeek.com/wp-content/uploads/2023/02/gformulaMI_CSM_2023_02_08.pdf
 
   #total variance
-  var <- W #+ (1 + 1 / m) * B
+  var <- W + (1 + 1 / m) * B
 
   #total standard error
   se <- sqrt(var)

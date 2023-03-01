@@ -29,14 +29,72 @@ pull_path <-
 
 # note that you need use the arrow package
 dat <- arrow::read_parquet(pull_path)
+dat$REGC_2018
+
+sw$REGC_2022.T10.L
+
+
+dt1 <- dat  |>
+  dplyr::filter(YearMeasured == 1 & Wave == 2019) |> # JM's focus
+  dplyr::select(REGC_2022,  COVID19.Timeline) |> # select vars of interest
+  dplyr::mutate(
+    cum_lockdowns_baseline = dplyr::case_when(
+      COVID19.Timeline < 1.2 ~ 0,
+      COVID19.Timeline > 1.2 & COVID19.Timeline < 2 ~ 2,
+      COVID19.Timeline > 2 & REGC_2022 == 2 |
+        COVID19.Timeline > 2 & REGC_2022 == 1 ~ 3,
+    )
+  )
+
+table(dt1$cum_lockdowns_baseline)
+
+
+dt_fix <- dat |>
+  filter(YearMeasured == 1 & Wave == 2019) |>
+  select(REGC_2022, COVID19.Timeline) |>
+  mutate(
+    cum_lockdowns_baseline = case_when(
+      COVID19.Timeline < 1.2 ~ 0,
+      COVID19.Timeline > 1.2 & COVID19.Timeline < 2 ~ 2,
+      COVID19.Timeline > 2 & REGC_2022 %in% c(1, 2) ~ 3,
+      COVID19.Timeline > 2 & REGC_2022 == 4 ~ 4,
+    )
+  )
+
+
+table(dt_fix$cum_lockdowns_baseline)
 
 
 
-# describe full data set
 
-# example
+
+
+table(dt4$cum_lockdowns_baseline)
+
+
+dt0 <- dat  |>
+  dplyr::filter(YearMeasured == 1 & Wave == 2019) |> # JM's focus
+  dplyr::select(REGC_2022,  COVID19.Timeline) |> # select vars of interest
+  dplyr::mutate(cum_lockdowns_baseline = if_else(
+    COVID19.Timeline < 1.2,
+    0,
+    if_else(
+      COVID19.Timeline > 1.2 & COVID19.Timeline < 2,
+      2,
+      if_else(
+        COVID19.Timeline > 2 &
+          REGC_2022 == 2 |
+          COVID19.Timeline > 2 & REGC_2022 == 1,
+        4,
+        3
+      )
+    )
+  ))
+table(dt0$cum_lockdowns_baseline)
+
+
 dat |>
-  filter(Wave == 2018 & YearMeasured==1) |>
+  filter(Wave == 2018 & YearMeasured == 1) |>
   select(PERFECTIONISM, Gender, Id, Wave) |>
   drop_na() |>
   summarise(count_distinct = n_distinct(Id))
@@ -44,15 +102,20 @@ dat |>
 
 # another
 dat |>
-  filter(Wave == 2018 & YearMeasured==1) |>
+  filter(Wave == 2018 & YearMeasured == 1) |>
   select(PERFECTIONISM, Gender, Id, Wave) |>
   mutate(Male = as.factor(Gender)) |>
   drop_na() |>
-  ggplot(aes(x=as.factor(Gender), y=PERFECTIONISM, colour = factor(Gender))) +
-  geom_boxplot(notch = TRUE) + geom_jitter(shape=16, position=position_jitter(0.2), alpha = .1) + labs(
-    title = "Perfectionism by Gender: NZAVS years 2018-2019, N = 47823",
-    y = "Doing my best never seems to be enough.\nMy performance rarely measures up to my standards.\nI am hardly ever satisfied with my performance.",
-    x = "Male coded as 1, other identities coded as 0") + scale_color_viridis_d(option = "D")
+  ggplot(aes(
+    x = as.factor(Gender),
+    y = PERFECTIONISM,
+    colour = factor(Gender)
+  )) +
+  geom_boxplot(notch = TRUE) + geom_jitter(shape = 16,
+                                           position = position_jitter(0.2),
+                                           alpha = .1) + labs(title = "Perfectionism by Gender: NZAVS years 2018-2019, N = 47823",
+                                                              y = "Doing my best never seems to be enough.\nMy performance rarely measures up to my standards.\nI am hardly ever satisfied with my performance.",
+                                                              x = "Male coded as 1, other identities coded as 0") + scale_color_viridis_d(option = "D")
 
 
 
@@ -231,7 +294,7 @@ dat_prep  <- dat_new %>%
   dplyr::mutate(across(!c(Id, Wave), ~ as.numeric(.x))) %>% # make factors numeric for easy of
   arrange(Id, Wave) %>%
   dplyr::mutate(#  Volunteers = if_else(HoursCharity == 1, 1, 0),
-    Church = ifelse(Religion.Church > 8, 8, Religion.Church),) %>%
+    Church = ifelse(Religion.Church > 8, 8, Religion.Church), ) %>%
   dplyr::mutate(
     #  Volunteers = if_else(HoursCharity == 1, 1, 0),
     Hours.Pets_log = log(Hours.Pets + 1),
@@ -438,7 +501,7 @@ toy <- dt_wide |>
     y2_sf = "SFHEALTH_t2",
     y2_com = "community_t2"
   ) |>
-  filter(!is.na(a0),!is.na(a1))
+  filter(!is.na(a0), !is.na(a1))
 
 
 
@@ -855,7 +918,8 @@ pool_stglm_contrast <- function(out, df, m = 50 , x, X, r) {
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
   #total variance
-  var <-  ((1 + 1 / m) * B) + W # need to amend? Does RUBINS rule overstate variance
+  var <-
+    ((1 + 1 / m) * B) + W # need to amend? Does RUBINS rule overstate variance
 
   #total standard error
   se <- sqrt(var)
@@ -1162,11 +1226,16 @@ dp  <- dat %>%
   ungroup() |>
   dplyr::filter((
     Wave == 2013  & YearMeasured  == 1  & !is.na(Religion.Church) |
-      Wave == 2014 & YearMeasured  == 1 & !is.na(Religion.Church) |
-      Wave == 2015 & YearMeasured   == 1 & !is.na(Religion.Church) |
-      Wave == 2016 & YearMeasured   == 1 & !is.na(Religion.Church) |
-      Wave == 2017 & YearMeasured   == 1 & !is.na(Religion.Church) |
-      Wave == 2018 & YearMeasured   == 1 & !is.na(Religion.Church) |
+      Wave == 2014 &
+      YearMeasured  == 1 & !is.na(Religion.Church) |
+      Wave == 2015 &
+      YearMeasured   == 1 & !is.na(Religion.Church) |
+      Wave == 2016 &
+      YearMeasured   == 1 & !is.na(Religion.Church) |
+      Wave == 2017 &
+      YearMeasured   == 1 & !is.na(Religion.Church) |
+      Wave == 2018 &
+      YearMeasured   == 1 & !is.na(Religion.Church) |
       Wave == 2019
   )
   ) |>
@@ -1223,7 +1292,8 @@ dp <- dp %>%
                             )))
 
 
-table1::table1( ~ Censoring + kessler_depressed | Time, data = dp)
+table1::table1(~ Censoring + kessler_depressed |
+                 Time, data = dp)
 
 
 # THIS IS NOT WORKING
@@ -1239,7 +1309,7 @@ table1::table1( ~ Censoring + kessler_depressed | Time, data = dp)
 # table1::table1( ~ church_sens +  censoring + Religion.Church |
 #                   Wave, data = df)
 
-dp<- data.frame(dp)
+dp <- data.frame(dp)
 dpp <- dp |>
   select(
     Id,
@@ -1286,18 +1356,19 @@ dpp <- dp |>
     BornNZ,
     #  kessler_hopeless,
     #   # …  you feel hopeless?
-    kessler_depressed)  |>#,
-    #   #…  you feel so depressed that nothing could cheer you up?
-    #    kessler_restless,
-    #   #…  you feel restless or fidgety?
-    #    kessler_effort,
-    #   #…  you feel that everything was an effort?
-    #    kessler_worthless,
-    #   #…  you feel worthless?
-    #   kessler_nervous,
-    #…  you feel nervous?
-    # KESSLER6sum,
-  dplyr::mutate(across(!c(Id, Wave), ~ as.numeric(.x)))|>
+    kessler_depressed
+  )  |> #,
+  #   #…  you feel so depressed that nothing could cheer you up?
+  #    kessler_restless,
+  #   #…  you feel restless or fidgety?
+  #    kessler_effort,
+  #   #…  you feel that everything was an effort?
+  #    kessler_worthless,
+  #   #…  you feel worthless?
+  #   kessler_nervous,
+  #…  you feel nervous?
+  # KESSLER6sum,
+  dplyr::mutate(across(!c(Id, Wave), ~ as.numeric(.x))) |>
   dplyr::arrange(Id, Wave) |>
   dplyr::mutate(a_Church = ifelse(Religion.Church > 0, 1, Religion.Church)) |>
   #   # dplyr::mutate(across(c(pets),
@@ -1391,7 +1462,7 @@ ungroup() |>
   dplyr::select(-c(Religion.Church,
                    #  nn_church,
                    Wave,
-                  # Censoring,
+                   # Censoring,
                    #   cens,
                    #   lead_church,
                    # not there
@@ -1407,15 +1478,16 @@ ungroup() |>
   data.frame() %>%
   mutate(across(where(is.double), as.numeric)) %>%
   rename(time = Time) |>
-  mutate(time = time -1) |>
+  mutate(time = time - 1) |>
   arrange(Id)
 
 
 
 #table(dpp$cens)
-table1::table1( ~ a_Church | time, data = dpp)
+table1::table1(~ a_Church | time, data = dpp)
 
-table1::table1( ~ Censoring + kessler_depressed | time, data = dpp)
+table1::table1(~ Censoring + kessler_depressed |
+                 time, data = dpp)
 
 naniar::vis_miss(dpp)
 length(unique(dp$Id)) # 18261
@@ -1610,10 +1682,12 @@ lrn_enet <- Lrnr_glmnet$new(alpha = 0.5)
 lrn_bart <- Lrnr_bartMachine$new()
 lrn_mean <- Lrnr_mean$new()
 
-mars_grid_params <- list(# manually create a grid of MARS learners
-  degree = c(2, 3),
-  penalty = c(1, 2, 3))
-mars_grid <- expand.grid(mars_grid_params, KEEP.OUT.ATTRS = FALSE)
+mars_grid_params <-
+  list(# manually create a grid of MARS learners
+    degree = c(2, 3),
+    penalty = c(1, 2, 3))
+mars_grid <-
+  expand.grid(mars_grid_params, KEEP.OUT.ATTRS = FALSE)
 mars_learners <-
   apply(mars_grid, MARGIN = 1, function(tuning_params) {
     do.call(Lrnr_earth$new, as.list(tuning_params))
