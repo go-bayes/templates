@@ -7,6 +7,11 @@
 #git rm --cached -f .DS_Store
 /.quarto/
 
+# ignore pdf and latex logs
+*.pdf
+*.log
+*.synctex.gz
+
 
 # data_raw
 data/*

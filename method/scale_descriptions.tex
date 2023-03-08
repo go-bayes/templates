@@ -1,0 +1,991 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
+\makeatother
+\makeatletter
+\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
+\makeatother
+\makeatletter
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Scale Descriptions},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Scale Descriptions}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, enhanced, sharp corners, interior hidden, breakable, boxrule=0pt, frame hidden]}{\end{tcolorbox}}\fi
+
+\hypertarget{mini-ipip-6}{%
+\paragraph{Mini-IPIP 6}\label{mini-ipip-6}}
+
+We measured participants personality with the Mini International
+Personality Item Pool 6 (Mini-IPIP6) (C. G. Sibley et al., 2011) which
+consists of six dimensions and each dimensions is measured with four
+items:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  agreeableness,
+
+  \begin{enumerate}
+  \def\labelenumii{\roman{enumii}.}
+  \item
+    I sympathize with others' feelings.
+  \item
+    I am not interested in other people's problems. (r)
+  \item
+    I feel others' emotions.
+  \item
+    I am not really interested in others. (r)
+  \end{enumerate}
+\item
+  conscientiousness,
+
+  \begin{enumerate}
+  \def\labelenumii{\roman{enumii}.}
+  \item
+    I get chores done right away.
+  \item
+    I like order.
+  \item
+    I make a mess of things. (r)
+  \item
+    I ften forget to put things back in their proper place. (r)
+  \end{enumerate}
+\item
+  extraversion,
+
+  \begin{enumerate}
+  \def\labelenumii{\roman{enumii}.}
+  \item
+    I am the life of the party.
+  \item
+    I don't talk a lot. (r)
+  \item
+    I keep in the background. (r)
+  \item
+    I talk to a lot of different people at parties.
+  \end{enumerate}
+\item
+  honesty-humility,
+
+  \begin{enumerate}
+  \def\labelenumii{\roman{enumii}.}
+  \item
+    I feel entitled to more of everything. (r)
+  \item
+    I deserve more things in life. (r)
+  \item
+    I would like to be seen driving around in a very expensive car. (r)
+  \item
+    I would get a lot of pleasure from owning expensive luxury goods.
+    (r)
+  \end{enumerate}
+\item
+  neuroticism, and
+
+  \begin{enumerate}
+  \def\labelenumii{\roman{enumii}.}
+  \item
+    I have frequent mood swings.
+  \item
+    I am relaxed most of the time. (r)
+  \item
+    I get upset easily.
+  \item
+    I seldom feel blue. (r)
+  \end{enumerate}
+\item
+  openness to experience
+
+  \begin{enumerate}
+  \def\labelenumii{\roman{enumii}.}
+  \item
+    I have a vivid imagination.
+  \item
+    I have difficulty understanding abstract ideas. (r)
+  \item
+    I do not have a good imagination. (r)
+  \item
+    I am not interested in abstract ideas. (r)
+  \end{enumerate}
+\end{enumerate}
+
+Each dimension was assessed with four items and participants rated the
+accuracy of each item as it applies to them from 1 (Very Inaccurate) to
+7 (Very Accurate). Items marked with (r) are reverse coded.
+
+\hypertarget{age}{%
+\paragraph{Age}\label{age}}
+
+We asked participants' age in an open-ended question (``What is your
+age?'').
+
+\hypertarget{alcohol-frequency}{%
+\paragraph{Alcohol Frequency}\label{alcohol-frequency}}
+
+We measured participants' frequency of drinking alcohol using one item
+adapted from Health (2013). Participants were asked ``How often do you
+have a drink containing alcohol?'' (1 = Never - I don't drink, 2 =
+Monthly or less, 3 = Up to 4 times a month, 4 = Up to 3 times a week, 5
+= 4 or more times a week, 6 = Don't know).
+
+\hypertarget{alcohol-intensity}{%
+\paragraph{Alcohol Intensity}\label{alcohol-intensity}}
+
+We measured participants' intensity of drinking alcohol using one item
+adapted from Health (2013). Participants were asked ``How many drinks
+containing alcohol do you have on a typical day when drinking alcohol?
+(number of drinks on a typical day when drinking)''
+
+\hypertarget{body-satisfaction}{%
+\paragraph{Body Satisfaction}\label{body-satisfaction}}
+
+We measured body satisfaction with one item from Stronge et al. (2015):
+``I am satisfied with the appearance, size and shape of my body'', which
+participants rated from 1 (very inaccurate) to 7 (very accurate).
+
+\hypertarget{nz-born}{%
+\paragraph{NZ-Born}\label{nz-born}}
+
+We asked participants ``Which country were you born in?''.
+
+\hypertarget{belief-in-god}{%
+\paragraph{Belief in God}\label{belief-in-god}}
+
+Using one item from Eurobarometer (2005), we asked participants ``Do you
+believe in a God'' (1 = Yes, 0 = No).
+
+\hypertarget{belief-in-sprituality}{%
+\paragraph{Belief in Sprituality}\label{belief-in-sprituality}}
+
+Using one item from Eurobarometer (2005), we asked participants ``Do you
+believe in some form of spirit or lifeforce? (1 = Yes, 0 = No).
+
+\hypertarget{felt-belongingness}{%
+\paragraph{Felt Belongingness}\label{felt-belongingness}}
+
+We assessed felt belongingness with three items adapted from the Sense
+of Belonging Instrument (Hagerty \& Patusky, 1995): (1) ``Know that
+people in my life accept and value me''; (2) ``Feel like an outsider'';
+(3) ``Know that people around me share my attitudes and beliefs''.
+Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very
+Accurate). The second item was reversely coded.
+
+\hypertarget{charity-donation}{%
+\paragraph{Charity Donation}\label{charity-donation}}
+
+Using one item from Hoverd \& Sibley (2010), we asked participants ``How
+much money have you donated to charity in the last year?''. To stablise
+this indicator, we first took the natural log of the response + 1, and
+then centred and standardised the log-transformed indicator.
+
+\hypertarget{number-of-children}{%
+\paragraph{Number of Children}\label{number-of-children}}
+
+We measured number of children using one item from Bulbulia (2015). We
+asked participants ``How many children have you given birth to,
+fathered, or adopted. How many children have you given birth to,
+fathered, or adopted?
+
+\hypertarget{frequency-of-church-attendence}{%
+\paragraph{Frequency of Church
+Attendence}\label{frequency-of-church-attendence}}
+
+If participants answered \emph{yes} to ``Do you identify with a religion
+and/or spiritual group?'' we measured their frequency of church
+attendence using one item from \&. B. Sibley C. G. (2012): ``how many
+times did you attend a church or place of worship in the last month?''.
+
+\hypertarget{sense-of-community}{%
+\paragraph{Sense of Community}\label{sense-of-community}}
+
+We measured sense of community with a single item from Sengupta et al.
+(2013): ``I feel a sense of community with others in my local
+neighbourhood.'' Participants answered on a scale of 1 (strongly
+disagree) to 7 (strongly agree).
+
+\hypertarget{education-attainment}{%
+\paragraph{Education Attainment}\label{education-attainment}}
+
+Participants were asked ``What is your highest level of
+qualification?''. We coded participans highest finished degree according
+to the New Zealand Qualifications Authority.
+
+\hypertarget{employment}{%
+\paragraph{Employment}\label{employment}}
+
+We asked participants ``Are you currently employed? (This includes
+self-employed or casual work)''.
+
+\hypertarget{job-security}{%
+\paragraph{Job Security}\label{job-security}}
+
+Participants indicated their feeling of job security by answering ``How
+secure do you feel in your current job?'' on a scale from 1 (not secure)
+to 7 (very secure).
+
+\hypertarget{emotional-regulation}{%
+\paragraph{Emotional Regulation}\label{emotional-regulation}}
+
+We measured participants' levels of emotional regulation using three
+items adpated from Gratz \& Roemer (2004) and Gross \& John (2003): (1)
+``When I feel negative emotions, my emotions feel out of control.''; (2)
+``When I feel negative emotions, I suppress or hide my emotions.''; (3)
+``When I feel negative emotions, I change the way I think to help me
+stay calm.''. Participants were asked to indicate the extent to which
+they agree with these items (1 = Strongly Disagree to 7 = Strongly
+Agree).
+
+\hypertarget{european}{%
+\paragraph{European}\label{european}}
+
+Participants were asekd ``Which ethnic group do you belong to (NZ census
+question)?''. Europeans were coded as 1, wherease other ethniciities
+were coded as 0.
+
+\hypertarget{ethnicity}{%
+\paragraph{Ethnicity}\label{ethnicity}}
+
+Based on the New Zealand Cencus, we asked participants ``Which ethnic
+group(s) do you belong to?''. The responses were: (1) New Zealand
+European; (2) Māori; (3) Samoan; (4) Cook Island Māori; (5) Tongan; (6)
+Niuean; (7) Chinese; (8) Indian; (9) Other such as DUTCH, JAPANESE,
+TOKELAUAN. Please state:. We coded their answers into four groups:
+Maori, Pacific, Asian, and Euro (except for Time 3, which used an
+open-ended measure).
+
+\hypertarget{gender}{%
+\paragraph{Gender}\label{gender}}
+
+We asked participants' gender in an open-ended question (``what is your
+gender?''. Female was coded as 0, Male was coded as 1, and gender
+diverse coded as 3 (Fraser et al., 2020).
+
+\hypertarget{gratitude}{%
+\paragraph{Gratitude}\label{gratitude}}
+
+We assessed the extent to which participants have gratitude, using three
+items from McCullough et al. (2002): (1) ``I have much in my life to be
+thankful for.''; (2) ``When I look at the world, I don't see much to be
+grateful for.''; (3) ``I am grateful to a wide variety of people.''.
+Participants indicated their agreement with these items (1 = Strongly
+Disagree to 7 = Strongly Agree). The second item was reversely coded.
+
+\hypertarget{home-owner}{%
+\paragraph{Home Owner}\label{home-owner}}
+
+Using one item from Houkamau \& Sibley (2015), we asked participants
+``(Māori) Do you own your own home?(either partly or fully owned)'' (1 =
+Yes, 0 = No)
+
+\hypertarget{hours-of-exercise}{%
+\paragraph{Hours of Exercise}\label{hours-of-exercise}}
+
+We measured hours of exercising using one item from C. G. Sibley et al.
+(2011). We asked participants to estimate and report how many hours they
+spend in exercise/physical activity last week. To stablise this
+indicator, we first took the natural log of the response + 1, and then
+centred and standardised the log-transformed indicator.
+
+\hypertarget{hours-of-work}{%
+\paragraph{Hours of Work}\label{hours-of-work}}
+
+We measured hours of Work using one item from C. G. Sibley et al.
+(2011). We asked participants to estimate and report how many hours they
+spend in working in paid employment last week.
+
+\hypertarget{body-mass-index}{%
+\paragraph{Body Mass Index}\label{body-mass-index}}
+
+Participants were asked ``What is your height? (metres)'' and ``What is
+your weight? (kg)''. Based on participants indication of their height
+and weight we calculated the BMI by dividing the weight in kilograms by
+the square of the height in meters.
+
+\hypertarget{disability}{%
+\paragraph{Disability}\label{disability}}
+
+We assessed disability with a one item indicator adapted from Verbrugge
+(1997), that asks ``Do you have a health condition or disability that
+limits you, and that has lasted for 6+ months?'' (1 = Yes, 0 = No).
+
+\hypertarget{fatigue}{%
+\paragraph{Fatigue}\label{fatigue}}
+
+We assessed subjective fatigue by asking participants, ``During the last
+30 days, how often did \ldots{} you feel exhausted?'' Responses were
+collected on an ordinal scale (0 = None of The Time, 1 = A little of The
+Time, 2 = Some of The Time, 3 = Most of The Time, 4 = All of The Time).
+
+\hypertarget{hours-of-sleep}{%
+\paragraph{Hours of Sleep}\label{hours-of-sleep}}
+
+Participants were asked ``During the past month, on average, how many
+hours of \emph{actual sleep} did you get per night''.
+
+\hypertarget{ethnic-group-impermeability}{%
+\paragraph{Ethnic group
+impermeability}\label{ethnic-group-impermeability}}
+
+We assessed ethnic group impermeability using one item from Mummendey \&
+Wenzel (1999). Participants were asked to indicate the extent to which
+they agree with the statement (``The current income gap between New
+Zealand Europeans and other ethnic groups would be very hard to
+change.''; 1 = Strongly Disagree to Strongly Agree).
+
+\hypertarget{income}{%
+\paragraph{Income}\label{income}}
+
+Participants were asked ``Please estimate your total household income
+(before tax) for the year XXXX''. To stablise this indicator, we first
+took the natural log of the response + 1, and then centred and
+standardised the log-transformed indicator.
+
+\hypertarget{psychological-distress}{%
+\paragraph{Psychological Distress}\label{psychological-distress}}
+
+We measured psychological distress using the Kessler-6 scale (R. ~C.
+Kessler et al., 2002), which exhibits strong diagnostic concordance for
+moderate and severe psychological distress in large, cross-cultural
+samples (R. C. Kessler et al., 2010; Prochaska et al., 2012).
+Participants rated during the past 30 days, how often did\ldots{} (1)
+``\ldots{} you feel hopeless''; (2) ``\ldots{} you feel so depressed
+that nothing could cheer you up''; (3) ``\ldots{} you feel restless or
+fidgety''; (4)``\ldots{} you feel that everything was an effort''; (5)
+``\ldots{} you feel worthless''; (6) '' you feel nervous?'' Ordinal
+response alternatives for the Kessler-6 are: ``None of the time''; ``A
+little of the time''; ``Some of the time''; ``Most of the time''; ``All
+of the time.''
+
+\hypertarget{life-meaning}{%
+\paragraph{Life Meaning}\label{life-meaning}}
+
+We assessed participants' levels of life meaning using two items from
+Steger et al. (2006): (1) My life has a clear sense of purpose; (2) I
+have a good sense of what makes my life meaningful. Participants
+indicated their agreement with these items (1 = Strongly Disagree to 7 =
+Strongly Agree).
+
+\hypertarget{life-satisfaction}{%
+\paragraph{Life Satisfaction}\label{life-satisfaction}}
+
+We measured life satisfaction with two items adapted from the
+Satisfaction with Life Scale (Diener et al., 1985): ``I am satisfied
+with my life'' and ``In most ways my life is close to ideal''.
+Participants responded on a scale from 1 (Strongly Disagree) to 7
+(Strongly Agree).
+
+\hypertarget{lost-job}{%
+\paragraph{Lost Job}\label{lost-job}}
+
+Participants were asked to indicate whether they lost their job or had
+the principal earner in their household lose job in the last year (1 =
+Yes, 0 = No).
+
+\hypertarget{nz-deprivation-index}{%
+\paragraph{NZ Deprivation Index}\label{nz-deprivation-index}}
+
+We used the NZ Deprivation Index to assign each participant a score
+based on where they live (Atkinson et al., 2019). This score combines
+data such as income, home ownership, employment, qualifications, family
+structure, housing, and access to transport and communication for an
+area into one deprivation score.
+
+\hypertarget{national-well-being-index}{%
+\paragraph{National Well-being Index}\label{national-well-being-index}}
+
+We measured participant's sense of national well-being by asking them to
+``Please rate your level of satisfaction with the following aspects of
+your life and New Zealand: (1) The economic situation in New Zealand,
+(2) The social conditions in New Zealand, and (3) Business in New
+Zealand'' on a scale from 0 (Completely Dissatisfied) to 10 (Completely
+Satisfied) (Tiliouine et al., 2006).
+
+\hypertarget{occupational-prestige-and-status}{%
+\paragraph{Occupational Prestige and
+Status}\label{occupational-prestige-and-status}}
+
+We assessed occupational prestige and status using the New Zealand
+Socio-economic Index 13 (NZSEI-13) (Fahy et al., 2017). This index uses
+the income, age, and education of a reference group, in this case the
+2013 New Zealand census, to calculate an score for each occupational
+group. Scores range from 10 (Lowest) to 90 (Highest). This list of index
+scores for occupational groups was used to assign each participant a
+NZSEI-13 score based on their occupation.
+
+\hypertarget{parent}{%
+\paragraph{Parent}\label{parent}}
+
+Participants were asked ``If you are a parent, what is the birth date of
+your eldest child?''.
+
+\hypertarget{living-with-partner}{%
+\paragraph{Living with Partner}\label{living-with-partner}}
+
+Participants were asekd ``Do you live with your partner?'' (1 = Yes, 0 =
+No).
+
+\hypertarget{perfectionism}{%
+\paragraph{Perfectionism}\label{perfectionism}}
+
+We assessed participants' perfectionism using three items from Rice et
+al. (2014): (1) Doing my best never seems to be enough; (2) My
+performance rarely measures up to my standards; (3) I am hardly ever
+satisfied with my performance. Participants indicated the extent to
+which they agree with these items (1 = Strongly Disagree to 7 = Strongly
+Agree).
+
+\hypertarget{political-orientation}{%
+\paragraph{Political Orientation}\label{political-orientation}}
+
+We measured participants' political orientation using a single item
+adapted from Jost (2006). Participants were asked to rate how
+politically left-wing versus right-wing they see themselves as being (1
+= Extremely Left-wing to 7 = Extremely Right-wing)
+
+\hypertarget{power-dependence}{%
+\paragraph{Power Dependence}\label{power-dependence}}
+
+Participants' Power dependence was measured using two items: (1) I do
+not have enough power or control over important parts of my life; (2)
+Other people have too much power or control over important parts of my
+life. Participants indicated their agreement with these items (1 =
+Strongly Disagree to 7 = Strongly Agree).
+
+\hypertarget{religion-idenfication}{%
+\paragraph{Religion Idenfication}\label{religion-idenfication}}
+
+Participants were asked to indicate their religion identification (``Do
+you identify with a religion and/or spiritual group?'') on a binary
+response (1 = Yes, 0 = No).
+
+\hypertarget{self-respect}{%
+\paragraph{Self-Respect}\label{self-respect}}
+
+We assessed participants' levels of self-respect using an item adapted
+from Tyler et al. (1996). Participant indicated the extent to which they
+agree with the statement (``If they knew me, most NZers would respect
+what I have accomplished in life'') on a likert scale (1 = Strongly
+Disagree to 7 = Strongly Agree)
+
+\hypertarget{retired}{%
+\paragraph{Retired}\label{retired}}
+
+Participants were asked to indicate whether they were retiered or not in
+the last year (1 = Yes, 0 = No).
+
+\hypertarget{rumination}{%
+\paragraph{Rumination}\label{rumination}}
+
+We used a single item adapted from Nolen-hoeksema \& Morrow (1993) to
+measure participants' level of rumination. Participants were asked,
+``During the last 30 days, how often did\ldots you have negative
+thoughts that repeated over and over?'' and indicated their frequency of
+rumination on an ordinal scale (0 = None of The time, 1 = A little of
+the time, 2 = some of the time, 3 = most of the time, 4 = all of the
+time)
+
+\hypertarget{self-control}{%
+\paragraph{Self-Control}\label{self-control}}
+
+Participants were asked to indicate the extent to which they endorse the
+two items (``In general, I have a lot of self-control'', ``I wish I had
+more self-discipline'') from Tangney et al. (2004). The responses to the
+items ranged from 1 (Strongly Disagree) to 7 (Strongly Agree).
+
+\hypertarget{self-esteem}{%
+\paragraph{Self-Esteem}\label{self-esteem}}
+
+We measured participants' self-esteem using three items adapted from
+Rosenberg (1965). Participants were instructed to circle the number that
+best represents how accurately each statement describes them.
+Participants responded to the items (``On the whole am satisfied with
+myself.'', ``Take a positive attitude toward myself'', ``Am inclined to
+feel that I am a failure'') on a likert-type scale (1 = Very inaccurate
+to 7 = Very accurate).
+
+\hypertarget{semiretired}{%
+\paragraph{Semiretired}\label{semiretired}}
+
+SAME AS RETIRED
+
+\hypertarget{sexual-orientation}{%
+\paragraph{Sexual Orientation}\label{sexual-orientation}}
+
+Participants were asked to report their sexual orientation: ``How would
+you describe your sexual orientation? (e.g., heterosexual, homosexual,
+straight, gay, lesbian, bisexual, etc.)''.
+
+\hypertarget{sexual-satisfaction}{%
+\paragraph{Sexual Satisfaction}\label{sexual-satisfaction}}
+
+Participants were asked ``How satisfied are you with your sex life?'' (1
+= Not satisfied to 7 = Very satisfied).
+
+\hypertarget{short-form-health}{%
+\paragraph{Short-Form Health}\label{short-form-health}}
+
+Participants' subjective health was measured using one item (``Do you
+have a health condition or disability that limits you, and that has
+lasted for 6+ months?''; 1 = Yes, 0 = No) adapted from Verbrugge (1997).
+
+\hypertarget{smoker}{%
+\paragraph{Smoker}\label{smoker}}
+
+We asked participants whether they are currently smoking or not (1 = Yes
+or 0 = No), using a single item (``Do you currently smoke?) from Muriwai
+et al. (2018).
+
+\hypertarget{spiritual-identification}{%
+\paragraph{Spiritual Identification}\label{spiritual-identification}}
+
+Spiritual identification was measured using one item (``I identify as a
+spiritual person.'') from Postmes et al. (2013). Participants indicated
+their agreement with this item (1 = Strongly Disagree to 7 = Strongly
+Agree).
+
+\hypertarget{standard-living}{%
+\paragraph{Standard Living}\label{standard-living}}
+
+We measured participants' satisfaction with their standard of living
+using an item from the Australian Unity Wellbeing Index (Cummins et al.,
+2003). Participants read an instruction (``Please rate your level of
+satisfaction with the following aspects of your life and New Zealand.'')
+and responded to an item (``Your standard of living'') on a 10-point
+scale (0 = completely dissatisfied to 10 = completely satisfied).
+
+\hypertarget{support}{%
+\paragraph{Support}\label{support}}
+
+Participants' perceived social support was measured using three items
+from Cutrona \& Russell (1987) and Williams et al. (2000): (1) ``There
+are people I can depend on to help me if I really need it''; (2) ``There
+is no one I can turn to for guidance in times of stress''; (3) ``I know
+there are people I can turn to when I need help.'' Participants
+indicated the extent to which they agree with those items (1 = Strongly
+Disagree to 7 = Strongly Agree). The second item was negatively-worded,
+so we reversely recorded the responses to this item.
+
+\hypertarget{living-in-an-urban-area}{%
+\paragraph{Living in an Urban Area}\label{living-in-an-urban-area}}
+
+We coded whether they are living in an urban or rural area (1 = Urban, 0
+= Rural) based on the addresses provided.
+
+\hypertarget{vengeful-rumination}{%
+\paragraph{Vengeful Rumination}\label{vengeful-rumination}}
+
+We assessed participants' vengeful rumination using three items,
+respectively adapted from Caprara (1986) and Berry et al. (2005), and
+developed for NZAVS: (1) Sometimes I can't sleep because of thinking
+about past wrongs I have suffered; (2) I can usually forgive and forget
+when someone does me wrong; (3) I find myself regularly thinking about
+past times that I have been wronged. Participants indicated their
+agreeement with these items (1 = Strongly Disagree to 7 = Strongly
+Agree). The values for the sencond item were reversely coded.
+
+\hypertarget{volunteers}{%
+\paragraph{Volunteers}\label{volunteers}}
+
+Participants were asked,``Please estimate how many hours you spent doing
+each of the following things last week'' and responded to an item
+(``voluntary/charitable work''), from (C. G. Sibley et al., 2011).
+
+\hypertarget{subjective-wellbeing}{%
+\paragraph{Subjective Wellbeing}\label{subjective-wellbeing}}
+
+We measured participants' subjective wellbeing using three items from
+the Australian Unity Wellbeing Index (Cummins et al., 2003): (1) your
+health; (2) your future security; (3) your future security. Participants
+read an instruction (``The following items assess your current
+satisfaction with different aspects of your life and aspects of New
+Zealand more generally'') and indicated their satisfaction with those
+items (0 = Completely Dissatisfied to 10 = Completely Satisfied).
+
+\pagebreak
+
+\hypertarget{references}{%
+\paragraph{References}\label{references}}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-atkinson2019}{}}%
+Atkinson, J., Salmond, C., \& Crampton, P. (2019). \emph{NZDep2018 index
+of deprivation, user{'}s manual.}
+
+\leavevmode\vadjust pre{\hypertarget{ref-berry_forgivingness_2005}{}}%
+Berry, J. W., Worthington Jr., E. L., O'Connor, L. E., Parrott III, L.,
+\& Wade, N. G. (2005). Forgivingness, vengeful rumination, and affective
+traits. \emph{Journal of Personality}, \emph{73}(1), 183--226.
+\url{https://doi.org/10.1111/j.1467-6494.2004.00308.x}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Bulbulia_2015}{}}%
+Bulbulia, S., J. A. (2015). Religion and parental cooperation: An
+empirical test of slone's sexual signaling model. In \&. V. S. J. Slone
+D. (Ed.), \emph{The attraction of religion: A sexual selectionist
+account} (pp. 29--62). Bloomsbury Press.
+
+\leavevmode\vadjust pre{\hypertarget{ref-caprara_indicators_1986}{}}%
+Caprara, G. V. (1986). Indicators of aggression: The
+dissipation-rumination scale. \emph{Personality and Individual
+Differences}, \emph{7}(6), 763--769.
+\url{https://doi.org/10.1016/0191-8869(86)90074-7}
+
+\leavevmode\vadjust pre{\hypertarget{ref-cummins_developing_2003}{}}%
+Cummins, R. A., Eckersley, R., Pallant, J., Vugt, J. van, \& Misajon, R.
+(2003). Developing a national index of subjective wellbeing: The
+australian unity wellbeing index. \emph{Social Indicators Research},
+\emph{64}(2), 159--190. \url{https://doi.org/10.1023/A:1024704320683}
+
+\leavevmode\vadjust pre{\hypertarget{ref-cutrona1987}{}}%
+Cutrona, C. E., \& Russell, D. W. (1987). The provisions of social
+relationships and adaptation to stress. \emph{Advances in Personal
+Relationships}, \emph{1}, 37--67.
+
+\leavevmode\vadjust pre{\hypertarget{ref-diener1985a}{}}%
+Diener, E., Emmons, R. A., Larsen, R. J., \& Griffin, S. (1985). The
+Satisfaction With Life Scale. \emph{Journal of Personality Assessment},
+\emph{49}(1), 71--75.
+
+\leavevmode\vadjust pre{\hypertarget{ref-fahy2017a}{}}%
+Fahy, K. M., Lee, A., \& Milne, B. J. (2017). \emph{New Zealand
+socio-economic index 2013}. Statistics New Zealand-Tatauranga Aotearoa.
+
+\leavevmode\vadjust pre{\hypertarget{ref-fraser_coding_2020}{}}%
+Fraser, G., Bulbulia, J., Greaves, L. M., Wilson, M. S., \& Sibley, C.
+G. (2020). Coding responses to an open-ended gender measure in a new
+zealand national sample. \emph{The Journal of Sex Research},
+\emph{57}(8), 979--986.
+\url{https://doi.org/10.1080/00224499.2019.1687640}
+
+\leavevmode\vadjust pre{\hypertarget{ref-gratz_multidimensional_2004}{}}%
+Gratz, K. L., \& Roemer, L. (2004). Multidimensional assessment of
+emotion regulation and dysregulation: Development, factor structure, and
+initial validation of the difficulties in emotion regulation scale.
+\emph{Journal of Psychopathology and Behavioral Assessment},
+\emph{26}(1), 41--54.
+\url{https://doi.org/10.1023/B:JOBA.0000007455.08539.94}
+
+\leavevmode\vadjust pre{\hypertarget{ref-gross_individual_2003}{}}%
+Gross, J. J., \& John, O. P. (2003). Individual differences in two
+emotion regulation processes: Implications for affect, relationships,
+and well-being. \emph{Journal of Personality and Social Psychology},
+\emph{85}(2), 348--362. \url{https://doi.org/10.1037/0022-3514.85.2.348}
+
+\leavevmode\vadjust pre{\hypertarget{ref-hagerty1995}{}}%
+Hagerty, B. M. K., \& Patusky, K. (1995). Developing a Measure Of Sense
+of Belonging: \emph{Nursing Research}, \emph{44}(1), 9--13.
+\url{https://doi.org/10.1097/00006199-199501000-00003}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Ministry_of_Health_2013}{}}%
+Health, M. of. (2013). \emph{The new zealand health survey: Content
+guide 2012-2013}. Princeton University Press.
+
+\leavevmode\vadjust pre{\hypertarget{ref-houkamau_looking_2015}{}}%
+Houkamau, C. A., \& Sibley, C. G. (2015). Looking māori predicts
+decreased rates of home wwnership: Institutional racism in housing based
+on perceived appearance. \emph{{PLoS} {ONE}}, \emph{10}(3), e0118540.
+\url{https://doi.org/10.1371/journal.pone.0118540}
+
+\leavevmode\vadjust pre{\hypertarget{ref-hoverd_religious_2010}{}}%
+Hoverd, W. J., \& Sibley, C. G. (2010). Religious and denominational
+diversity in new zealand 2009. \emph{New Zealand Sociology},
+\emph{25}(2), 59--87.
+
+\leavevmode\vadjust pre{\hypertarget{ref-jost_end_2006-1}{}}%
+Jost, J. T. (2006). The end of the end of ideology. \emph{American
+Psychologist}, \emph{61}(7), 651--670.
+\url{https://doi.org/10.1037/0003-066X.61.7.651}
+
+\leavevmode\vadjust pre{\hypertarget{ref-kessler2002a}{}}%
+Kessler, R. ~C., Andrews, G., Colpe, L. ~J., Hiripi, E., Mroczek, D.
+~K., Normand, S.-L. ~T., Walters, E. ~E., \& Zaslavsky, A. ~M. (2002).
+Short screening scales to monitor population prevalences and trends in
+non-specific psychological distress. \emph{Psychological Medicine},
+\emph{32}(6), 959--976. \url{https://doi.org/10.1017/S0033291702006074}
+
+\leavevmode\vadjust pre{\hypertarget{ref-kessler2010b}{}}%
+Kessler, R. C., Green, J. G., Gruber, M. J., Sampson, N. A., Bromet, E.,
+Cuitan, M., Furukawa, T. A., Gureje, O., Hinkov, H., Hu, C.-Y., Lara,
+C., Lee, S., Mneimneh, Z., Myer, L., Oakley-Browne, M., Posada-Villa,
+J., Sagar, R., Viana, M. C., \& Zaslavsky, A. M. (2010). Screening for
+serious mental illness in the general population with the K6 screening
+scale: results from the WHO World Mental Health (WMH) survey initiative.
+\emph{International Journal of Methods in Psychiatric Research},
+\emph{19}(S1), 4--22. \url{https://doi.org/10.1002/mpr.310}
+
+\leavevmode\vadjust pre{\hypertarget{ref-mccullough_grateful_2002}{}}%
+McCullough, M. E., Emmons, R. A., \& Tsang, J.-A. (2002). The grateful
+disposition: A conceptual and empirical topography. \emph{Journal of
+Personality and Social Psychology}, \emph{82}(1), 112--127.
+\url{https://doi.org/10.1037/0022-3514.82.1.112}
+
+\leavevmode\vadjust pre{\hypertarget{ref-mummendey_social_1999}{}}%
+Mummendey, A., \& Wenzel, M. (1999). Social discrimination and tolerance
+in intergroup relations: Reactions to intergroup difference.
+\emph{Personality and Social Psychology Review: An Official Journal of
+the Society for Personality and Social Psychology, Inc}, \emph{3}(2),
+158--174. \url{https://doi.org/10.1207/s15327957pspr0302_4}
+
+\leavevmode\vadjust pre{\hypertarget{ref-muriwai_looking_2018}{}}%
+Muriwai, E., Houkamau, C. A., \& Sibley, C. G. (2018). Looking like a
+smoker, a smokescreen to racism? Māori perceived appearance linked to
+smoking status. \emph{Ethnicity \& Health}, \emph{23}(4), 353--366.
+\url{https://doi.org/10.1080/13557858.2016.1263288}
+
+\leavevmode\vadjust pre{\hypertarget{ref-nolen-hoeksema_effects_1993}{}}%
+Nolen-hoeksema, S., \& Morrow, J. (1993). Effects of rumination and
+distraction on naturally occurring depressed mood. \emph{Cognition and
+Emotion}, \emph{7}(6), 561--570.
+\url{https://doi.org/10.1080/02699939308409206}
+
+\leavevmode\vadjust pre{\hypertarget{ref-postmes_single-item_2013}{}}%
+Postmes, T., Haslam, S. A., \& Jans, L. (2013). A single-item measure of
+social identification: Reliability, validity, and utility. \emph{The
+British Journal of Social Psychology}, \emph{52}(4), 597--617.
+\url{https://doi.org/10.1111/bjso.12006}
+
+\leavevmode\vadjust pre{\hypertarget{ref-prochaska2012a}{}}%
+Prochaska, J. J., Sung, H.-Y., Max, W., Shi, Y., \& Ong, M. (2012).
+Validity study of the K6 scale as a measure of moderate mental distress
+based on mental health treatment need and utilization: The K6 as a
+measure of moderate mental distress. \emph{International Journal of
+Methods in Psychiatric Research}, \emph{21}(2), 88--97.
+\url{https://doi.org/10.1002/mpr.1349}
+
+\leavevmode\vadjust pre{\hypertarget{ref-rice_short_2014}{}}%
+Rice, K. G., Richardson, C. M. E., \& Tueller, S. (2014). The short form
+of the revised almost perfect scale. \emph{Journal of Personality
+Assessment}, \emph{96}(3), 368--379.
+\url{https://doi.org/10.1080/00223891.2013.838172}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Rosenberg1965}{}}%
+Rosenberg, M. (1965). \emph{Society and the adolescent self-image}.
+Princeton University Press.
+
+\leavevmode\vadjust pre{\hypertarget{ref-sengupta2013}{}}%
+Sengupta, N. K., Luyten, N., Greaves, L. M., Osborne, D., Robertson, A.,
+Brunton, C., Armstrong, G., \& Sibley, C. G. (2013). Sense of Community
+in New Zealand Neighbourhoods: A Multi-Level Model Predicting Social
+Capital. \emph{New Zealand Journal of Psychology}, \emph{42}(1), 36--45.
+
+\leavevmode\vadjust pre{\hypertarget{ref-sibley2012}{}}%
+Sibley, \&. B., C. G. (2012). Healing those who need healing: How
+religious practice affects social belonging. \emph{Journal for the
+Cognitive Science of Religion}, \emph{1}, 29--45.
+
+\leavevmode\vadjust pre{\hypertarget{ref-sibley2011}{}}%
+Sibley, C. G., Luyten, N., Purnomo, M., Mobberley, A., Wootton, L. W.,
+Hammond, M. D., Sengupta, N., Perry, R., West-Newman, T., Wilson, M. S.,
+McLellan, L., Hoverd, W. J., \& Robertson, A. (2011). The Mini-IPIP6:
+Validation and extension of a short measure of the Big-Six factors of
+personality in New Zealand. \emph{New Zealand Journal of Psychology},
+\emph{40}(3), 142--159.
+
+\leavevmode\vadjust pre{\hypertarget{ref-steger_meaning_2006}{}}%
+Steger, M. F., Frazier, P., Oishi, S., \& Kaler, M. (2006). The meaning
+in life questionnaire: Assessing the presence of and search for meaning
+in life. \emph{Journal of Counseling Psychology}, \emph{53}(1), 80--93.
+\url{https://doi.org/10.1037/0022-0167.53.1.80}
+
+\leavevmode\vadjust pre{\hypertarget{ref-stronge_facebook_2015}{}}%
+Stronge, S., Greaves, L. M., Milojev, P., West-Newman, T., Barlow, F.
+K., \& Sibley, C. G. (2015). Facebook is linked to body dissatisfaction:
+Comparing users and non-users. \emph{Sex Roles: A Journal of Research},
+\emph{73}(5), 200--213. \url{https://doi.org/10.1007/s11199-015-0517-6}
+
+\leavevmode\vadjust pre{\hypertarget{ref-tangney_high_2004}{}}%
+Tangney, J. P., Baumeister, R. F., \& Boone, A. L. (2004). High
+self-control predicts good adjustment, less pathology, better grades,
+and interpersonal success. \emph{Journal of Personality}, \emph{72}(2),
+271--324. \url{https://doi.org/10.1111/j.0022-3506.2004.00263.x}
+
+\leavevmode\vadjust pre{\hypertarget{ref-tiliouine2006}{}}%
+Tiliouine, H., Cummins, R. A., \& Davern, M. (2006). Measuring Wellbeing
+in Developing Countries: The Case of Algeria. \emph{Social Indicators
+Research}, \emph{75}(1), 1--30.
+\url{https://doi.org/10.1007/s11205-004-2012-2}
+
+\leavevmode\vadjust pre{\hypertarget{ref-tyler_understanding_1996}{}}%
+Tyler, T., Degoey, P., \& Smith, H. (1996). Understanding why the
+justice of group procedures matters: A test of the psychological
+dynamics of the group-value model. \emph{Journal of Personality and
+Social Psychology}, \emph{70}(5), 913--930.
+\url{https://doi.org/10.1037/0022-3514.70.5.913}
+
+\leavevmode\vadjust pre{\hypertarget{ref-verbrugge1997}{}}%
+Verbrugge, L. M. (1997). A global disability indicator. \emph{Journal of
+Aging Studies}, \emph{11}(4), 337--362.
+\url{https://doi.org/10.1016/S0890-4065(97)90026-8}
+
+\leavevmode\vadjust pre{\hypertarget{ref-williams_cyberostracism_2000}{}}%
+Williams, K. D., Cheung, C. K. T., \& Choi, W. (2000). Cyberostracism:
+Effects of being ignored over the internet. \emph{Journal of Personality
+and Social Psychology}, \emph{79}(5), 748--762.
+\url{https://doi.org/10.1037/0022-3514.79.5.748}
+
+\end{CSLReferences}
+
+
+
+\end{document}
