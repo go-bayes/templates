@@ -1,6 +1,6 @@
 ---
 title: "Scale Descriptions"
-format: pdf
+format: html
 bibliography: references.bib
 csl: apa.csl
 ---
@@ -306,6 +306,10 @@ Participants were asked,"Please estimate how many hours you spent doing each of 
 #### Subjective Wellbeing
 
 We measured participants' subjective wellbeing using three items from the Australian Unity Wellbeing Index [@cummins_developing_2003]: (1) your health; (2) your future security; (3) your future security. Participants read an instruction ("The following items assess your current satisfaction with different aspects of your life and aspects of New Zealand more generally") and indicated their satisfaction with those items (0 = Completely Dissatisfied to 10 = Completely Satisfied).
+
+#### Feeling Thermometer
+
+Warmth toward groups was rated by a one-item measure using the "feeling thermometer" scale. Participants were asked to rate their feeling of warmth toward the following groups: NZ European, Māori, Asians in general, Pacific Islanders, Elderly people, People with a disability, Overweight people, Immigrants in general, Chinese, Indians, Muslims, and People with mental illness. Ratings were on a 7-point scale from (1 = least warmth toward a group to 7 = most warmth toward a group, with 4 being neutral. In this study we use \`\`warmth" and \`\`acceptance" interchangeably. (Modelled on affect thermometer items in United States National Election Study [@sibley2020].
 
 \pagebreak
 
