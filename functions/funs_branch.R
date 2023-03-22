@@ -4,6 +4,34 @@
 # for each model, we will uniquely impute the dataset we use for the analysis. ;
 # cvars -- X, Y, at baseline.
 
+
+
+# also to note, we might want to do item by item outcomes.
+
+
+
+# baseline_confounders -- take them only at baseline, or T0
+# Y - take at baseline and T2
+# X -- take at baseliine at T1
+
+# impute everything
+# cvars = baseline_confounders + Y_t0 + X_t0
+# exposure = X_t1
+# outcome = Y_t2
+
+# After imputation but not before, add back the population weights as a weights variable.
+# We then do the matching propensity scores are needed.
+# We then use an approach similar to the outcome-wide attacks method (see "scripts" in that repository)
+
+# for Population Average Treatement Effects (PATE), we add weights after imputation.  If we have propensity scores we obtain a single weights column by multiplying the propensity scores $\times$ the post-stratification weights, as described in Noah's twitter to Joe.
+
+## default should be CVARS = Y_t0 + X_t0 and the weights (if any).
+
+## for the regression model, we need flexibility such that the relationship of X to Y can be modelled as a non-linear function or as a linear function (for example if there are only two levels of X)
+
+
+# for imputation, impute item by item for each outcome Y, and then combine after imputation as illustrated in the scripts in the outcome-wide. # mice package suggests smaller imputations models
+
 # functions.R
 library("here")
 library("fs")
@@ -185,6 +213,9 @@ mice_gaussian = function(df, X, Y, cvars) {
 }
 
 
+
+# closer to how we will role
+
 mice_generalised = function(df, X, Y, cvars, family) {
   require("splines")
   require("mice")
@@ -194,6 +225,9 @@ mice_generalised = function(df, X, Y, cvars, family) {
   )), family = family))
   out
 }
+
+
+# for a non linear function
 
 mice_generalised_lin = function(df, X, Y, cvars, family) {
   require("mice")
@@ -369,8 +403,8 @@ pool_stglm <- function(models, df, m, x, X) {
   #between-variance
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
-# ammend? see:
-#chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://thestatsgeek.com/wp-content/uploads/2023/02/gformulaMI_CSM_2023_02_08.pdf
+  # ammend? see:
+  #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://thestatsgeek.com/wp-content/uploads/2023/02/gformulaMI_CSM_2023_02_08.pdf
 
   #total variance
   var <- W + (1 + 1 / m) * B
@@ -391,9 +425,6 @@ pool_stglm <- function(models, df, m, x, X) {
 }
 
 ## Contrast models
-# m = number of data sets imputed
-# x
-
 pool_stglm_contrast <- function(out, df, m, x, X, r) {
   nx <- length(x)
   est.all <- matrix(nrow = nx, ncol = m)
@@ -760,8 +791,7 @@ vanderweelevalue_ols_nomi = function(out_ct, f, delta, sd) {
   rownames(tab) <- main
   return(tab)
 }
-
-
+#
 # vanderweelevalue_rr_nomi = function(out_ct, f) {
 #   require("EValue")
 #   coef <- round(out_ct, 3)  |>  slice(f + 1)
@@ -821,8 +851,7 @@ vanderweelevalue_rr_nomi_lo = function(out, r) {
   rownames(tab) <- c(main)
   return(tab)
 }
-
-
+#
 
 # multi-level model -------------------------------------------------------
 #
@@ -949,3 +978,4 @@ vanderweelevalue_rr_nomi_lo = function(out, r) {
 # df is the dataframe -- a mice object
 # X is the exposure,
 # we assume a spline model
+

@@ -105,7 +105,8 @@ packages <- c(
   "pdftools",
   "arrow",
   "seqHMM",
-  "msm"
+  "msm",
+  "clarify"
 )
 
 ipak(packages)
