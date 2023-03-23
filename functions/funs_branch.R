@@ -1,4 +1,5 @@
 
+
 # to do
 # write a function where `cvars` = vector of baseline_confounders, X at baseline (the exposure), and Y at baseline
 # for each model, we will uniquely impute the dataset we use for the analysis. ;
@@ -33,22 +34,8 @@
 # for imputation, impute item by item for each outcome Y, and then combine after imputation as illustrated in the scripts in the outcome-wide. # mice package suggests smaller imputations models
 
 # functions.R
-library("here")
-library("fs")
-library("stdReg")
-library("ggplot2")
-library("mice")
-library("conflicted")
-library("arrow")
 
 
-
-conflict_prefer("pool", "mice")
-conflict_prefer("filter", "dplyr")
-conflict_prefer("select", "dplyr")
-conflict_prefer("cbind", "base")
-conflict_prefer("lead", "dplyr")
-conflict_prefer("lag", "dplyr")
 
 # set paths
 # probably want to do this explicitly
@@ -57,34 +44,6 @@ conflict_prefer("lag", "dplyr")
 # push_figs <- here::here("figs")
 
 # read raw data
-
-# ** to change not needed
-read_raw <- function() {
-  arrow::read_parquet(here::here("data", "data_raw"))
-}
-
-# ** to change not needed
-read_imputed <- function() {
-  arrow::read_parquet(here::here("data", "data_imputed"))
-
-}
-
-# ** to change not needed
-
-read_long <- function() {
-  arrow::read_parquet(here::here("data", "data_long"))
-}
-
-# ** to change not needed
-
-read_ml <- function() {
-  arrow::read_parquet(here::here("data", "data_ml"))
-}
-
-# or avoids to avoid pushing/ pulling large objects on github use something like the following
-# push_mods <- fs::path_expand("~/The\ Virtues\ Project\ Dropbox/outcomewide/mods")
-# push_figs <- fs::path_expand("~/Users/joseph/The\ Virtues\ Project\ Dropbox/outcomewide/figs")
-
 
 ## function for saving
 
@@ -100,6 +59,281 @@ read_ml <- function() {
 #   df = arrow::read_parquet(here::here(push_mods,  paste0(name, '')))
 #   df
 # }
+
+
+
+# test space - to delete --------------------------------------------------
+
+
+# libraries and functions
+# read libraries
+source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/libs2.R")
+
+# read functions
+source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/funs.R")
+
+#source(here::here("scripts", "functions", "funs_here.R"))
+
+# read data
+
+pull_path <-
+  fs::path_expand(
+    "/Users/joseph/v-project\ Dropbox/Joseph\ Bulbulia/00Bulbulia\ Pubs/2021/DATA/time13"
+  )
+
+# for saving models
+push_mods <-
+  fs::path_expand(
+    "/Users/joseph/v-project\ Dropbox/Joseph\ Bulbulia/outcomewide/outcomewide-attacks/mods"
+  )
+
+
+# read multiply imputed data
+
+# mi data
+ml <- readRDS(here::here(push_mods, "at-mice-ml"))
+
+# long data
+mf <- readRDS(here::here(push_mods, "at-mice-mf"))
+length(unique(mf$Id))
+
+# baselin vars ---------------------------------------------------------
+
+cvars = mf |>
+  dplyr::select(-c(.imp,
+                   .id,
+                   Id,
+                   time,
+                   weights)) |> # include?
+  dplyr::select(!starts_with("Warm.")) |>
+  colnames()
+
+#cvars
+
+
+
+
+
+# set data in case we use matching
+d <- ml
+
+# same as d because we did not use matching
+df <- ml
+
+# number of simulations for confidence intervals
+
+nsims = 100 # simulated coeffs
+
+cl = 8 # number of cores
+
+# set family
+family <- "gaussian"
+
+# set exposure
+X <- "time"
+
+# for estimate causal contrast
+subset_val = 1
+
+cvars = cvars  # covariates for adjustment -- here to improve precision of estimates (prob not needed)
+
+
+# muslims ----------------------------------------------------------------
+
+Y <- "Warm.Muslims_z"
+
+sim_est_warm_muslims <- geeglm_mi_ate(df, d, nsims, Y, X, cvars, cl)
+
+# effect is lower
+sim_est_warm_muslims
+
+# save
+saveRDS(sim_est_warm_muslims,
+        here::here(push_mods, "sim_est_warm_muslims"))
+
+
+
+# control variable table --------------------------------------------------
+
+# basis for a table with control variables (draft, needs work)
+
+for_table = function(cvars, dt){
+  # cvars are the control variables at baseline
+  output_string <- paste(cvars, collapse = "+")
+  # Remove double quotes from the beginning and the end of the string
+  output_string_no_quotes <-  gsub('^"|"$', '', output_string)
+  # Make formula
+  output_string_formula <- as.formula(paste("~", output_string_no_quotes))
+  # Make table (tb improved for use with latex & etc)
+  table_out <- table1::table1(output_string_formula, data = dt)
+}
+
+
+
+
+
+# general method for estimating causal effects using GEE ----------------------------
+
+# df is a mids object
+# d is a matched them object
+# n sims is number of simulations for causal contrasts
+# cvars are confounders measured at baseline
+# cl is number of clusters
+# family is the statistical distribution
+# weights is the survey and/or propensity score weights
+
+geeglm_mi_ate = function(df,
+                         d,
+                         nsims,
+                         Y,
+                         X,
+                         cvars,
+                         cl,
+                         family = family,
+                         weights = weights) {
+  require("clarify") # simulate conf intervals
+  require("geepack") # for gee using repeated measures
+
+  fits <- lapply(complete(ml, "all"), function(d) {
+    geepack::geeglm(
+      # as.formula(paste(
+      #   paste(Y, "~", X, "+"),
+      #   paste(cvars, collapse = "+")
+      # )),
+      # interaction -
+      as.formula(paste(
+        paste(Y, "~", X , "*", "("),
+        paste(cvars, collapse = "+"),
+        paste(")")
+      )),
+      weights = weights,
+      id = Id,
+      corstr = "ar1",
+      # repeated measures
+      family = family,
+      data = d
+    )
+  })
+  # sim coefficients
+  sim.imp <- misim(fits, n = nsims)
+
+  sim.att <- sim_ame(
+    sim.imp,
+    var = X,
+    subset = time  == 1,
+    # !!sym(X) == subset_val,  fix later to make general
+    # cores
+    cl = cl,
+    verbose = FALSE
+  )
+
+  # risk differ
+  sim_est <- transform(sim.att, `RD` = `E[Y(1)]` - `E[Y(0)]`)
+
+  # output
+  out <-  summary(sim_est)
+
+  out
+
+}
+
+
+
+# function for obtaining causal contrasts on the risk difference scale
+
+geeglm_ate = function(df, nsims, Y, X, cvars, cl) {
+  require("clarify") # simulate conf intervals
+  require("geepack") # for gee using repeated measures
+
+  fit <-  geepack::geeglm(
+    as.formula(paste(
+      paste(Y, "~", X , "*", "("),
+      paste(cvars, collapse = "+"),
+      paste(")")
+    )),
+    weights = weights,
+    id = Id,
+    corstr = "ar1",
+    # repeated measures
+    family = family,
+    data = df
+  )
+  # sim coefficients
+  sim.imp <- sim(fit, n = nsims)
+
+  sim.att <- sim_ame(
+    sim.imp,
+    var = X,
+    subset = time  == 1,
+    # !!sym(X) == subset_val,  fix later to make general
+    # cores
+    cl = cl,
+    verbose = FALSE
+  )
+
+  # risk difference
+  sim_est <- transform(sim.att, `RD` = `E[Y(1)]` - `E[Y(0)]`)
+
+  # output
+  out <-  summary(sim_est)
+
+  out
+
+}
+
+
+# general method for estimating causal effects using glm ------------------
+
+
+glm_mi_ate = function(df,
+                         d,
+                         nsims,
+                         Y,
+                         X,
+                         cvars,
+                         cl,
+                         family = family,
+                         weights = weights) {
+  require("clarify") # simulate conf intervals
+  require("geepack") # for gee using repeated measures
+
+  fits <- lapply(complete(ml, "all"), function(d) {
+    glm(
+      as.formula(paste(
+        paste(Y, "~", X , "*", "("),
+        paste(cvars, collapse = "+"),
+        paste(")")
+      )),
+      weights = weights,
+      family = family,
+      # if using propensity scores
+      data = d
+    )
+  })
+  # sim coefficients
+  sim.imp <- misim(fits, n = nsims)
+
+  sim.att <- sim_ame(
+    sim.imp,
+    var = X,
+    subset = !!sym(X)  == 1,
+    # !!sym(X) == subset_val,  fix later to make general
+    # cores
+    cl = cl,
+    verbose = FALSE
+  )
+
+  # risk differ
+  sim_est <- transform(sim.att, `RD` = `E[Y(1)]` - `E[Y(0)]`)
+
+  # output
+  out <-  summary(sim_est)
+
+  out
+
+}
+
+
 
 
 
@@ -140,7 +374,7 @@ gcomp_forestplot = function(out, title, ylim, xlab) {
     geom_errorbarh(height = .3, position = position_dodge(width = 0.3)) +
     geom_vline(xintercept = 0, linetype = "solid") +
     geom_vline(
-      xintercept = c(-.5,-.25, .25, .5),
+      xintercept = c(-.5, -.25, .25, .5),
       linetype = "twodash",
       alpha = .5
     ) + # experimental
@@ -345,12 +579,15 @@ glm_nomi = function(X, Y, df, cvars, family = family) {
 glm_nomi_lin = function(X, Y, df, cvars, family = family) {
   # requires that a MATCH THEM dataset is converted to a mice object
   # weights must be called "weights)
-  out_m <- glm(as.formula(paste(
-    paste(Y, "~ (", X , ")+"),
-    paste(cvars, collapse = "+")
-  )), family = family,
-  weights = weights,
-  data = df)
+  out_m <- glm(
+    as.formula(paste(
+      paste(Y, "~ (", X , ")+"),
+      paste(cvars, collapse = "+")
+    )),
+    family = family,
+    weights = weights,
+    data = df
+  )
   return(out_m)
 }
 
@@ -535,7 +772,7 @@ pool_stglm_contrast_ratio <- function(out, df, m, x, X, r) {
 
 ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
   require(ggplot2)
-  g1 <- out[match(p, x), ]
+  g1 <- out[match(p, x),]
   g1
   ggplot2::ggplot(out, aes(x = row, y = est)) +
     geom_point() +
@@ -547,7 +784,9 @@ ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
       x = xlab,
       y = ylab
     ) +
-    geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+    geom_pointrange(data = g1,
+                    aes(ymin = li, ymax = ui),
+                    colour = "red") +  # highlight contrast
     theme_classic()
 }
 
@@ -571,7 +810,7 @@ ggplot_stglm_nomi <-
                                     li = "lower 0.95",
                                     ui = "upper 0.95",
                                     se = "Std. Error")
-    g1 <- out_p[match(p, x), ]
+    g1 <- out_p[match(p, x),]
     g1
     ggplot2::ggplot(out_p, aes(x = rows, y = est)) +
       geom_point() +
@@ -583,7 +822,9 @@ ggplot_stglm_nomi <-
         x = xlab,
         y = ylab
       ) +
-      geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+      geom_pointrange(data = g1,
+                      aes(ymin = li, ymax = ui),
+                      colour = "red") +  # highlight contrast
       theme_classic()
   }
 
@@ -604,9 +845,9 @@ vanderweelevalue_rr = function(out, f) {
       hi = coef[1, 3],
       true = 1
     ), 3))
-  evalout2 <- subset(evalout[2, ])
+  evalout2 <- subset(evalout[2,])
   evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
+    select_if(~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- c(main)
@@ -626,9 +867,9 @@ vanderweelevalue_rr_lo = function(out, f) {
       hi = coef[1, 3],
       true = 1
     ), 3))
-  evalout2 <- subset(evalout[2, ])
+  evalout2 <- subset(evalout[2,])
   evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
+    select_if(~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- c(main)
@@ -648,7 +889,7 @@ ggplot_stglm_nomi <-
                                 li = "lower.0.95",
                                 ui = "upper.0.95",
                                 se = "Std..Error")
-    g1 <- out[match(p, x),]
+    g1 <- out[match(p, x), ]
     g1
     ggplot2::ggplot(out, aes(x = row, y = est)) +
       geom_point() +
@@ -660,7 +901,9 @@ ggplot_stglm_nomi <-
         x = xlab,
         y = ylab
       ) +
-      geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+      geom_pointrange(data = g1,
+                      aes(ymin = li, ymax = ui),
+                      colour = "red") +  # highlight contrast
       theme_classic()
   }
 
@@ -674,7 +917,7 @@ ggplot_stglm_nomi <-
                                 li = "lower.0.95",
                                 ui = "upper.0.95",
                                 se = "Std..Error")
-    g1 <- out[match(p, x),]
+    g1 <- out[match(p, x), ]
     g1
     ggplot2::ggplot(out, aes(x = row, y = est)) +
       geom_point() +
@@ -686,7 +929,9 @@ ggplot_stglm_nomi <-
         x = xlab,
         y = ylab
       ) +
-      geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+      geom_pointrange(data = g1,
+                      aes(ymin = li, ymax = ui),
+                      colour = "red") +  # highlight contrast
       theme_classic()
   }
 
@@ -710,9 +955,9 @@ vanderweelevalue_ols = function(out, f, delta, sd) {
       ),
       3
     ))
-  evalout2 <- subset(evalout[2, ])
+  evalout2 <- subset(evalout[2,])
   evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
+    select_if(~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- main
@@ -737,9 +982,9 @@ vanderweelevalue_ols_lo = function(out, f, delta, sd) {
       ),
       3
     ))
-  evalout2 <- subset(evalout[2, ])
+  evalout2 <- subset(evalout[2,])
   evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
+    select_if(~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- main
@@ -757,9 +1002,9 @@ vanderweelevalue_rr_nomi = function(out, f) {
       hi = coef[1, 4],
       true = 1
     ), 3))
-  evalout2 <- subset(evalout[2,])
+  evalout2 <- subset(evalout[2, ])
   evalout3 <- evalout2 |>
-    select_if(~ !any(is.na(.)))
+    select_if( ~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- c(main)
@@ -780,10 +1025,10 @@ vanderweelevalue_ols_nomi = function(out_ct, f, delta, sd) {
       ),
       3
     ))
-  evalout2 <- subset(evalout[2,])
+  evalout2 <- subset(evalout[2, ])
   evalout2
   evalout3 <- evalout2 |>
-    select_if(~ !any(is.na(.)))
+    select_if( ~ !any(is.na(.)))
   evalout3
   colnames(evalout3) <- c("E-value", "threshold")
   evalout3
@@ -822,9 +1067,9 @@ vanderweelevalue_rr_nomi = function(out_ct, f) {
       hi = coef[1, 4],
       true = 1
     ), 3))
-  evalout2 <- subset(evalout[2,])
+  evalout2 <- subset(evalout[2, ])
   evalout3 <- evalout2 |>
-    select_if(~ !any(is.na(.)))
+    select_if( ~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- c(main)
@@ -843,9 +1088,9 @@ vanderweelevalue_rr_nomi_lo = function(out, r) {
       hi = coef[1, 4],
       true = 1
     ), 3))
-  evalout2 <- subset(evalout[2,])
+  evalout2 <- subset(evalout[2, ])
   evalout3 <- evalout2 |>
-    select_if(~ !any(is.na(.)))
+    select_if( ~ !any(is.na(.)))
   colnames(evalout3) <- c("E-value", "threshold")
   tab <- cbind.data.frame(coef, evalout3)
   rownames(tab) <- c(main)
@@ -978,4 +1223,3 @@ vanderweelevalue_rr_nomi_lo = function(out, r) {
 # df is the dataframe -- a mice object
 # X is the exposure,
 # we assume a spline model
-

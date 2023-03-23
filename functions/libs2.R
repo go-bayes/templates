@@ -46,8 +46,6 @@
 # library(geepack)
 
 
-
-
 # function for installing dependencies
 ipak <- function(pkg) {
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
@@ -61,6 +59,7 @@ packages <- c(
   "remotes",
   "devtools",
   "janitor",
+  "fs",
   "here",
   "purrr",
   "ggplot2",
@@ -106,7 +105,8 @@ packages <- c(
   "arrow",
   "seqHMM",
   "msm",
-  "clarify"
+  "clarify",
+  "conflicted",
 )
 
 ipak(packages)
@@ -140,8 +140,8 @@ if (!require(lmtp)) {
 #devtools::install_github("nt-williams/lmtp@sl3")
 
 # for missing data imputation and gcomputation on the fly
-if(!require(gFormulaMI)) {
-devtools::install_github("jwb133/gFormulaMI")
+if (!require(gFormulaMI)) {
+  devtools::install_github("jwb133/gFormulaMI")
 }
 
 # brms options
@@ -159,4 +159,13 @@ if (!require(lazerhawk)) {
   devtools::install_github('m-clark/lazerhawk')
   install_cmdstan()
 }
+
+
+## preferences
+conflict_prefer("pool", "mice")
+conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
+conflict_prefer("cbind", "base")
+conflict_prefer("lead", "dplyr")
+conflict_prefer("lag", "dplyr")
 
