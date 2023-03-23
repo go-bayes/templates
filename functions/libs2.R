@@ -1,4 +1,3 @@
-#
 # #libraries used
 # library("dplyr") # data wrangling
 # library("tidyr") # data wrangling
@@ -44,7 +43,6 @@
 # options(mc.cores = parallel::detectCores ()) # use all course
 # theme_set(theme_pubclean()) # nice theme
 # library(geepack)
-
 
 # function for installing dependencies
 ipak <- function(pkg) {
