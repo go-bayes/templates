@@ -106,7 +106,7 @@ packages <- c(
   "seqHMM",
   "msm",
   "clarify",
-  "conflicted",
+  "conflicted"
 )
 
 ipak(packages)
