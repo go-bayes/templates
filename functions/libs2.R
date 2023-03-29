@@ -103,6 +103,7 @@ packages <- c(
   "arrow",
   "seqHMM",
   "msm",
+  "knitr",
   "clarify",
   "conflicted"
 )
