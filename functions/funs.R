@@ -255,6 +255,45 @@ tab_ate_rr <- function(x, new_name, delta, sd) {
 
 
 
+# table for many outcomes -------------------------------------------------
+
+
+# function to create group tables
+group_tab_ate <- function(df) {
+  # use rbind to gather muliple tab_ate_ols outputs e.g.:
+  # df <-
+  #   rbind(
+  #     tb_1,
+  #     tb_2,
+  #     tb_3,...
+  #   )
+  require(dplyr)
+  # take group data frame, make a column for reliable estimates,
+  out  <-  df |>
+    arrange(desc(`E[Y(1)]-E[Y(0)]`)) |>
+    dplyr::mutate(Estimate  = as.factor(ifelse(
+      `E[Y(1)]-E[Y(0)]` > 0 & `2.5 %` > 0 ,
+      "positive",
+      ifelse(`E[Y(1)]-E[Y(0)]` < 0 &
+               `97.5 %` < 0 , "negative",
+             "not reliable")
+    ))) |>
+    rownames_to_column(var = "outcome") |>
+    #label for graph
+    mutate(
+      across(where(is.numeric), round, digits = 3),
+      estimate_lab = paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [ev ", `E-val_bound`,"]")
+    )
+
+  out
+}
+
+
+
+
+
+
+
 # functions of table1 -----------------------------------------------------
 
 #table
