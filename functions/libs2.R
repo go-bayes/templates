@@ -105,12 +105,15 @@ packages <- c(
   "msm",
   "knitr",
   "clarify",
-  "conflicted"
+  "conflicted",
+  "rlang"
 )
+
 
 ipak(packages)
 
-
+export RENV_PATHS_DISABLE=TRUE
+quarto render
 # next install rethinking
 # if (!require(rethinking)) {
 #   devtools::install_github("rmcelreath/rethinking")

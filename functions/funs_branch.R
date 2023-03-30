@@ -76,39 +76,45 @@ source("https://raw.githubusercontent.com/go-bayes/templates/main/functions/funs
 
 # read data
 
-pull_path <-
-  fs::path_expand(
-    "/Users/joseph/v-project\ Dropbox/Joseph\ Bulbulia/00Bulbulia\ Pubs/2021/DATA/time13"
-  )
-
-# for saving models
-push_mods <-
-  fs::path_expand(
-    "/Users/joseph/v-project\ Dropbox/Joseph\ Bulbulia/outcomewide/outcomewide-attacks/mods"
-  )
-
-
-# read multiply imputed data
-
-# mi data
-ml <- readRDS(here::here(push_mods, "at-mice-ml"))
-
-# long data
-mf <- readRDS(here::here(push_mods, "at-mice-mf"))
-length(unique(mf$Id))
-
 # baselin vars ---------------------------------------------------------
 
-cvars = mf |>
-  dplyr::select(-c(.imp,
-                   .id,
-                   Id,
-                   time,
-                   weights)) |> # include?
-  dplyr::select(!starts_with("Warm.")) |>
-  colnames()
 
-#cvars
+# glm_contrast_mi --------------------------------------------------------------
+
+
+
+glm_contrast_mi <- function(dt_match, nsims, Y, X, baseline_vars, cl,family, value) {
+    require("clarify")
+    require("rlang") # for building dynamic expressions
+
+    fits <-  lapply(complete(dt_match, "all"), function(d) {
+      glm(as.formula(paste( paste(Y, "~", X , "*", "("), paste(baseline_vars, collapse = "+"),paste(")"))),
+          weights = d$weights, # specify weights column from the dataset
+          family = family,
+          data = d
+      )
+    })
+
+    sim.imp <- misim(fits, n = nsims)
+
+    # Build dynamic expression for subsetting
+    subset_expr <- rlang::expr(!!rlang::sym(X) == !!value)
+
+    sim.att <- sim_ame(
+      sim.imp,
+      var = X,
+      subset = eval(subset_expr),
+      # Evaluate the subset_expr expression
+      cl = cl,
+      verbose = FALSE
+    )
+
+    sim_est <- transform(sim.att, `RD` = `E[Y(1)]` - `E[Y(0)]`)
+
+    out <- summary(sim_est)
+
+    out
+  }
 
 
 

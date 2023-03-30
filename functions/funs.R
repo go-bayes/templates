@@ -1,20 +1,38 @@
 
-# to do
-# write a function where `cvars` = vector of baseline_confounders, X at baseline (the exposure), and Y at baseline
-# for each model, we will uniquely impute the dataset we use for the analysis. ;
-# cvars -- X, Y, at baseline.
+# source libraries
 
-# functions.R
-library("here")
-library("fs")
-library("stdReg")
-library("ggplot2")
-library("mice")
-library("conflicted")
-library("arrow")
+# function for installing dependencies
+ipak <- function(pkg) {
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg))
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
 
+# required packages
+packages <- c(
+  "tidyverse",
+  "fs",
+  "here",
+  "stdReg",
+  "ggplot2",
+  "mice",
+  "conflicted",
+  "arrow",
+  "geepack",
+  "janitor",
+  "clarify",
+  "rlang",
+  "MatchThem",
+  "WeightIt",
+  "cobalt",
+  "optmatch"
+)
 
+# install packages
+ipak(packages)
 
+# conflits preferred
 conflict_prefer("pool", "mice")
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
@@ -22,64 +40,236 @@ conflict_prefer("cbind", "base")
 conflict_prefer("lead", "dplyr")
 conflict_prefer("lag", "dplyr")
 
-# set paths
-# probably want to do this explicitly
-# ** to change
-# push_mods <- here::here("mods")
-# push_figs <- here::here("figs")
 
-# read raw data
 
-# ** to change not needed
-read_raw <- function() {
-  arrow::read_parquet(here::here("data", "data_raw"))
+# matching ----------------------------------------------------------------
+# method for propensity scores
+
+match_mi <- function(X, baselinevars, ml, estimand, method) {
+  require(WeightIt)
+  require(MatchThem)
+  dt_match <- weightthem(
+    as.formula(paste(as.formula(paste(
+      paste(X, "~",
+            paste(baseline_vars, collapse = "+"))
+    )))),
+    ml,
+    estimand = estimand,
+    stabilize = TRUE,
+    method = method
+  )
+  dt_match
 }
 
-# ** to change not needed
-read_imputed <- function() {
-  arrow::read_parquet(here::here("data", "data_imputed"))
 
+# glm_contrast_mi --------------------------------------------------------------
+# current standard for causal contrasts with mi datasets in mice
+
+# value is contrast from 0
+# dt_match is a matchthem object -- if no propensity scores are used then this is just the mice output
+# nsims is number of bootstraps
+# baseline_vars is as it sounds
+# cl is number of computer cores
+# family is as it sounds
+
+glm_contrast_mi <- function(dt_match, nsims, Y, X, baseline_vars, cl,family, delta) {
+  require("clarify")
+  require("rlang") # for building dynamic expressions
+
+  fits <-  lapply(complete(dt_match, "all"), function(d) {
+    glm(as.formula(paste( paste(Y, "~", X , "*", "("), paste(baseline_vars, collapse = "+"),paste(")"))),
+        weights = d$weights, # specify weights column from the dataset
+        family = family,
+        data = d
+    )
+  })
+
+  sim.imp <- misim(fits, n = nsims)
+
+  # Build dynamic expression for subsetting
+  subset_expr <- rlang::expr(!!rlang::sym(X) == !!delta)
+
+  sim.att <- sim_ame(
+    sim.imp,
+    var = X,
+    subset = eval(subset_expr),
+    # Evaluate the subset_expr expression
+    cl = cl,
+    verbose = FALSE
+  )
+
+  sim_est <- transform(sim.att, `RD` = `E[Y(1)]` - `E[Y(0)]`)
+
+  out <- summary(sim_est)
+
+  out
 }
 
-# ** to change not needed
 
-read_long <- function() {
-  arrow::read_parquet(here::here("data", "data_long"))
+
+
+glm_contrast_rr_mi <- function(dt_match, nsims, Y, X, baseline_vars, cl,family, delta) {
+  require("clarify")
+  require("rlang") # for building dynamic expressions
+
+  fits <-  lapply(complete(dt_match, "all"), function(d) {
+    glm(as.formula(paste( paste(Y, "~", X , "*", "("), paste(baseline_vars, collapse = "+"),paste(")"))),
+        weights = d$weights, # specify weights column from the dataset
+        family = family,
+        data = d
+    )
+  })
+
+  sim.imp <- misim(fits, n = nsims)
+
+  # Build dynamic expression for subsetting
+  subset_expr <- rlang::expr(!!rlang::sym(X) == !!delta)
+
+  sim.att <- sim_ame(
+    sim.imp,
+    var = X,
+    subset = eval(subset_expr),
+    # Evaluate the subset_expr expression
+    cl = cl,
+    verbose = FALSE
+  )
+
+  sim_est <- transform(sim.att, RR = `E[Y(1)]`/`E[Y(0)]`)
+
+  out <- summary(sim_est)
+
+  out
 }
 
-# ** to change not needed
 
-read_ml <- function() {
-  arrow::read_parquet(here::here("data", "data_ml"))
+
+
+
+# contrast on risk ratio scale --------------------------------------------
+
+# simple tables for contrasts
+tab_ate  <- function(x, new_name) {
+  # output from function glm_contrast_mi: new,name is for the new table name
+  require(dplyr)
+  # make clarify object into a data frame
+  x <- as.data.frame(x)
+  out  <- x  %>%
+    # take row that is needed
+    dplyr::slice(3) |>
+    # use only three digits
+    dplyr::mutate(across(where(is.numeric), round, digits = 4)) |>
+    # Estimand of interest is risk difference
+    dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
+
+  #rename row
+  rownames(out)[1] <- paste0(new_name)
+  out
 }
 
-# or avoids to avoid pushing/ pulling large objects on github use something like the following
-# push_mods <- fs::path_expand("~/The\ Virtues\ Project\ Dropbox/outcomewide/mods")
-# push_figs <- fs::path_expand("~/Users/joseph/The\ Virtues\ Project\ Dropbox/outcomewide/figs")
-
-
-## function for saving
-
-# ** to change not needed
-# saveh <- function(df, name) {
-#   x = df
-#   arrow::write_parquet(x,  here::here(push_mods,  paste0(name, '')))
-# }
-
-
-# function for reading
-# readh <- function(name) {
-#   df = arrow::read_parquet(here::here(push_mods,  paste0(name, '')))
-#   df
-# }
 
 
 
-# forest plots studies ------------------------------------
+# Evalue table for this output ---------------------------------------------------
+tab_ate_ols <- function(x, new_name, delta, sd) {
+  require("EValue")
+  # x = output from function glm_contrast_mi: new_name is for the new table name
+  # value = contrast
+  # sd = standard deviation of the outcome
+  require(dplyr)
+  # make clarify object into a data frame
+  x <- as.data.frame(x)
+  out <- x %>%
+    # take row that is needed
+    dplyr::slice(3) %>%
+    # use only three digits
+    dplyr::mutate(across(where(is.numeric), round, digits = 4)) %>%
+    # Estimand of interest is risk difference
+    dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
+
+  #rename row
+  rownames(out)[1] <- paste0(new_name)
+  out <- as.data.frame(out)
+  out
+  # make evalue column, which is needed four evalues
+  # Calculate the standard error
+  tab0 <- out |>  dplyr::mutate(standard_error = abs(`2.5 %` - `97.5 %`) / 3.92)
+  evalout <- as.data.frame(round(EValue::evalues.OLS(tab0[1, 1],
+                                                     se = tab0[1, 4],
+                                                     sd = sd,
+                                                     delta = delta,
+                                                     true = 0
+  ),
+  3
+  ))
+
+  evalout2 <- subset(evalout[2, ])
+  evalout3 <- evalout2 |>
+    select_if( ~ !any(is.na(.)))
+  colnames(evalout3) <- c("Evalue", "E-val_bound")
+  tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error,Evalue)) # keep table minimal
+  return(tab)
+}
 
 
-#  Takes a list of ggplot graph objects and creates a combined object
-# e.g. dt_new <- bind_forestplot(list(alcoholfreq_p,alcoholintensity_p, bmi_p))
+# table on risk ratio scale
+
+
+tab_ate_rr <- function(x, new_name, delta, sd) {
+  require("EValue")
+  # x = output from function glm_contrast_mi: new_name is for the new table name
+  # value = contrast
+  # sd = standard deviation of the outcome
+  require(dplyr)
+  # make clarify object into a data frame
+  x <- as.data.frame(x)
+  out <- x %>%
+    # take row that is needed
+    dplyr::slice(3) %>%
+    # use only three digits
+    dplyr::mutate(across(where(is.numeric), round, digits = 4)) %>%
+    # Estimand of interest is risk difference
+    dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
+
+  #rename row
+  rownames(out)[1] <- paste0(new_name)
+  out <- as.data.frame(out)
+  out
+  # make evalue column, which is needed four evalues
+  # Calculate the standard error
+  tab0 <- out #|>  dplyr::mutate(standard_error = abs(`2.5 %` - `97.5 %`) / 3.92)
+  evalout <- as.data.frame(round(EValue::evalues.RR(tab0[1, 1],
+                                                    lo = tab0[1, 2],
+                                                    hi = tab0[1, 3],
+                                                    true = 1
+  ),
+  3
+  ))
+  evalout2 <- subset(evalout[2, ])
+  evalout3 <- evalout2 |>
+    select_if( ~ !any(is.na(.)))
+  colnames(evalout3) <- c("Evalue", "E-val_bound")
+  tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(Evalue)) # keep table minimal
+  return(tab)
+}
+
+
+
+
+# functions of table1 -----------------------------------------------------
+
+#table
+# functions for table
+my_render_cont <- function(x) {
+  with(stats.apply.rounding(stats.default(x), digits=3), c("",
+                                                           "Mean (SD)"=sprintf("%s (&plusmn; %s)", MEAN, SD)))
+}
+
+my_render_cat <- function(x) {
+  c("", sapply(stats.default(x), function(y) with(y,
+                                                  sprintf("%d (%0.0f %%)", FREQ, PCT))))
+}
+
+# forest plots studies OLD ------------------------------------
 
 
 # Made this better in the outcomewide attacks script -- under "scripts" --> "functions"

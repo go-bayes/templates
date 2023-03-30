@@ -93,11 +93,11 @@ We asked participants "Which country were you born in?".
 
 #### Belief in God
 
-Using one item from Eurobarometer (2005), we asked participants "Do you believe in a God" (1 = Yes, 0 = No).
+Using one item from Eurobarometer (2005), we asked participants "Do you believe in a God" (1 = Yes, 0 = No) [@eurobarometer2005b].
 
-#### Belief in Sprituality
+#### Belief in a Spirit or Life Force
 
-Using one item from Eurobarometer (2005), we asked participants "Do you believe in some form of spirit or lifeforce? (1 = Yes, 0 = No).
+Using one item from Eurobarometer (2005), we asked participants "Do you believe in some form of spirit or lifeforce? (1 = Yes, 0 = No) [@eurobarometer2005b].
 
 #### Felt Belongingness
 
@@ -110,10 +110,6 @@ Using one item from @hoverd_religious_2010, we asked participants "How much mone
 #### Number of Children
 
 We measured number of children using one item from @Bulbulia_2015. We asked participants "How many children have you given birth to, fathered, or adopted. How many children have you given birth to, fathered, or adopted?
-
-#### Frequency of Church Attendence
-
-If participants answered *yes* to "Do you identify with a religion and/or spiritual group?" we measured their frequency of church attendence using one item from @sibley2012: "how many times did you attend a church or place of worship in the last month?".
 
 #### Sense of Community
 
@@ -235,9 +231,31 @@ We measured participants' political orientation using a single item adapted from
 
 Participants' Power dependence was measured using two items: (1) I do not have enough power or control over important parts of my life; (2) Other people have too much power or control over important parts of my life. Participants indicated their agreement with these items (1 = Strongly Disagree to 7 = Strongly Agree).
 
-#### Religion Idenfication
+#### Religion Affiliation
 
-Participants were asked to indicate their religion identification ("Do you identify with a religion and/or spiritual group?") on a binary response (1 = Yes, 0 = No).
+Participants were asked to indicate their religion identification ("Do you identify with a religion and/or spiritual group?") on a binary response (1 = Yes, 0 = No). We then asked "What religion or spiritual group?" These questions are used in the New Zealand Census.
+
+#### Frequency of Church Attendence
+
+If participants answered *yes* to "Do you identify with a religion and/or spiritual group?" we measured their frequency of church attendence using one item from @sibley2012: "how many times did you attend a church or place of worship in the last month?". Those participants who were not religious were imputed a score of "0".
+
+#### Frequency of Prayer
+
+If participants answered *yes* to "Do you identify with a religion and/or spiritual group?" we measured their frequency of prayer by asking "how many times did you pray in the last week?" Those participants who were not religious were imputed a score of "0" [@Bulbulia_2015].
+
+#### Frequency of Scripture Reading
+
+If participants answered *yes* to "Do you identify with a religion and/or spiritual group?" we measured their frequency of scripture reading by asking "how many times did you read religious scripture in the last week?" Those participants who were not religious were imputed a score of "0" [@bulbulia2016]
+
+#### Perceived Discrimination -- Religion
+
+"I feel that I am often discriminated against because of my religious/spiritual beliefs." (1 = Strongly Disagree to 7 = Strongly Agree). (Developed for the NZAVS, Time 7 - time 14)
+
+
+### Religious Identification
+
+If participants answered *yes* to "Do you identify with a religion and/or spiritual group? we asked"How important is your religion to how you see yourself?" (1 = Not important, 7 = Very important). Those participants who were not religious were imputed a score of "0".
+
 
 #### Self-Respect
 
