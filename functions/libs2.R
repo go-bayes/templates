@@ -109,7 +109,6 @@ packages <- c(
   "rlang"
 )
 
-
 ipak(packages)
 
 # next install rethinking
