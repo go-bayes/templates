@@ -211,6 +211,52 @@ tab_ate_ols <- function(x, new_name, delta, sd) {
 }
 
 
+
+# full table --------------------------------------------------------------
+
+
+tab_ate_ols <- function(x, new_name, delta, sd) {
+  require("EValue")
+  # x = output from function glm_contrast_mi: new_name is for the new table name
+  # value = contrast
+  # sd = standard deviation of the outcome
+  require(dplyr)
+  # make clarify object into a data frame
+  x <- as.data.frame(x)
+  out <- x %>%
+    # take row that is needed
+    dplyr::slice(3) %>%
+    # use only three digits
+    dplyr::mutate(across(where(is.numeric), round, digits = 4)) %>%
+    # Estimand of interest is risk difference
+    dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
+
+  #rename row
+  rownames(out)[1] <- paste0(new_name)
+  out <- as.data.frame(out)
+  out
+  # make evalue column, which is needed four evalues
+  # Calculate the standard error
+  tab0 <- out |>  dplyr::mutate(standard_error = abs(`2.5 %` - `97.5 %`) / 3.92)
+  evalout <- as.data.frame(round(EValue::evalues.OLS(tab0[1, 1],
+                                                     se = tab0[1, 4],
+                                                     sd = sd,
+                                                     delta = delta,
+                                                     true = 0
+  ),
+  3
+  ))
+
+  evalout2 <- subset(evalout[2, ])
+  evalout3 <- evalout2 |>
+    select_if( ~ !any(is.na(.)))
+  colnames(evalout3) <- c("Evalue", "E-val_bound")
+  tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error)) # keep Evalue
+  return(tab)
+}
+
+
+
 # table on risk ratio scale
 
 
@@ -248,7 +294,7 @@ tab_ate_rr <- function(x, new_name, delta, sd) {
   evalout3 <- evalout2 |>
     select_if( ~ !any(is.na(.)))
   colnames(evalout3) <- c("Evalue", "E-val_bound")
-  tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(Evalue)) # keep table minimal
+  tab <- cbind.data.frame(tab0, evalout3) #|> dplyr::select(-c(Evalue)) # keep table minimal
   return(tab)
 }
 
