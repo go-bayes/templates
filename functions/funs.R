@@ -26,7 +26,9 @@ packages <- c(
   "MatchThem",
   "WeightIt",
   "cobalt",
-  "optmatch"
+  "optmatch",
+  "glue",
+  "rlang"
 )
 
 # install packages
@@ -208,7 +210,7 @@ tab_ate_ols <- function(x, new_name, delta, sd) {
   evalout2 <- subset(evalout[2, ])
   evalout3 <- evalout2 |>
     select_if( ~ !any(is.na(.)))
-  colnames(evalout3) <- c("E-Value", "E-val_bound")
+  colnames(evalout3) <- c("E_Value", "E_val_bound")
   tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error)) # keep Evalue
   return(tab)
 }
@@ -232,7 +234,7 @@ tab_ate_rr <- function(x, new_name, delta, sd) {
     # use only three digits
     dplyr::mutate(across(where(is.numeric), round, digits = 4)) %>%
     # Estimand of interest is risk difference
-    dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
+    dplyr::rename("E[Y(1)]/E[Y(0)]" = Estimate)
 
   #rename row
   rownames(out)[1] <- paste0(new_name)
@@ -251,7 +253,7 @@ tab_ate_rr <- function(x, new_name, delta, sd) {
   evalout2 <- subset(evalout[2, ])
   evalout3 <- evalout2 |>
     select_if( ~ !any(is.na(.)))
-  colnames(evalout3) <- c("E-Value", "E-val_bound")
+  colnames(evalout3) <- c("E_Value", "E_val_bound")
   tab <- cbind.data.frame(tab0, evalout3) #|> dplyr::select(-c(Evalue)) # keep table minimal
   return(tab)
 }
@@ -263,6 +265,7 @@ tab_ate_rr <- function(x, new_name, delta, sd) {
 
 
 # function to create group tables
+## Evalue plot CRD
 group_tab_ate <- function(df) {
   # use rbind to gather muliple tab_ate_ols outputs e.g.:
   # df <-
@@ -286,7 +289,37 @@ group_tab_ate <- function(df) {
     #label for graph
     mutate(
       across(where(is.numeric), round, digits = 3),
-      estimate_lab = paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [ev ", `E-Value`, `E-val_bound`,"]")
+      estimate_lab = paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_val_bound`,"]")
+    )
+
+  out
+}
+
+
+group_tab_ate_rr <- function(df) {
+  # use rbind to gather muliple tab_ate_ols outputs e.g.:
+  # df <-
+  #   rbind(
+  #     tb_1,
+  #     tb_2,
+  #     tb_3,...
+  #   )
+  require(dplyr)
+  # take group data frame, make a column for reliable estimates,
+  out  <-  df |>
+    arrange(desc(`E[Y(1)]/E[Y(0)]`)) |>
+    dplyr::mutate(Estimate  = as.factor(ifelse(
+      `E[Y(1)]/E[Y(0)]` > 1 & `2.5 %` > 1 ,
+      "positive",
+      ifelse( `E[Y(1)]/E[Y(0)]` < 1 &
+                `97.5 %` < 1 , "negative",
+              "not reliable")
+    ))) |>
+    rownames_to_column(var = "outcome") |>
+    #label for graph
+    mutate(
+      across(where(is.numeric), round, digits = 3),
+      estimate_lab = paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_val_bound`,"]")
     )
 
   out
@@ -297,6 +330,117 @@ group_tab_ate <- function(df) {
 
 
 
+## Evalue plot RR
+
+
+group_plot_ate_rr <- function(df, title, subtitle, xlab, ylab,
+                              x_offset= 0,
+                              x_lim_lo = 0,
+                              x_lim_hi = 1.5) {
+  # Convert the title string to a symbol
+  title_sym <- sym(title)
+  # create plot
+  out <-ggplot(
+    data = df,
+    aes(
+      y = reorder(outcome, `E[Y(1)]/E[Y(0)]`),
+      x = `E[Y(1)]/E[Y(0)]`,
+      xmin = `2.5 %`,
+      xmax = `97.5 %`,
+      group = Estimate,
+      color = Estimate
+    )
+  ) +
+    geom_errorbarh(aes(color = Estimate), height = .3, position = position_dodge(width = 0.3)) + # Add color to geom_errorbarh
+    geom_point(size = 4, position = position_dodge(width = 0.3)) + # Replace geom_col with geom_point
+    geom_vline(xintercept = 1, linetype = "solid") +
+    theme_classic(base_size = 12) +
+    scale_color_manual(values = c("orange", "black", "dodgerblue")) + # Set custom color scale
+    labs(
+      x = "Causal Risk Ratio",
+      y = " ",
+      title = title,
+      subtitle = subtitle
+    ) +
+    geom_text(
+      aes(x = x_offset, label = estimate_lab), # Display only estimate labels
+      size = 4,
+      hjust = 0,
+      fontface = ifelse(df$Estimate == "not reliable", "plain", "bold")
+    ) +
+    coord_cartesian(xlim = c(x_lim_lo, x_lim_hi)) +
+
+    # coord_fixed(clip = "off",
+    #             xlim = c(x_lim_lo, x_lim_hi)
+    #             ) +
+    theme(
+      legend.position = "top",
+      legend.direction = "horizontal",
+      plot.title = element_text(face = "bold", size = 12, hjust = 0), # Align title to the left
+      plot.subtitle = element_text(size = 10, hjust = 0) # Align subtitle to the left
+    )
+  # plot
+  out
+}
+
+
+
+
+
+
+
+# interpret table ---------------------------------------------------------
+
+library(tidyverse)
+library(glue)
+
+
+interpret_table <- function(df, causal_scale, estimand) {
+  estimand_description <- case_when(
+    estimand %in% c("PATE", "ATE") ~ "Average Treatment Effect (ATE) represents the expected difference in outcomes between treatment and control groups for the whole population.",
+    estimand %in% c("PATT", "ATT") ~ "Average Treatment Effect on the Treated (ATT) represents the expected difference in outcomes between treatment and control groups for the individuals who received the treatment.",
+    estimand %in% "CATE" ~ "Conditional Average Treatment Effect (CATE) represents the expected difference in outcomes between treatment and control groups for a specific subgroup of individuals.",
+    estimand %in% c("SATE", "SATT") ~ "Sample Average Treatment Effect (SATE) represents the expected difference in outcomes between treatment and control groups within the sampled population.",
+    TRUE ~ "The specified estimand is not recognized. Please use one of the following: 'PATE', 'PATT', 'ATE', 'ATT', 'CATE', 'SATE', 'SATT'."
+  )
+
+  if (causal_scale == "risk_ratio") {
+    interpretation <- df %>%
+      mutate(
+        causal_contrast = round(E_Value / E_val_bound, 3),
+        strength_of_evidence = case_when(
+          E_Value >= 1.25 ~ "reliable evidence for causality",
+          E_Value >= 1.1 ~ "evidence for causality is not conclusive",
+          TRUE ~ "no reliable evidence for causality"
+        ),
+        outcome_interpretation = glue(
+          "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+          "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+          "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
+        )
+      )
+  } else if (causal_scale == "risk_difference") {
+    interpretation <- df %>%
+      mutate(
+        causal_contrast = round(`E[Y(1)]-E[Y(0)]`, 3),
+        strength_of_evidence = case_when(
+          E_Value >= 1.25 ~ "reliable evidence for causality",
+          E_Value >= 1.1 ~ "evidence for causality is not conclusive",
+          TRUE ~ "no reliable evidence for causality"
+        ),
+        outcome_interpretation = glue(
+          "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+          "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+          "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
+        )
+      )
+  } else {
+    stop("Invalid causal_scale argument. Please use 'risk_ratio' or 'risk_difference'.")
+  }
+
+  result <- glue("Table interpretation:\n\n{estimand_description}\n\n{paste(interpretation$outcome_interpretation, collapse = '\n\n')}")
+  return(result)
+}
 
 # functions of table1 -----------------------------------------------------
 
