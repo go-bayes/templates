@@ -106,7 +106,9 @@ packages <- c(
   "knitr",
   "clarify",
   "conflicted",
-  "rlang"
+  "parallel",
+  "rlang",
+  "glue" # for reports
 )
 
 ipak(packages)
