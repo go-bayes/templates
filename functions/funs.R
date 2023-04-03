@@ -45,20 +45,79 @@ conflict_prefer("lag", "dplyr")
 
 
 
+# create wide data --------------------------------------------------------
+
+
+create_wide_data <- function(dat_long, baseline_vars, exposure_var, outcome_vars, exclude_vars = c()) {
+  require(tidyverse)
+  # Add the 'time' column to the data
+  data_with_time <- dat_long %>%
+    mutate(time = as.numeric(wave) - 1) %>%
+    arrange(id, time)
+
+  # Filter the data based on the time condition
+  data_filtered <- data_with_time %>%
+    filter(time >= 0)
+
+  # Create the wide data frame
+  wide_data <- data_filtered %>%
+    dplyr::select(-exclude_vars)  %>%  # Exclude specified variables
+    pivot_wider(
+      id_cols = id,
+      names_from = time,
+      values_from = -c(id, time),
+      names_glue = "t{time}_{.value}",
+      names_prefix = "t"
+    )
+
+  # Define a custom function to filter columns based on conditions
+  custom_col_filter <- function(col_name) {
+    if (startsWith(col_name, "t0_")) {
+      return(col_name %in% c(paste0("t0_", baseline_vars), paste0("t0_", outcome_vars)))
+    } else if (startsWith(col_name, "t1_")) {
+      return(col_name %in% paste0("t1_", exposure_var))
+    } else if (startsWith(col_name, "t2_")) {
+      return(col_name %in% paste0("t2_", outcome_vars))
+    } else if (startsWith(col_name, "t3_")) {
+      return(col_name %in% paste0("t3_", outcome_vars))
+    } else {
+      return(FALSE)
+    }
+  }
+
+  # Apply the custom function to select the desired columns
+  wide_data_filtered <- wide_data %>%
+    dplyr::select(id, which(sapply(colnames(wide_data), custom_col_filter))) %>%
+    dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
+    dplyr::relocate(starts_with("t2_"), .after = starts_with("t1_"))  %>%
+    dplyr::relocate(starts_with("t3_"), .after = starts_with("t2_"))  %>%
+    arrange(id)%>%
+    select(-id)
+
+  return(wide_data_filtered)
+}
 
 
 # matching ----------------------------------------------------------------
 # method for propensity scores
 
-match_mi <- function(X, baselinevars, ml, estimand, method) {
+
+match_mi <- function(.data, X, baselinevars,estimand, method) {
   require(WeightIt)
   require(MatchThem)
+
+  # if not binary, we model the interacton to obtain better weights
+  # not we can add survey weights at this point.
+
+  formula_str <- paste(X, "~", paste(baseline_vars, collapse = "+"))
+
+
+  weight_var <- if (weights) .data$weights else NULL
+
   dt_match <- weightthem(
-    as.formula(paste(as.formula(paste(
-      paste(X, "~",
-            paste(baseline_vars, collapse = "+"))
-    )))),
-    ml,
+    as.formula(formula_str),
+    weights = if (!is.null(weight_var)) weight_var else NULL, # survey
+    .data,
     estimand = estimand,
     stabilize = TRUE,
     method = method
@@ -66,10 +125,146 @@ match_mi <- function(X, baselinevars, ml, estimand, method) {
   dt_match
 }
 
+# older
+# match_mi <- function(X, baselinevars, ml, estimand, method) {
+#   require(WeightIt)
+#   require(MatchThem)
+#   dt_match <- weightthem(
+#     as.formula(paste(as.formula(paste(
+#       paste(X, "~",
+#             paste(baseline_vars, collapse = "+"))
+#     )))),
+#     ml,
+#     estimand = estimand,
+#     stabilize = TRUE,
+#     method = method
+#   )
+#   dt_match
+# }
+
 
 
 # causal contrast ------------------------------------------------------------
+# slightly newer but not working as wanted
+# causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
+#                             estimand = "ATE", scale = "RR", nsims = 200,
+#                             cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
+#   # Load required packages
+#   require("clarify")
+#   require("rlang") # for building dynamic expressions
+#   require("glue") # for easier string manipulation
+#   require("parallel") # detect cores
+#   #require("survey") # correctly computes standard errors: to do
+#
+#   if (continuous_X) {
+#     estimand <- "ATE"
+#     warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
+#   }
+#
+#   # Fit models using the complete datasets (all imputations)
+#   fits <-  lapply(complete(df, "all"), function(d) {
+#     # Set weights variable based on the value of 'weights' argument
+#     weight_var <- if (weights) d$weights else NULL
+#
+#     # Check if continuous_X and splines are both TRUE
+#     if (continuous_X && splines) {
+#       require(splines) # splines package
+#       formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
+#     } else {
+#       formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+#     }
+#
+#     glm(
+#       as.formula(formula_str),
+#       weights = if (!is.null(weight_var)) weight_var else NULL,
+#       family = family,
+#       data = d
+#     )
+#   })
+#
+#   # A `clarify_misim` object
+#   sim.imp <- misim(fits, n = nsims)
+#
+#   # Compute the Average Marginal Effects
+#   if (!continuous_X && estimand == "ATT") {
+#     # Build dynamic expression for subsetting
+#     subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
+#
+#     sim_estimand <- sim_ame(
+#       sim.imp,
+#       var = X,
+#       subset = eval(subset_expr),
+#       cl = cores,
+#       verbose = FALSE
+#     )
+#   } else {
+#     # For ATE
+#     sim_estimand <- sim_ame(sim.imp,
+#                             var = X,
+#                             cl = cores,
+#                             verbose = FALSE)
+#   }
+#
+#   if (continuous_X) {
+#     summary_df <- summary(sim_estimand)
+#     rownames(summary_df) <- scale # Set the row name to the value of `scale`
+#     return(summary_df)
+#   } else {
+#     if (!continuous_X && estimand == "ATT") {
+#       # Build dynamic expression for subsetting
+#       subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
+#
+#       sim_estimand <- sim_ame(sim.imp,
+#                               var = X,
+#                               subset = eval(subset_expr),
+#                               cl = cores,
+#                               verbose = FALSE)
+#     } else { # For ATE
+#       sim_estimand <- sim_ame(sim.imp,
+#                               var = X,
+#                               cl = cores,
+#                               verbose = FALSE)
+#     }
+#
+#     if (continuous_X) {
+#       return(summary(sim_estimand))
+#       # sim_estimand <- as.data.frame(sim_estimand). # not working
+#       # rownames(sim_estimand) <- scale
+#
+#     } else {
+#       # Convert sim_estimand to a data frame
+#       sim_estimand_df <- as.data.frame(sim_estimand)
+#
+#       # Transform the results based on the specified scale
+#       if (scale == "RR") {
+#         sim_estimand_df$RR <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] / sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
+#
+#       } else {
+#         sim_estimand_df$RD <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] - sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
+#
+#       }
+#
+#       # Calculate the desired summary statistics
+#       out <- t(sapply(sim_estimand_df, function(x) {
+#         c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
+#       }))
+#
+#       # Set the row names of the output to match the desired format
+#       rownames(out) <- colnames(sim_estimand_df)
+#
+#
+#       # Rename the column names to avoid duplicates
+#       colnames(out) <- c("Estimate", "2.5 %", "97.5 %")
+#
+#       return(out)
+#   }
+# }
 
+
+# Compute the Average Treatement Effects (ATT and ATE)
+
+
+# slightly older
 causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
                             estimand = "ATE", scale = "RR", nsims = 200,
                             cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
@@ -82,7 +277,7 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
 
   if (continuous_X) {
     estimand <- "ATE"
-    warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
+   # warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
   }
 
   # Fit models using the complete datasets (all imputations)
@@ -166,7 +361,7 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
 
 
 
-  f# older
+# older
   # causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
   #                             estimand = "ATE", scale = "RR", nsims = 200,
   #                             cores = parallel::detectCores (), family = binomial(), weights = TRUE) {
@@ -402,13 +597,19 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
 
 # general contrast table --------------------------------------------------
 
-tab_ate <- function(x, new_name, delta = 1, sd = 1, type = c("RD", "RR")) {
+tab_ate <- function(x, new_name, delta = 1, sd = 1, type = "RD", continuous_X = FALSE) {
   require("EValue")
   require(dplyr)
 
   type <- match.arg(type)
 
   x <- as.data.frame(x)
+
+  if (continuous_X) {
+    rownames(x) <- type
+  } else{
+   x
+  }
 
   out <- x %>%
     dplyr::filter(row.names(x) == type) %>%
@@ -459,20 +660,17 @@ tab_ate <- function(x, new_name, delta = 1, sd = 1, type = c("RD", "RR")) {
   return(tab)
 }
 
-
 # combine causal contrast and tab ate -------------------------------------
 
-
-gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
-                                         estimand = "ATE", scale = "RR", nsims = 200,
-                                         cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE,
-                                         delta = 1, sd = 1, type = c("RD", "RR")) {
+gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200,
+                      cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE,
+                      delta = 1, sd = 1, type = c("RD", "RR")) {
   # Call the causal_contrast() function
   causal_contrast_result <- causal_contrast(df, Y, X, baseline_vars, treat_0, treat_1,
                                             estimand, scale, nsims, cores, family, weights, continuous_X, splines)
 
   # Call the tab_ate() function with the result from causal_contrast()
-  tab_ate_result <- tab_ate(causal_contrast_result, new_name, delta, sd, type)
+  tab_ate_result <- tab_ate(causal_contrast_result, new_name, delta, sd, type, continuous_X)
 
   return(tab_ate_result)
 }
@@ -995,68 +1193,68 @@ glm_contrast_mi <- function(dt_match, nsims, Y, X, baseline_vars, cl,family, del
 
 library(tidyverse)
 library(glue)
-
-calculate_difference <- function(df, df1, causal_scale) {
-  # Check if both data frames have the same outcomes
-  if (!all(df$outcome == df1$outcome)) {
-    stop("The outcomes in the provided data frames do not match.")
-  }
-
-  if (causal_scale == "risk_difference") {
-    # Calculate the differences in causal effect estimates and their variances
-    differences <- df %>%
-      inner_join(df1, by = "outcome", suffix = c("_1", "_2")) %>%
-      mutate(
-        causal_difference = `E[Y(1)]-E[Y(0)]_1` - `E[Y(1)]-E[Y(0)]_2`,
-        variance_1 = (`97.5 %_1` - `2.5 %_1`)^2 / 16,
-        variance_2 = (`97.5 %_2` - `2.5 %_2`)^2 / 16,
-        variance_difference = variance_1 + variance_2,
-        ci_lower = causal_difference - 1.96 * sqrt(variance_difference),
-        ci_upper = causal_difference + 1.96 * sqrt(variance_difference)
-      ) %>%
-      select(outcome, causal_difference, ci_lower, ci_upper)
-  } else if (causal_scale == "risk_ratio") {
-    differences <- df %>%
-      inner_join(df1, by = "outcome", suffix = c("_1", "_2")) %>%
-      mutate(
-        log_ca_diff = log(`E[Y(1)]/E[Y(0)]_1`) - log(`E[Y(1)]/E[Y(0)]_2`),
-        variance_1 = (log(`97.5 %_1`) - log(`2.5 %_1`))^2 / 16,
-        variance_2 = (log(`97.5 %_2`) - log(`2.5 %_2`))^2 / 16,
-        variance_difference = variance_1 + variance_2,
-        ci_lower_log = log_ca_diff - 1.96 * sqrt(variance_difference),
-        ci_upper_log = log_ca_diff + 1.96 * sqrt(variance_difference),
-        causal_difference = exp(log_ca_diff),
-        ci_lower = exp(ci_lower_log),
-        ci_upper = exp(ci_upper_log)
-      ) %>%
-      select(outcome, causal_difference, ci_lower, ci_upper)
-  } else {
-    stop("Invalid causal_scale argument. Please use 'risk_ratio' or 'risk_difference'.")
-  }
-
-  interpretation_text <- differences %>%
-    mutate(
-      outcome_text = glue("For the outcome '{outcome}', the difference in causal effects between the two treatments is {causal_difference} (95% CI: {ci_lower}-{ci_upper})."),
-      significant_text = case_when(
-        (causal_scale == "risk_difference" & (ci_lower > 0 | ci_upper < 0)) |
-          (causal_scale == "risk_ratio" & (ci_lower > 1 | ci_upper < 1)) ~ "This difference is statistically reliable",
-        TRUE ~ "This difference is not statistically reliable."
-      )
-    ) %>%
-    summarise(
-      full_text = glue_collapse(glue("{outcome_text} {significant_text}\n"), sep = "\n")
-    ) %>%
-    pull(full_text)
-
-  return(list(table = differences, text = interpretation_text))
-}
-  return(differences)
-}
-
-# result <- calculate_difference(df, df1, causal_scale = "risk_difference")
-# print(result$table)
-# cat(result$text)
-
+#
+# calculate_difference <- function(df, df1, causal_scale) {
+#   # Check if both data frames have the same outcomes
+#   if (!all(df$outcome == df1$outcome)) {
+#     stop("The outcomes in the provided data frames do not match.")
+#   }
+#
+#   if (causal_scale == "risk_difference") {
+#     # Calculate the differences in causal effect estimates and their variances
+#     differences <- df %>%
+#       inner_join(df1, by = "outcome", suffix = c("_1", "_2")) %>%
+#       mutate(
+#         causal_difference = `E[Y(1)]-E[Y(0)]_1` - `E[Y(1)]-E[Y(0)]_2`,
+#         variance_1 = (`97.5 %_1` - `2.5 %_1`)^2 / 16,
+#         variance_2 = (`97.5 %_2` - `2.5 %_2`)^2 / 16,
+#         variance_difference = variance_1 + variance_2,
+#         ci_lower = causal_difference - 1.96 * sqrt(variance_difference),
+#         ci_upper = causal_difference + 1.96 * sqrt(variance_difference)
+#       ) %>%
+#       select(outcome, causal_difference, ci_lower, ci_upper)
+#   } else if (causal_scale == "risk_ratio") {
+#     differences <- df %>%
+#       inner_join(df1, by = "outcome", suffix = c("_1", "_2")) %>%
+#       mutate(
+#         log_ca_diff = log(`E[Y(1)]/E[Y(0)]_1`) - log(`E[Y(1)]/E[Y(0)]_2`),
+#         variance_1 = (log(`97.5 %_1`) - log(`2.5 %_1`))^2 / 16,
+#         variance_2 = (log(`97.5 %_2`) - log(`2.5 %_2`))^2 / 16,
+#         variance_difference = variance_1 + variance_2,
+#         ci_lower_log = log_ca_diff - 1.96 * sqrt(variance_difference),
+#         ci_upper_log = log_ca_diff + 1.96 * sqrt(variance_difference),
+#         causal_difference = exp(log_ca_diff),
+#         ci_lower = exp(ci_lower_log),
+#         ci_upper = exp(ci_upper_log)
+#       ) %>%
+#       select(outcome, causal_difference, ci_lower, ci_upper)
+#   } else {
+#     stop("Invalid causal_scale argument. Please use 'risk_ratio' or 'risk_difference'.")
+#   }
+#
+#   interpretation_text <- differences %>%
+#     mutate(
+#       outcome_text = glue("For the outcome '{outcome}', the difference in causal effects between the two treatments is {causal_difference} (95% CI: {ci_lower}-{ci_upper})."),
+#       significant_text = case_when(
+#         (causal_scale == "risk_difference" & (ci_lower > 0 | ci_upper < 0)) |
+#           (causal_scale == "risk_ratio" & (ci_lower > 1 | ci_upper < 1)) ~ "This difference is statistically reliable",
+#         TRUE ~ "This difference is not statistically reliable."
+#       )
+#     ) %>%
+#     summarise(
+#       full_text = glue_collapse(glue("{outcome_text} {significant_text}\n"), sep = "\n")
+#     ) %>%
+#     pull(full_text)
+#
+#   return(list(table = differences, text = interpretation_text))
+# }
+#   return(differences)
+# }
+#
+# # result <- calculate_difference(df, df1, causal_scale = "risk_difference")
+# # print(result$table)
+# # cat(result$text)
+#
 
 # functions for table1 -----------------------------------------------------
 
