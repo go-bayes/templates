@@ -73,7 +73,7 @@ create_wide_data <- function(dat_long, baseline_vars, exposure_var, outcome_vars
   # Define a custom function to filter columns based on conditions
   custom_col_filter <- function(col_name) {
     if (startsWith(col_name, "t0_")) {
-      return(col_name %in% c(paste0("t0_", baseline_vars), paste0("t0_", outcome_vars)))
+      return(col_name %in% c(paste0("t0_",baseline_vars), paste0("t0_",exposure_var), paste0("t0_", outcome_vars)))
     } else if (startsWith(col_name, "t1_")) {
       return(col_name %in% paste0("t1_", exposure_var))
     } else if (startsWith(col_name, "t2_")) {
@@ -91,33 +91,85 @@ create_wide_data <- function(dat_long, baseline_vars, exposure_var, outcome_vars
     dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
     dplyr::relocate(starts_with("t2_"), .after = starts_with("t1_"))  %>%
     dplyr::relocate(starts_with("t3_"), .after = starts_with("t2_"))  %>%
-    arrange(id)%>%
+    arrange(id)
+
+  # Reorder t0_ columns
+  t0_column_order <- c(paste0("t0_", baseline_vars), paste0("t0_", exposure_var), paste0("t0_", outcome_vars))
+  wide_data_ordered <- wide_data_filtered %>%
+    select(id, t0_column_order, everything()) %>%
     select(-id)
 
-  return(wide_data_filtered)
+  return(wide_data_ordered)
 }
 
+
+#
+# create_wide_data <- function(dat_long, baseline_vars, exposure_var, outcome_vars, exclude_vars = c()) {
+#   require(tidyverse)
+#   # Add the 'time' column to the data
+#   data_with_time <- dat_long %>%
+#     mutate(time = as.numeric(wave) - 1) %>%
+#     arrange(id, time)
+#
+#   # Filter the data based on the time condition
+#   data_filtered <- data_with_time %>%
+#     filter(time >= 0)
+#
+#   # Create the wide data frame
+#   wide_data <- data_filtered %>%
+#     dplyr::select(-exclude_vars)  %>%  # Exclude specified variables
+#     pivot_wider(
+#       id_cols = id,
+#       names_from = time,
+#       values_from = -c(id, time),
+#       names_glue = "t{time}_{.value}",
+#       names_prefix = "t"
+#     )
+#
+#   # Define a custom function to filter columns based on conditions
+#   custom_col_filter <- function(col_name) {
+#     if (startsWith(col_name, "t0_")) {
+#       return(col_name %in% c(paste0("t0_",baseline_vars), paste0("t0_",exposure_var), paste0("t0_", outcome_vars)))
+#     } else if (startsWith(col_name, "t1_")) {
+#       return(col_name %in% paste0("t1_", exposure_var))
+#     } else if (startsWith(col_name, "t2_")) {
+#       return(col_name %in% paste0("t2_", outcome_vars))
+#     } else if (startsWith(col_name, "t3_")) {
+#       return(col_name %in% paste0("t3_", outcome_vars))
+#     } else {
+#       return(FALSE)
+#     }
+#   }
+#
+#   # Apply the custom function to select the desired columns
+#   wide_data_filtered <- wide_data %>%
+#     dplyr::select(id, which(sapply(colnames(wide_data), custom_col_filter))) %>%
+#     dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
+#     dplyr::relocate(starts_with("t2_"), .after = starts_with("t1_"))  %>%
+#     dplyr::relocate(starts_with("t3_"), .after = starts_with("t2_"))  %>%
+#     arrange(id)%>%
+#     select(-id)
+#
+#   return(wide_data_filtered)
+# }
 
 # matching ----------------------------------------------------------------
 # method for propensity scores
 
-
-match_mi <- function(.data, X, baselinevars,estimand, method) {
+match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
   require(WeightIt)
   require(MatchThem)
+
 
   # if not binary, we model the interacton to obtain better weights
   # not we can add survey weights at this point.
 
   formula_str <- paste(X, "~", paste(baseline_vars, collapse = "+"))
 
-
-  weight_var <- if (weights) .data$weights else NULL
-
   dt_match <- weightthem(
     as.formula(formula_str),
-    weights = if (!is.null(weight_var)) weight_var else NULL, # survey
-    .data,
+    weights = sample_weights,
+    data,
     estimand = estimand,
     stabilize = TRUE,
     method = method
