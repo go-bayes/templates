@@ -318,7 +318,7 @@ match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
 
 # slightly older
 causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
-                            estimand = "ATE", scale = "RR", nsims = 200,
+                            estimand = "ATE", scale = c("RR","RD"), nsims = 200,
                             cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
   # Load required packages
   require("clarify")
@@ -649,7 +649,7 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
 
 # general contrast table --------------------------------------------------
 
-tab_ate <- function(x, new_name, delta = 1, sd = 1, type = "RD", continuous_X = FALSE) {
+tab_ate <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continuous_X = FALSE) {
   require("EValue")
   require(dplyr)
 
@@ -715,7 +715,7 @@ tab_ate <- function(x, new_name, delta = 1, sd = 1, type = "RD", continuous_X = 
 # combine causal contrast and tab ate -------------------------------------
 
 gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200,
-                      cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE,
+                      cores = parallel::detectCores(), family = quasibinomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE,
                       delta = 1, sd = 1, type = c("RD", "RR")) {
   # Call the causal_contrast() function
   causal_contrast_result <- causal_contrast(df, Y, X, baseline_vars, treat_0, treat_1,
