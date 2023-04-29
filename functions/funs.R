@@ -103,55 +103,67 @@ create_wide_data <- function(dat_long, baseline_vars, exposure_var, outcome_vars
 }
 
 
-#
-# create_wide_data <- function(dat_long, baseline_vars, exposure_var, outcome_vars, exclude_vars = c()) {
-#   require(tidyverse)
-#   # Add the 'time' column to the data
-#   data_with_time <- dat_long %>%
-#     mutate(time = as.numeric(wave) - 1) %>%
-#     arrange(id, time)
-#
-#   # Filter the data based on the time condition
-#   data_filtered <- data_with_time %>%
-#     filter(time >= 0)
-#
-#   # Create the wide data frame
-#   wide_data <- data_filtered %>%
-#     dplyr::select(-exclude_vars)  %>%  # Exclude specified variables
-#     pivot_wider(
-#       id_cols = id,
-#       names_from = time,
-#       values_from = -c(id, time),
-#       names_glue = "t{time}_{.value}",
-#       names_prefix = "t"
-#     )
-#
-#   # Define a custom function to filter columns based on conditions
-#   custom_col_filter <- function(col_name) {
-#     if (startsWith(col_name, "t0_")) {
-#       return(col_name %in% c(paste0("t0_",baseline_vars), paste0("t0_",exposure_var), paste0("t0_", outcome_vars)))
-#     } else if (startsWith(col_name, "t1_")) {
-#       return(col_name %in% paste0("t1_", exposure_var))
-#     } else if (startsWith(col_name, "t2_")) {
-#       return(col_name %in% paste0("t2_", outcome_vars))
-#     } else if (startsWith(col_name, "t3_")) {
-#       return(col_name %in% paste0("t3_", outcome_vars))
-#     } else {
-#       return(FALSE)
-#     }
-#   }
-#
-#   # Apply the custom function to select the desired columns
-#   wide_data_filtered <- wide_data %>%
-#     dplyr::select(id, which(sapply(colnames(wide_data), custom_col_filter))) %>%
-#     dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
-#     dplyr::relocate(starts_with("t2_"), .after = starts_with("t1_"))  %>%
-#     dplyr::relocate(starts_with("t3_"), .after = starts_with("t2_"))  %>%
-#     arrange(id)%>%
-#     select(-id)
-#
-#   return(wide_data_filtered)
-# }
+create_wide_data_general <- function(dat_long, baseline_vars, exposure_var, outcome_vars, exclude_vars = c()) {
+  require(tidyverse)
+  # Add the 'time' column to the data
+  data_with_time <- dat_long %>%
+    mutate(time = as.numeric(wave) - 1) %>%
+    arrange(id, time)
+
+  # Filter the data based on the time condition
+  data_filtered <- data_with_time %>%
+    filter(time >= 0)
+
+  # Create the wide data frame
+  wide_data <- data_filtered %>%
+    dplyr::select(-exclude_vars)  %>%  # Exclude specified variables
+    pivot_wider(
+      id_cols = id,
+      names_from = time,
+      values_from = -c(id, time),
+      names_glue = "t{time}_{.value}",
+      names_prefix = "t"
+    )
+
+  # Define a custom function to filter columns based on conditions
+  custom_col_filter <- function(col_name) {
+    if (startsWith(col_name, "t0_")) {
+      return(col_name %in% c(paste0("t0_",baseline_vars), paste0("t0_",exposure_var), paste0("t0_", outcome_vars)))
+    } else if (startsWith(col_name, "t1_")) {
+      return(col_name %in% paste0("t1_", exposure_var))
+    } else if (grepl("^t[2-9][0-9]*_", col_name)) {
+      return(col_name %in% paste0("t2_", outcome_vars))
+    } else {
+      return(FALSE)
+    }
+  }
+
+  # Apply the custom function to select the desired columns
+  wide_data_filtered <- wide_data %>%
+    dplyr::select(id, which(sapply(colnames(wide_data), custom_col_filter))) %>%
+    dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
+    arrange(id)
+
+  # Extract unique time values from column names
+  time_values <- gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
+  time_values <- time_values[grepl("^[0-9]+$", time_values)]
+  time_values <- unique(as.numeric(time_values))
+  time_values <- time_values[order(time_values)]
+
+  # Relocate columns iteratively
+  for (i in 2:(length(time_values) - 1)) {
+    wide_data_filtered <- wide_data_filtered %>%
+      dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
+  }
+
+  # Reorder t0_ columns
+  t0_column_order <- c(paste0("t0_", baseline_vars), paste0("t0_", exposure_var), paste0("t0_", outcome_vars))
+  wide_data_ordered <- wide_data_filtered %>%
+    select(id, t0_column_order, everything()) %>%
+    select(-id)
+
+  return(wide_data_ordered)
+}
 
 # matching ----------------------------------------------------------------
 # method for propensity scores
@@ -177,149 +189,130 @@ match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
   dt_match
 }
 
-# older
-# match_mi <- function(X, baselinevars, ml, estimand, method) {
-#   require(WeightIt)
-#   require(MatchThem)
-#   dt_match <- weightthem(
-#     as.formula(paste(as.formula(paste(
-#       paste(X, "~",
-#             paste(baseline_vars, collapse = "+"))
-#     )))),
-#     ml,
-#     estimand = estimand,
-#     stabilize = TRUE,
-#     method = method
-#   )
-#   dt_match
-# }
 
-
-
-# causal contrast ------------------------------------------------------------
-# slightly newer but not working as wanted
-# causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
-#                             estimand = "ATE", scale = "RR", nsims = 200,
-#                             cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
-#   # Load required packages
-#   require("clarify")
-#   require("rlang") # for building dynamic expressions
-#   require("glue") # for easier string manipulation
-#   require("parallel") # detect cores
-#   #require("survey") # correctly computes standard errors: to do
-#
-#   if (continuous_X) {
-#     estimand <- "ATE"
-#     warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
-#   }
-#
-#   # Fit models using the complete datasets (all imputations)
-#   fits <-  lapply(complete(df, "all"), function(d) {
-#     # Set weights variable based on the value of 'weights' argument
-#     weight_var <- if (weights) d$weights else NULL
-#
-#     # Check if continuous_X and splines are both TRUE
-#     if (continuous_X && splines) {
-#       require(splines) # splines package
-#       formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
-#     } else {
-#       formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
-#     }
-#
-#     glm(
-#       as.formula(formula_str),
-#       weights = if (!is.null(weight_var)) weight_var else NULL,
-#       family = family,
-#       data = d
-#     )
-#   })
-#
-#   # A `clarify_misim` object
-#   sim.imp <- misim(fits, n = nsims)
-#
-#   # Compute the Average Marginal Effects
-#   if (!continuous_X && estimand == "ATT") {
-#     # Build dynamic expression for subsetting
-#     subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
-#
-#     sim_estimand <- sim_ame(
-#       sim.imp,
-#       var = X,
-#       subset = eval(subset_expr),
-#       cl = cores,
-#       verbose = FALSE
-#     )
-#   } else {
-#     # For ATE
-#     sim_estimand <- sim_ame(sim.imp,
-#                             var = X,
-#                             cl = cores,
-#                             verbose = FALSE)
-#   }
-#
-#   if (continuous_X) {
-#     summary_df <- summary(sim_estimand)
-#     rownames(summary_df) <- scale # Set the row name to the value of `scale`
-#     return(summary_df)
-#   } else {
-#     if (!continuous_X && estimand == "ATT") {
-#       # Build dynamic expression for subsetting
-#       subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
-#
-#       sim_estimand <- sim_ame(sim.imp,
-#                               var = X,
-#                               subset = eval(subset_expr),
-#                               cl = cores,
-#                               verbose = FALSE)
-#     } else { # For ATE
-#       sim_estimand <- sim_ame(sim.imp,
-#                               var = X,
-#                               cl = cores,
-#                               verbose = FALSE)
-#     }
-#
-#     if (continuous_X) {
-#       return(summary(sim_estimand))
-#       # sim_estimand <- as.data.frame(sim_estimand). # not working
-#       # rownames(sim_estimand) <- scale
-#
-#     } else {
-#       # Convert sim_estimand to a data frame
-#       sim_estimand_df <- as.data.frame(sim_estimand)
-#
-#       # Transform the results based on the specified scale
-#       if (scale == "RR") {
-#         sim_estimand_df$RR <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] / sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
-#
-#       } else {
-#         sim_estimand_df$RD <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] - sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
-#
-#       }
-#
-#       # Calculate the desired summary statistics
-#       out <- t(sapply(sim_estimand_df, function(x) {
-#         c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
-#       }))
-#
-#       # Set the row names of the output to match the desired format
-#       rownames(out) <- colnames(sim_estimand_df)
-#
-#
-#       # Rename the column names to avoid duplicates
-#       colnames(out) <- c("Estimate", "2.5 %", "97.5 %")
-#
-#       return(out)
-#   }
-# }
 
 
 # Compute the Average Treatement Effects (ATT and ATE)
 
+# newest version allows for single dataframes
+
+causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
+  # Load required packages
+  require("clarify")
+  require("rlang") # for building dynamic expressions
+  require("glue") # for easier string manipulation
+  require("parallel") # detect cores
+  #require("survey") # correctly computes standard errors: to do
+
+  if (continuous_X) {
+    estimand <- "ATE"
+    # warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
+  }
+
+  # Check if df is a mice object or a data.frame
+  if ("mids" %in% class(df)) {
+    # Fit models using the complete datasets (all imputations)
+    fits <-  lapply(complete(df, "all"), function(d) {
+      # Set weights variable based on the value of 'weights' argument
+      weight_var <- if (weights) d$weights else NULL
+
+      # Check if continuous_X and splines are both TRUE
+      if (continuous_X && splines) {
+        require(splines) # splines package
+        formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
+      } else {
+        formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+      }
+
+      glm(
+        as.formula(formula_str),
+        weights = if (!is.null(weight_var)) weight_var else NULL,
+        family = family,
+        data = d
+      )
+    })
+    # A `clarify_misim` object
+
+    sim.imp <- misim(fits, n = nsims)
+
+  } else {
+    # Fit models using the input data.frame
+    # Set weights variable based on the value of 'weights' argument
+    weight_var <- if (weights) df$weights else NULL
+
+    # Check if continuous_X and splines are both TRUE
+    if (continuous_X && splines) {
+      require(splines) # splines package
+      formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
+    } else {
+      formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+    }
+
+    fit <- glm(
+      as.formula(formula_str),
+      weights = if (!is.null(weight_var)) weight_var else NULL,
+      family = family,
+      data = df
+    )
+    # A `clarify_sim` object
+
+    sim.imp <- sim(fit, n = nsims)
+  }
+  # Compute the Average Marginal Effects
+
+  if (!continuous_X && estimand == "ATT") {
+    # Build dynamic expression for subsetting
+    subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
+
+    sim_estimand <- sim_ame(sim.imp,
+                            var = X,
+                            subset = eval(subset_expr),
+                            cl = cores,
+                            verbose = FALSE)
+  } else { # For ATE
+    sim_estimand <- sim_ame(sim.imp,
+                            var = X,
+                            cl = cores,
+                            verbose = FALSE)
+  }
+
+  if (continuous_X) {
+    return(summary(sim_estimand))
+    # sim_estimand <- as.data.frame(sim_estimand). # not working
+    # rownames(sim_estimand) <- scale
+
+  } else {
+    # Convert sim_estimand to a data frame
+    sim_estimand_df <- as.data.frame(sim_estimand)
+
+    # Transform the results based on the specified scale
+    if (scale == "RR") {
+      sim_estimand_df$RR <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] / sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
+
+    } else {
+      sim_estimand_df$RD <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] - sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
+
+    }
+
+    # Calculate the desired summary statistics
+    out <- t(sapply(sim_estimand_df, function(x) {
+      c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
+    }))
+
+    # Set the row names of the output to match the desired format
+    rownames(out) <- colnames(sim_estimand_df)
+
+
+    # Rename the column names to avoid duplicates
+    colnames(out) <- c("Estimate", "2.5 %", "97.5 %")
+
+    return(out)
+  }
+}
+
 
 # slightly older
-causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
-                            estimand = "ATE", scale = c("RR","RD"), nsims = 200,
-                            cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
+causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
   # Load required packages
   require("clarify")
   require("rlang") # for building dynamic expressions
@@ -410,243 +403,6 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
 
 
 
-
-
-
-# older
-  # causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
-  #                             estimand = "ATE", scale = "RR", nsims = 200,
-  #                             cores = parallel::detectCores (), family = binomial(), weights = TRUE) {
-  #   # Load required packages
-  #   require("clarify")
-  #   require("rlang") # for building dynamic expressions
-  #   require("glue") # for easier string manipulation
-  #   require("parallel") # detect cores
-  #
-  #   # Fit models using the complete datasets (all imputations)
-  #   fits <-  lapply(complete(df, "all"), function(d) {
-  #     # Set weights variable based on the value of 'weights' argument
-  #     weight_var <- if (weights) d$weights else NULL
-  #
-  #     glm(
-  #       as.formula(paste(
-  #         paste(Y, "~", X , "*", "("),
-  #         paste(baseline_vars, collapse = "+"),
-  #         paste(")")
-  #       )),
-  #       weights = weight_var,
-  #       family = family,
-  #       data = d,
-  #       if (!is.null(weight_var)) weights = weight_var
-  #     )
-  #   })
-  #
-  #   # A `clarify_misim` object
-  #   sim.imp <- misim(fits, n = nsims)
-  #
-  #   # Build dynamic expression for subsetting
-  #   subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
-  #
-  #   # Compute the Average Marginal Effects
-  #   if (estimand == "ATT") {
-  #     sim_estimand <- sim_ame(sim.imp,
-  #                             var = X,
-  #                             subset = eval(subset_expr),
-  #                             cl = cores,
-  #                             verbose = FALSE)
-  #   } else { # For ATE
-  #     sim_estimand <- sim_ame(sim.imp,
-  #                             var = X,
-  #                             cl = cores,
-  #                             verbose = FALSE)
-  #   }
-  #
-  #   # Convert sim_estimand to a data frame
-  #   sim_estimand_df <- as.data.frame(sim_estimand)
-  #
-  #   # Transform the results based on the specified scale
-  #   if (scale == "RR") {
-  #     sim_estimand_df$RR <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] / sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
-  #   } else { # For RD
-  #     sim_estimand_df$RD <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] - sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
-  #   }
-  #
-  #   # Calculate the desired summary statistics
-  #   out <- t(sapply(sim_estimand_df, function(x) {
-  #     c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
-  #   }))
-  #
-  #   # Set the row names of the output to match the desired format
-  #   rownames(out) <- colnames(sim_estimand_df)
-  #
-  #   # Rename the column names to avoid duplicates
-  #   colnames(out) <- c("Estimate", "2.5 %", "97.5 %")
-  #
-  #   return(out)
-  # }
-
-
-# oldest
-# causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
-#                             estimand = "ATE", scale = "RR", nsims = 200,
-#                             cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE) {
-#   # Load required packages
-#   require("clarify")
-#   require("rlang") # for building dynamic expressions
-#   require("glue") # for easier string manipulation
-#   require("parallel") # detect cores
-#   #require("survey") # correctly computes standard errors: to do
-#
-#   if (continuous_X) {
-#     estimand <- "ATE"
-#   } else {
-#     estimand <- estimand
-#   }
-#
-#   if (continuous_X) {
-#     estimand <- "ATE"
-#     warning("Estimand is set to 'ATE' because continuous_X = TRUE")
-#   }
-#
-#   # Fit models using the complete datasets (all imputations)
-#   fits <-  lapply(complete(df, "all"), function(d) {
-#     # Set weights variable based on the value of 'weights' argument
-#     weight_var <- if (weights) d$weights else NULL
-#
-#     glm(
-#       as.formula(paste(
-#         paste(Y, "~", X , "*", "("),
-#         paste(baseline_vars, collapse = "+"),
-#         paste(")")
-#       )),
-#       weights = if (!is.null(weight_var)) weight_var else NULL,
-#       family = family,
-#       data = d
-#     )
-#   })
-#
-#   # A `clarify_misim` object
-#   sim.imp <- misim(fits, n = nsims)
-#
-#   # Compute the Average Marginal Effects
-#   if (!continuous_X && estimand == "ATT") {
-#     # Build dynamic expression for subsetting
-#     subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
-#
-#     sim_estimand <- sim_ame(sim.imp,
-#                             var = X,
-#                             subset = eval(subset_expr),
-#                             cl = cores,
-#                             verbose = FALSE)
-#   } else { # For ATE
-#     sim_estimand <- sim_ame(sim.imp,
-#                             var = X,
-#                             cl = cores,
-#                             verbose = FALSE)
-#   }
-#
-#   if (continuous_X) {
-#     return(summary(sim_estimand))
-#   } else {
-#     # Convert sim_estimand to a data frame
-#     sim_estimand_df <- as.data.frame(sim_estimand)
-#
-#     # Transform the results based on the specified scale
-#     if (scale == "RR") {
-#       sim_estimand_df$RR <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] / sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
-#     } else { # For RD
-#       sim_estimand_df$RD <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] - sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
-#     }
-#
-#     # Calculate the desired summary statistics
-#     out <- t(sapply(sim_estimand_df, function(x) {
-#       c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
-#     }))
-#
-#     # Set the row names of the output to match the desired format
-#     rownames(out) <- colnames(sim_estimand_df)
-#
-#
-#     # Rename the column names to avoid duplicates
-#     colnames(out) <- c("Estimate", "2.5 %", "97.5 %")
-#
-#     return(out)
-#   }
-# }
-
-# oldest
-# causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
-#                             estimand = "ATE", scale = "RR", nsims = 200,
-#                             cores = parallel::detectCores (), family = binomial(), weights = TRUE) {
-#   # Load required packages
-#   require("clarify")
-#   require("rlang") # for building dynamic expressions
-#   require("glue") # for easier string manipulation
-#   require("parallel") # detect cores
-#
-#   # Fit models using the complete datasets (all imputations)
-#   fits <-  lapply(complete(df, "all"), function(d) {
-#     # Set weights variable based on the value of 'weights' argument
-#     weight_var <- if (weights) d$weights else NULL
-#
-#     glm(
-#       as.formula(paste(
-#         paste(Y, "~", X , "*", "("),
-#         paste(baseline_vars, collapse = "+"),
-#         paste(")")
-#       )),
-#       weights = weight_var,
-#       family = family,
-#       data = d,
-#       if (!is.null(weight_var)) weights = weight_var
-#     )
-#   })
-#
-#   # A `clarify_misim` object
-#   sim.imp <- misim(fits, n = nsims)
-#
-#   # Build dynamic expression for subsetting
-#   subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
-#
-#   # Compute the Average Marginal Effects
-#   if (estimand == "ATT") {
-#     sim_estimand <- sim_ame(sim.imp,
-#                             var = X,
-#                             subset = eval(subset_expr),
-#                             cl = cores,
-#                             verbose = FALSE)
-#   } else { # For ATE
-#     sim_estimand <- sim_ame(sim.imp,
-#                             var = X,
-#                             cl = cores,
-#                             verbose = FALSE)
-#   }
-#
-#   # Convert sim_estimand to a data frame
-#   sim_estimand_df <- as.data.frame(sim_estimand)
-#
-#   # Transform the results based on the specified scale
-#   if (scale == "RR") {
-#     sim_estimand_df$RR <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] / sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
-#   } else { # For RD
-#     sim_estimand_df$RD <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] - sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
-#   }
-#
-#   # Calculate the desired summary statistics
-#   out <- t(sapply(sim_estimand_df, function(x) {
-#     c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
-#   }))
-#
-#   # Set the row names of the output to match the desired format
-#   rownames(out) <- colnames(sim_estimand_df)
-#
-#   # Rename the column names to avoid duplicates
-#   colnames(out) <- c("Estimate", "2.5 %", "97.5 %")
-#
-#   return(out)
-# }
-
-
 # general contrast table --------------------------------------------------
 
 tab_ate <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continuous_X = FALSE) {
@@ -717,9 +473,8 @@ tab_ate <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continu
 gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200,
                       cores = parallel::detectCores(), family = quasibinomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE,
                       delta = 1, sd = 1, type = c("RD", "RR")) {
-  # Call the causal_contrast() function
-  causal_contrast_result <- causal_contrast(df, Y, X, baseline_vars, treat_0, treat_1,
-                                            estimand, scale, nsims, cores, family, weights, continuous_X, splines)
+  # Call the causal_contrast_general() function
+  causal_contrast_result <- causal_contrast_general(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines)
 
   # Call the tab_ate() function with the result from causal_contrast()
   tab_ate_result <- tab_ate(causal_contrast_result, new_name, delta, sd, type, continuous_X)
@@ -815,7 +570,7 @@ group_tab <- function(df, type = c("RR", "RD")) {
 
 # group_plot  -------------------------------------------------------------------
 
-group_plot_ate <- function(.data, type = c("RR", "RD"), title, subtitle, xlab, ylab,
+group_plot_ate <- function(.data, type = "RD", title, subtitle, xlab, ylab,
                            x_offset = 0,
                            x_lim_lo = 0,
                            x_lim_hi = 1.5) {
@@ -836,9 +591,9 @@ group_plot_ate <- function(.data, type = c("RR", "RD"), title, subtitle, xlab, y
     )
   ) +
     geom_errorbarh(aes(color = Estimate), height = .3, position = position_dodge(width = 0.3)) +
-    geom_point(size = 4, position = position_dodge(width = 0.3)) +
+    geom_point(size = .5, position = position_dodge(width = 0.3)) +
     geom_vline(xintercept = xintercept, linetype = "solid") +
-    theme_classic(base_size = 12) +
+    theme_classic(base_size = 10) +
     scale_color_manual(values = c("orange", "black", "dodgerblue")) +
     labs(
       x = x_axis_label,
@@ -848,7 +603,7 @@ group_plot_ate <- function(.data, type = c("RR", "RD"), title, subtitle, xlab, y
     ) +
     geom_text(
       aes(x = x_offset, label = estimate_lab),
-      size = 4,
+      size = 2,
       hjust = 0,
       fontface = ifelse(.data$Estimate == "not reliable", "plain", "bold")
     ) +
@@ -857,7 +612,8 @@ group_plot_ate <- function(.data, type = c("RR", "RD"), title, subtitle, xlab, y
       legend.position = "top",
       legend.direction = "horizontal",
       plot.title = element_text(face = "bold", size = 12, hjust = 0),
-      plot.subtitle = element_text(size = 10, hjust = 0)
+      plot.subtitle = element_text(size = 10, hjust = 0),
+      plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
     )
 
   return(out)
@@ -1001,7 +757,7 @@ gcomp_delta <- function(df, X, Y, baseline_vars, family, m = 10, min, max, r = 0
 
 
 
-## IGNORE FROM HERE
+## IGNORE FROM HERE THESE ARE THE OLD METHODS ##
 
 # glm_contrast_mi --------------------------------------------------------------
 # current standard for causal contrasts with mi datasets in mice

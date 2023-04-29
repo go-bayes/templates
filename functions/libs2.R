@@ -108,8 +108,15 @@ packages <- c(
   "conflicted",
   "parallel",
   "rlang",
-  "glue" # for reports
+  "glue", # for reports
+  "DeclareDesign",  # for simulation and modelling of design
+  "fabricatr", # for simulation and modelling of design
+  "randomizr", # for simulation and modelling of design
+  "estimatr", # for simulation and modelling of design/ robust errors
+  "DesignLibrary" # for simulation and modelling of design
+  # see: https://declaredesign.org/getting-started.html
 )
+
 
 ipak(packages)
 
