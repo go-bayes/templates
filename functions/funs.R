@@ -14,11 +14,15 @@ packages <- c(
   "tidyverse",
   "fs",
   "here",
+  "clarify",
+  "arrow",
+  "skimr",
+  "parameters",
+  "table1",
   "stdReg",
   "ggplot2",
   "mice",
   "conflicted",
-  "arrow",
   "geepack",
   "janitor",
   "clarify",
@@ -191,46 +195,54 @@ match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
 
 
 
-# general function
+# general function (work in progress)
+match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup = NULL, focal = NULL) {
+  if (!requireNamespace("WeightIt", quietly = TRUE)) {
+    stop("Package 'WeightIt' is required but not installed. Please install it using 'install.packages(\"WeightIt\")'.")
+  }
 
-match_mi_general <- function(data, X, baseline_vars, estimand, method, sample_weights = NULL, subgroup = NULL) {
-  require(WeightIt)
-  require(MatchThem)
+  if (!requireNamespace("MatchThem", quietly = TRUE)) {
+    stop("Package 'MatchThem' is required but not installed. Please install it using 'install.packages(\"MatchThem\")'.")
+  }
 
-  # Check the class of the input data
   data_class <- class(data)
 
-  # If not binary, we model the interaction to obtain better weights
-  # Note we can add survey weights at this point.
-  formula_str <- paste(X, "~", paste(baseline_vars, collapse = "+"))
-
-  # Use weightthem() for 'mids' objects, and weightit() for 'data.frame' objects
-  if (data_class == "mids") {
-    dt_match <- weightthem(
-      as.formula(formula_str),
-      weights = sample_weights,
-      data,
-      by = subgroup,
-      estimand = estimand,
-      stabilize = TRUE,
-      method = method
-    )
-  } else if (data_class == "data.frame") {
-    dt_match <- weightit(
-      as.formula(formula_str),
-      weights = sample_weights,
-      data,
-      by = subgroup,
-      estimand = estimand,
-      stabilize = TRUE,
-      method = method
-    )
-  } else {
+  if (!data_class %in% c("mids", "data.frame")) {
     stop("Input data must be either 'mids' or 'data.frame' object")
   }
 
-  dt_match
+  formula_str <- as.formula(paste(X, "~", paste(baseline_vars, collapse = "+")))
+
+  weight_function <- if (data_class == "mids") weightthem else weightit
+
+  perform_matching <- function(data_subset) {
+    weight_function(
+      formula = formula_str,
+      data = data_subset,
+      estimand = estimand,
+      stabilize = TRUE,
+      method = method,
+      focal = focal
+    )
+  }
+
+  if (is.null(subgroup)) {
+    dt_match <- perform_matching(data)
+  } else {
+    levels_list <- unique(data[[subgroup]])
+
+    dt_match_list <- lapply(levels_list, function(level) {
+      data_subset <- data[data[[subgroup]] == level, ]
+      perform_matching(data_subset)
+    })
+
+    names(dt_match_list) <- levels_list
+    dt_match <- dt_match_list
+  }
+
+  return(dt_match)
 }
+
 
 
 
@@ -797,6 +809,20 @@ gcomp_delta <- function(df, X, Y, baseline_vars, family, m = 10, min, max, r = 0
 
 
 
+# functions for table1 -----------------------------------------------------
+
+#table
+# functions for table
+my_render_cont <- function(x) {
+  with(stats.apply.rounding(stats.default(x), digits=3), c("",
+                                                           "Mean (SD)"=sprintf("%s (&plusmn; %s)", MEAN, SD)))
+}
+
+my_render_cat <- function(x) {
+  c("", sapply(stats.default(x), function(y) with(y,
+                                                  sprintf("%d (%0.0f %%)", FREQ, PCT))))
+}
+
 
 
 ## IGNORE FROM HERE THESE ARE THE OLD METHODS ##
@@ -1041,9 +1067,9 @@ glm_contrast_mi <- function(dt_match, nsims, Y, X, baseline_vars, cl,family, del
 
 # ignore
 
-library(tidyverse)
-library(glue)
-#
+# library(tidyverse)
+# library(glue)
+# #
 # calculate_difference <- function(df, df1, causal_scale) {
 #   # Check if both data frames have the same outcomes
 #   if (!all(df$outcome == df1$outcome)) {
@@ -1105,20 +1131,6 @@ library(glue)
 # # print(result$table)
 # # cat(result$text)
 #
-
-# functions for table1 -----------------------------------------------------
-
-#table
-# functions for table
-my_render_cont <- function(x) {
-  with(stats.apply.rounding(stats.default(x), digits=3), c("",
-                                                           "Mean (SD)"=sprintf("%s (&plusmn; %s)", MEAN, SD)))
-}
-
-my_render_cat <- function(x) {
-  c("", sapply(stats.default(x), function(y) with(y,
-                                                  sprintf("%d (%0.0f %%)", FREQ, PCT))))
-}
 
 # forest plots studies OLD ------------------------------------
 
