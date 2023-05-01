@@ -17,6 +17,8 @@ packages <- c(
   "clarify",
   "arrow",
   "skimr",
+  "easystats",
+  "ggeffects",
   "parameters",
   "table1",
   "stdReg",
@@ -33,7 +35,7 @@ packages <- c(
   "optmatch",
   "glue",
   "rlang",
-  "survey"
+  "survey",
 )
 
 # install packages
