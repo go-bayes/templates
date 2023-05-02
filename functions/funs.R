@@ -35,7 +35,7 @@ packages <- c(
   "optmatch",
   "glue",
   "rlang",
-  "survey",
+  "survey"
 )
 
 # install packages
