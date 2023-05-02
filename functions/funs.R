@@ -17,7 +17,6 @@ packages <- c(
   "clarify",
   "arrow",
   "skimr",
-  "easystats",
   "ggeffects",
   "parameters",
   "table1",
