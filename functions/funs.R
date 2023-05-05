@@ -34,7 +34,8 @@ packages <- c(
   "optmatch",
   "glue",
   "rlang",
-  "survey"
+  "survey",
+  "CBPS" # propensity scores
 )
 
 # install packages
