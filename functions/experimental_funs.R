@@ -2,27 +2,29 @@
 
 
 # New function to construct the formula string
-construct_formula <- function(Y, X, baseline_vars, continuous_X, splines) {
+construct_formula <- function(Y, X = 1, baseline_vars, continuous_X, splines, subclass = NULL) {
+
+  if (X == 1) {
+    return(paste(Y, "~ 1"))
+  }
+
+  # Interaction terms
+  interaction_terms <- if (!is.null(subclass)) {
+    paste0(subclass, "*", "(", X , "*", "(", paste(baseline_vars, collapse = "+"), ")", ")")
+  } else {
+    paste0(X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+  }
+
   if (continuous_X && splines) {
     require(splines)
     formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
   } else {
-    formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+    formula_str <- paste(Y, "~", interaction_terms)
   }
+
   return(formula_str)
 }
 
-# New function to fit the model
-fit_model <- function(df, formula_str, family, weights) {
-  weight_var <- if (weights) df$weights else NULL
-  fit <- glm(
-    as.formula(formula_str),
-    weights = if (!is.null(weight_var)) weight_var else NULL,
-    family = family,
-    data = df
-  )
-  return(fit)
-}
 
 # New function to compute the desired summary statistics
 compute_summary_stats <- function(sim_estimand_df, scale) {
