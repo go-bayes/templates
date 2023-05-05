@@ -289,7 +289,7 @@ causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, 
     })
     # A `clarify_misim` object
 
-    sim.imp <- misim(fits, n = nsims)
+    sim.imp <- misim(fits, n = nsims, vcov = "HC3") #robust standard errors see CLARIFY package
 
   } else {
     # Fit models using the input data.frame
@@ -312,7 +312,7 @@ causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, 
     )
     # A `clarify_sim` object
 
-    sim.imp <- sim(fit, n = nsims)
+    sim.imp <- sim(fit, n = nsims, vcov = "HC3")# robust covariance matrix see clarify package
   }
   # Compute the Average Marginal Effects
 
@@ -403,7 +403,7 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
   })
   # A `clarify_misim` object
 
-  sim.imp <- misim(fits, n = nsims)
+  sim.imp <- misim(fits, n = nsims, vcov = "HC3")
 
   # Compute the Average Marginal Effects
 
@@ -851,7 +851,7 @@ glm_contrast_mi <- function(dt_match, nsims, Y, X, baseline_vars, cl,family, del
     )
   })
 
-  sim.imp <- misim(fits, n = nsims)
+  sim.imp <- misim(fits, n = nsims, vcov = "HC3")
 
   # Build dynamic expression for subsetting
   subset_expr <- rlang::expr(!!rlang::sym(X) == !!delta)
