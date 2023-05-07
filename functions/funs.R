@@ -35,7 +35,9 @@ packages <- c(
   "glue",
   "rlang",
   "survey",
-  "CBPS" # propensity scores
+  "CBPS", # propensity scores
+  "msm", # for validating change in the exposure
+  "kableExtra"
 )
 
 # install packages
