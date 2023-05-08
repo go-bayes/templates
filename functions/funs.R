@@ -53,6 +53,17 @@ conflict_prefer("lag", "dplyr")
 
 
 
+# functions for descriptive tables using libary(table1) # reduces clutter
+my_render_cont <- function(x) {
+  with(stats.apply.rounding(stats.default(x), digits=3), c("",
+                                                           "Mean (SD)"=sprintf("%s (&plusmn; %s)", MEAN, SD)))
+}
+
+my_render_cat <- function(x) {
+  c("", sapply(stats.default(x), function(y) with(y,
+                                                  sprintf("%d (%0.0f %%)", FREQ, PCT))))
+}
+
 # create wide data --------------------------------------------------------
 
 
