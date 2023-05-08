@@ -64,6 +64,73 @@ my_render_cat <- function(x) {
                                                   sprintf("%d (%0.0f %%)", FREQ, PCT))))
 }
 
+
+# baseline table # currently not using the shorten option
+
+baseline_table <- function(df, output_format = "markdown") {
+
+  df_new <- df %>%
+    select(starts_with("t0")) %>%
+    rename_all(~stringr::str_replace(., "^t0_", "")) %>%
+    mutate(wave = factor(rep("baseline", nrow(df)))) |>
+    janitor::clean_names(case = "screaming_snake")
+
+
+  # Function to create a formula string
+  create_formula_string <- function(df_new) {
+    baseline_vars_names <- df_new %>%
+      select(-WAVE) %>%
+      colnames()
+
+    table_baseline_vars <- paste(baseline_vars_names, collapse = "+")
+    formula_string_table_baseline <- paste("~", table_baseline_vars, "|WAVE")
+
+    return(as.formula(formula_string_table_baseline))
+  }
+
+  # Custom rendering functions for table1
+  # my_render_cont <- function(x) {
+  #   with(stats.apply.rounding(stats.default(x), digits = 3),
+  #        c("", "Mean (SD)" = sprintf("%s (&plusmn; %s)", MEAN, SD)))
+  # }
+
+  # my_render_cat <- function(x) {
+  #   c("", sapply(stats.default(x), function(y) {
+  #     with(y, sprintf("%d (%0.0f %%)", FREQ, PCT))
+  #   }))
+  # }
+
+  # Create baseline table
+  create_table_baseline <- function(df_new, formula_obj) {
+    # removed "shorten" option
+    # render_cont <- if (shorten) my_render_cont else NULL
+    # render_cat <- if (shorten) my_render_cat else NULL
+
+    table1::table1(
+      formula_obj,
+      data = df_new,
+      overall = FALSE#,
+      #  render.continuous = if (!is.null(render_cont)) render_cont else NULL,
+      #  render.categorical = if (!is.null(render_cat)) render_cat else NULL
+    )
+  }
+
+
+  # Convert table to specified format
+  table_to_output <- function(table, format) {
+    table %>%
+      as.data.frame() %>%
+      kbl(format = format)
+  }
+
+  formula_obj_baseline <- create_formula_string(df_new)
+  table_baseline <- create_table_baseline(df_new, formula_obj_baseline)
+  table_output <- table_to_output(table_baseline, output_format)
+  print(table_output)
+}
+
+
+
 # create wide data --------------------------------------------------------
 
 
