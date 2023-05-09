@@ -80,6 +80,8 @@ causal_contrast_x <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_
 
 
 
+
+
 ### Matching with subgroups
 
 match_mi_sub <- match_mi_general_subgroup <- function(data, X, baseline_vars, estimand, method, subgroup, focal = NULL, super = FALSE, SL.library = c("SL.glm", "SL.stepAIC", "SL.glm.interaction")) {

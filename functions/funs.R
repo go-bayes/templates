@@ -38,7 +38,7 @@ packages <- c(
   "CBPS", # propensity scores
   "msm", # for validating change in the exposure
   "kableExtra",
-  "naniar", # for inspecting missing data
+  "naniar" # for inspecting missing data
 )
 
 # install packages
