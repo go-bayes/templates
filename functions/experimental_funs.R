@@ -2,26 +2,98 @@
 
 # simulation of data
 
-library(tidyverse)
-library(kableExtra)
-library(ggplot2)
 
+if (!require(kableExtra)) {
+  install.packages("kableExtra")
+  library(kableExtra)
+}
 # Install the package if not already installed
 if (!require(WeightIt)) {
   install.packages("WeightIt")
+  library(WeightIt)
 }
 
 if (!require(ggokabeito)) {
   install.packages("ggokabeito")
+  library(ggokabeito)
+}
+
+if (!require(tidyverse)) {
+  install.packages("tidyverse")
 }
 # Load the package
-library(WeightIt)
-library(ggokabeito)
+
+if (!require(ggplot2)) {
+  install.packages("ggplot2")
+  library("ggplot2")
+}
+
+
 # A_effect: denotes the effect of L1 on A in the logistic regression model used to generate A. In the model, we use a logistic link function to bind A (a binary variable) as a function of L1. A_effect is the coefficient of L1 in this model, representing the log odds ratio of A for a one-unit increase in L1.
 #
 # Y_effect:  denotes the effect of A on Y in the model used to generate Y. In this model, we use a logistic link function to bind Y (a binary variable) as a function of A and L1. Y_effect is the coefficient of A in this model, representing the log odds ratio of Y for a one-unit increase in A.
 #
 # the term bias_L1 denotes the effect of L1 on Y when A is not present
+
+
+# function to create msm table
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+
+# transition objects takes the output of an library(msm) object
+# e.g.
+# out <- msm::statetable.msm(round(hours_exercise_coarsen_n, 0), id, data = dt_exposure_maori)
+
+
+transition_table <- function(data, state_names = NULL){
+
+  # Ensure the data is a dataframe
+  if (!is.data.frame(data)) {
+    data <- as.data.frame(data)
+  }
+
+  # Check if state names are provided
+  if(is.null(state_names)){
+    state_names <- paste0("State ", sort(unique(c(data$from, data$to))))
+  }
+
+  # Convert the data frame to a wide format
+  df <- data %>%
+    pivot_wider(names_from = to, values_from = Freq) %>%
+    mutate(from = factor(from, levels = sort(unique(from)))) %>%
+    arrange(from) %>%
+    mutate(from = state_names[from]) %>%
+    setNames(c("From", state_names))
+
+  # Create the markdown table using knitr's kable function
+  markdown_table <- df %>%
+    kbl(format = "markdown", align = 'c')
+
+  # Create the explanation
+  explanation <- paste(
+    "This transition matrix describes the shifts from one state to another between the baseline wave and the following wave.",
+    "The numbers in the cells represent the number of individuals who transitioned from one state (rows) to another (columns).",
+    "For example, the cell in the first row and second column shows the number of individuals who transitioned from the first state (indicated by the left-most cell in the row) to the second state.",
+    "The top left cell shows the number of individuals who remained in the first state.")
+
+  list(explanation = explanation, table = markdown_table)
+}
+
+# Test the function
+# data <- data.frame(
+#   from = rep(1:4, each = 4),
+#   to = rep(1:4, 4),
+#   Freq = c(415, 187, 293, 66, 187, 213, 424, 67, 403, 471, 2837, 753, 105, 103, 939, 1178)
+# )
+# state_names <- c("Inactive", "Somewhat Active", "Active", "Extremely Active")
+# result <- transition_table(out, state_names)
+# result
+
+
+
+
 
 # Function to calculate ATE in SD units
 generate_data <- function(N, prob_L1, A_on_Y, L_on_A, L_on_Y) {
