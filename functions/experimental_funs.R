@@ -63,16 +63,17 @@ library(kableExtra)
 # out <- msm::statetable.msm(round(hours_exercise_coarsen_n, 0), id, data = dt_exposure_maori)
 
 
-transition_table <- function(data, state_names = NULL){
-
+transition_table <- function(data, state_names = NULL) {
   # Ensure the data is a dataframe
   if (!is.data.frame(data)) {
     data <- as.data.frame(data)
   }
 
   # Check if state names are provided
-  if(is.null(state_names)){
-    state_names <- paste0("State ", sort(unique(c(data$from, data$to))))
+  if (is.null(state_names)) {
+    state_names <- paste0("State ", sort(unique(c(
+      data$from, data$to
+    ))))
   }
 
   # Convert the data frame to a wide format
@@ -92,7 +93,8 @@ transition_table <- function(data, state_names = NULL){
     "This transition matrix describes the shifts from one state to another between the baseline wave and the following wave.",
     "The numbers in the cells represent the number of individuals who transitioned from one state (rows) to another (columns).",
     "For example, the cell in the first row and second column shows the number of individuals who transitioned from the first state (indicated by the left-most cell in the row) to the second state.",
-    "The top left cell shows the number of individuals who remained in the first state.")
+    "The top left cell shows the number of individuals who remained in the first state."
+  )
 
   list(explanation = explanation, table = markdown_table)
 }
@@ -116,7 +118,8 @@ generate_data <- function(N, prob_L1, A_on_Y, L_on_A, L_on_Y) {
   L1 <- rbinom(N, 1, prob_L1)
   prob_A <- plogis(L_on_A * L1)
   A <- rbinom(N, 1, prob_A)
-  Y <- rnorm(N, A_on_Y * A + L_on_Y * L1, sd = (A_on_Y * A + L_on_Y * L1)/2)
+  Y <-
+    rnorm(N, A_on_Y * A + L_on_Y * L1, sd = (A_on_Y * A + L_on_Y * L1) / 2)
 
   # Convert Y to z-scores
   Y <- scale(Y)
@@ -128,7 +131,11 @@ generate_data <- function(N, prob_L1, A_on_Y, L_on_A, L_on_Y) {
 # Function to estimate ATE using IPTW
 estimate_ATE_iptw <- function(data, method = "ps") {
   # Obtain propensity score weights using WeightIt package
-  weight_out <- weightit(A ~ L1, data = data, method = method, estimand = "ATE")
+  weight_out <-
+    weightit(A ~ L1,
+             data = data,
+             method = method,
+             estimand = "ATE")
   data$weights <- weight_out$weights
 
   # Fit a weighted regression with only an intercept
@@ -170,11 +177,16 @@ estimate_ATE_gcomp <- function(data) {
 # Function to estimate ATE using doubly robust estimation
 estimate_ATE_dr <- function(data, method = "ps") {
   # Obtain propensity score weights using WeightIt package
-  weight_out <- weightit(A ~ L1, data = data, method = method, estimand = "ATE")
+  weight_out <-
+    weightit(A ~ L1,
+             data = data,
+             method = method,
+             estimand = "ATE")
   data$weights <- weight_out$weights
 
   # Fit a weighted regression
-  weighted_model <- lm(Y ~ A * L1, data = data, weights = data$weights)
+  weighted_model <-
+    lm(Y ~ A * L1, data = data, weights = data$weights)
 
   # Predict outcomes for everyone setting their treatment value to A = 0 and A = 1
   data$A <- 0
@@ -199,7 +211,6 @@ run_simulations <- function(num_simulations,
                             L_on_A,
                             L_on_Y,
                             method = "ps") {
-
   # Create a placeholder for the results
   simulations <- matrix(ncol = 4, nrow = num_simulations)
 
@@ -214,15 +225,21 @@ run_simulations <- function(num_simulations,
     ATE_dr <- estimate_ATE_dr(data, method)
 
     # Store results
-    simulations[i, ] <- c(ATE_unadjusted, ATE_iptw, ATE_gcomp, ATE_dr)
+    simulations[i,] <-
+      c(ATE_unadjusted, ATE_iptw, ATE_gcomp, ATE_dr)
   }
 
-  colnames(simulations) <- c("ATE_unadjusted", "ATE_iptw", "ATE_gcomp", "ATE_dr")
+  colnames(simulations) <-
+    c("ATE_unadjusted", "ATE_iptw", "ATE_gcomp", "ATE_dr")
 
   # Calculate means and confidence intervals
   mean_ATE <- colMeans(simulations, na.rm = TRUE)
-  CI_lower <- apply(simulations, 2, function(x) quantile(x, 0.025, na.rm = TRUE))
-  CI_upper <- apply(simulations, 2, function(x) quantile(x, 0.975, na.rm = TRUE))
+  CI_lower <-
+    apply(simulations, 2, function(x)
+      quantile(x, 0.025, na.rm = TRUE))
+  CI_upper <-
+    apply(simulations, 2, function(x)
+      quantile(x, 0.975, na.rm = TRUE))
 
   # Return results as a data frame
   results <- tibble(
@@ -234,6 +251,11 @@ run_simulations <- function(num_simulations,
 
   return(results)
 }
+
+
+
+
+
 
 # Run function
 # results <- run_simulations(
@@ -257,7 +279,14 @@ run_simulations <- function(num_simulations,
 # Function to create a coefficient plot
 create_coefficient_plot <- function(results) {
   # Create the plot
-  p <- ggplot(results, aes(x = estimator, y = mean_ATE, ymin = CI_lower, ymax = CI_upper)) +
+  p <-
+    ggplot(results,
+           aes(
+             x = estimator,
+             y = mean_ATE,
+             ymin = CI_lower,
+             ymax = CI_upper
+           )) +
     geom_pointrange(aes(col = estimator), fatten = 2) +
     labs(x = "Estimator", y = "ATE") +
     theme_bw() +
@@ -476,7 +505,7 @@ match_mi_sub <-
     levels_list <- unique(data[[subgroup]])
 
     dt_match_list <- lapply(levels_list, function(level) {
-      data_subset <- data[data[[subgroup]] == level,]
+      data_subset <- data[data[[subgroup]] == level, ]
       perform_matching(data_subset)
     })
 
@@ -490,25 +519,34 @@ match_mi_sub <-
 
 # table for subgroup ATE --------------------------------------------------
 
-tab_ate_subgroup_rd <- function(x, new_name, delta = 1, sd = 1) {
+tab_ate_subgroup_rd <- function(x,
+                                new_name,
+                                delta = 1,
+                                sd = 1) {
   # Check if required packages are installed
   required_packages <- c("EValue", "dplyr")
-  new_packages <- required_packages[!(required_packages %in% installed.packages()[,"Package"])]
-  if(length(new_packages)) stop("Missing packages: ", paste(new_packages, collapse=", "))
+  new_packages <-
+    required_packages[!(required_packages %in% installed.packages()[, "Package"])]
+  if (length(new_packages))
+    stop("Missing packages: ", paste(new_packages, collapse = ", "))
 
   require(EValue)
   require(dplyr)
 
   # Check if input data is a dataframe
-  if (!is.data.frame(x)) stop("Input x must be a dataframe")
+  if (!is.data.frame(x))
+    stop("Input x must be a dataframe")
 
   # Check if required columns are in the dataframe
   required_cols <- c("estimate", "lower_ci", "upper_ci")
   missing_cols <- required_cols[!(required_cols %in% colnames(x))]
-  if (length(missing_cols) > 0) stop("Missing columns in dataframe: ", paste(missing_cols, collapse=", "))
+  if (length(missing_cols) > 0)
+    stop("Missing columns in dataframe: ",
+         paste(missing_cols, collapse = ", "))
 
   # Check if lower_ci and upper_ci do not contain NA values
-  if (any(is.na(x$lower_ci), is.na(x$upper_ci))) stop("Columns 'lower_ci' and 'upper_ci' should not contain NA values")
+  if (any(is.na(x$lower_ci), is.na(x$upper_ci)))
+    stop("Columns 'lower_ci' and 'upper_ci' should not contain NA values")
 
   x <- x %>%
     dplyr::mutate(across(where(is.numeric), round, digits = 3)) %>%
@@ -517,11 +555,13 @@ tab_ate_subgroup_rd <- function(x, new_name, delta = 1, sd = 1) {
   x$standard_error <- abs(x$lower_ci - x$upper_ci) / 3.92
 
   evalues_list <- lapply(seq_len(nrow(x)), function(i) {
-    row_evalue <- EValue::evalues.OLS(x[i, "E[Y(1)]-E[Y(0)]"],
-                                      se = x[i, "standard_error"],
-                                      sd = sd,
-                                      delta = delta,
-                                      true = 0)
+    row_evalue <- EValue::evalues.OLS(
+      x[i, "E[Y(1)]-E[Y(0)]"],
+      se = x[i, "standard_error"],
+      sd = sd,
+      delta = delta,
+      true = 0
+    )
     # If E_value is NA, set it to 1
     if (is.na(row_evalue[2, "lower"])) {
       row_evalue[2, "lower"] <- 1
@@ -529,7 +569,7 @@ tab_ate_subgroup_rd <- function(x, new_name, delta = 1, sd = 1) {
     if (is.na(row_evalue[2, "upper"])) {
       row_evalue[2, "upper"] <- 1
     }
-    data.frame(round(as.data.frame(row_evalue)[2, ], 3)) # exclude the NA column
+    data.frame(round(as.data.frame(row_evalue)[2,], 3)) # exclude the NA column
   })
 
   evalues_df <- do.call(rbind, evalues_list)
@@ -537,9 +577,45 @@ tab_ate_subgroup_rd <- function(x, new_name, delta = 1, sd = 1) {
 
   tab_p <- cbind(x, evalues_df)
 
-  tab <- tab_p |> select(c("E[Y(1)]-E[Y(0)]", "lower_ci","upper_ci","E_Value","E_Val_bound"))
+  tab <-
+    tab_p |> select(c(
+      "E[Y(1)]-E[Y(0)]",
+      "lower_ci",
+      "upper_ci",
+      "E_Value",
+      "E_Val_bound"
+    ))
 
   return(tab)
 }
 
+
+
+# plot the subgroups ------------------------------------------------------
+
+plot_sub_forest <- function(df) {
+  require(ggplot2)
+
+  # Check if required packages are installed
+  required_packages <- c("ggplot2")
+  new_packages <- required_packages[!(required_packages %in% installed.packages()[, "Package"])]
+  if (length(new_packages))
+    stop("Missing packages: ", paste(new_packages, collapse = ", "))
+
+  # Check if required columns are in the dataframe
+  required_cols <- c("estimate", "lower_ci", "upper_ci")
+  missing_cols <- required_cols[!(required_cols %in% colnames(df))]
+  if (length(missing_cols) > 0)
+    stop("Missing columns in dataframe: ", paste(missing_cols, collapse = ", "))
+
+  # Order the factor levels by the estimate column in decreasing order
+
+  ggplot(df, aes(x=estimate, y=factor(row.names(df)))) +
+    geom_point() +
+    geom_errorbarh(aes(xmin = lower_ci, xmax = upper_ci), height=0.3) +
+    geom_vline(xintercept = 0, linetype="dashed", color = "red") +
+    theme_bw() +
+    xlab("Estimate") +
+    ylab("")
+}
 
