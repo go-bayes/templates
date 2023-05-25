@@ -575,13 +575,22 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 #     return(out)
 #   }
 # }
-causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
+causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = NULL) {
   # Load required packages
   require("clarify")
   require("rlang") # for building dynamic expressions
   require("glue") # for easier string manipulation
   require("parallel") # detect cores
   require("purrr")
+
+  # Set vcov default based on family argument
+  if (is.null(vcov)) {
+    if (inherits(family, "binomial")) {
+      vcov <- "HC0"
+    } else {
+      vcov <- "HC3"
+    }
+  }
 
   if (continuous_X) {
     estimand <- "ATE"
@@ -600,7 +609,7 @@ causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, 
     weight_var <- if (weights) df$weights else NULL
     formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
     fit <- glm(as.formula(formula_str), weights = weight_var, family = family, data = df)
-    sim.imp <- sim(fit, n = nsims, vcov = "HC3")# robust covariance matrix see clarify package
+    sim.imp <- sim(fit, n = nsims, vcov = vcov)# robust covariance matrix see clarify package
   }
 
   if (!continuous_X && estimand == "ATT") {
