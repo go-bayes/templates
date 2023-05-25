@@ -114,44 +114,44 @@ transition_table <- function(data, state_names = NULL) {
 
 
 # Function to calculate ATE in SD units
-generate_data <- function(N, prob_L1, A_on_Y, L_on_A, L_on_Y) {
-  L1 <- rbinom(N, 1, prob_L1)
-  prob_A <- plogis(L_on_A * L1)
-  A <- rbinom(N, 1, prob_A)
-  Y <-
-    rnorm(N, A_on_Y * A + L_on_Y * L1, sd = (A_on_Y * A + L_on_Y * L1) / 2)
-
-  # Convert Y to z-scores
-  Y <- scale(Y)
-
-  data <- data.frame(L1 = L1, A = A, Y = Y)
-
-  return(data)
-}
-# Function to estimate ATE using IPTW
-estimate_ATE_iptw <- function(data, method = "ps") {
-  # Obtain propensity score weights using WeightIt package
-  weight_out <-
-    weightit(A ~ L1,
-             data = data,
-             method = method,
-             estimand = "ATE")
-  data$weights <- weight_out$weights
-
-  # Fit a weighted regression with only an intercept
-  weighted_model <- lm(Y ~ A, data = data, weights = data$weights)
-
-  # Predict outcomes for everyone setting their treatment value to A = 0 and A = 1
-  data$A <- 0
-  Y_0 <- predict(weighted_model, newdata = data)
-  data$A <- 1
-  Y_1 <- predict(weighted_model, newdata = data)
-
-  # Obtain the difference of these predicted values
-  ATE_iptw <- mean(Y_1 - Y_0)
-
-  return(ATE_iptw)
-}
+# generate_data <- function(N, prob_L1, A_on_Y, L_on_A, L_on_Y) {
+#   L1 <- rbinom(N, 1, prob_L1)
+#   prob_A <- plogis(L_on_A * L1)
+#   A <- rbinom(N, 1, prob_A)
+#   Y <-
+#     rnorm(N, A_on_Y * A + L_on_Y * L1, sd = (A_on_Y * A + L_on_Y * L1) / 2)
+#
+#   # Convert Y to z-scores
+#   Y <- scale(Y)
+#
+#   data <- data.frame(L1 = L1, A = A, Y = Y)
+#
+#   return(data)
+# }
+# # Function to estimate ATE using IPTW
+# estimate_ATE_iptw <- function(data, method = "ps") {
+#   # Obtain propensity score weights using WeightIt package
+#   weight_out <-
+#     weightit(A ~ L1,
+#              data = data,
+#              method = method,
+#              estimand = "ATE")
+#   data$weights <- weight_out$weights
+#
+#   # Fit a weighted regression with only an intercept
+#   weighted_model <- lm(Y ~ A, data = data, weights = data$weights)
+#
+#   # Predict outcomes for everyone setting their treatment value to A = 0 and A = 1
+#   data$A <- 0
+#   Y_0 <- predict(weighted_model, newdata = data)
+#   data$A <- 1
+#   Y_1 <- predict(weighted_model, newdata = data)
+#
+#   # Obtain the difference of these predicted values
+#   ATE_iptw <- mean(Y_1 - Y_0)
+#
+#   return(ATE_iptw)
+# }
 
 
 # Function to estimate ATE using G-computation
