@@ -334,7 +334,7 @@ create_filtered_wide_dataframes <- function(dat_wide, exposure_vars) {
 # impute data by exposure level of variable -------------------------------
 
 
-impute_and_combine <- function(list_df, exposure_var, m = 10) {
+impute_and_combine <- function(list_df, m = 10) {
   require(mice)
 
   # Create a list to store the imputed mice objects
