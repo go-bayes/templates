@@ -332,45 +332,85 @@ create_filtered_wide_dataframes <- function(dat_wide, exposure_vars) {
 
 
 # impute data by exposure level of variable -------------------------------
-# See:MULTIPLE IMPUTATION BY EXPOSURE ADIVCE:
-# https://bmcmedresmethodol.biomedcentral.com/articles/10.1186/s12874-023-01843-6
 
 impute_and_combine <- function(list_df, m = 10, exclude_vars = c("t0_sample_frame", "id")) {
-  if (!require(mice, quietly = TRUE)) {
-    stop("The 'mice' package is required for this function to work. Please install it using install.packages('mice').")
+  if (!require(mice, quietly = TRUE) || !require(dplyr, quietly = TRUE) || !require(miceadds, quietly = TRUE)) {
+    stop("The 'mice', 'dplyr', and 'miceadds' packages are required for this function to work. Please install them.")
   }
 
-  if (!require(miceadds, quietly = TRUE)) {
-    stop("The 'miceadds' package is required for this function to work. Please install it using install.packages('miceadds').")
-  }
-
-  completed_dfs <- list()
+  list_completed_df <- list()
 
   for (i in seq_along(list_df)) {
-    data_frame_example <- list_df[[i]]
+    df <- list_df[[i]]
 
-    init = mice::mice(data_frame_example, maxit = 0)
+    # Create predictor matrix
+    init = mice::mice(df, maxit = 0)
     predictorMatrix = init$predictorMatrix
 
-    # Check if columns exist before excluding
+    # Exclude variables
     for (var in exclude_vars) {
       if (var %in% colnames(predictorMatrix)) {
         predictorMatrix[, var] = 0
       }
     }
 
-    mice_df <- mice::mice(data_frame_example, m = m, predictorMatrix = predictorMatrix)
-    completed_df <- mice::complete(mice_df) #action = "long", include = FALSE)
-    completed_df$.id <- paste0("df", i, "_imp", completed_df$.imp)
-    completed_dfs[[i]] <- completed_df
+    # Perform multiple imputation
+    mice_df <- mice::mice(df, m = m, predictorMatrix = predictorMatrix)
+
+    # Complete the data
+    completed_df <- mice::complete(mice_df, action = "long", include = TRUE)
+
+    # Reset rownames
+    rownames(completed_df) <- NULL
+
+    list_completed_df[[i]] <- completed_df
   }
 
-  combined_df <- dplyr::bind_rows(completed_dfs)
-  data_list <- split(combined_df, combined_df$.imp)
+  # Bind rows
+  complete_df <- dplyr::bind_rows(list_completed_df)
+
+  # Assign new .imp and .id values
+  complete_df <- complete_df %>%
+    dplyr::group_by(.imp) %>%
+    dplyr::mutate(
+      .id = row_number()
+    ) %>%
+    dplyr::ungroup()
+
+  # Convert to a list of data frames
+  data_list <- split(complete_df, complete_df$.imp)
+
+  # Convert to mids
   mids_df <- miceadds::datalist2mids(data_list, progress=FALSE)
 
   return(mids_df)
 }
+
+
+# matching ----------------------------------------------------------------
+# method for propensity scores
+
+match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
+  require(WeightIt)
+  require(MatchThem)
+
+
+  # if not binary, we model the interacton to obtain better weights
+  # not we can add survey weights at this point.
+
+  formula_str <- paste(X, "~", paste(baseline_vars, collapse = "+"))
+
+  dt_match <- weightthem(
+    as.formula(formula_str),
+    weights = sample_weights,
+    data,
+    estimand = estimand,
+    stabilize = TRUE,
+    method = method
+  )
+  dt_match
+}
+
 
 
 # general function (work in progress)
