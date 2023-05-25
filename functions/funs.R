@@ -576,7 +576,7 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 #   }
 # }
 #https://eprints.whiterose.ac.uk/169886/3/Robust%20SE.%20manuscript.%20in%20White%20Rose.pdf
-causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = "HC2") {
+causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = "HC3") {
   # Load required packages
   require("clarify")
   require("rlang") # for building dynamic expressions
@@ -587,9 +587,9 @@ causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, 
   # Set vcov default based on family argument
   if (is.null(vcov)) {
     if (inherits(family, "quasibinomial")) {
-      vcov <- vcov # to fix later
+      vcov <- "HC1" # to fix later
     } else {
-      vcov <- vcov # to fix later
+      vcov <- "HC3" # to fix later
     }
   }
 
@@ -652,7 +652,7 @@ build_formula_str <- function(Y, X, continuous_X, splines, baseline_vars) {
 
 
 # slightly older
-causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
+causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = "HC3") {
   # Load required packages
   require("clarify")
   require("rlang") # for building dynamic expressions
@@ -687,7 +687,7 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
   })
   # A `clarify_misim` object
 
-  sim.imp <- misim(fits, n = nsims, vcov = "HC2")
+  sim.imp <- misim(fits, n = nsims, vcov = vcov)
 
   # Compute the Average Marginal Effects
 
@@ -809,10 +809,9 @@ tab_ate <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continu
 
 # combine causal contrast and tab ate -------------------------------------
 
-gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200,
-                      cores = parallel::detectCores(), family = quasibinomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC2") {
+gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = quasibinomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC3") {
   # Call the causal_contrast_general() function
-  causal_contrast_result <- causal_contrast_general(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov = "HC2")
+  causal_contrast_result <- causal_contrast(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov = "HC2")
 
   # Call the tab_ate() function with the result from causal_contrast()
   tab_ate_result <- tab_ate(causal_contrast_result, new_name, delta, sd, type, continuous_X)
