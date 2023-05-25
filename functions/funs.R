@@ -56,13 +56,18 @@ conflict_prefer("lag", "dplyr")
 
 # functions for descriptive tables using libary(table1) # reduces clutter
 my_render_cont <- function(x) {
-  with(stats.apply.rounding(stats.default(x), digits=3), c("",
-                                                           "Mean (SD)"=sprintf("%s (&plusmn; %s)", MEAN, SD)))
+  with(stats.apply.rounding(stats.default(x), digits = 3),
+       c("",
+         "Mean (SD)" =
+           sprintf("%s (&plusmn; %s)", MEAN, SD)))
 }
 
 my_render_cat <- function(x) {
-  c("", sapply(stats.default(x), function(y) with(y,
-                                                  sprintf("%d (%0.0f %%)", FREQ, PCT))))
+  c("", sapply(stats.default(x), function(y)
+    with(y,
+         sprintf(
+           "%d (%0.0f %%)", FREQ, PCT
+         ))))
 }
 
 
@@ -160,7 +165,11 @@ create_wide_data <- function(dat_long, baseline_vars, exposure_var, outcome_vars
   # Define a custom function to filter columns based on conditions
   custom_col_filter <- function(col_name) {
     if (startsWith(col_name, "t0_")) {
-      return(col_name %in% c(paste0("t0_",baseline_vars), paste0("t0_",exposure_var), paste0("t0_", outcome_vars)))
+      return(col_name %in% c(
+        paste0("t0_", baseline_vars),
+        paste0("t0_", exposure_var),
+        paste0("t0_", outcome_vars)
+      ))
     } else if (startsWith(col_name, "t1_")) {
       return(col_name %in% paste0("t1_", exposure_var))
     } else if (startsWith(col_name, "t2_")) {
@@ -181,10 +190,15 @@ create_wide_data <- function(dat_long, baseline_vars, exposure_var, outcome_vars
     arrange(id)
 
   # Reorder t0_ columns
-  t0_column_order <- c(paste0("t0_", baseline_vars), paste0("t0_", exposure_var), paste0("t0_", outcome_vars))
+  t0_column_order <-
+    c(
+      paste0("t0_", baseline_vars),
+      paste0("t0_", exposure_var),
+      paste0("t0_", outcome_vars)
+    )
   wide_data_ordered <- wide_data_filtered %>%
-    select(id, t0_column_order, everything()) %>%
-    select(-id)
+    select(id, t0_column_order, everything()) #%>%
+    #select(-id)
 
   return(wide_data_ordered)
 }
@@ -215,7 +229,11 @@ create_wide_data_general <- function(dat_long, baseline_vars, exposure_var, outc
   # Define a custom function to filter columns based on conditions
   custom_col_filter <- function(col_name) {
     if (startsWith(col_name, "t0_")) {
-      return(col_name %in% c(paste0("t0_",baseline_vars), paste0("t0_",exposure_var), paste0("t0_", outcome_vars)))
+      return(col_name %in% c(
+        paste0("t0_", baseline_vars),
+        paste0("t0_", exposure_var),
+        paste0("t0_", outcome_vars)
+      ))
     } else if (startsWith(col_name, "t1_")) {
       return(col_name %in% paste0("t1_", exposure_var))
     } else if (grepl("^t[2-9][0-9]*_", col_name)) {
@@ -246,11 +264,74 @@ create_wide_data_general <- function(dat_long, baseline_vars, exposure_var, outc
   # Reorder t0_ columns
   t0_column_order <- c(paste0("t0_", baseline_vars), paste0("t0_", exposure_var), paste0("t0_", outcome_vars))
   wide_data_ordered <- wide_data_filtered %>%
-    select(id, t0_column_order, everything()) %>%
-    select(-id)
+    select(id, t0_column_order, everything()) #%>%
+   # select(-id)
 
   return(wide_data_ordered)
 }
+
+
+# create_filter_wide_dataframes -------------------------------------------
+
+#Here is a function create_filtered_wide_dataframes that takes the output of create_wide_data_general and returns a list of dataframes filtered according to the levels of the factor variable provided in exposure_var.
+
+
+create_filtered_wide_dataframes <- function(dat_wide, exposure_vars) {
+  # Check if exposure_vars are in dat_wide
+  for (exposure_var in exposure_vars) {
+    if (!exposure_var %in% names(dat_wide)) {
+      stop(paste("exposure_var", exposure_var, "is not in the dataframe"))
+    }
+  }
+
+  # Get factor and continuous exposure variables
+  factor_exposure_vars <- exposure_vars[sapply(dat_wide[exposure_vars], is.factor)]
+  continuous_exposure_vars <- setdiff(exposure_vars, factor_exposure_vars)
+
+  if (length(factor_exposure_vars) > 1) {
+    stop("More than one factor exposure variable is not allowed")
+  }
+
+  # Create a list to store the filtered dataframes
+  list_filtered_df <- list()
+
+  if (length(factor_exposure_vars) == 1) {
+    # Get levels of the factor
+    factor_levels <- levels(dat_wide[[factor_exposure_vars]])
+
+    # Loop over each level and filter the dataframe
+    for (level in factor_levels) {
+      filtered_df <- dat_wide %>%
+        filter((!!rlang::sym(factor_exposure_vars)) == level) %>%
+        arrange(id)
+
+      list_filtered_df[[level]] <- filtered_df
+    }
+  } else {
+    # If there are no factor exposure variables, just arrange by id
+    filtered_df <- dat_wide %>% arrange(id)
+    list_filtered_df[["data"]] <- filtered_df
+  }
+
+  return(list_filtered_df)
+}
+
+# test
+# Assume dat_long, baseline_vars, exposure_var, outcome_vars, and exclude_vars are defined
+
+# # Create wide data
+# wide_data <- create_wide_data_general(dat_long, baseline_vars, exposure_var, outcome_vars, exclude_vars)
+#
+# # Create filtered dataframes
+# list_filtered_df <- create_filtered_wide_dataframes(wide_data, exposure_var)
+#
+# # Access individual filtered dataframe
+# q1_df <- list_filtered_df[["q1"]]
+# q2_df <- list_filtered_df[["q2"]]
+# # ...and so on for each level
+
+
+
 
 # matching ----------------------------------------------------------------
 # method for propensity scores
