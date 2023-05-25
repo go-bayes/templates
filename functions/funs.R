@@ -331,6 +331,45 @@ create_filtered_wide_dataframes <- function(dat_wide, exposure_vars) {
 # # ...and so on for each level
 
 
+# impute data by exposure level of variable -------------------------------
+
+impute_and_combine <- function(list_df, exposure_var, m = 10) {
+  require(mice)
+
+  # Create a list to store the imputed mice objects
+  list_imputed_mice <- list()
+
+  # Loop over each dataframe in the list
+  for (i in seq_along(list_df)) {
+    data_frame_example <- list_df[[i]]
+
+    # Ignore the specified variables by setting their predictorMatrix values to 0
+    init = mice::mice(data_frame_example, maxit = 0)
+    predictorMatrix = init$predictorMatrix
+    # Check if columns exist before excluding
+    if ("t0_sample_frame" %in% colnames(predictorMatrix)) {
+      predictorMatrix[, "t0_sample_frame"] = 0
+    }
+    if ("id" %in% colnames(predictorMatrix)) {
+      predictorMatrix[, "id"] = 0
+    }
+    if (exposure_var %in% colnames(predictorMatrix)) {
+      predictorMatrix[, exposure_var] = 0
+    }
+
+    # Run mice() with the custom predictorMatrix and the specified number of multiple imputations
+    mice_df <- mice::mice(data_frame_example, m = m, predictorMatrix = predictorMatrix)
+
+    # Store the mice object in the list
+    list_imputed_mice[[i]] <- mice_df
+  }
+
+  # Combine the imputed mice objects into a single object
+  combined_mice <- do.call(rbind, list_imputed_mice)
+
+  return(combined_mice)
+}
+
 
 
 # matching ----------------------------------------------------------------
