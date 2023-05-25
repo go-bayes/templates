@@ -575,7 +575,7 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 #     return(out)
 #   }
 # }
-causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = NULL) {
+causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = c("HC3", "const", "HC", "HC0", "HC1", "HC2", "HC4", "HC4m", "HC5")) {
   # Load required packages
   require("clarify")
   require("rlang") # for building dynamic expressions
@@ -604,7 +604,7 @@ causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, 
         glm(as.formula(formula_str), weights = weight_var, family = family, data = d)
       })
 
-    sim.imp <- misim(fits, n = nsims, vcov = "HC3") #robust standard errors see CLARIFY package
+    sim.imp <- misim(fits, n = nsims, vcov = vcov) #robust standard errors see CLARIFY package
   } else {
     weight_var <- if (weights) df$weights else NULL
     formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
