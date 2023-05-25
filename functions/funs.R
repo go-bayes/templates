@@ -586,7 +586,7 @@ causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, 
   # Set vcov default based on family argument
   if (is.null(vcov)) {
     if (inherits(family, "quasibinomial")) {
-      vcov <- "const"
+      vcov <- "robust"
     } else {
       vcov <- "HC3"
     }
