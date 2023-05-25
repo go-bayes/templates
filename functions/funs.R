@@ -482,7 +482,7 @@ causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, 
   }
 
   # Check if df is a mice object or a data.frame
-  if ("mids" %in% class(df)) {
+  if ("wimids" %in% class(df)) {
     # Fit models using the complete datasets (all imputations)
     fits <-  lapply(complete(df, "all"), function(d) {
       # Set weights variable based on the value of 'weights' argument
@@ -746,7 +746,7 @@ gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, trea
                       cores = parallel::detectCores(), family = quasibinomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE,
                       delta = 1, sd = 1, type = c("RD", "RR")) {
   # Call the causal_contrast_general() function
-  causal_contrast_result <- causal_contrast_general(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines)
+  causal_contrast_result <- causal_contrast(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines)
 
   # Call the tab_ate() function with the result from causal_contrast()
   tab_ate_result <- tab_ate(causal_contrast_result, new_name, delta, sd, type, continuous_X)
