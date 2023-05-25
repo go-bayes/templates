@@ -333,6 +333,7 @@ create_filtered_wide_dataframes <- function(dat_wide, exposure_vars) {
 
 # impute data by exposure level of variable -------------------------------
 
+
 impute_and_combine <- function(list_df, exposure_var, m = 10) {
   require(mice)
 
@@ -353,9 +354,9 @@ impute_and_combine <- function(list_df, exposure_var, m = 10) {
     if ("id" %in% colnames(predictorMatrix)) {
       predictorMatrix[, "id"] = 0
     }
-    if (exposure_var %in% colnames(predictorMatrix)) {
-      predictorMatrix[, exposure_var] = 0
-    }
+    # if (exposure_var %in% colnames(predictorMatrix)) {
+    #   predictorMatrix[, exposure_var] = 0
+    # }
 
     # Run mice() with the custom predictorMatrix and the specified number of multiple imputations
     mice_df <- mice::mice(data_frame_example, m = m, predictorMatrix = predictorMatrix)
