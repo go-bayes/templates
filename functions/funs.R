@@ -38,7 +38,8 @@ packages <- c(
   "CBPS", # propensity scores
   "msm", # for validating change in the exposure
   "kableExtra",
-  "naniar" # for inspecting missing data
+  "naniar", # for inspecting missing data
+  "miceadds"
 )
 
 # install packages
@@ -332,27 +333,20 @@ create_filtered_wide_dataframes <- function(dat_wide, exposure_vars) {
 
 
 # impute data by exposure level of variable -------------------------------
-
 impute_and_combine <- function(list_df, m = 10, exclude_vars = c("t0_sample_frame", "id")) {
   if (!require(mice, quietly = TRUE) || !require(dplyr, quietly = TRUE) || !require(miceadds, quietly = TRUE)) {
     stop("The 'mice', 'dplyr', and 'miceadds' packages are required for this function to work. Please install them.")
   }
 
-  list_completed_df <- list()
-
-  for (i in seq_along(list_df)) {
-    df <- list_df[[i]]
-
+  # The lapply function is used here to iterate over the list of data frames,
+  # which is more efficient and cleaner than a for loop.
+  list_completed_df <- lapply(list_df, function(df) {
     # Create predictor matrix
     init = mice::mice(df, maxit = 0)
     predictorMatrix = init$predictorMatrix
 
     # Exclude variables
-    for (var in exclude_vars) {
-      if (var %in% colnames(predictorMatrix)) {
-        predictorMatrix[, var] = 0
-      }
-    }
+    predictorMatrix[, intersect(colnames(predictorMatrix), exclude_vars)] = 0
 
     # Perform multiple imputation
     mice_df <- mice::mice(df, m = m, predictorMatrix = predictorMatrix)
@@ -363,8 +357,8 @@ impute_and_combine <- function(list_df, m = 10, exclude_vars = c("t0_sample_fram
     # Reset rownames
     rownames(completed_df) <- NULL
 
-    list_completed_df[[i]] <- completed_df
-  }
+    completed_df
+  })
 
   # Bind rows
   complete_df <- dplyr::bind_rows(list_completed_df)
@@ -468,119 +462,183 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 
 # newest version allows for single dataframes
 
+# causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
+#   # Load required packages
+#   require("clarify")
+#   require("rlang") # for building dynamic expressions
+#   require("glue") # for easier string manipulation
+#   require("parallel") # detect cores
+#   #require("survey") # correctly computes standard errors: to do
+#
+#   if (continuous_X) {
+#     estimand <- "ATE"
+#     # warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
+#   }
+#
+#   # Check if df is a mice object or a data.frame
+#   if ("wimids" %in% class(df)) {
+#     # Fit models using the complete datasets (all imputations)
+#     fits <-  lapply(complete(df, "all"), function(d) {
+#       # Set weights variable based on the value of 'weights' argument
+#       weight_var <- if (weights) d$weights else NULL
+#
+#       # Check if continuous_X and splines are both TRUE
+#       if (continuous_X && splines) {
+#         require(splines) # splines package
+#         formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
+#       } else {
+#         formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+#       }
+#
+#       glm(
+#         as.formula(formula_str),
+#         weights = if (!is.null(weight_var)) weight_var else NULL,
+#         family = family,
+#         data = d
+#       )
+#     })
+#     # A `clarify_misim` object
+#
+#     sim.imp <- misim(fits, n = nsims, vcov = "HC3") #robust standard errors see CLARIFY package
+#
+#   } else {
+#     # Fit models using the input data.frame
+#     # Set weights variable based on the value of 'weights' argument
+#     weight_var <- if (weights) df$weights else NULL
+#
+#     # Check if continuous_X and splines are both TRUE
+#     if (continuous_X && splines) {
+#       require(splines) # splines package
+#       formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
+#     } else {
+#       formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+#     }
+#
+#     fit <- glm(
+#       as.formula(formula_str),
+#       weights = if (!is.null(weight_var)) weight_var else NULL,
+#       family = family,
+#       data = df
+#     )
+#     # A `clarify_sim` object
+#
+#     sim.imp <- sim(fit, n = nsims, vcov = "HC3")# robust covariance matrix see clarify package
+#   }
+#   # Compute the Average Marginal Effects
+#
+#   if (!continuous_X && estimand == "ATT") {
+#     # Build dynamic expression for subsetting
+#     subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
+#
+#     sim_estimand <- sim_ame(sim.imp,
+#                             var = X,
+#                             subset = eval(subset_expr),
+#                             cl = cores,
+#                             verbose = FALSE)
+#   } else { # For ATE
+#     sim_estimand <- sim_ame(sim.imp,
+#                             var = X,
+#                             cl = cores,
+#                             verbose = FALSE)
+#   }
+#
+#   if (continuous_X) {
+#     return(summary(sim_estimand))
+#     # sim_estimand <- as.data.frame(sim_estimand). # not working
+#     # rownames(sim_estimand) <- scale
+#
+#   } else {
+#     # Convert sim_estimand to a data frame
+#     sim_estimand_df <- as.data.frame(sim_estimand)
+#
+#     # Transform the results based on the specified scale
+#     if (scale == "RR") {
+#       sim_estimand_df$RR <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] / sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
+#
+#     } else {
+#       sim_estimand_df$RD <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] - sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
+#
+#     }
+#
+#     # Calculate the desired summary statistics
+#     out <- t(sapply(sim_estimand_df, function(x) {
+#       c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
+#     }))
+#
+#     # Set the row names of the output to match the desired format
+#     rownames(out) <- colnames(sim_estimand_df)
+#
+#
+#     # Rename the column names to avoid duplicates
+#     colnames(out) <- c("Estimate", "2.5 %", "97.5 %")
+#
+#     return(out)
+#   }
+# }
 causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
   # Load required packages
   require("clarify")
   require("rlang") # for building dynamic expressions
   require("glue") # for easier string manipulation
   require("parallel") # detect cores
-  #require("survey") # correctly computes standard errors: to do
+  require("purrr")
 
   if (continuous_X) {
     estimand <- "ATE"
-    # warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
   }
 
-  # Check if df is a mice object or a data.frame
   if ("wimids" %in% class(df)) {
-    # Fit models using the complete datasets (all imputations)
-    fits <-  lapply(complete(df, "all"), function(d) {
-      # Set weights variable based on the value of 'weights' argument
-      weight_var <- if (weights) d$weights else NULL
-
-      # Check if continuous_X and splines are both TRUE
-      if (continuous_X && splines) {
-        require(splines) # splines package
-        formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
-      } else {
-        formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
-      }
-
-      glm(
-        as.formula(formula_str),
-        weights = if (!is.null(weight_var)) weight_var else NULL,
-        family = family,
-        data = d
-      )
-    })
-    # A `clarify_misim` object
+    fits <- complete(df, "all") %>%
+      purrr::map(function(d) {
+        weight_var <- if (weights) d$weights else NULL
+        formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
+        glm(as.formula(formula_str), weights = weight_var, family = family, data = d)
+      })
 
     sim.imp <- misim(fits, n = nsims, vcov = "HC3") #robust standard errors see CLARIFY package
-
   } else {
-    # Fit models using the input data.frame
-    # Set weights variable based on the value of 'weights' argument
     weight_var <- if (weights) df$weights else NULL
-
-    # Check if continuous_X and splines are both TRUE
-    if (continuous_X && splines) {
-      require(splines) # splines package
-      formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
-    } else {
-      formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
-    }
-
-    fit <- glm(
-      as.formula(formula_str),
-      weights = if (!is.null(weight_var)) weight_var else NULL,
-      family = family,
-      data = df
-    )
-    # A `clarify_sim` object
-
+    formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
+    fit <- glm(as.formula(formula_str), weights = weight_var, family = family, data = df)
     sim.imp <- sim(fit, n = nsims, vcov = "HC3")# robust covariance matrix see clarify package
   }
-  # Compute the Average Marginal Effects
 
   if (!continuous_X && estimand == "ATT") {
-    # Build dynamic expression for subsetting
     subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
-
-    sim_estimand <- sim_ame(sim.imp,
-                            var = X,
-                            subset = eval(subset_expr),
-                            cl = cores,
-                            verbose = FALSE)
-  } else { # For ATE
-    sim_estimand <- sim_ame(sim.imp,
-                            var = X,
-                            cl = cores,
-                            verbose = FALSE)
+    sim_estimand <- sim_ame(sim.imp, var = X, subset = eval(subset_expr), cl = cores, verbose = FALSE)
+  } else {
+    sim_estimand <- sim_ame(sim.imp, var = X, cl = cores, verbose = FALSE)
   }
 
   if (continuous_X) {
     return(summary(sim_estimand))
-    # sim_estimand <- as.data.frame(sim_estimand). # not working
-    # rownames(sim_estimand) <- scale
-
   } else {
-    # Convert sim_estimand to a data frame
-    sim_estimand_df <- as.data.frame(sim_estimand)
+    sim_estimand_df <- as.data.frame(sim_estimand) %>%
+      purrr::map_df(function(x) {
+        c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
+      }) %>%
+      mutate(
+        RR = case_when(scale == "RR" ~ !!rlang::sym(paste0("E[Y(", treat_1, ")]")) / !!rlang::sym(paste0("E[Y(", treat_0, ")]"))),
+        RD = case_when(scale == "RD" ~ !!rlang::sym(paste0("E[Y(", treat_1, ")]")) - !!rlang::sym(paste0("E[Y(", treat_0, ")]")))
+        )
 
-    # Transform the results based on the specified scale
-    if (scale == "RR") {
-      sim_estimand_df$RR <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] / sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
+        colnames(sim_estimand_df) <- c("Estimate", "2.5 %", "97.5 %")
 
-    } else {
-      sim_estimand_df$RD <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] - sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
+        return(sim_estimand_df)
+        }
+  }
 
-    }
-
-    # Calculate the desired summary statistics
-    out <- t(sapply(sim_estimand_df, function(x) {
-      c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
-    }))
-
-    # Set the row names of the output to match the desired format
-    rownames(out) <- colnames(sim_estimand_df)
-
-
-    # Rename the column names to avoid duplicates
-    colnames(out) <- c("Estimate", "2.5 %", "97.5 %")
-
-    return(out)
+build_formula_str <- function(Y, X, continuous_X, splines, baseline_vars) {
+  if (continuous_X && splines) {
+    return(paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")"))
+  } else {
+    return(paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")"))
   }
 }
+
+
+
+
 
 
 # slightly older
