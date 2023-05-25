@@ -741,7 +741,6 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
   }
 
 
-
 # general contrast table --------------------------------------------------
 
 tab_ate <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continuous_X = FALSE) {
