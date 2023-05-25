@@ -575,7 +575,7 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 #     return(out)
 #   }
 # }
-causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = c("HC3", "const", "HC", "HC0", "HC1", "HC2", "HC4", "HC4m", "HC5")) {
+causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = NULL) {
   # Load required packages
   require("clarify")
   require("rlang") # for building dynamic expressions
@@ -585,8 +585,8 @@ causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, 
 
   # Set vcov default based on family argument
   if (is.null(vcov)) {
-    if (inherits(family, "binomial")) {
-      vcov <- "HC0"
+    if (inherits(family, "quasibinomial")) {
+      vcov <- "const"
     } else {
       vcov <- "HC3"
     }
