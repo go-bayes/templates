@@ -333,6 +333,7 @@ create_filtered_wide_dataframes <- function(dat_wide, exposure_vars) {
 
 
 # impute data by exposure level of variable -------------------------------
+
 impute_and_combine <- function(list_df, m = 10, exclude_vars = c("t0_sample_frame", "id")) {
   if (!require(mice, quietly = TRUE) || !require(dplyr, quietly = TRUE) || !require(miceadds, quietly = TRUE)) {
     stop("The 'mice', 'dplyr', and 'miceadds' packages are required for this function to work. Please install them.")
@@ -352,7 +353,7 @@ impute_and_combine <- function(list_df, m = 10, exclude_vars = c("t0_sample_fram
     mice_df <- mice::mice(df, m = m, predictorMatrix = predictorMatrix)
 
     # Complete the data
-    completed_df <- mice::complete(mice_df, action = "long", include = TRUE)
+    completed_df <- mice::complete(mice_df,  action = 'long')
 
     # Reset rownames
     rownames(completed_df) <- NULL
@@ -652,7 +653,7 @@ build_formula_str <- function(Y, X, continuous_X, splines, baseline_vars) {
 
 
 # slightly older
-causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = "HC3") {
+causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = vcov) {
   # Load required packages
   require("clarify")
   require("rlang") # for building dynamic expressions
