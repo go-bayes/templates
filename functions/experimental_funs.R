@@ -45,6 +45,13 @@ if (!require(janitor)) {
 }
 
 
+if (!require(lubridate)) {
+  install.packages("lubridate")
+  library("lubridate")
+}
+
+
+
 # A_effect: denotes the effect of L1 on A in the logistic regression model used to generate A. In the model, we use a logistic link function to bind A (a binary variable) as a function of L1. A_effect is the coefficient of L1 in this model, representing the log odds ratio of A for a one-unit increase in L1.
 #
 # Y_effect:  denotes the effect of A on Y in the model used to generate Y. In this model, we use a logistic link function to bind Y (a binary variable) as a function of A and L1. Y_effect is the coefficient of A in this model, representing the log odds ratio of Y for a one-unit increase in A.
@@ -519,6 +526,77 @@ match_mi_sub <-
 
 # table for subgroup ATE --------------------------------------------------
 
+# use group tab experimental
+
+tab_ate_sub <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continuous_X = FALSE) {
+  require("EValue")
+  require(dplyr)
+
+  type <- match.arg(type)
+
+  dff <- as.data.frame(x)
+
+  x <- dff[grepl("^RD_", rownames(dff)), ]
+
+
+  if (continuous_X) {
+    rownames(x) <- type
+  }
+
+  out <- x %>%
+    dplyr::filter(stringr::str_detect(row.names(x), paste0("^", type))) %>%
+    dplyr::mutate(across(where(is.numeric), round, digits = 4))
+
+  out <- out %>%
+    dplyr::mutate(across(where(is.numeric), round, digits = 4))
+
+  if (type == "RD") {
+    out <- out %>%
+      dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
+  } else {
+    out <- out %>%
+      dplyr::rename("E[Y(1)]/E[Y(0)]" = Estimate)
+  }
+
+  rownames(out)[1] <- paste0(new_name)
+  out <- as.data.frame(out)
+
+  if (type == "RD") {
+    tab0 <- out |>  dplyr::mutate(standard_error = abs(`2.5 %` - `97.5 %`) / 3.92)
+    evalout <- as.data.frame(round(EValue::evalues.OLS(tab0[1, 1],
+                                                       se = tab0[1, 4],
+                                                       sd = sd,
+                                                       delta = delta,
+                                                       true = 0
+    ),
+    3
+    ))
+  } else {
+    evalout <- as.data.frame(round(EValue::evalues.RR(out[1, 1],
+                                                      lo = out[1, 2],
+                                                      hi = out[1, 3],
+                                                      true = 1
+    ),
+    3
+    ))
+  }
+
+  evalout2 <- subset(evalout[2, ])
+  evalout3 <- evalout2 |>
+    select_if( ~ !any(is.na(.)))
+  colnames(evalout3) <- c("E_Value", "E_Val_bound")
+
+  if (type == "RD") {
+    tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
+  } else {
+    tab <- cbind.data.frame(out, evalout3)
+  }
+
+  return(tab)
+}
+
+
+
 tab_ate_subgroup_rd <- function(x,
                                 new_name,
                                 delta = 1,
@@ -563,12 +641,12 @@ tab_ate_subgroup_rd <- function(x,
       true = 0
     )
     # If E_value is NA, set it to 1
-    if (is.na(row_evalue[2, "lower"])) {
-      row_evalue[2, "lower"] <- 1
-    }
-    if (is.na(row_evalue[2, "upper"])) {
-      row_evalue[2, "upper"] <- 1
-    }
+    # if (is.na(row_evalue[2, "lower"])) {
+    #   row_evalue[2, "lower"] <- 1
+    # }
+    # if (is.na(row_evalue[2, "upper"])) {
+    #   row_evalue[2, "upper"] <- 1
+    # }
     data.frame(round(as.data.frame(row_evalue)[2,], 3)) # exclude the NA column
   })
 
@@ -617,5 +695,46 @@ plot_sub_forest <- function(df) {
     theme_bw() +
     xlab("Estimate") +
     ylab("")
+}
+
+
+# calculate dates after 30 June 2009 --------------------------------------
+
+library(lubridate)
+
+# Function to calculate TSCORE for a given date
+calculate_tscore <- function(date) {
+  base_date <- dmy("30.06.2009")
+  return(as.integer(date - base_date))
+}
+
+# Function to generate string for date range and TSCORE range
+generate_date_tscore_string <- function(start_date, end_date) {
+  start_tscore <- calculate_tscore(start_date)
+  end_tscore <- calculate_tscore(end_date)
+  return(sprintf("(%s -- %s): (TSCORE >= %d & TSCORE <= %d)",
+                 format(start_date, "%d.%m.%Y"),
+                 format(end_date, "%d.%m.%Y"),
+                 start_tscore,
+                 end_tscore))
+}
+
+# Define date pairs
+date_pairs <- list(c("31.12.2019", "27.02.2020"),
+                   c("28.02.2020", "25.03.2020"),
+                   c("26.03.2020", "27.04.2020"),
+                   c("28.04.2020", "13.05.2020"),
+                   c("14.05.2020", "08.06.2020"),
+                   c("09.06.2020", "11.08.2020"),
+                   c("12.08.2020", "30.08.2020"),
+                   c("31.08.2020", "21.09.2020"),
+                   c("22.09.2020", "07.10.2020"),
+                   c("08.10.2020", "30.09.2021"))
+
+# Generate strings for each date pair
+for (pair in date_pairs) {
+  start_date <- dmy(pair[1])
+  end_date <- dmy(pair[2])
+  print(generate_date_tscore_string(start_date, end_date))
 }
 

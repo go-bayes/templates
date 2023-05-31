@@ -836,7 +836,7 @@ group_tab <- function(df, type = c("RR", "RD")) {
         "positive",
         ifelse( `E[Y(1)]/E[Y(0)]` < 1 &
                   `97.5 %` < 1, "negative",
-                "not reliable")
+                "caution")
       ))) %>%
       rownames_to_column(var = "outcome") %>%
       mutate(
@@ -851,7 +851,7 @@ group_tab <- function(df, type = c("RR", "RD")) {
         "positive",
         ifelse( `E[Y(1)]-E[Y(0)]` < 0 &
                   `97.5 %` < 0, "negative",
-                "not reliable")
+                "caution")
       ))) %>%
       rownames_to_column(var = "outcome") %>%
       mutate(

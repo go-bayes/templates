@@ -108,6 +108,8 @@ packages <- c(
   "conflicted",
   "parallel",
   "rlang",
+  "sandwich",
+  "lubridate",
   "glue", # for reports
   "DeclareDesign",  # for simulation and modelling of design
   "fabricatr", # for simulation and modelling of design
