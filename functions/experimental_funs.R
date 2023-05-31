@@ -526,9 +526,8 @@ match_mi_sub <-
 
 # table for subgroup ATE --------------------------------------------------
 
-# use group tab experimental
 
-tab_ate_sub <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continuous_X = FALSE) {
+sub_tab_ate<- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continuous_X = FALSE) {
   require("EValue")
   require(dplyr)
 
@@ -596,7 +595,6 @@ tab_ate_sub <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), con
 }
 
 
-
 sub_group_tab <- function(df, type = c("RR", "RD")) {
   type <- match.arg(type)
 
@@ -604,29 +602,23 @@ sub_group_tab <- function(df, type = c("RR", "RD")) {
 
   if (type == "RR") {
     out <- df %>%
-      arrange(desc(`E[Y(1)]/E[Y(0)]`)) %>%
       dplyr::mutate(Estimate  = as.factor(ifelse(
-        `E[Y(1)]/E[Y(0)]` > 1 & `2.5 %` > 1,
+        `2.5 %` > 1 & `97.5 %` > 1,
         "positive",
-        ifelse( `E[Y(1)]/E[Y(0)]` < 1 &
-                  `97.5 %` < 1, "negative",
-                "caution")
-      ))) %>%
-      rownames_to_column(var = "outcome") %>%
+        ifelse( `2.5 %` < 1 & `97.5 %` < 1, "negative", "unreliable")
+      ))) |>
+      rownames_to_column(var = "group") %>%
       mutate(
         across(where(is.numeric), round, digits = 3),
         estimate_lab = paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]")
       )
   } else {
     out <- df %>%
-      arrange(desc(`E[Y(1)]-E[Y(0)]`)) %>%
       dplyr::mutate(Estimate  = as.factor(ifelse(
-        `E[Y(1)]-E[Y(0)]` > 0 & `2.5 %` > 0,
+        `2.5 %` > 0 & `97.5 %` > 0,
         "positive",
-        ifelse( `E[Y(1)]-E[Y(0)]` < 0 &
-                  `97.5 %` < 0, "negative",
-                "caution")
-      ))) %>%
+        ifelse( `2.5 %` < 0 & `97.5 %` < 0, "negative", "unreliable")
+      ))) |>
       rownames_to_column(var = "group") %>%
       mutate(
         across(where(is.numeric), round, digits = 3),
@@ -639,9 +631,9 @@ sub_group_tab <- function(df, type = c("RR", "RD")) {
 
 
 sub_group_plot_ate <- function(.data, type = "RD", title, subtitle, xlab, ylab,
-                           x_offset = 0,
-                           x_lim_lo = 0,
-                           x_lim_hi = 1.5) {
+                               x_offset = 0,
+                               x_lim_lo = 0,
+                               x_lim_hi = 1.5) {
   type <- match.arg(type)
 
   xintercept <- if (type == "RR") 1 else 0
@@ -650,7 +642,7 @@ sub_group_plot_ate <- function(.data, type = "RD", title, subtitle, xlab, ylab,
   out <- ggplot(
     data = .data,
     aes(
-      y = outcome,
+      y = group,
       x = .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]],
       xmin = `2.5 %`,
       xmax = `97.5 %`,
@@ -673,7 +665,7 @@ sub_group_plot_ate <- function(.data, type = "RD", title, subtitle, xlab, ylab,
       aes(x = x_offset, label = estimate_lab),
       size = 2,
       hjust = 0,
-      fontface = ifelse(.data$Estimate == "not reliable", "plain", "bold")
+      fontface = ifelse(.data$Estimate == "unreliable", "plain", "bold")
     ) +
     coord_cartesian(xlim = c(x_lim_lo, x_lim_hi)) +
     theme(

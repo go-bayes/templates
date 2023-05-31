@@ -836,7 +836,7 @@ group_tab <- function(df, type = c("RR", "RD")) {
         "positive",
         ifelse( `E[Y(1)]/E[Y(0)]` < 1 &
                   `97.5 %` < 1, "negative",
-                "caution")
+                "unreliable")
       ))) %>%
       rownames_to_column(var = "outcome") %>%
       mutate(
@@ -847,12 +847,10 @@ group_tab <- function(df, type = c("RR", "RD")) {
     out <- df %>%
       arrange(desc(`E[Y(1)]-E[Y(0)]`)) %>%
       dplyr::mutate(Estimate  = as.factor(ifelse(
-        `E[Y(1)]-E[Y(0)]` > 0 & `2.5 %` > 0,
-        "positive",
-        ifelse( `E[Y(1)]-E[Y(0)]` < 0 &
-                  `97.5 %` < 0, "negative",
-                "caution")
-      ))) %>%
+          `2.5 %` > 0 & `97.5 %` > 0,
+          "positive",
+          ifelse( `2.5 %` < 0 & `97.5 %` < 0, "negative", "unreliable")
+        ))) |>
       rownames_to_column(var = "outcome") %>%
       mutate(
         across(where(is.numeric), round, digits = 3),
@@ -943,7 +941,7 @@ group_plot_ate <- function(.data, type = "RD", title, subtitle, xlab, ylab,
       aes(x = x_offset, label = estimate_lab),
       size = 2,
       hjust = 0,
-      fontface = ifelse(.data$Estimate == "not reliable", "plain", "bold")
+      fontface = ifelse(.data$Estimate == "unreliable", "plain", "bold")
     ) +
     coord_cartesian(xlim = c(x_lim_lo, x_lim_hi)) +
     theme(
