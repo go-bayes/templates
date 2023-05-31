@@ -106,6 +106,66 @@ transition_table <- function(data, state_names = NULL) {
   list(explanation = explanation, table = markdown_table)
 }
 
+
+
+
+# interpretation of results -----------------------------------------------
+
+# takes an output from the sub_group_ate
+
+# create individual summaries
+# sum_e_d <- summary(sim_estimand_all_e_d)
+# sum_m_d <- summary(sim_estimand_all_m_d)
+#
+#
+# # create individual tables
+# tab_ed <- sub_tab_ate(sum_e_d, new_name = "NZ Euro Depression")
+# tab_md <- sub_tab_ate(sum_m_d, new_name = "Māori Depression")
+#
+#
+# # expand tables
+# plot_ed <- sub_group_tab(tab_ed, type= "RD")
+# plot_md <- sub_group_tab(tab_md, type= "RD")
+#
+# big_tab_d <- rbind(plot_ed,plot_md)
+#
+#
+# # table for anxiety outcome --format as "markdown" if you are using quarto documents
+# big_tab_d |>
+#   kbl(format="markdown")
+interpret_results_subgroup <- function(df, outcome, exposure) {
+  df <- df %>%
+    mutate(
+      report = case_when(
+        E_Val_bound > 1.2 & E_Val_bound < 2 ~ paste0(
+          "For the ", group, ", our results suggest that ", exposure, " may potentially influence ", outcome, ", with an estimated causal contrast value (E[Y(1)]-E[Y(0)]) of ", `E[Y(1)]-E[Y(0)]`, ".\n",
+          "The associated confidence interval, ranging from ", `2.5 %`, " to ", `97.5 %`, ", does not cross zero, providing more certainty in our estimate. ",
+          "The E-values indicate that any unmeasured confounder would need to have a minimum risk ratio of ", E_Value, " with both the treatment and outcome to explain away the observed effect, and a minimum risk ratio of ", E_Val_bound, " to shift the confidence interval to include the null effect. This suggests stronger confidence in our findings."
+        ),
+        E_Val_bound >= 2 ~ paste0(
+          "For the ", group, ", our results suggest that ", exposure, " may potentially influence ", outcome, ", with an estimated causal contrast value (E[Y(1)]-E[Y(0)]) of ", `E[Y(1)]-E[Y(0)]`, ".\n",
+          "The associated confidence interval, ranging from ", `2.5 %`, " to ", `97.5 %`, ", does not cross zero, providing more certainty in our estimate. ",
+          "With an observed risk ratio of RR = ", E_Value, ", an unmeasured confounder that was associated with both the outcome and the exposure by a risk ratio of ", E_Val_bound, "-fold each, above and beyond the measured confounders, could explain away the estimate, but weaker joint confounder associations could not; to move the confidence interval to include the null, an unmeasured confounder that was associated with the outcome and the exposure by a risk ratio of ", E_Val_bound, "-fold each could do so, but weaker joint confounder associations could not. Here we find stronger evidence that the result is robust to unmeasured confounding."
+        ),
+        E_Val_bound < 1.2 & E_Val_bound > 1 ~ paste0(
+          "For the ", group, ", our results suggest that ", exposure, " may potentially influence ", outcome, ", with an estimated causal contrast value (E[Y(1)]-E[Y(0)]) of ", `E[Y(1)]-E[Y(0)]`, ".\n",
+          "The associated confidence interval, ranging from ", `2.5 %`, " to ", `97.5 %`, ", does not cross zero, providing more certainty in our estimate. ",
+          "The E-values indicate that any unmeasured confounder would need to have a minimum risk ratio of ", E_Value, " with both the treatment and outcome to explain away the observed effect, and a minimum risk ratio of ", E_Val_bound, " to shift the confidence interval to include the null effect. This suggests we should interpret these findings with caution given uncertainty in the model."
+        ),
+        E_Val_bound == 1 ~ paste0(
+          "For the ", group, ", the data suggests a potential effect of ", exposure, " on ", outcome, ", with a causal contrast value of ", `E[Y(1)]-E[Y(0)]`, ".\n",
+          "However, the confidence interval for this estimate, ranging from ", `2.5 %`," to ", `97.5 %`, ", crosses zero, indicating considerable uncertainties. The E-values indicate that an unmeasured confounder that is associated with both the ", outcome, " and the ", exposure, " by a risk ratio of ", E_Value, " could explain away the observed associations, even after accounting for the measured confounders. ",
+          "This finding further reduces confidence in a true causal effect. Hence, while the estimates suggest a potential effect of ", exposure, " on ", outcome, " for the ", group, ", the substantial uncertainty and possible influence of unmeasured confounders mean these findings should be interpreted with caution."
+        )
+      )
+    )
+  return(df$report)
+}
+
+
+
+
+
 # Test the function
 # data <- data.frame(
 #   from = rep(1:4, each = 4),
