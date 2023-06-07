@@ -864,22 +864,23 @@ generate_date_tscore_string <- function(start_date, end_date) {
                  end_tscore))
 }
 
+# TEST
 # Define date pairs
-date_pairs <- list(c("31.12.2019", "27.02.2020"),
-                   c("28.02.2020", "25.03.2020"),
-                   c("26.03.2020", "27.04.2020"),
-                   c("28.04.2020", "13.05.2020"),
-                   c("14.05.2020", "08.06.2020"),
-                   c("09.06.2020", "11.08.2020"),
-                   c("12.08.2020", "30.08.2020"),
-                   c("31.08.2020", "21.09.2020"),
-                   c("22.09.2020", "07.10.2020"),
-                   c("08.10.2020", "30.09.2021"))
-
-# Generate strings for each date pair
-for (pair in date_pairs) {
-  start_date <- dmy(pair[1])
-  end_date <- dmy(pair[2])
-  print(generate_date_tscore_string(start_date, end_date))
-}
+# date_pairs <- list(c("31.12.2019", "27.02.2020"),
+#                    c("28.02.2020", "25.03.2020"),
+#                    c("26.03.2020", "27.04.2020"),
+#                    c("28.04.2020", "13.05.2020"),
+#                    c("14.05.2020", "08.06.2020"),
+#                    c("09.06.2020", "11.08.2020"),
+#                    c("12.08.2020", "30.08.2020"),
+#                    c("31.08.2020", "21.09.2020"),
+#                    c("22.09.2020", "07.10.2020"),
+#                    c("08.10.2020", "30.09.2021"))
+#
+# # Generate strings for each date pair
+# for (pair in date_pairs) {
+#   start_date <- dmy(pair[1])
+#   end_date <- dmy(pair[2])
+#   print(generate_date_tscore_string(start_date, end_date))
+# }
 
