@@ -409,7 +409,7 @@ match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
 
 
 # general function (work in progress)
-match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup = NULL, focal = NULL) {
+match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup = NULL, focal = NULL, sample_weights) {
   if (!requireNamespace("WeightIt", quietly = TRUE)) {
     stop("Package 'WeightIt' is required but not installed. Please install it using 'install.packages(\"WeightIt\")'.")
   }
@@ -435,7 +435,7 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
       estimand = estimand,
       stabilize = TRUE,
       method = method,
-      weights = sample_weights,
+      sample_weights = sample_weights,
       focal = focal
     )
   }
