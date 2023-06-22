@@ -334,7 +334,7 @@ create_filtered_wide_dataframes <- function(dat_wide, exposure_vars) {
 
 # impute data by exposure level of variable -------------------------------
 
-impute_and_combine <- function(list_df, m = 10, exclude_vars = c("t0_sample_frame", "id")) {
+impute_and_combine <- function(list_df, m = 10, exclude_vars = c("t0_sample_frame", "id", "t0_sample_origin_names_combined")) {
   if (!require(mice, quietly = TRUE) || !require(dplyr, quietly = TRUE) || !require(miceadds, quietly = TRUE)) {
     stop("The 'mice', 'dplyr', and 'miceadds' packages are required for this function to work. Please install them.")
   }
