@@ -435,6 +435,7 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
       estimand = estimand,
       stabilize = TRUE,
       method = method,
+      weights = sample_weights,
       focal = focal
     )
   }
