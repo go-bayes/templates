@@ -54,6 +54,10 @@ conflict_prefer("lead", "dplyr")
 conflict_prefer("lag", "dplyr")
 
 
+# reading
+#https://eprints.whiterose.ac.uk/169886/3/Robust%20SE.%20manuscript.%20in%20White%20Rose.pdf
+
+
 
 # functions for descriptive tables using libary(table1) # reduces clutter
 my_render_cont <- function(x) {
@@ -460,9 +464,223 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 
 
 
-# Compute the Average Treatement Effects (ATT and ATE)
+# latest double robust estimator and table --------------------------------
 
-# newest version allows for single dataframes
+
+# the causal contrast engine -- works faster and safely
+causal_contrast_engine <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
+                                   estimand = c("ATE", "ATT"), type = c("RR", "RD"), nsims = 200,
+                                   cores = parallel::detectCores(), family = "gaussian", weights = TRUE,
+                                   continuous_X = FALSE, splines = FALSE, vcov = vcov, verbose = FALSE) {
+
+  # Check if required packages are installed
+  required_packages <- c("clarify", "rlang", "glue", "parallel")
+  for (pkg in required_packages) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      stop(paste0("Package '", pkg, "' is needed for this function but is not installed"))
+    }
+  }
+
+  # check if the family argument is valid
+  if (is.character(family)) {
+    if (!family %in% c("gaussian", "binomial", "Gamma", "inverse.gaussian", "poisson", "quasibinomial", "quasipoisson", "quasi")) {
+      stop("Invalid 'family' argument. Please specify a valid family function.")
+    }
+    family_fun <- get(family, mode = "function", envir = parent.frame())
+  } else if (class(family) %in% c("family", "quasi")) {
+    family_fun <- family
+  } else {
+    stop("Invalid 'family' argument. Please specify a valid family function or character string.")
+  }
+
+  # build formula string
+  build_formula_str <- function(Y, X, continuous_X, splines, baseline_vars) {
+    if (continuous_X && splines) {
+      return(paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")"))
+    } else {
+      return(paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")"))
+    }
+  }
+
+  # fit models using the complete datasets (all imputations) or single dataset
+  if ("wimids" %in% class(df)) {
+    fits <- purrr::map(complete(df, "all"), function(d) {
+      weight_var <- if (weights) d$weights else NULL
+      formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
+      glm(as.formula(formula_str), weights = weight_var, family = family_fun, data = d)
+    })
+    sim.imp <- misim(fits, n = nsims, vcov = vcov)
+  } else {
+    weight_var <- if (weights) df$weights else NULL
+    formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
+    fit <- glm(as.formula(formula_str), weights = weight_var, family = family_fun, data = df)
+    sim.imp <- sim(fit, n = nsims, vcov = vcov)
+  }
+
+  if (continuous_X) {
+    estimand <- "ATE"
+    # warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
+  }
+
+  # Fit models using the complete datasets (all imputations)
+  fits <-  lapply(complete(df, "all"), function(d) {
+    # Set weights variable based on the value of 'weights' argument
+    weight_var <- if (weights) d$weights else NULL
+
+    # check if continuous_X and splines are both TRUE
+    if (continuous_X && splines) {
+      require(splines) # splines package
+      formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
+    } else {
+      formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+    }
+
+    glm(
+      as.formula(formula_str),
+      weights = if (!is.null(weight_var)) weight_var else NULL,
+      family = family,
+      data = d
+    )
+  })
+  # A `clarify_misim` object
+
+  sim.imp <- misim(fits, n = nsims, vcov = vcov)
+
+  # compute the average marginal effects
+
+  if (!continuous_X && estimand == "ATT") {
+    # build dynamic expression for subsetting
+    subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
+
+    sim_estimand <- sim_ame(sim.imp,
+                            var = X,
+                            subset = eval(subset_expr),
+                            cl = cores,
+                            verbose = FALSE)
+  } else {
+    sim_estimand <- sim_ame(sim.imp, var = X, cl = cores, verbose = FALSE)
+
+    # convert treat_0 and treat_1 into strings that represent the column names
+    treat_0_name <- paste0("`E[Y(", treat_0, ")]`")
+    treat_1_name <- paste0("`E[Y(", treat_1, ")]`")
+
+    if (type == "RR") {
+      rr_expression_str <- glue::glue("{treat_1_name}/{treat_0_name}")
+      rr_expression <- rlang::parse_expr(rr_expression_str)
+
+      # create a new column RR in the sim_estimand object
+      sim_estimand <- transform(sim_estimand, RR = eval(rr_expression))
+
+      # create a summary of sim_estimand
+      sim_estimand_summary <- summary(sim_estimand)
+
+      return(sim_estimand_summary)
+
+    } else if (type == "RD") {
+      rd_expression_str <- glue::glue("{treat_1_name} - {treat_0_name}")
+      rd_expression <- rlang::parse_expr(rd_expression_str)
+
+      # Create a new column RD in the sim_estimand object
+      sim_estimand <- transform(sim_estimand, RD = eval(rd_expression))
+
+      # Create a summary of sim_estimand
+      sim_estimand_summary <- summary(sim_estimand)
+
+      return(sim_estimand_summary)
+
+    } else {
+      stop("Invalid type. Please choose 'RR' or 'RD'")
+    }
+  }
+}
+
+# Table is much better - we drop a redundant term
+
+
+tab_ate_engine <- function(x, new_name, delta = 1, sd = 1, scale = c("RD","RR"), continuous_X = FALSE) {
+  require("EValue")
+  require(dplyr)
+
+  scale <- match.arg(scale)
+
+  x <- as.data.frame(x)
+
+  if (continuous_X) {
+    rownames(x) <- scale
+  } else{
+    x
+  }
+
+  out <- x %>%
+    dplyr::filter(row.names(x) == scale) %>%
+    dplyr::mutate(across(where(is.numeric), round, digits = 4))
+
+  if (scale == "RD") {
+    out <- out %>%
+      dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
+  } else {
+    out <- out %>%
+      dplyr::rename("E[Y(1)]/E[Y(0)]" = Estimate)
+  }
+
+  rownames(out)[1] <- paste0(new_name)
+  out <- as.data.frame(out)
+
+  if (scale == "RD") {
+    tab0 <- out |>  dplyr::mutate(standard_error = abs(`2.5 %` - `97.5 %`) / 3.92)
+    evalout <- as.data.frame(round(EValue::evalues.OLS(tab0[1, 1],
+                                                       se = tab0[1, 4],
+                                                       sd = sd,
+                                                       delta = delta,
+                                                       true = 0
+    ),
+    3
+    ))
+  } else {
+    evalout <- as.data.frame(round(EValue::evalues.RR(out[1, 1],
+                                                      lo = out[1, 2],
+                                                      hi = out[1, 3],
+                                                      true = 1
+    ),
+    3
+    ))
+  }
+
+  evalout2 <- subset(evalout[2, ])
+  evalout3 <- evalout2 |>
+    select_if( ~ !any(is.na(.)))
+  colnames(evalout3) <- c("E_Value", "E_Val_bound")
+
+  if (scale == "RD") {
+    tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
+  } else {
+    tab <- cbind.data.frame(out, evalout3)
+  }
+
+  return(tab)
+}
+
+
+
+
+# the estimator
+double_robust <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = "gaussian", weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC") {
+
+  # Call the causal_contrast_general() function
+  causal_contrast_result <- causal_contrast_engine(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov = "HC")
+
+  # Call the tab_ate() function with the result from causal_contrast()
+  tab_ate_result <- tab_ate_engine(causal_contrast_result, new_name, delta, sd, scale, continuous_X)
+
+  return(tab_ate_result)
+}
+
+
+
+
+##### OLDER VERSIONS HERE #####
+
+
 
 # causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
 #   # Load required packages
@@ -578,6 +796,7 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 #   }
 # }
 #https://eprints.whiterose.ac.uk/169886/3/Robust%20SE.%20manuscript.%20in%20White%20Rose.pdf
+
 causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = "HC") {
   # Load required packages
   require("clarify")
@@ -647,10 +866,6 @@ build_formula_str <- function(Y, X, continuous_X, splines, baseline_vars) {
     return(paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")"))
   }
 }
-
-
-
-
 
 
 # slightly older
@@ -741,7 +956,7 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
 
       return(out)
     }
-  }
+}
 
 
 # general contrast table --------------------------------------------------
@@ -820,6 +1035,7 @@ gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, trea
 
   return(tab_ate_result)
 }
+
 
 
 
