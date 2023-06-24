@@ -1123,7 +1123,7 @@ group_tab <- function(df, type = c("RR", "RD")) {
 
 # group_plot  -------------------------------------------------------------------
 
-group_plot_ate <- function(.data, type = "RD", title, subtitle, xlab, ylab,
+group_plot_ate <- function(.data, type = c("RD", "RR"), title, subtitle, xlab, ylab,
                            x_offset = 0,
                            x_lim_lo = 0,
                            x_lim_hi = 1.5) {
