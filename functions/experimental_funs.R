@@ -456,10 +456,10 @@ causal_contrast_x <-
       fits <-  lapply(complete(df, "all"), function(d) {
         fit_model(d, formula_str, family, weights)
       })
-      sim.imp <- misim(fits, n = nsims, vcov = "HC3")
+      sim.imp <- misim(fits, n = nsims, vcov = "HC")
     } else {
       fit <- fit_model(df, formula_str, family, weights)
-      sim.imp <- sim(fit, n = nsims, vcov = "HC3")
+      sim.imp <- sim(fit, n = nsims, vcov = "HC")
     }
 
     if (!continuous_X && estimand == "ATT") {
