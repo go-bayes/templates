@@ -790,6 +790,7 @@ double_robust <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, 
 
 
 # margot_plot -------------------------------------------------------------
+
 margot_plot <- function(.data,
                         type = c("RD", "RR"),
                         title,
@@ -812,8 +813,14 @@ margot_plot <- function(.data,
   xintercept <- if (type == "RR") 1 else 0
   x_axis_label <- if (type == "RR") "Causal Risk Ratio" else "Causal Risk Difference"
 
-  .data$Reliability <- ifelse(.data$`2.5 %` > 0 & .data$`97.5 %` > 0, "positive",
-                              ifelse(.data$`2.5 %` < 0 & .data$`97.5 %` < 0, "negative", "zero_crossing"))
+  # Define Reliability based on type
+  if(type == "RR") {
+    .data$Reliability <- ifelse(.data$`2.5 %` > 1 & .data$`97.5 %` > 1, "positive",
+                                ifelse(.data$`2.5 %` < 1 & .data$`97.5 %` < 1, "negative", "zero_crossing"))
+  } else {
+    .data$Reliability <- ifelse(.data$`2.5 %` > 0 & .data$`97.5 %` > 0, "positive",
+                                ifelse(.data$`2.5 %` < 0 & .data$`97.5 %` < 0, "negative", "zero_crossing"))
+  }
 
   out <- ggplot(
     data = .data,
@@ -847,6 +854,7 @@ margot_plot <- function(.data,
 
   return(out)
 }
+
 
 
 
