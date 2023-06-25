@@ -176,10 +176,6 @@ interpret_results_subgroup <- function(df, outcome, exposure) {
 # result <- transition_table(out, state_names)
 # result
 
-
-
-
-
 # Function to calculate ATE in SD units
 # generate_data <- function(N, prob_L1, A_on_Y, L_on_A, L_on_Y) {
 #   L1 <- rbinom(N, 1, prob_L1)
