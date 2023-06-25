@@ -790,7 +790,6 @@ double_robust <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, 
 
 
 # margot_plot -------------------------------------------------------------
-
 margot_plot <- function(.data,
                         type = c("RD", "RR"),
                         title,
@@ -803,16 +802,15 @@ margot_plot <- function(.data,
                         point_size = .5,
                         title_size = 12,
                         subtitle_size = 11,
-                        legend_text_size = 9,
-                        legend_title_size = 10) { #options can vary
-  type <- match.arg(type)
+                        legend_text_size = 8,
+                        legend_title_size = 10,
+                        x_offset = ifelse(type == "RR", 0, -.5),
+                        x_lim_lo = ifelse(type == "RR", .1, -.5),
+                        x_lim_hi = ifelse(type == "RR", 2.5, .4)) {
 
+  type <- match.arg(type)
   xintercept <- if (type == "RR") 1 else 0
   x_axis_label <- if (type == "RR") "Causal Risk Ratio" else "Causal Risk Difference"
-
-  x_offset <- ifelse(type == "RR", 0, -.4)
-  x_lim_lo <- ifelse(type == "RR", .1, -.4)
-  x_lim_hi <- ifelse(type == "RR", 2.5, .5)
 
   .data$Reliability <- ifelse(.data$`2.5 %` > 0 & .data$`97.5 %` > 0, "positive",
                               ifelse(.data$`2.5 %` < 0 & .data$`97.5 %` < 0, "negative", "zero_crossing"))
@@ -843,13 +841,12 @@ margot_plot <- function(.data,
       plot.title = element_text(face = "bold", size = title_size, hjust = 0),
       plot.subtitle = element_text(size = subtitle_size, hjust = 0),
       legend.text = element_text(size = legend_text_size),
-      legend.title = element_text(size = legend_title_size),  # added line
+      legend.title = element_text(size = legend_title_size),
       plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
     )
 
   return(out)
 }
-
 
 
 
