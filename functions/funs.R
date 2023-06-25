@@ -680,15 +680,15 @@ double_robust <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, 
 # margot_plot -------------------------------------------------------------
 
 margot_plot <- function(.data, type = c("RD", "RR"), title, subtitle, xlab, ylab,
-                           x_offset = 0,
-                           x_lim_lo = 0,
-                           x_lim_hi = 1.5,
-                           estimate_scale = 1,
-                           base_size = 10,
-                           text_size = 2,
-                           point_size = .5,
-                           title_size = 12,
-                           subtitle_size = 10) {
+                        x_offset = 0,
+                        x_lim_lo = 0,
+                        x_lim_hi = 1.5,
+                        estimate_scale = 1,
+                        base_size = 10,
+                        text_size = 2,
+                        point_size = .5,
+                        title_size = 12,
+                        subtitle_size = 10) {
 
   type <- match.arg(type)
 
@@ -721,7 +721,7 @@ margot_plot <- function(.data, type = c("RD", "RR"), title, subtitle, xlab, ylab
       subtitle = subtitle
     ) +
     geom_text(
-      aes(x = x_offset, label = estimate_lab * estimate_scale),
+      aes(x = x_offset * estimate_scale, label = estimate_lab),
       size = text_size,
       hjust = 0,
       fontface = ifelse(.data$Estimate == "unreliable", "plain", "bold")
