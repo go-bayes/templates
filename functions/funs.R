@@ -677,6 +677,72 @@ double_robust <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, 
 
 
 
+# margot_plot -------------------------------------------------------------
+
+margot_plot <- function(.data, type = c("RD", "RR"), title, subtitle, xlab, ylab,
+                           x_offset = 0,
+                           x_lim_lo = 0,
+                           x_lim_hi = 1.5,
+                           estimate_scale = 1,
+                           base_size = 10,
+                           text_size = 2,
+                           point_size = .5,
+                           title_size = 12,
+                           subtitle_size = 10) {
+
+  type <- match.arg(type)
+
+  xintercept <- if (type == "RR") 1 else 0
+  x_axis_label <- if (type == "RR") "Causal Risk Ratio" else "Causal Risk Difference"
+
+  .data$color_condition <- ifelse(.data$`2.5 %` > 0 & .data$`97.5 %` > 0, "positive",
+                                  ifelse(.data$`2.5 %` < 0 & .data$`97.5 %` < 0, "negative", "zero_crossing"))
+
+  out <- ggplot(
+    data = .data,
+    aes(
+      y = reorder(outcome, .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]]),
+      x = .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]],
+      xmin = `2.5 %`,
+      xmax = `97.5 %`,
+      group = Estimate,
+      color = color_condition
+    )
+  ) +
+    geom_errorbarh(aes(color = color_condition), height = .3, position = position_dodge(width = 0.3)) +
+    geom_point(size = point_size, position = position_dodge(width = 0.3)) +
+    geom_vline(xintercept = xintercept, linetype = "solid") +
+    theme_classic(base_size = base_size) +
+    scale_color_manual(values = c("positive" = "dodgerblue", "zero_crossing" = "black", "negative" = "orange")) +
+    labs(
+      x = x_axis_label,
+      y = " ",
+      title = title,
+      subtitle = subtitle
+    ) +
+    geom_text(
+      aes(x = x_offset, label = estimate_lab * estimate_scale),
+      size = text_size,
+      hjust = 0,
+      fontface = ifelse(.data$Estimate == "unreliable", "plain", "bold")
+    ) +
+    coord_cartesian(xlim = c(x_lim_lo, x_lim_hi)) +
+    theme(
+      legend.position = "top",
+      legend.direction = "horizontal",
+      plot.title = element_text(face = "bold", size = title_size, hjust = 0),
+      plot.subtitle = element_text(size = subtitle_size, hjust = 0),
+      plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
+    )
+
+  return(out)
+}
+
+
+
+
+
+
 
 ##### OLDER VERSIONS HERE #####
 
