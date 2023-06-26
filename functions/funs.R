@@ -811,7 +811,7 @@ margot_plot <- function(.data,
 
   type <- match.arg(type)
   xintercept <- if (type == "RR") 1 else 0
-  x_axis_label <- if (type == "RR") "Causal Risk Ratio" else "Causal Risk Difference"
+  x_axis_label <- if (type == "RR") "ATE Risk Ratio Scale" else "ATE Difference Scale"
 
   # Define Reliability based on type
   if(type == "RR") {
@@ -846,11 +846,12 @@ margot_plot <- function(.data,
       legend.position = "top",
       legend.direction = "horizontal",
       plot.title = element_text(face = "bold", size = title_size, hjust = 0),
-      plot.subtitle = element_text(size = subtitle_size, hjust = 0),
+      plot.subtitle = element_text(face = "bold", size = subtitle_size, hjust = 0),
       legend.text = element_text(size = legend_text_size),
       legend.title = element_text(size = legend_title_size),
       plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
     )
+
 
   return(out)
 }
