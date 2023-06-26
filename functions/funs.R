@@ -811,7 +811,7 @@ margot_plot <- function(.data,
 
   type <- match.arg(type)
   xintercept <- if (type == "RR") 1 else 0
-  x_axis_label <- if (type == "RR") "ATE Risk Ratio Scale" else "ATE Difference Scale"
+  x_axis_label <- if (type == "RR") "Causal Risk Ratio Scale" else "Causal Difference Scale"
 
   # Define Reliability based on type
   if(type == "RR") {
