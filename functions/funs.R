@@ -801,13 +801,13 @@ margot_plot <- function(.data,
                         base_size = 11,
                         text_size = 2.75,
                         point_size = .5,
-                        title_size = 12,
-                        subtitle_size = 11,
-                        legend_text_size = 8,
-                        legend_title_size = 10,
-                        x_offset = ifelse(type == "RR", 0, -.5),
-                        x_lim_lo = ifelse(type == "RR", .1, -.5),
-                        x_lim_hi = ifelse(type == "RR", 2.5, .4)) {
+                        title_size = 10,
+                        subtitle_size = 9,
+                        legend_text_size = 6,
+                        legend_title_size = 6,
+                        x_offset = ifelse(type == "RR", 0, -1.75),
+                        x_lim_lo = ifelse(type == "RR", .1, -1.75),
+                        x_lim_hi = ifelse(type == "RR", 2.5, 1)) {
 
   type <- match.arg(type)
   xintercept <- if (type == "RR") 1 else 0
