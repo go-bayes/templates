@@ -60,22 +60,19 @@ conflict_prefer("lag", "dplyr")
 
 
 # utilities
-# short cuts -- warning -- very limited flexibilty
-# Save in arrow format
-here_save_arrow <- function(df) {
-  name <- deparse(substitute(df))
+# short cuts
+here_save_arrow <- function(df, name) {
   arrow::write_parquet(df, here::here(push_mods, paste0(name, '')))
 }
 
-# Read in arrow format
+# read in arrow format
 here_read_arrow <- function(name) {
   df <- arrow::read_parquet(here::here(push_mods, paste0(name, '')))
   df
 }
 
 # saveRDS
-here_save <- function(df) {
-  name <- deparse(substitute(df))
+here_save <- function(df, name) {
   saveRDS(df, here::here(push_mods, paste0(name, '')))
 }
 
@@ -84,6 +81,8 @@ here_read <- function(name) {
   df <- readRDS(here::here(push_mods, paste0(name, '')))
   df
 }
+
+
 
 
 
