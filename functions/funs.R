@@ -1409,7 +1409,8 @@ library(glue)
 
 interpret_table <- function(df, causal_scale, estimand) {
   estimand_description <- case_when(
-    estimand %in% c("PATE", "ATE") ~ "Average Treatment Effect (ATE) represents the expected difference in outcomes between treatment and control groups for the whole population.",
+    estimand == "PATE" ~ "Population Average Treatment Effect (PATE) represents the expected difference in outcomes between treatment and control groups for the whole population.",
+    estimand == "ATE" ~ "Average Treatment Effect (ATE) represents the expected difference in outcomes between treatment and control groups for the whole population.",
     estimand %in% c("PATT", "ATT") ~ "Average Treatment Effect on the Treated (ATT) represents the expected difference in outcomes between treatment and control groups for the individuals who received the treatment.",
     estimand %in% "CATE" ~ "Conditional Average Treatment Effect (CATE) represents the expected difference in outcomes between treatment and control groups for a specific subgroup of individuals.",
     estimand %in% c("SATE", "SATT") ~ "Sample Average Treatment Effect (SATE) represents the expected difference in outcomes between treatment and control groups within the sampled population.",
