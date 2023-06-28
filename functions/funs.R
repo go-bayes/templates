@@ -1416,38 +1416,48 @@ interpret_table <- function(df, causal_scale, estimand) {
     TRUE ~ "The specified estimand is not recognized. Please use one of the following: 'PATE', 'PATT', 'ATE', 'ATT', 'CATE', 'SATE', 'SATT'."
   )
 
-  if (causal_scale == "risk_ratio") {
+  if (causal_scale == "causal_risk_ratio") {
     interpretation <- df %>%
       mutate(
         causal_contrast = round(`E[Y(1)]/E[Y(0)]`, 3),
         strength_of_evidence = case_when(
           E_Value >= 1.25 ~ "reliable evidence for causality",
-          E_Value >= 1.1 ~ "evidence for causality is not conclusive",
+          E_Value >= 1.1 ~ "evidence for causality is weak",
           TRUE ~ "no reliable evidence for causality"
         ),
-        outcome_interpretation = glue(
-          "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
-          "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
-          "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
+        outcome_interpretation = if_else(Estimate == "unreliable",
+                                         glue("For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+                                              "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+                                              "The E-value for this outcome confirms the causal contrast unreliable."
+                                         ),
+                                         glue("For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+                                              "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+                                              "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
+                                         )
         )
       )
-  } else if (causal_scale == "risk_difference") {
+  } else if (causal_scale == "causal_difference") {
     interpretation <- df %>%
       mutate(
         causal_contrast = round(`E[Y(1)]-E[Y(0)]`, 3),
         strength_of_evidence = case_when(
           E_Value >= 1.25 ~ "reliable evidence for causality",
-          E_Value >= 1.1 ~ "evidence for causality is not conclusive",
+          E_Value >= 1.1 ~ "evidence for causality is weak",
           TRUE ~ "no reliable evidence for causality"
         ),
-        outcome_interpretation = glue(
-          "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
-          "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
-          "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
+        outcome_interpretation = if_else(Estimate == "unreliable",
+                                         glue("For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+                                              "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+                                              "The E-value for this outcome confirms the causal contrast is unreliable."
+                                         ),
+                                         glue("For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+                                              "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+                                              "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
+                                         )
         )
       )
   } else {
-    stop("Invalid causal_scale argument. Please use 'risk_ratio' or 'risk_difference'.")
+    stop("Invalid causal_scale argument. Please use 'risk_ratio' or 'causal_difference'.")
   }
 
   result <- glue("Table interpretation:\n\n{estimand_description}\n\n{paste(interpretation$outcome_interpretation, collapse = '\n\n')}")
