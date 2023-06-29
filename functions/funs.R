@@ -532,7 +532,6 @@ match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
   require(WeightIt)
   require(MatchThem)
 
-
   # if not binary, we model the interacton to obtain better weights
   # not we can add survey weights at this point.
 
@@ -552,7 +551,58 @@ match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
 
 
 # general function (work in progress)
-match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup = NULL, focal = NULL, sample_weights) {
+# match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup = NULL, focal = NULL, sample_weights) {
+#   if (!requireNamespace("WeightIt", quietly = TRUE)) {
+#     stop("Package 'WeightIt' is required but not installed. Please install it using 'install.packages(\"WeightIt\")'.")
+#   }
+#
+#   if (!requireNamespace("MatchThem", quietly = TRUE)) {
+#     stop("Package 'MatchThem' is required but not installed. Please install it using 'install.packages(\"MatchThem\")'.")
+#   }
+#
+#   data_class <- class(data)
+#
+#   if (!data_class %in% c("mids", "data.frame")) {
+#     stop("Input data must be either 'mids' or 'data.frame' object")
+#   }
+#
+#   formula_str <- as.formula(paste(X, "~", paste(baseline_vars, collapse = "+")))
+#
+#   weight_function <- if (data_class == "mids") weightthem else weightit
+#
+#   perform_matching <- function(data_subset) {
+#     weight_function(
+#       formula = formula_str,
+#       data = data_subset,
+#       estimand = estimand,
+#       stabilize = TRUE,
+#       method = method,
+#       sample_weights = sample_weights,
+#       focal = focal
+#     )
+#   }
+#
+#   if (is.null(subgroup)) {
+#     dt_match <- perform_matching(data)
+#   } else {
+#     levels_list <- unique(data[[subgroup]])
+#
+#     dt_match_list <- lapply(levels_list, function(level) {
+#       data_subset <- data[data[[subgroup]] == level, ]
+#       perform_matching(data_subset)
+#     })
+#
+#     names(dt_match_list) <- levels_list
+#     dt_match <- dt_match_list
+#   }
+#
+#   return(dt_match)
+# }
+
+
+# new
+# general function (work in progress)
+match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup = NULL, focal = NULL, sample_weights = NULL) {
   if (!requireNamespace("WeightIt", quietly = TRUE)) {
     stop("Package 'WeightIt' is required but not installed. Please install it using 'install.packages(\"WeightIt\")'.")
   }
@@ -572,15 +622,26 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
   weight_function <- if (data_class == "mids") weightthem else weightit
 
   perform_matching <- function(data_subset) {
-    weight_function(
-      formula = formula_str,
-      data = data_subset,
-      estimand = estimand,
-      stabilize = TRUE,
-      method = method,
-      sample_weights = sample_weights,
-      focal = focal
-    )
+    if (is.null(sample_weights)) {
+      weight_function(
+        formula = formula_str,
+        data = data_subset,
+        estimand = estimand,
+        stabilize = TRUE,
+        method = method,
+        focal = focal
+      )
+    } else {
+      weight_function(
+        formula = formula_str,
+        data = data_subset,
+        estimand = estimand,
+        stabilize = TRUE,
+        method = method,
+        sample_weights = sample_weights,
+        focal = focal
+      )
+    }
   }
 
   if (is.null(subgroup)) {
@@ -599,8 +660,6 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 
   return(dt_match)
 }
-
-
 
 
 # latest double robust estimator and table --------------------------------
