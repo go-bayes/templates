@@ -84,6 +84,9 @@ here_read <- function(name) {
 
 
 
+# functions for making ordered factors from continuous data ---------------
+
+
 
 # for making variables with quantile breaks
 # notes:
@@ -91,7 +94,7 @@ here_read <- function(name) {
 #
 # The quantile() function (used here) also ignores NA values, but it calculates the quartile boundaries based on the actual values of the data. Then, the cut() function assigns each non-NA data point to a quartile based on these boundaries. If there are ties in the data that fall on a boundary, all of the tied values will be assigned to the same quartile. Note: this will typically result in quartiles that do not have an equal number of cases.
 
-create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
+create_ntile <- function(df, var_name, n_divisions = NULL) {
   # Check if n_divisions is NULL
   if (is.null(n_divisions)) {
     stop("Please specify the number of divisions.")
@@ -113,6 +116,39 @@ create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
   # Return the updated data frame
   return(df)
 }
+
+create_ordered_variable_custom <- function(df, var_name, breaks, labels) {
+  # Check if breaks and labels are NULL
+  if (is.null(breaks) || is.null(labels)) {
+    stop("Please specify the breaks and labels.")
+  }
+
+  # Check if breaks and labels have correct lengths
+  if (length(breaks) != length(labels) + 1) {
+    stop("The length of breaks should be one more than the length of labels.")
+  }
+
+  # Create the ordered factor variable with the new labels
+  df[[paste0(var_name, "_coarsen")]] <- cut(df[[var_name]],
+                                            breaks = breaks,
+                                            labels = labels,
+                                            include.lowest = TRUE,
+                                            right = FALSE,
+                                            ordered_result = TRUE)
+
+  # Return the updated data frame
+  return(df)
+}
+
+# example:
+# dt <- create_ordered_variable_custom(dt, "hours_work", c(10, 30, 41, Inf), c("[10_30)", "[30_41)", "[41_up]"))
+
+
+
+
+
+# functions for tables ----------------------------------------------------
+
 
 
 # functions for descriptive tables using libary(table1) # reduces clutter
