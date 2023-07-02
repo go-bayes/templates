@@ -92,16 +92,18 @@ here_read <- function(name) {
 # The quantile() function (used here) also ignores NA values, but it calculates the quartile boundaries based on the actual values of the data. Then, the cut() function assigns each non-NA data point to a quartile based on these boundaries. If there are ties in the data that fall on a boundary, all of the tied values will be assigned to the same quartile. Note: this will typically result in quartiles that do not have an equal number of cases.
 
 create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
-  # Check if n_divisions is NULL
+  # check if n_divisions is NULL
   if (is.null(n_divisions)) {
     stop("Please specify the number of divisions.")
   }
 
-  # Calculate quantile breaks
+  # calculate quantile breaks
   quantile_breaks <- quantile(df[[var_name]], probs = seq(0, 1, 1/n_divisions), na.rm = TRUE)
 
-  # Create labels based on the cut points in the desired format
-  cut_labels <- paste0(quantile_breaks[-length(quantile_breaks)], "_", quantile_breaks[-1])
+  # create labels based on the cut points in the desired format
+  cut_labels <- ifelse(1:length(quantile_breaks) == 1,
+                       paste0("[", quantile_breaks[-length(quantile_breaks)], ", ", quantile_breaks[-1], ")"),
+                       paste0("(", quantile_breaks[-length(quantile_breaks)], ", ", quantile_breaks[-1], ")"))
 
   # Create the ordered factor variable with the new labels
   df[[paste0(var_name, "_", n_divisions, "tile")]] <- cut(df[[var_name]],
@@ -110,10 +112,9 @@ create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
                                                           ordered_result = TRUE,
                                                           include.lowest = TRUE)
 
-  # Return the updated data frame
+  # return the updated data frame
   return(df)
 }
-
 
 
 # functions for descriptive tables using libary(table1) # reduces clutter
