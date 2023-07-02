@@ -85,6 +85,36 @@ here_read <- function(name) {
 
 
 
+# for making variables with quantile breaks
+# notes:
+# from tidyverse, the ntile() function assigns every non-NA data point to a quartile. If there are ties in the data, ntile() will assign some of the tied values to one quartile and the rest to another in order to achieve an equal number of cases in each quartile as closely as possible.
+#
+# The quantile() function (used here) also ignores NA values, but it calculates the quartile boundaries based on the actual values of the data. Then, the cut() function assigns each non-NA data point to a quartile based on these boundaries. If there are ties in the data that fall on a boundary, all of the tied values will be assigned to the same quartile. Note: this will typically result in quartiles that do not have an equal number of cases.
+
+create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
+  # Check if n_divisions is NULL
+  if (is.null(n_divisions)) {
+    stop("Please specify the number of divisions.")
+  }
+
+  # Calculate quantile breaks
+  quantile_breaks <- quantile(df[[var_name]], probs = seq(0, 1, 1/n_divisions), na.rm = TRUE)
+
+  # Create labels based on the cut points in the desired format
+  cut_labels <- paste0(quantile_breaks[-length(quantile_breaks)], "_", quantile_breaks[-1])
+
+  # Create the ordered factor variable with the new labels
+  df[[paste0(var_name, "_", n_divisions, "tile")]] <- cut(df[[var_name]],
+                                                          breaks = quantile_breaks,
+                                                          labels = cut_labels,
+                                                          ordered_result = TRUE,
+                                                          include.lowest = TRUE)
+
+  # Return the updated data frame
+  return(df)
+}
+
+
 
 # functions for descriptive tables using libary(table1) # reduces clutter
 my_render_cont <- function(x) {
