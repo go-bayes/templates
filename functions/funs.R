@@ -94,7 +94,7 @@ here_read <- function(name) {
 #
 # The quantile() function (used here) also ignores NA values, but it calculates the quartile boundaries based on the actual values of the data. Then, the cut() function assigns each non-NA data point to a quartile based on these boundaries. If there are ties in the data that fall on a boundary, all of the tied values will be assigned to the same quartile. Note: this will typically result in quartiles that do not have an equal number of cases.
 
-create_ordered_variable<- function(df, var_name, n_divisions = NULL) {
+create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
   # Check if n_divisions is NULL
   if (is.null(n_divisions)) {
     stop("Please specify the number of divisions.")
