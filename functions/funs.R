@@ -744,16 +744,22 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 # latest double robust estimator and table --------------------------------
 
 # experiment
-
+#
+# the causal contrast engine -- works faster and safely
 causal_contrast_engine_dev <- function(df, Y, X,
                                        baseline_vars = baseline_vars,
-                                       treat_0 = treat_0,
-                                       treat_1 = treat_1,
-                                  estimand = c("ATE", "ATT"), type = c("RR", "RD"), nsims = 200,
-                                  cores = parallel::detectCores(), family = "gaussian",
-                                  weights = TRUE,
-                                  continuous_X = FALSE, splines = FALSE, vcov = vcov, verbose = FALSE)
-  {
+                                   treat_0 = treat_0,
+                                   treat_1 = treat_1,
+                                   estimand = c("ATE", "ATT"),
+                                   type = c("RR", "RD"),
+                                   nsims = 200,
+                                   cores = parallel::detectCores(),
+                                   family = "gaussian",
+                                   weights = TRUE,
+                                   continuous_X = FALSE,
+                                   splines = FALSE,
+                                   vcov = "HC2",
+                                   verbose = FALSE) {
 
   # Check if required packages are installed
   required_packages <- c("clarify", "rlang", "glue", "parallel")
@@ -775,6 +781,14 @@ causal_contrast_engine_dev <- function(df, Y, X,
     stop("Invalid 'family' argument. Please specify a valid family function or character string.")
   }
 
+  if (continuous_X) {
+    estimand <- "ATE"
+    treat_0 <- as.numeric(treat_0)
+    treat_1 <- as.numeric(treat_1)
+    # warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
+  }
+
+
   # build formula string
   build_formula_str <- function(Y, X, continuous_X, splines, baseline_vars) {
     if (continuous_X && splines) {
@@ -787,13 +801,13 @@ causal_contrast_engine_dev <- function(df, Y, X,
   # fit models using the complete datasets (all imputations) or single dataset
   if ("wimids" %in% class(df)) {
     fits <- purrr::map(complete(df, "all"), function(d) {
-      weight_var <- if (weights) d[[weights_column]] else NULL
+      weight_var <- if (weights) d$weights else NULL
       formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
       glm(as.formula(formula_str), weights = weight_var, family = family_fun, data = d)
     })
     sim.imp <- misim(fits, n = nsims, vcov = vcov)
   } else {
-    weight_var <- if (weights) df[[weights_column]] else NULL
+    weight_var <- if (weights) df$weights else NULL
     formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
     fit <- glm(as.formula(formula_str), weights = weight_var, family = family_fun, data = df)
     sim.imp <- sim(fit, n = nsims, vcov = vcov)
@@ -807,7 +821,7 @@ causal_contrast_engine_dev <- function(df, Y, X,
   # Fit models using the complete datasets (all imputations)
   fits <-  lapply(complete(df, "all"), function(d) {
     # Set weights variable based on the value of 'weights' argument
-    weight_var <- if (weights) d[[weights_column]] else NULL
+    weight_var <- if (weights) d$weights else NULL
 
     # check if continuous_X and splines are both TRUE
     if (continuous_X && splines) {
@@ -1164,10 +1178,10 @@ tab_ate_engine <- function(x, new_name, delta = 1, sd = 1, scale = c("RD","RR"),
 
 
 # old
-double_robust <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = "gaussian", weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC2") {
+double_robust <- function(df, Y, X, new_name, baseline_vars = baseline_vars, treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = "gaussian", weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC2") {
 
   # Call the causal_contrast_general() function
-causal_contrast_result <- causal_contrast_engine(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov = vcov)
+causal_contrast_result <- causal_contrast_engine_dev(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov = vcov)
 
   # Call the tab_ate() function with the result from causal_contrast()
   tab_ate_result <- tab_ate_engine(causal_contrast_result, new_name, delta, sd, scale, continuous_X)
