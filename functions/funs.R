@@ -1084,31 +1084,6 @@ causal_contrast_engine <- function(df, Y, X, baseline_vars = baseline_vars,
 #
 
 
-tab_ate_engine_dev <- function(x, new_name, delta = 1, sd = 1, scale = c("RD","RR")) {
-  require("EValue")
-  require(dplyr)
-
-  scale <- match.arg(scale)
-
-  x <- as.data.frame(x)
-
-  out <- x %>%
-    dplyr::filter(row.names(x) == scale) %>%
-    dplyr::mutate(across(where(is.numeric), round, digits = 4))
-
-  if (scale == "RD") {
-    out <- out %>%
-      dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
-  } else {
-    out <- out %>%
-      dplyr::rename("E[Y(1)]/E[Y(0)]" = Estimate)
-  }
-
-  # Rest of the code here
-}
-
-
-
 
 # Table is much better - we drop a redundant term
 
