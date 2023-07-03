@@ -94,19 +94,32 @@ here_read <- function(name) {
 #
 # The quantile() function (used here) also ignores NA values, but it calculates the quartile boundaries based on the actual values of the data. Then, the cut() function assigns each non-NA data point to a quartile based on these boundaries. If there are ties in the data that fall on a boundary, all of the tied values will be assigned to the same quartile. Note: this will typically result in quartiles that do not have an equal number of cases.
 
+
+# calculate breakpoints by quantile.  in case break points are not unique add noise to obtain approximation
+
 create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
   # Check if n_divisions is NULL
   if (is.null(n_divisions)) {
     stop("Please specify the number of divisions.")
   }
 
-  # calculate quantile breaks
+  # Calculate quantile breaks
   quantile_breaks <- quantile(df[[var_name]], probs = seq(0, 1, 1/n_divisions), na.rm = TRUE)
 
-  # create labels based on the cut points in the desired format
-  cut_labels <- paste0("[", quantile_breaks[-length(quantile_breaks)], ", ", quantile_breaks[-length(quantile_breaks) + 1], ")")
+  # Check if breaks are unique
+  if (length(unique(quantile_breaks)) != length(quantile_breaks)) {
+    warning("Quantile breaks are not unique. The data may have many identical values, or there may be too many divisions for this data.")
+    # Adjust the breaks slightly
+    quantile_breaks <- sort(unique(quantile_breaks))
+    while (length(quantile_breaks) < n_divisions + 1) {
+      quantile_breaks <- c(quantile_breaks, max(df[[var_name]], na.rm = TRUE) + 1)
+    }
+  }
 
-  # create the ordered factor variable with the new labels
+  # Create labels based on the cut points in the desired format
+  cut_labels <- paste0("[", quantile_breaks[-length(quantile_breaks)], ", ", quantile_breaks[-1], ")")
+
+  # Create the ordered factor variable with the new labels
   df[[paste0(var_name, "_", n_divisions, "tile")]] <- cut(df[[var_name]],
                                                           breaks = quantile_breaks,
                                                           labels = cut_labels,
@@ -116,6 +129,7 @@ create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
   # Return the updated data frame
   return(df)
 }
+
 
 create_ordered_variable_custom <- function(df, var_name, breaks, labels) {
   # Check if breaks and labels are NULL
@@ -133,7 +147,7 @@ create_ordered_variable_custom <- function(df, var_name, breaks, labels) {
                                             breaks = breaks,
                                             labels = labels,
                                             include.lowest = TRUE,
-                                            right = FALSE,
+                                            right = TRUE,
                                             ordered_result = TRUE)
 
   # Return the updated data frame
@@ -665,7 +679,7 @@ match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
 # }
 
 
-# new
+
 # general function (work in progress)
 match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup = NULL, focal = NULL, sample_weights = NULL) {
   if (!requireNamespace("WeightIt", quietly = TRUE)) {
@@ -729,7 +743,138 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 
 # latest double robust estimator and table --------------------------------
 
-# old
+# experiment
+
+causal_contrast_engine_dev <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
+                                  estimand = c("ATE", "ATT"), type = c("RR", "RD"), nsims = 200,
+                                  cores = parallel::detectCores(), family = "gaussian",
+                                  weights = TRUE, weights_column = "weights",
+                                  continuous_X = FALSE, splines = FALSE, vcov = vcov, verbose = FALSE)
+  {
+
+  # Check if required packages are installed
+  required_packages <- c("clarify", "rlang", "glue", "parallel")
+  for (pkg in required_packages) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      stop(paste0("Package '", pkg, "' is needed for this function but is not installed"))
+    }
+  }
+
+  # check if the family argument is valid
+  if (is.character(family)) {
+    if (!family %in% c("gaussian", "binomial", "Gamma", "inverse.gaussian", "poisson", "quasibinomial", "quasipoisson", "quasi")) {
+      stop("Invalid 'family' argument. Please specify a valid family function.")
+    }
+    family_fun <- get(family, mode = "function", envir = parent.frame())
+  } else if (class(family) %in% c("family", "quasi")) {
+    family_fun <- family
+  } else {
+    stop("Invalid 'family' argument. Please specify a valid family function or character string.")
+  }
+
+  # build formula string
+  build_formula_str <- function(Y, X, continuous_X, splines, baseline_vars) {
+    if (continuous_X && splines) {
+      return(paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")"))
+    } else {
+      return(paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")"))
+    }
+  }
+
+  # fit models using the complete datasets (all imputations) or single dataset
+  if ("wimids" %in% class(df)) {
+    fits <- purrr::map(complete(df, "all"), function(d) {
+      weight_var <- if (weights) d[[weights_column]] else NULL
+      formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
+      glm(as.formula(formula_str), weights = weight_var, family = family_fun, data = d)
+    })
+    sim.imp <- misim(fits, n = nsims, vcov = vcov)
+  } else {
+    weight_var <- if (weights) df[[weights_column]] else NULL
+    formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
+    fit <- glm(as.formula(formula_str), weights = weight_var, family = family_fun, data = df)
+    sim.imp <- sim(fit, n = nsims, vcov = vcov)
+  }
+
+  if (continuous_X) {
+    estimand <- "ATE"
+    # warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
+  }
+
+  # Fit models using the complete datasets (all imputations)
+  fits <-  lapply(complete(df, "all"), function(d) {
+    # Set weights variable based on the value of 'weights' argument
+    weight_var <- if (weights) d[[weights_column]] else NULL
+
+    # check if continuous_X and splines are both TRUE
+    if (continuous_X && splines) {
+      require(splines) # splines package
+      formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
+    } else {
+      formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+    }
+
+    glm(
+      as.formula(formula_str),
+      weights = if (!is.null(weight_var)) weight_var else NULL,
+      family = family,
+      data = d
+    )
+  })
+  # A `clarify_misim` object
+
+  sim.imp <- misim(fits, n = nsims, vcov = vcov)
+
+  # compute the average marginal effects
+
+  if (!continuous_X && estimand == "ATT") {
+    # build dynamic expression for subsetting
+    subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
+
+    sim_estimand <- sim_ame(sim.imp,
+                            var = X,
+                            subset = eval(subset_expr),
+                            cl = cores,
+                            verbose = FALSE)
+  } else {
+    sim_estimand <- sim_ame(sim.imp, var = X, cl = cores, verbose = FALSE)
+
+    # convert treat_0 and treat_1 into strings that represent the column names
+    treat_0_name <- paste0("`E[Y(", treat_0, ")]`")
+    treat_1_name <- paste0("`E[Y(", treat_1, ")]`")
+
+    if (type == "RR") {
+      rr_expression_str <- glue::glue("{treat_1_name}/{treat_0_name}")
+      rr_expression <- rlang::parse_expr(rr_expression_str)
+
+      # create a new column RR in the sim_estimand object
+      sim_estimand <- transform(sim_estimand, RR = eval(rr_expression))
+
+      # create a summary of sim_estimand
+      sim_estimand_summary <- summary(sim_estimand)
+
+      return(sim_estimand_summary)
+
+    } else if (type == "RD") {
+      rd_expression_str <- glue::glue("{treat_1_name} - {treat_0_name}")
+      rd_expression <- rlang::parse_expr(rd_expression_str)
+
+      # Create a new column RD in the sim_estimand object
+      sim_estimand <- transform(sim_estimand, RD = eval(rd_expression))
+
+      # Create a summary of sim_estimand
+      sim_estimand_summary <- summary(sim_estimand)
+
+      return(sim_estimand_summary)
+
+    } else {
+      stop("Invalid type. Please choose 'RR' or 'RD'")
+    }
+  }
+}
+
+
+# Old
 # the causal contrast engine -- works faster and safely
 causal_contrast_engine <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
                                    estimand = c("ATE", "ATT"), type = c("RR", "RD"), nsims = 200,
@@ -981,10 +1126,10 @@ tab_ate_engine <- function(x, new_name, delta = 1, sd = 1, scale = c("RD","RR"),
 
 
 # old
-double_robust <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = "gaussian", weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC") {
+double_robust <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = "gaussian", weights = TRUE,  weights_column = "weights", continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC2") {
 
   # Call the causal_contrast_general() function
-  causal_contrast_result <- causal_contrast_engine(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov = "HC")
+causal_contrast_result <- causal_contrast_engine_dev(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, weights_column = weights_column, continuous_X, splines, vcov = vcov)
 
   # Call the tab_ate() function with the result from causal_contrast()
   tab_ate_result <- tab_ate_engine(causal_contrast_result, new_name, delta, sd, scale, continuous_X)
