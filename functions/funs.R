@@ -745,10 +745,13 @@ match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup
 
 # experiment
 
-causal_contrast_engine_dev <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
+causal_contrast_engine_dev <- function(df, Y, X,
+                                       baseline_vars = baseline_vars,
+                                       treat_0 = treat_0,
+                                       treat_1 = treat_1,
                                   estimand = c("ATE", "ATT"), type = c("RR", "RD"), nsims = 200,
                                   cores = parallel::detectCores(), family = "gaussian",
-                                  weights = TRUE, weights_column = "weights",
+                                  weights = TRUE,
                                   continuous_X = FALSE, splines = FALSE, vcov = vcov, verbose = FALSE)
   {
 
@@ -876,10 +879,19 @@ causal_contrast_engine_dev <- function(df, Y, X, baseline_vars = "1", treat_0 = 
 
 # Old
 # the causal contrast engine -- works faster and safely
-causal_contrast_engine <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1,
-                                   estimand = c("ATE", "ATT"), type = c("RR", "RD"), nsims = 200,
-                                   cores = parallel::detectCores(), family = "gaussian", weights = TRUE,
-                                   continuous_X = FALSE, splines = FALSE, vcov = vcov, verbose = FALSE) {
+causal_contrast_engine <- function(df, Y, X, baseline_vars = baseline_vars,
+                                   treat_0 = treat_0,
+                                   treat_1 = treat_1,
+                                   estimand = c("ATE", "ATT"),
+                                   type = c("RR", "RD"),
+                                   nsims = 200,
+                                   cores = parallel::detectCores(),
+                                   family = "gaussian",
+                                   weights = TRUE,
+                                   continuous_X = FALSE,
+                                   splines = FALSE,
+                                   vcov = "HC2",
+                                   verbose = FALSE) {
 
   # Check if required packages are installed
   required_packages <- c("clarify", "rlang", "glue", "parallel")
@@ -1126,10 +1138,10 @@ tab_ate_engine <- function(x, new_name, delta = 1, sd = 1, scale = c("RD","RR"),
 
 
 # old
-double_robust <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = "gaussian", weights = TRUE,  weights_column = "weights", continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC2") {
+double_robust <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = "gaussian", weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC2") {
 
   # Call the causal_contrast_general() function
-causal_contrast_result <- causal_contrast_engine_dev(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, weights_column = weights_column, continuous_X, splines, vcov = vcov)
+causal_contrast_result <- causal_contrast_engine(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov = vcov)
 
   # Call the tab_ate() function with the result from causal_contrast()
   tab_ate_result <- tab_ate_engine(causal_contrast_result, new_name, delta, sd, scale, continuous_X)
@@ -1578,9 +1590,9 @@ tab_ate <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continu
 
 # combine causal contrast and tab ate -------------------------------------
 
-gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = quasibinomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC") {
+gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = quasibinomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC2") {
   # Call the causal_contrast_general() function
-  causal_contrast_result <- causal_contrast(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov = "HC")
+  causal_contrast_result <- causal_contrast(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov = vcov)
 
   # Call the tab_ate() function with the result from causal_contrast()
   tab_ate_result <- tab_ate(causal_contrast_result, new_name, delta, sd, type, continuous_X)
