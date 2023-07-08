@@ -1151,6 +1151,7 @@ margot_plot <- function(.data,
                         x_lim_lo = ifelse(type == "RR", .1, -1.75),
                         x_lim_hi = ifelse(type == "RR", 2.5, 1)) {
 
+
   type <- match.arg(type)
   xintercept <- if (type == "RR") 1 else 0
   x_axis_label <- if (type == "RR") "Causal Risk Ratio Scale" else "Causal Difference Scale"
@@ -1573,7 +1574,7 @@ group_tab <- function(df, type = c("RR", "RD")) {
 
   if (type == "RR") {
     out <- df %>%
-      arrange(desc(`E[Y(1)]/E[Y(0)]`)) %>%
+      arrange(desc(E_Value)) %>%
       dplyr::mutate(Estimate  = as.factor(ifelse(
         `E[Y(1)]/E[Y(0)]` > 1 & `2.5 %` > 1,
         "positive",
@@ -1588,7 +1589,7 @@ group_tab <- function(df, type = c("RR", "RD")) {
       )
   } else {
     out <- df %>%
-      arrange(desc(`E[Y(1)]-E[Y(0)]`)) %>%
+      arrange(desc(E_Value)) %>%
       dplyr::mutate(Estimate  = as.factor(ifelse(
           `2.5 %` > 0 & `97.5 %` > 0,
           "positive",
