@@ -1640,6 +1640,61 @@ gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, trea
 
 
 # group tab ---------------------------------------------------------------
+
+# experimental version for LMTP
+group_tab_2 <- function(df, type = c("RR", "RD")) {
+  type <- match.arg(type)
+
+  require(dplyr)
+
+  E_value_exists <- "E_Value" %in% names(df)
+  E_Val_bound_exists <- "E_Val_bound" %in% names(df)
+
+  if (type == "RR") {
+    out <- df %>%
+      mutate(abs_dist = abs(`E[Y(1)]/E[Y(0)]` - 1)) %>%
+      arrange(desc(abs_dist)) %>%
+      dplyr::mutate(Estimate  = as.factor(ifelse(
+        `E[Y(1)]/E[Y(0)]` > 1 & `2.5 %` > 1,
+        "positive",
+        ifelse( `E[Y(1)]/E[Y(0)]` < 1 &
+                  `97.5 %` < 1, "negative",
+                "unreliable")
+      ))) %>%
+      rownames_to_column(var = "outcome") %>%
+      mutate(
+        across(where(is.numeric), round, digits = 3),
+        estimate_lab = ifelse(
+          E_value_exists & E_Val_bound_exists,
+          paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]"),
+          paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")")
+        )
+      )
+  } else {
+    out <- df %>%
+      mutate(abs_dist = abs(`2.5 %`)) %>%
+      arrange(desc(abs_dist)) %>%
+      dplyr::mutate(Estimate  = as.factor(ifelse(
+        `2.5 %` > 0 & `97.5 %` > 0,
+        "positive",
+        ifelse( `2.5 %` < 0 & `97.5 %` < 0, "negative", "unreliable")
+      ))) %>%
+      rownames_to_column(var = "outcome") %>%
+      mutate(
+        across(where(is.numeric), round, digits = 3),
+        estimate_lab = ifelse(
+          E_value_exists & E_Val_bound_exists,
+          paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]"),
+          paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")")
+        )
+      )
+  }
+
+  return(out)
+}
+
+
+# curent version
 group_tab <- function(df, type = c("RR", "RD")) {
   type <- match.arg(type)
 
