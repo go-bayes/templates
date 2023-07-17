@@ -1559,6 +1559,37 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
 }
 
 
+# format table for tmle outputs
+format_tab_tmle <- function(tmtp_output, scale = c("RD", "RR"), new_name = "character_string") {
+
+  scale <- match.arg(scale)
+
+  require(dplyr)
+
+  tab_tmle <- cbind.data.frame(
+    tmtp_output$theta,
+    tmtp_output$standard_error,
+    tmtp_output$low,
+    tmtp_output$high
+  )
+
+  if (scale == "RD") {
+    colnames(tab_tmle) <- c("E[Y(1)]-E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
+  } else if (scale == "RR") {
+    colnames(tab_tmle) <- c("E[Y(1)]/E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
+  }
+
+  tab_tmle_round <- tab_tmle |>
+    dplyr::mutate(across(where(is.numeric), round, digits = 4))
+
+  rownames(tab_tmle_round)[1] <- paste0(new_name)
+
+  return(tab_tmle_round)
+}
+
+
+
+
 # general contrast table --------------------------------------------------
 
 tab_ate <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continuous_X = FALSE) {
