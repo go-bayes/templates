@@ -87,6 +87,96 @@ here_read <- function(name) {
 
 
 
+
+# format for lmtp table ---------------------------------------------------
+
+format_tab_tmle <- function(tmtp_output, scale = c("RD", "RR"), new_name = "character_string") {
+
+  scale <- match.arg(scale)
+
+  require(dplyr)
+
+  tab_tmle <- cbind.data.frame(
+    tmtp_output$theta,
+    tmtp_output$standard_error,
+    tmtp_output$low,
+    tmtp_output$high
+  )
+
+  if (scale == "RD") {
+    colnames(tab_tmle) <- c("E[Y(1)]-E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
+  } else if (scale == "RR") {
+    colnames(tab_tmle) <- c("E[Y(1)]/E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
+  }
+
+  tab_tmle_round <- tab_tmle |>
+    dplyr::mutate(across(where(is.numeric), round, digits = 4))
+
+  rownames(tab_tmle_round)[1] <- paste0(new_name)
+
+  return(tab_tmle_round)
+}
+
+
+
+
+# experimental version group tab for lmtp ---------------------------------
+
+
+# group tab ---------------------------------------------------------------
+
+# experimental version for LMTP # should work for all graphs
+group_tab_2 <- function(df, scale = c("RR", "RD")) {
+  scale <- match.arg(scale)
+
+  require(dplyr)
+
+  E_value_exists <- "E_Value" %in% names(df)
+  E_Val_bound_exists <- "E_Val_bound" %in% names(df)
+
+  if (type == "RR") {
+    out <- df %>%
+      mutate(abs_dist = abs(`E[Y(1)]/E[Y(0)]` - 1)) %>%
+      arrange(desc(abs_dist)) %>%
+      dplyr::mutate(Estimate  = as.factor(ifelse(
+        `E[Y(1)]/E[Y(0)]` > 1 & `2.5 %` > 1,
+        "positive",
+        ifelse( `E[Y(1)]/E[Y(0)]` < 1 &
+                  `97.5 %` < 1, "negative",
+                "unreliable")
+      ))) %>%
+      rownames_to_column(var = "outcome") %>%
+      mutate(
+        across(where(is.numeric), round, digits = 3),
+        estimate_lab = ifelse(
+          E_value_exists & E_Val_bound_exists,
+          paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]"),
+          paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")")
+        )
+      )
+  } else {
+    out <- df %>%
+      mutate(abs_dist = abs(`2.5 %`)) %>%
+      arrange(desc(abs_dist)) %>%
+      dplyr::mutate(Estimate  = as.factor(ifelse(
+        `2.5 %` > 0 & `97.5 %` > 0,
+        "positive",
+        ifelse( `2.5 %` < 0 & `97.5 %` < 0, "negative", "unreliable")
+      ))) %>%
+      rownames_to_column(var = "outcome") %>%
+      mutate(
+        across(where(is.numeric), round, digits = 3),
+        estimate_lab = ifelse(
+          E_value_exists & E_Val_bound_exists,
+          paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]"),
+          paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")")
+        )
+      )
+  }
+
+  return(out)
+}
+
 # functions for making ordered factors from continuous data ---------------
 
 
@@ -1672,60 +1762,6 @@ gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, trea
 
 
 
-
-# group tab ---------------------------------------------------------------
-
-# experimental version for LMTP # should work for all graphs
-group_tab_2 <- function(df, scale = c("RR", "RD")) {
-  scale <- match.arg(scale)
-
-  require(dplyr)
-
-  E_value_exists <- "E_Value" %in% names(df)
-  E_Val_bound_exists <- "E_Val_bound" %in% names(df)
-
-  if (type == "RR") {
-    out <- df %>%
-      mutate(abs_dist = abs(`E[Y(1)]/E[Y(0)]` - 1)) %>%
-      arrange(desc(abs_dist)) %>%
-      dplyr::mutate(Estimate  = as.factor(ifelse(
-        `E[Y(1)]/E[Y(0)]` > 1 & `2.5 %` > 1,
-        "positive",
-        ifelse( `E[Y(1)]/E[Y(0)]` < 1 &
-                  `97.5 %` < 1, "negative",
-                "unreliable")
-      ))) %>%
-      rownames_to_column(var = "outcome") %>%
-      mutate(
-        across(where(is.numeric), round, digits = 3),
-        estimate_lab = ifelse(
-          E_value_exists & E_Val_bound_exists,
-          paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]"),
-          paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")")
-        )
-      )
-  } else {
-    out <- df %>%
-      mutate(abs_dist = abs(`2.5 %`)) %>%
-      arrange(desc(abs_dist)) %>%
-      dplyr::mutate(Estimate  = as.factor(ifelse(
-        `2.5 %` > 0 & `97.5 %` > 0,
-        "positive",
-        ifelse( `2.5 %` < 0 & `97.5 %` < 0, "negative", "unreliable")
-      ))) %>%
-      rownames_to_column(var = "outcome") %>%
-      mutate(
-        across(where(is.numeric), round, digits = 3),
-        estimate_lab = ifelse(
-          E_value_exists & E_Val_bound_exists,
-          paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]"),
-          paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")")
-        )
-      )
-  }
-
-  return(out)
-}
 
 
 # curent version
