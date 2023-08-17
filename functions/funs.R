@@ -39,7 +39,10 @@ packages <- c(
   "msm", # for validating change in the exposure
   "kableExtra",
   "naniar", # for inspecting missing data
-  "miceadds"
+  "miceadds",
+  "lmtp", # the best! time-varying causal identification using superlearner
+  "SuperLearner", # for lmtp
+  "xgboost" # for lmtp
 )
 
 # install packages
