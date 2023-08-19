@@ -217,9 +217,7 @@ group_tab_2 <- function(df, scale = c("RR", "RD")) {
 #
 # The quantile() function (used here) also ignores NA values, but it calculates the quartile boundaries based on the actual values of the data. Then, the cut() function assigns each non-NA data point to a quartile based on these boundaries. If there are ties in the data that fall on a boundary, all of the tied values will be assigned to the same quartile. Note: this will typically result in quartiles that do not have an equal number of cases.
 
-
-# calculate breakpoints by quantile.  in case break points are not unique add noise to obtain approximation
-
+# new
 create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
   # Check if n_divisions is NULL
   if (is.null(n_divisions)) {
@@ -240,7 +238,7 @@ create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
   }
 
   # Create labels based on the cut points in the desired format
-  cut_labels <- paste0("[", quantile_breaks[-length(quantile_breaks)], ", ", quantile_breaks[-1], ")")
+  cut_labels <- paste0("tile_", 1:n_divisions)
 
   # Create the ordered factor variable with the new labels
   df[[paste0(var_name, "_", n_divisions, "tile")]] <- cut(df[[var_name]],
@@ -252,6 +250,42 @@ create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
   # Return the updated data frame
   return(df)
 }
+
+# old
+# calculate breakpoints by quantile.  in case break points are not unique add noise to obtain approximation
+#
+# create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
+#   # Check if n_divisions is NULL
+#   if (is.null(n_divisions)) {
+#     stop("Please specify the number of divisions.")
+#   }
+#
+#   # Calculate quantile breaks
+#   quantile_breaks <- quantile(df[[var_name]], probs = seq(0, 1, 1/n_divisions), na.rm = TRUE)
+#
+#   # Check if breaks are unique
+#   if (length(unique(quantile_breaks)) != length(quantile_breaks)) {
+#     warning("Quantile breaks are not unique. The data may have many identical values, or there may be too many divisions for this data.")
+#     # Adjust the breaks slightly
+#     quantile_breaks <- sort(unique(quantile_breaks))
+#     while (length(quantile_breaks) < n_divisions + 1) {
+#       quantile_breaks <- c(quantile_breaks, max(df[[var_name]], na.rm = TRUE) + 1)
+#     }
+#   }
+#
+#   # Create labels based on the cut points in the desired format
+#   cut_labels <- paste0("[", quantile_breaks[-length(quantile_breaks)], ", ", quantile_breaks[-1], ")")
+#
+#   # Create the ordered factor variable with the new labels
+#   df[[paste0(var_name, "_", n_divisions, "tile")]] <- cut(df[[var_name]],
+#                                                           breaks = quantile_breaks,
+#                                                           labels = cut_labels,
+#                                                           ordered_result = TRUE,
+#                                                           include.lowest = TRUE)
+#
+#   # Return the updated data frame
+#   return(df)
+# }
 
 
 create_ordered_variable_custom <- function(df, var_name, breaks, labels) {
@@ -445,6 +479,101 @@ margot_wide <- function(.data, baseline_vars, exposure_var, outcome_vars) {
 
   return(data.frame(wide_data_ordered)) # Ensure output is a data.frame
 }
+
+
+
+
+# impute baseline for lmtp ------------------------------------------------
+
+
+
+margot_wide_impute_baseline <- function(.data, baseline_vars, exposure_var, outcome_vars) {
+  require(tidyverse)
+  require(mice)
+
+  # add a check for unused levels of factor variables
+  lapply(.data, function(column) {
+    if (is.factor(column) && any(table(column) == 0)) {
+      stop("There are unused levels in the factor variable: ", deparse(substitute(column)))
+    }
+  })
+
+  # add the 'time' column to the data
+  data_with_time <- .data %>%
+    mutate(time = as.numeric(wave) - 1) %>%
+    arrange(id, time)
+
+  # Filter the data based on the time condition
+  data_filtered <- data_with_time %>%
+    filter(time >= 0)
+
+  # Create the wide data frame
+  wide_data <- data_filtered %>%
+    pivot_wider(
+      id_cols = id,
+      names_from = time,
+      values_from = -c(id, time),
+      names_glue = "t{time}_{.value}",
+      names_prefix = "t"
+    )
+
+  # Identify the columns starting with "t0_" that need to be imputed
+  t0_columns <- grepl("^t0_", names(wide_data)) & names(wide_data) %in% paste0("t0_", c(baseline_vars, exposure_var, outcome_vars))
+
+  # Apply the imputation
+  t0_data <- wide_data[, t0_columns, drop=FALSE]
+  imputed_data <- mice(t0_data, method='pmm', m=1)
+  complete_t0_data <- complete(imputed_data, 1)
+
+  # Merge the imputed data back into the wide data
+  wide_data[, t0_columns] <- complete_t0_data
+
+  # Define a custom function to filter columns based on conditions
+  custom_col_filter <- function(col_name) {
+    if (startsWith(col_name, "t0_")) {
+      return(col_name %in% c(
+        paste0("t0_", baseline_vars),
+        paste0("t0_", exposure_var),
+        paste0("t0_", outcome_vars)
+      ))
+    } else if (startsWith(col_name, "t1_")) {
+      return(col_name %in% paste0("t1_", exposure_var))
+    } else if (grepl("^t[2-9][0-9]*_", col_name)) {
+      return(col_name %in% paste0("t2_", outcome_vars))
+    } else {
+      return(FALSE)
+    }
+  }
+
+  # Apply the custom function to select the desired columns
+  wide_data_filtered <- wide_data %>%
+    dplyr::select(id, which(sapply(colnames(wide_data), custom_col_filter))) %>%
+    dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
+    arrange(id)
+
+  # Extract unique time values from column names
+  time_values <- gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
+  time_values <- time_values[grepl("^[0-9]+$", time_values)]
+  time_values <- unique(as.numeric(time_values))
+  time_values <- time_values[order(time_values)]
+
+  # Relocate columns iteratively
+  for (i in 2:(length(time_values) - 1)) {
+    wide_data_filtered <- wide_data_filtered %>%
+      dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
+  }
+
+  # Reorder t0_ columns
+  t0_column_order <- c(paste0("t0_", baseline_vars), paste0("t0_", exposure_var), paste0("t0_", outcome_vars))
+  wide_data_ordered <- wide_data_filtered %>%
+    select(id, t0_column_order, everything())
+
+  return(data.frame(wide_data_ordered)) # Ensure output is a data.frame
+
+  return(data.frame(wide_data_ordered)) # Ensure output is a data.frame
+}
+
+
 
 # # older
 # margot_wide <- function(dat_long, baseline_vars, exposure_var, outcome_vars, exclude_vars = c()) {
