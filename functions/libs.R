@@ -35,7 +35,7 @@ library("Amelia") # multiple imputation
 library("miceadds") # convert amelia to mice objects and vice versa
 library("fs")
 library("arrow")
-
+library("lmtp"). # lmtps for inference
 #conflict_prefer("pool", "mice")
 #conflict_prefer("filter", "dplyr")
 #conflict_prefer("select", "dplyr")

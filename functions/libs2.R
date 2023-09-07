@@ -111,7 +111,7 @@ packages <- c(
   "sandwich",
   "lubridate",
   "glue", # for reports
-  "DeclareDesign",  # for simulation and modelling of design
+  "DeclareDesign",  #for simulation and modelling of design
   "fabricatr", # for simulation and modelling of design
   "randomizr", # for simulation and modelling of design
   "estimatr", # for simulation and modelling of design/ robust errors

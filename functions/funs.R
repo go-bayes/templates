@@ -42,7 +42,9 @@ packages <- c(
   "miceadds",
   "lmtp", # the best! time-varying causal identification using superlearner
   "SuperLearner", # for lmtp
-  "xgboost" # for lmtp
+  "xgboost",# for lmtp
+  "progressr" # progress bars
+
 )
 
 # install packages
@@ -490,6 +492,8 @@ margot_wide <- function(.data, baseline_vars, exposure_var, outcome_vars) {
 margot_wide_impute_baseline <- function(.data, baseline_vars, exposure_var, outcome_vars) {
   require(tidyverse)
   require(mice)
+  library(progressr)
+
 
   # add a check for unused levels of factor variables
   lapply(.data, function(column) {
