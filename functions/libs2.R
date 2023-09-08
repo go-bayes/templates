@@ -115,7 +115,13 @@ packages <- c(
   "fabricatr", # for simulation and modelling of design
   "randomizr", # for simulation and modelling of design
   "estimatr", # for simulation and modelling of design/ robust errors
-  "DesignLibrary" # for simulation and modelling of design
+  "DesignLibrary",
+  "future", # multicore processing
+  "future.apply",  # multicore processing
+  "xgboost", #ML
+  "ranger",#ML
+  "earth",#ML
+  # for simulation and modelling of design
   # see: https://declaredesign.org/getting-started.html
 )
 
@@ -145,6 +151,11 @@ if (!require(CMAverse)) {
 # targeted max liklihood
 if (!require(lmtp)) {
   devtools::install_github("nt-williams/lmtp@sl3")
+}
+
+
+if (!require(SuperLearner)) {
+  remotes::install_github("ecpolley/SuperLearner")
 }
 
 #devtools::install_github("nt-williams/lmtp@sl3")
