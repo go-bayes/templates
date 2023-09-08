@@ -120,7 +120,7 @@ packages <- c(
   "future.apply",  # multicore processing
   "xgboost", #ML
   "ranger",#ML
-  "earth",#ML
+  "earth"#ML
   # for simulation and modelling of design
   # see: https://declaredesign.org/getting-started.html
 )
