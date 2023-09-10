@@ -120,7 +120,8 @@ packages <- c(
   "future.apply",  # multicore processing
   "xgboost", #ML
   "ranger",#ML
-  "earth"#ML
+  "earth",#ML
+  "glmnet"
   # for simulation and modelling of design
   # see: https://declaredesign.org/getting-started.html
 )
@@ -144,9 +145,6 @@ if (!require(cmdstanr)) {
   install_cmdstan()
 }
 
-if (!require(CMAverse)) {
-  devtools::install_github("BS1125/CMAverse")
-}
 
 # targeted max liklihood
 if (!require(lmtp)) {
@@ -160,10 +158,11 @@ if (!require(SuperLearner)) {
 
 #devtools::install_github("nt-williams/lmtp@sl3")
 
+# outdated
 # for missing data imputation and gcomputation on the fly
-if (!require(gFormulaMI)) {
-  devtools::install_github("jwb133/gFormulaMI")
-}
+# if (!require(gFormulaMI)) {
+#   devtools::install_github("jwb133/gFormulaMI")
+# }
 
 # brms options
 
@@ -176,10 +175,10 @@ options(mc.cores = parallel::detectCores ()) # use all course
 
 ## user needs to configure cmdstanr, instructions: https://mc-stan.org/cmdstanr/
 
-if (!require(lazerhawk)) {
-  devtools::install_github('m-clark/lazerhawk')
-  install_cmdstan()
-}
+# if (!require(lazerhawk)) {
+#   devtools::install_github('m-clark/lazerhawk')
+#   install_cmdstan()
+# }
 
 
 ## preferences
