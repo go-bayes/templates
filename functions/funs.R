@@ -90,19 +90,19 @@ here_read <- function(name) {
 
 
 # select and rename function for simplifying lmtp -------------------------
-
-select_and_rename_cols <- function(names_base, baseline_vars, outcome) {
-  # Select columns that match with baseline_vars
-  selected_cols <- names_base[grepl(paste(baseline_vars, collapse = "|"), names_base)]
-
-  # Rename the outcome variable prefix from t2 to t0
-  outcome_renamed <- gsub("t2_", "t0_", outcome)
-
-  # Append the renamed outcome to selected columns
-  final_cols <- c(selected_cols, outcome_renamed)
-
-  return(final_cols)
-}
+#
+# select_and_rename_cols <- function(names_base, baseline_vars, outcome) {
+#   # Select columns that match with baseline_vars
+#   selected_cols <- names_base[grepl(paste(baseline_vars, collapse = "|"), names_base)]
+#
+#   # Rename the outcome variable prefix from t2 to t0
+#   outcome_renamed <- gsub("t2_", "t0_", outcome)
+#
+#   # Append the renamed outcome to selected columns
+#   final_cols <- c(selected_cols, outcome_renamed)
+#
+#   return(final_cols)
+# }
 
 # example usage
 # names_base <- c("t0_eth_cat", "t0_sample_origin", "t0_total_siblings_factor", "t0_smoker_binary", "t0_male_z")
