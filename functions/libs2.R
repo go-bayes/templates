@@ -83,10 +83,10 @@ packages <- c(
   "formula.tools",
   "ggpubr",
   "lme4",
-  "rstan",
-  "cmdstanr",
+  #"rstan",
+  #"cmdstanr",
   "geepack",
-  "brms",
+  #"brms",
   "gt",
   "ggdist",
   "ggokabeito",
@@ -140,10 +140,10 @@ if (!require(CMAverse)) {
 
 # install.packages("remotes")
 
-if (!require(cmdstanr)) {
-  remotes::install_github("stan-dev/cmdstanr")
-  install_cmdstan()
-}
+# if (!require(cmdstanr)) {
+#   remotes::install_github("stan-dev/cmdstanr")
+#   install_cmdstan()
+# }
 
 
 # targeted max liklihood
@@ -164,14 +164,16 @@ if (!require(SuperLearner)) {
 #   devtools::install_github("jwb133/gFormulaMI")
 # }
 
-# brms options
+# brms options uncomment if using
 
-rstan_options(auto_write = TRUE) # bayesian estimation
-options(mc.cores = parallel::detectCores ()) # use all course
-theme_set(theme_pubclean()) # nice theme
-## settings for BMRS
-rstan_options(auto_write = TRUE) # bayesian estimation
-options(mc.cores = parallel::detectCores ()) # use all course
+# rstan_options(auto_write = TRUE) # bayesian estimation
+# options(mc.cores = parallel::detectCores ()) # use all course
+# theme_set(theme_pubclean()) # nice theme
+# ## settings for BMRS
+# rstan_options(auto_write = TRUE) # bayesian estimation
+# options(mc.cores = parallel::detectCores ()) # use all course
+
+
 
 ## user needs to configure cmdstanr, instructions: https://mc-stan.org/cmdstanr/
 

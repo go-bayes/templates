@@ -35,6 +35,7 @@ packages <- c(
   "glue",
   "rlang",
   "survey",
+  "EValue",
   "CBPS", # propensity scores
   "msm", # for validating change in the exposure
   "kableExtra",
@@ -43,8 +44,9 @@ packages <- c(
   "lmtp", # the best! time-varying causal identification using superlearner
   "SuperLearner", # for lmtp
   "xgboost",# for lmtp
+  "glmnet",
+  "ranger",
   "progressr" # progress bars
-
 )
 
 # install packages
@@ -91,18 +93,18 @@ here_read <- function(name) {
 
 # select and rename function for simplifying lmtp -------------------------
 #
-# select_and_rename_cols <- function(names_base, baseline_vars, outcome) {
-#   # Select columns that match with baseline_vars
-#   selected_cols <- names_base[grepl(paste(baseline_vars, collapse = "|"), names_base)]
-#
-#   # Rename the outcome variable prefix from t2 to t0
-#   outcome_renamed <- gsub("t2_", "t0_", outcome)
-#
-#   # Append the renamed outcome to selected columns
-#   final_cols <- c(selected_cols, outcome_renamed)
-#
-#   return(final_cols)
-# }
+select_and_rename_cols <- function(names_base, baseline_vars, outcome) {
+  # Select columns that match with baseline_vars
+  selected_cols <- names_base[grepl(paste(baseline_vars, collapse = "|"), names_base)]
+
+  # Rename the outcome variable prefix from t2 to t0
+  outcome_renamed <- gsub("t2_", "t0_", outcome)
+
+  # Append the renamed outcome to selected columns
+  final_cols <- c(selected_cols, outcome_renamed)
+
+  return(final_cols)
+}
 
 # example usage
 # names_base <- c("t0_eth_cat", "t0_sample_origin", "t0_total_siblings_factor", "t0_smoker_binary", "t0_male_z")
@@ -111,6 +113,10 @@ here_read <- function(name) {
 #
 # final_cols <- select_and_rename_cols(names_base, baseline_vars, outcome)
 # print(final_cols)
+
+
+
+
 
 
 # format for lmtp table---------------------------------------------------
@@ -141,6 +147,52 @@ margot_tab_lmtp <- function(tmtp_output, scale = c("RD", "RR"), new_name = "char
   rownames(tab_tmle_round)[1] <- paste0(new_name)
 
   return(tab_tmle_round)
+}
+
+
+
+# evalues with lmtp -------------------------------------------------------
+# takes the object outputted by the function margot_tab_lmtp()
+# note, we may want to eventually combine margot_tab_lmtp and lmtp_evalue_tab
+lmtp_evalue_tab  <- function(x, delta = 1, sd = 1, scale = c("RD","RR")) {
+  require("EValue")
+  require(dplyr)
+
+  scale <- match.arg(scale)
+
+  tab0 <- as.data.frame(x)
+
+  if (scale == "RD") {
+    evalout <- as.data.frame(round(EValue::evalues.OLS(tab0[1, 1],
+                                                       se = tab0[1, 2],
+                                                       sd = sd,
+                                                       delta = delta,
+                                                       true = 0
+    ),
+    4
+    ))
+  } else {
+    evalout <- as.data.frame(round(EValue::evalues.RR(tab0[1, 1],
+                                                      lo = tab0[1, 3],
+                                                      hi = tab0[1, 4],
+                                                      true = 1
+    ),
+    3
+    ))
+  }
+
+  evalout2 <- subset(evalout[2, ])
+  evalout3 <- evalout2 |>
+    select_if( ~ !any(is.na(.)))
+  colnames(evalout3) <- c("E_Value", "E_Val_bound")
+
+  if (scale == "RD") {
+    tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
+  } else {
+    tab <- cbind.data.frame(tab0, evalout3)
+  }
+
+  return(tab)
 }
 
 

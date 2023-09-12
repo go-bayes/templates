@@ -14,8 +14,8 @@ library("parameters") # working with models
 library("mice") # multiple imputation
 library("table1") # nice tables (html, latex)
 library("ggokabeito")   # color palette
-library("brms") # bayesian estimation
-library("rstan")
+#library("brms") # bayesian estimation
+#library("rstan")
 library("lme4") # for multilevel model comparisons
 library("ggpubr") # themes and also graphics manipulation
 library("MatchThem") # weights for propensity scores with multiple datasets
@@ -23,7 +23,7 @@ library("marginaleffects") # what it says
 library("cobalt") # Weights for propensity scores
 library("WeightIt")# Weights for propensity scores
 library("optmatch")# Weights for propensity scores
-library("cmdstanr") # Bayesian estimation
+#library("cmdstanr") # Bayesian estimation
 library("formula.tools") #
 library("CMAverse") # causal mediation
 library("splines") # estimation
