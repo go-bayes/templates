@@ -284,6 +284,7 @@ run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE
   }
 
 
+
   # prepare predictor variables, removing duplicates
   predictors <- unique(c(exposure, default_vars))
 
