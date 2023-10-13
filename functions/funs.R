@@ -145,7 +145,7 @@ create_density_sd <- function(df, column_name, title = NULL, subtitle = NULL) {
 
 # functions for running OLS and LMER in place of causal models ------------
 
-run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights = NULL, new_name = NULL,
+run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights = NULL, z_transform = TRUE,  new_name = NULL,
                     default_vars = c(
                       "male",
                       "age",
@@ -179,8 +179,11 @@ run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights 
                       "religion_identification_level"
                     )) {
 
-  # z-transform the outcome variable
-  dat[[outcome_z]] <- scale(dat[[outcome]], center = TRUE, scale = TRUE)
+
+  # conditionally z-transform the outcome variable
+  if (z_transform) {
+    dat[[outcome_z]] <- scale(dat[[outcome]], center = TRUE, scale = TRUE)
+  }
 
 
   # prepare predictor variables, removing duplicates
@@ -239,7 +242,7 @@ run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights 
 
 
 
-run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE, sample_weights = NULL, new_name = NULL, default_vars = c(
+run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE,  z_transform = TRUE, sample_weights = NULL, new_name = NULL, default_vars = c(
   "male",
   "age",
   "education_level_coarsen",
@@ -269,8 +272,13 @@ run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE
   "modesty"
 )) {
 
-  # z-transform the outcome variable
-  dat[[outcome_z]] <- scale(dat[[outcome]], center = TRUE, scale = TRUE)
+
+  # conditionally z-transform the outcome variable
+  if (z_transform) {
+    dat[[outcome_z]] <-
+      scale(dat[[outcome]], center = TRUE, scale = TRUE)
+  }
+
 
 
   # prepare predictor variables, removing duplicates
