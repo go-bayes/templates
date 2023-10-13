@@ -141,6 +141,139 @@ create_density_sd <- function(df, column_name, title = NULL, subtitle = NULL) {
 # create_density_sd(df, "variable")
 
 
+# functions for running OLS and LMER in place of causal models ------------
+
+run_ols <- function(dat, exposure, outcome, default_vars = c(
+  "male",
+  "age",
+  "education_level_coarsen",
+  "eth_cat",
+  "nz_dep2018",
+  "nzsei13",
+  "born_nz",
+  "hlth_disability",
+  "kessler_latent_depression",
+  "kessler_latent_anxiety",
+  "total_siblings_factor",
+  "household_inc_log",
+  "partner",
+  "political_conservative",
+  "urban",
+  "children_num",
+  "hours_children_log",
+  "hours_work_log",
+  "hours_housework_log",
+  "hours_exercise_log",
+  "agreeableness",
+  "conscientiousness",
+  "extraversion",
+  "honesty_humility",
+  "openness",
+  "neuroticism",
+  "modesty"
+)) {
+  # prepare predictor variables, removing duplicates
+  predictors <- unique(c(exposure, default_vars))
+
+  # remove outcome from predictors if present
+  predictors <- setdiff(predictors, outcome)
+
+  # construct and run the OLS model
+  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
+  model <- lm(formula_str, data = dat)
+
+  # return model summary
+  return(parameters::model_parameters(model))
+}
+
+run_lmer <- function(dat_long, time_var, exposure, outcome, default_vars = c(
+  "male",
+  "age",
+  "education_level_coarsen",
+  "eth_cat",
+  "nz_dep2018",
+  "nzsei13",
+  "born_nz",
+  "hlth_disability",
+  "kessler_latent_depression",
+  "kessler_latent_anxiety",
+  "total_siblings_factor",
+  "household_inc_log",
+  "partner",
+  "political_conservative",
+  "urban",
+  "children_num",
+  "hours_children_log",
+  "hours_work_log",
+  "hours_housework_log",
+  "hours_exercise_log",
+  "agreeableness",
+  "conscientiousness",
+  "extraversion",
+  "honesty_humility",
+  "openness",
+  "neuroticism",
+  "modesty"
+)) {
+  # prepare predictor variables, removing duplicates
+  predictors <- unique(c(exposure, default_vars))
+
+  # remove outcome from predictors if present
+  predictors <- setdiff(predictors, outcome)
+
+  # construct and run the LME4 model
+  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
+  model <- lmer(formula_str, data = dat_long)
+
+  # return model summary
+  return(parameters::model_parameters(model, effects = "fixed"))
+}
+
+
+run_glm <- function(dat, exposure, outcome, default_vars = c(
+  "male",
+  "age",
+  # ... (all other variables)
+  "modesty"),
+  family = binomial()) {
+
+  # prepare predictor variables, removing duplicates
+  predictors <- unique(c(exposure, default_vars))
+
+  # remove outcome from predictors if present
+  predictors <- setdiff(predictors, outcome)
+
+  # construct and run the GLM model
+  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
+  model <- glm(formula_str, data = dat, family = family)
+
+  # return model summary
+  return(summary(model))
+}
+
+
+run_glmer <- function(dat_long, time_var, exposure, outcome, default_vars = c(
+  "male",
+  "age",
+  # ... (all other variables)
+  "modesty"),
+  family = binomial()) {
+
+  # prepare predictor variables, removing duplicates
+  predictors <- unique(c(exposure, default_vars))
+
+  # remove outcome from predictors if present
+  predictors <- setdiff(predictors, outcome)
+
+  # construct and run the GLMER model
+  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
+  model <- glmer(formula_str, data = dat_long, family = family)
+
+  # return model summary
+  return(summary(model))
+}
+
+
 # select and rename function for simplifying lmtp -------------------------
 #
 select_and_rename_cols <- function(names_base, baseline_vars, outcome) {
