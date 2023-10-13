@@ -182,8 +182,11 @@ run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights 
 
   # conditionally z-transform the outcome variable
   if (z_transform) {
+    outcome_z <- paste0(outcome, "_z")  # new name for z-transformed outcome
     dat[[outcome_z]] <- scale(dat[[outcome]], center = TRUE, scale = TRUE)
+    outcome <- outcome_z  # update outcome variable to the z-transformed version
   }
+
 
 
   # prepare predictor variables, removing duplicates
@@ -275,10 +278,10 @@ run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE
 
   # conditionally z-transform the outcome variable
   if (z_transform) {
-    dat[[outcome_z]] <-
-      scale(dat[[outcome]], center = TRUE, scale = TRUE)
+    outcome_z <- paste0(outcome, "_z")  # new name for z-transformed outcome
+    dat[[outcome_z]] <- scale(dat[[outcome]], center = TRUE, scale = TRUE)
+    outcome <- outcome_z  # update outcome variable to the z-transformed version
   }
-
 
 
   # prepare predictor variables, removing duplicates
