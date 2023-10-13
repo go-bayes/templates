@@ -182,8 +182,8 @@ run_ols <- function(dat, exposure, outcome, default_vars = c(
   formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
   model <- lm(formula_str, data = dat)
 
-  # return model summary
-  return(parameters::model_parameters(model))
+  # return model
+  return(model)
 }
 
 run_lmer <- function(dat_long, time_var, exposure, outcome, default_vars = c(
@@ -225,8 +225,8 @@ run_lmer <- function(dat_long, time_var, exposure, outcome, default_vars = c(
   formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
   model <- lmer(formula_str, data = dat_long)
 
-  # return model summary
-  return(parameters::model_parameters(model, effects = "fixed"))
+  # return model
+  return(model)
 }
 
 
@@ -247,8 +247,8 @@ run_glm <- function(dat, exposure, outcome, default_vars = c(
   formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
   model <- glm(formula_str, data = dat, family = family)
 
-  # return model summary
-  return(summary(model))
+  # return model
+  return(model)
 }
 
 
@@ -270,7 +270,7 @@ run_glmer <- function(dat_long, time_var, exposure, outcome, default_vars = c(
   model <- glmer(formula_str, data = dat_long, family = family)
 
   # return model summary
-  return(summary(model))
+  return(model)
 }
 
 
