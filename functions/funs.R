@@ -21,6 +21,8 @@ packages <- c(
   "parameters",
   "table1",
   "stdReg",
+  "lme4",
+  "parameters",
   "ggplot2",
   "mice",
   "conflicted",
@@ -143,35 +145,44 @@ create_density_sd <- function(df, column_name, title = NULL, subtitle = NULL) {
 
 # functions for running OLS and LMER in place of causal models ------------
 
-run_ols <- function(dat, exposure, outcome, default_vars = c(
-  "male",
-  "age",
-  "education_level_coarsen",
-  "eth_cat",
-  "nz_dep2018",
-  "nzsei13",
-  "born_nz",
-  "hlth_disability",
-  "kessler_latent_depression",
-  "kessler_latent_anxiety",
-  "total_siblings_factor",
-  "household_inc_log",
-  "partner",
-  "political_conservative",
-  "urban",
-  "children_num",
-  "hours_children_log",
-  "hours_work_log",
-  "hours_housework_log",
-  "hours_exercise_log",
-  "agreeableness",
-  "conscientiousness",
-  "extraversion",
-  "honesty_humility",
-  "openness",
-  "neuroticism",
-  "modesty"
-)) {
+run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights = NULL, new_name = NULL,
+                    default_vars = c(
+                      "male",
+                      "age",
+                      "education_level_coarsen",
+                      "eth_cat",
+                      "nz_dep2018",
+                      "nzsei13",
+                      "born_nz",
+                      "hlth_disability",
+                      "kessler_latent_depression",
+                      "kessler_latent_anxiety",
+                      "total_siblings_factor",
+                      "household_inc_log",
+                      "partner",
+                      "political_conservative",
+                      "urban",
+                      "children_num",
+                      "hours_children_log",
+                      "hours_work_log",
+                      "hours_housework_log",
+                      "hours_exercise_log",
+                      "agreeableness",
+                      "conscientiousness",
+                      "extraversion",
+                      "honesty_humility",
+                      "openness",
+                      "neuroticism",
+                      "modesty",
+                      "religion_church_round",
+                      "religion_spiritual_identification",
+                      "religion_identification_level"
+                    )) {
+
+  # z-transform the outcome variable
+  dat[[outcome_z]] <- scale(dat[[outcome]], center = TRUE, scale = TRUE)
+
+
   # prepare predictor variables, removing duplicates
   predictors <- unique(c(exposure, default_vars))
 
@@ -179,14 +190,56 @@ run_ols <- function(dat, exposure, outcome, default_vars = c(
   predictors <- setdiff(predictors, outcome)
 
   # construct and run the OLS model
-  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
-  model <- lm(formula_str, data = dat)
+  formula_str <- paste(outcome_z, "~", paste(predictors, collapse = " + "))
+  original_model <- lm(formula_str, data = dat, weights = sample_weights)
 
-  # return model
-  return(model)
+  # generate summary using model_parameters
+  model_summary <- parameters::model_parameters(original_model)
+
+  # make data frame
+  model_summary_df <- as.data.frame(model_summary)
+
+  # # extract coefficient and CI for exposure
+  coef_exposure <- model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(OLS_coefficient = Coefficient)
+
+  rownames(coef_exposure)[1] <- paste0(new_name)
+
+  # standardise model with refit
+  model_summary_standardised <- parameters::model_parameters(original_model, standardise = "refit")
+
+  # make data frame
+  model_summary_standardised_df <- as.data.frame(model_summary_standardised)
+
+
+  # # extract coefficient and CI for exposure in the standardised model
+  coef_exposure_standardised <- model_summary_standardised_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |>  rename(OLS_coefficient = Coefficient)
+
+  rownames(coef_exposure_standardised)[1] <- paste0(new_name)
+
+
+  #
+  # prepare the return list
+  return_list <- list(
+    "Original_Model" = original_model,
+    "Model_Summary" = model_summary,
+    "Coef_Exposure" = coef_exposure,
+    "Coef_Exposure_Standardised" = coef_exposure_standardised
+  )
+
+  # include data if specified
+  if (return_data) {
+    return_list$Data <- dat
+  }
+
+  return(return_list)
 }
 
-run_lmer <- function(dat_long, time_var, exposure, outcome, default_vars = c(
+
+
+
+run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE, sample_weights = NULL, new_name = NULL, default_vars = c(
   "male",
   "age",
   "education_level_coarsen",
@@ -215,6 +268,11 @@ run_lmer <- function(dat_long, time_var, exposure, outcome, default_vars = c(
   "neuroticism",
   "modesty"
 )) {
+
+  # z-transform the outcome variable
+  dat[[outcome_z]] <- scale(dat[[outcome]], center = TRUE, scale = TRUE)
+
+
   # prepare predictor variables, removing duplicates
   predictors <- unique(c(exposure, default_vars))
 
@@ -222,55 +280,49 @@ run_lmer <- function(dat_long, time_var, exposure, outcome, default_vars = c(
   predictors <- setdiff(predictors, outcome)
 
   # construct and run the LME4 model
-  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
-  model <- lmer(formula_str, data = dat_long)
-
-  # return model
-  return(model)
-}
+  formula_str <- paste(outcome_z, "~", paste(predictors, collapse = " + "), "+ (1|id)")
+  original_model <- lmer(formula_str, data = dat_long, weights = sample_weights)
 
 
-run_glm <- function(dat, exposure, outcome, default_vars = c(
-  "male",
-  "age",
-  # ... (all other variables)
-  "modesty"),
-  family = binomial()) {
+  # generate summary using model_parameters
+  model_summary <- parameters::model_parameters(original_model, effects ="fixed")
 
-  # prepare predictor variables, removing duplicates
-  predictors <- unique(c(exposure, default_vars))
+  # make data frame
+  model_summary_df <- as.data.frame(model_summary)
 
-  # remove outcome from predictors if present
-  predictors <- setdiff(predictors, outcome)
+  # # extract coefficient and CI for exposure
+  coef_exposure <- model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(Multi_level_coefficient = Coefficient)
 
-  # construct and run the GLM model
-  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
-  model <- glm(formula_str, data = dat, family = family)
+  rownames(coef_exposure)[1] <- paste0(new_name)
 
-  # return model
-  return(model)
-}
+  # standardise model with refit
+  model_summary_standardised <- parameters::model_parameters(original_model, standardise = "refit", effects ="fixed")
+
+  # make data frame
+  model_summary_standardised_df <- as.data.frame(model_summary_standardised)
 
 
-run_glmer <- function(dat_long, time_var, exposure, outcome, default_vars = c(
-  "male",
-  "age",
-  # ... (all other variables)
-  "modesty"),
-  family = binomial()) {
+  # # extract coefficient and CI for exposure in the standardised model
+  coef_exposure_standardised <- model_summary_standardised_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+    dplyr::mutate(across(everything(), \(x) round(x, digits = 4)))  |> rename(Multi_level_coefficient = Coefficient)
 
-  # prepare predictor variables, removing duplicates
-  predictors <- unique(c(exposure, default_vars))
+  rownames(coef_exposure_standardised)[1] <- paste0(new_name)
 
-  # remove outcome from predictors if present
-  predictors <- setdiff(predictors, outcome)
+  # prepare the return list
+  return_list <- list(
+    "Original_Model" = original_model,
+    "Model_Summary" = model_summary,
+    "Coef_Exposure" = coef_exposure,
+    "Coef_Exposure_Standardised" = coef_exposure_standardised
+  )
 
-  # construct and run the GLMER model
-  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
-  model <- glmer(formula_str, data = dat_long, family = family)
+  # include data if specified
+  if (return_data) {
+    return_list$Data <- dat
+  }
 
-  # return model summary
-  return(model)
+  return(return_list)
 }
 
 
