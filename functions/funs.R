@@ -91,6 +91,56 @@ here_read <- function(name) {
 
 
 
+# histogram of exposure ---------------------------------------------------
+
+
+# #
+create_density_sd <- function(df, column_name, title = NULL, subtitle = NULL) {
+
+  # attempt to convert to numeric if not already
+  col_data <- df[[column_name]]
+  if (!is.numeric(col_data)) {
+    stop("Column must be numeric or integer.")
+  }
+
+  # transform column to standard deviation units
+  scaled_data <- scale(col_data)
+  df <- df %>% mutate(scaled_data = as.vector(scaled_data))
+
+  # calculate standard deviation for original data
+  sd_exposure <- sd(col_data, na.rm = TRUE)
+  one_point_in_sd_units <- 1 / sd_exposure
+
+  # calculate min and max after scaling
+  min_score <- min(scaled_data, na.rm = TRUE)
+  max_score <- max(scaled_data, na.rm = TRUE)
+
+
+  # create vertical lines
+  vert_lines <- seq(min_score, max_score, by = one_point_in_sd_units)
+
+  dynamic_title <- paste("Density of responses for", column_name, "showing lowest and highest responses on the scale")
+
+  # create density plot
+  gg <- ggplot(df, aes(x = scaled_data)) +
+    geom_density(alpha = 0.2, fill = "lightblue4") +
+    geom_vline(xintercept = vert_lines, colour = "black", linetype = "dotted") +  # corrected line
+    annotate("rect", xmin = min_score, xmax = min_score + one_point_in_sd_units, ymin = 0, ymax = Inf,
+             fill = "dodgerblue", alpha = 0.7) +
+    annotate("rect", xmin = max_score - one_point_in_sd_units, xmax = max_score, ymin = 0, ymax = Inf,
+             fill = "gold2", alpha = 0.7) +
+    scale_x_continuous(name = paste(column_name, "_z_score")) +
+    ggtitle(dynamic_title) +
+    theme_minimal()
+
+  return(gg)
+}
+
+# test
+#  df <- dplyr::tibble(variable = rnorm(1000))
+# create_density_sd(df, "variable")
+
+
 # select and rename function for simplifying lmtp -------------------------
 #
 select_and_rename_cols <- function(names_base, baseline_vars, outcome) {
