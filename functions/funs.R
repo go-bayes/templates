@@ -95,57 +95,47 @@ here_read <- function(name) {
 
 # histogram of exposure ---------------------------------------------------
 
+coloured_histogram <- function(df, col_name, scale_min, scale_max) {
 
-# #
-create_density_sd <- function(df, column_name, title = NULL, subtitle = NULL) {
+  # title and subtitle
+  dynamic_title <- paste("Density of responses for", col_name)
+  fixed_sub_title <- "Lowest compressed-shift shaded blue; highest compressed-shift shaded gold."
 
-  # attempt to convert to numeric if not already
-  col_data <- df[[column_name]]
-  if (!is.numeric(col_data)) {
-    stop("Column must be numeric or integer.")
-  }
+  # create a copy of the data to avoid modifying the original data
+  df_copy <- df
 
-  # transform column to standard deviation units
-  scaled_data <- scale(col_data)
-  df <- df %>% mutate(scaled_data = as.vector(scaled_data))
+  # group continuous values for the lowest and highest in the specified range
+  df_copy[[col_name]] <- ifelse(df_copy[[col_name]] < scale_min + 1, scale_min, df_copy[[col_name]])
+  df_copy[[col_name]] <- ifelse(df_copy[[col_name]] > scale_max - 1, scale_max, df_copy[[col_name]])
 
-  # calculate standard deviation for original data
-  sd_exposure <- sd(col_data, na.rm = TRUE)
-  one_point_in_sd_units <- 1 / sd_exposure
-
-  # calculate min and max after scaling
-  min_score <- min(scaled_data, na.rm = TRUE)
-  max_score <- max(scaled_data, na.rm = TRUE)
-
-
-  # create vertical lines
-  vert_lines <- seq(min_score, max_score, by = one_point_in_sd_units)
-
-  dynamic_title <- paste("Density of responses for", column_name, "showing lowest and highest responses on the scale")
-
-  # create density plot
-  gg <- ggplot(df, aes(x = scaled_data)) +
-    geom_density(alpha = 0.2, fill = "lightblue4") +
-    geom_vline(xintercept = vert_lines, colour = "black", linetype = "dotted") +  # corrected line
-    annotate("rect", xmin = min_score, xmax = min_score + one_point_in_sd_units, ymin = 0, ymax = Inf,
-             fill = "dodgerblue", alpha = 0.7) +
-    annotate("rect", xmin = max_score - one_point_in_sd_units, xmax = max_score, ymin = 0, ymax = Inf,
-             fill = "gold2", alpha = 0.7) +
-    scale_x_continuous(name = paste(column_name, "_z_score")) +
-    ggtitle(dynamic_title) +
+  # create bar plot
+  p <- ggplot(df_copy, aes_string(x = col_name)) +
+    geom_bar(aes(y = ..count..), alpha = 0.7) +
+    geom_bar(data = subset(df_copy, df_copy[[col_name]] == scale_min),
+             aes(y = ..count..),
+             fill = "dodgerblue") +
+    geom_bar(data = subset(df_copy, df_copy[[col_name]] == scale_max),
+             aes(y = ..count..),
+             fill = "gold2") +
+    labs(title = dynamic_title, subtitle = fixed_sub_title) +
+    scale_x_continuous(breaks = seq(floor(min(df_copy[[col_name]])), ceiling(max(df_copy[[col_name]])), by = 0.2)) +
     theme_minimal()
 
-  return(gg)
+  return(p)
 }
 
+
+# sample data
+my_data <- data.frame(my_column = sample(1:7, 1000, replace = TRUE))
+
+# head(my_data)
 # test
-#  df <- dplyr::tibble(variable = rnorm(1000))
-# create_density_sd(df, "variable")
+#coloured_histogram(my_data, col_name = "my_column", scale_min = 1, scale_max = 7)
 
 
 # functions for running OLS and LMER in place of causal models ------------
 
-run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights = NULL, z_transform = TRUE,  new_name = NULL,
+run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights_var = "sample_weights", z_transform = TRUE,  new_name = NULL,
                     default_vars = c(
                       "male",
                       "age",
@@ -180,24 +170,34 @@ run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights 
                     )) {
 
 
-  # conditionally z-transform the outcome variable
-  if (z_transform) {
-    outcome_z <- paste0(outcome, "_z")  # new name for z-transformed outcome
-    dat[[outcome_z]] <- scale(dat[[outcome]], center = TRUE, scale = TRUE)
-    outcome <- outcome_z  # update outcome variable to the z-transformed version
-  }
-
-
-
   # prepare predictor variables, removing duplicates
   predictors <- unique(c(exposure, default_vars))
 
   # remove outcome from predictors if present
   predictors <- setdiff(predictors, outcome)
 
+
+  # conditionally z-transform the outcome variable
+  if (z_transform) {
+    outcome_z <- paste0(outcome, "_z")  # new name for z-transformed outcome
+    dat_long[[outcome_z]] <- scale(dat_long[[outcome]], center = TRUE, scale = TRUE)
+    outcome <- outcome_z  # update outcome variable to the z-transformed version
+  }
+
+
+
+  # Initialize sample_weights to NULL
+  sample_weights <- NULL
+
+  # Conditionally set sample_weights
+  if (!is.null(sample_weights_var)) {
+    sample_weights <- dat_long[[sample_weights_var]]
+  }
+
   # construct and run the OLS model
-  formula_str <- paste(outcome_z, "~", paste(predictors, collapse = " + "))
-  original_model <- lm(formula_str, data = dat, weights = sample_weights)
+  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
+
+  original_model <- do.call("lm", list(formula = as.formula(formula_str), data = quote(dat), weights = quote(sample_weights)))
 
   # generate summary using model_parameters
   model_summary <- parameters::model_parameters(original_model)
@@ -243,9 +243,105 @@ run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights 
 }
 
 
+run_glm <- function(dat, exposure, outcome, return_data = FALSE, sample_weights_var = "sample_weights", family = "binomial", new_name = NULL,
+                    default_vars = c(
+                      "male",
+                      "age",
+                      "education_level_coarsen",
+                      "eth_cat",
+                      "nz_dep2018",
+                      "nzsei13",
+                      "born_nz",
+                      "hlth_disability",
+                      "kessler_latent_depression",
+                      "kessler_latent_anxiety",
+                      "total_siblings_factor",
+                      "household_inc_log",
+                      "partner",
+                      "political_conservative",
+                      "urban",
+                      "children_num",
+                      "hours_children_log",
+                      "hours_work_log",
+                      "hours_housework_log",
+                      "hours_exercise_log",
+                      "agreeableness",
+                      "conscientiousness",
+                      "extraversion",
+                      "honesty_humility",
+                      "openness",
+                      "neuroticism",
+                      "modesty",
+                      "religion_church_round",
+                      "religion_spiritual_identification",
+                      "religion_identification_level"
+                    )) {
+
+  # prepare predictor variables, removing duplicates
+  predictors <- unique(c(exposure, default_vars))
+
+  # remove outcome from predictors if present
+  predictors <- setdiff(predictors, outcome)
+
+  # Initialize sample_weights to NULL
+  sample_weights <- NULL
+
+  # Conditionally set sample_weights
+  if (!is.null(sample_weights_var)) {
+    sample_weights <- dat[[sample_weights_var]]
+  }
 
 
-run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE,  z_transform = TRUE, sample_weights = NULL, new_name = NULL, default_vars = c(
+  # family function
+  if (is.character(family)) {
+    if (!family %in% c("gaussian", "binomial", "Gamma", "inverse.gaussian", "poisson", "quasibinomial", "quasipoisson", "quasi")) {
+      stop("Invalid 'family' argument. Please specify a valid family function.")
+    }
+    family_fun <- get(family, mode = "function", envir = parent.frame())
+  } else if (class(family) %in% c("family", "quasi")) {
+    family_fun <- family
+  } else {
+    stop("Invalid 'family' argument. Please specify a valid family function or character string.")
+  }
+
+
+  # construct and run the GLM model
+  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
+  glm_call <- list(formula = as.formula(formula_str), data = quote(dat), weights = quote(sample_weights), family = quote(family))
+  original_model <- do.call("glm", glm_call)
+
+  # generate summary using model_parameters
+  model_summary <- parameters::model_parameters(original_model, ci_method = "wald", exponentiate = TRUE)
+
+  # make data frame
+  model_summary_df <- as.data.frame(model_summary)
+
+  # extract coefficient and CI for exposure
+  coef_exposure <- model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(GLM_coefficient = Coefficient)
+
+  rownames(coef_exposure)[1] <- paste0(new_name)
+
+  # prepare the return list
+  return_list <- list(
+    "Original_Model" = original_model,
+    "Model_Summary" = model_summary,
+    "Coef_Exposure" = coef_exposure
+  )
+
+  # include data if specified
+  if (return_data) {
+    return_list$Data <- dat
+  }
+
+  return(return_list)
+}
+
+
+
+
+
+run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE,  z_transform = TRUE, sample_weights_var = "sample_weights", new_name = NULL, default_vars = c(
   "male",
   "age",
   "education_level_coarsen",
@@ -276,28 +372,34 @@ run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE
 )) {
 
 
-  # conditionally z-transform the outcome variable
-  if (z_transform) {
-    outcome_z <- paste0(outcome, "_z")  # new name for z-transformed outcome
-    dat[[outcome_z]] <- scale(dat[[outcome]], center = TRUE, scale = TRUE)
-    outcome <- outcome_z  # update outcome variable to the z-transformed version
-  }
-
-
-
   # prepare predictor variables, removing duplicates
   predictors <- unique(c(exposure, default_vars))
 
   # remove outcome from predictors if present
   predictors <- setdiff(predictors, outcome)
 
-  # construct and run the LME4 model
-  formula_str <- paste(outcome_z, "~", paste(predictors, collapse = " + "), "+ (1|id)")
-  original_model <- lmer(formula_str, data = dat_long, weights = sample_weights)
 
+#  conditionally z-transform the outcome variable
+  if (z_transform) {
+    outcome_z <- paste0(outcome, "_z")  # new name for z-transformed outcome
+    dat_long[[outcome_z]] <- scale(dat_long[[outcome]], center = TRUE, scale = TRUE)
+    outcome <- outcome_z  # update outcome variable to the z-transformed version
+  }
+
+  # Initialize sample_weights to NULL
+  sample_weights <- NULL
+
+  # Conditionally set sample_weights
+  if (!is.null(sample_weights_var)) {
+    sample_weights <- dat_long[[sample_weights_var]]
+  }
+
+  # construct and run the LME4 model
+  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
+  original_model <- do.call("lmer", list(formula = as.formula(formula_str), data = quote(dat_long), weights = quote(sample_weights)))
 
   # generate summary using model_parameters
-  model_summary <- parameters::model_parameters(original_model, effects ="fixed")
+  model_summary <- parameters::model_parameters(original_model, effects ="fixed",  ci_method = "wald")
 
   # make data frame
   model_summary_df <- as.data.frame(model_summary)
@@ -308,25 +410,10 @@ run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE
 
   rownames(coef_exposure)[1] <- paste0(new_name)
 
-  # standardise model with refit
-  model_summary_standardised <- parameters::model_parameters(original_model, standardise = "refit", effects ="fixed")
-
-  # make data frame
-  model_summary_standardised_df <- as.data.frame(model_summary_standardised)
-
-
-  # # extract coefficient and CI for exposure in the standardised model
-  coef_exposure_standardised <- model_summary_standardised_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
-    dplyr::mutate(across(everything(), \(x) round(x, digits = 4)))  |> rename(Multi_level_coefficient = Coefficient)
-
-  rownames(coef_exposure_standardised)[1] <- paste0(new_name)
-
-  # prepare the return list
   return_list <- list(
     "Original_Model" = original_model,
     "Model_Summary" = model_summary,
     "Coef_Exposure" = coef_exposure,
-    "Coef_Exposure_Standardised" = coef_exposure_standardised
   )
 
   # include data if specified
@@ -337,6 +424,84 @@ run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE
   return(return_list)
 }
 
+
+run_glmer <- function(dat, exposure, outcome, time_var, return_data = FALSE, sample_weights_var = "sample_weights", family = "binomial", new_name = NULL,
+                      default_vars = c(
+                        "male",
+                        "age",
+                        "education_level_coarsen",
+                        "eth_cat",
+                        "nz_dep2018",
+                        "nzsei13",
+                        "born_nz",
+                        "hlth_disability",
+                        "kessler_latent_depression",
+                        "kessler_latent_anxiety",
+                        "total_siblings_factor",
+                        "household_inc_log",
+                        "partner",
+                        "political_conservative",
+                        "urban",
+                        "children_num",
+                        "hours_children_log",
+                        "hours_work_log",
+                        "hours_housework_log",
+                        "hours_exercise_log",
+                        "agreeableness",
+                        "conscientiousness",
+                        "extraversion",
+                        "honesty_humility",
+                        "openness",
+                        "neuroticism",
+                        "modesty",
+                        "religion_identification_level"
+                      )) { # default value for random_effects parameter
+
+  # prepare predictor variables, removing duplicates
+  predictors <- unique(c(exposure, time_var, default_vars))
+
+  # remove outcome from predictors if present
+  predictors <- setdiff(predictors, outcome)
+
+  # initialise sample_weights to NULL
+  sample_weights <- NULL
+
+  # conditionally set sample_weights
+  if (!is.null(sample_weights_var)) {
+    sample_weights <- dat[[sample_weights_var]]
+  }
+
+  # construct and run the GLMER model
+  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
+  glmer_call <- list(formula = as.formula(formula_str), data = quote(dat), weights = quote(sample_weights), family = quote(family))
+  original_model <- do.call("glmer", glmer_call)
+
+  # generate summary using model_parameters
+  model_summary <- parameters::model_parameters(original_model,  effects ="fixed",  ci_method = "wald", exponentiate = TRUE)
+
+  # make data frame
+  model_summary_df <- as.data.frame(model_summary)
+
+  # extract coefficient and CI for exposure
+  coef_exposure <- model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(GLMER_coefficient = Coefficient)
+
+  rownames(coef_exposure)[1] <- paste0(new_name)
+
+  # prepare the return list
+  return_list <- list(
+    "Original_Model" = original_model,
+    "Model_Summary" = model_summary,
+    "Coef_Exposure" = coef_exposure
+  )
+
+  # include data if specified
+  if (return_data) {
+    return_list$Data <- dat
+  }
+
+  return(return_list)
+}
 
 # select and rename function for simplifying lmtp -------------------------
 #
