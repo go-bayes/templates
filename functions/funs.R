@@ -92,31 +92,33 @@ here_read <- function(name) {
 }
 
 
+# histogram function ------------------------------------------------------
 
-# histogram of exposure ---------------------------------------------------
+
+
 
 coloured_histogram <- function(df, col_name, scale_min, scale_max) {
 
+  epsilon <- 0.01  # small value to adjust range
+
   # title and subtitle
   dynamic_title <- paste("Density of responses for", col_name)
-  fixed_sub_title <- "Lowest compressed-shift shaded blue; highest compressed-shift shaded gold."
+  fixed_sub_title <- "Lowest compressed shift shaded blue; highest compressed-shift shaded gold."
 
   # create a copy of the data to avoid modifying the original data
-  df_copy <- df
-
-  # group continuous values for the lowest and highest in the specified range
-  df_copy[[col_name]] <- ifelse(df_copy[[col_name]] < scale_min + 1, scale_min, df_copy[[col_name]])
-  df_copy[[col_name]] <- ifelse(df_copy[[col_name]] > scale_max - 1, scale_max, df_copy[[col_name]])
+  df_copy <- df %>%
+    mutate(fill_category = case_when(
+      between(!!sym(col_name), scale_min, scale_min + 1 - epsilon) ~ "Lowest",
+      between(!!sym(col_name), scale_max - 1 + epsilon, scale_max) ~ "Highest",
+      TRUE ~ "Full shift"
+    ))
 
   # create bar plot
-  p <- ggplot(df_copy, aes_string(x = col_name)) +
-    geom_bar(aes(y = ..count..), alpha = 0.7) +
-    geom_bar(data = subset(df_copy, df_copy[[col_name]] == scale_min),
-             aes(y = ..count..),
-             fill = "dodgerblue") +
-    geom_bar(data = subset(df_copy, df_copy[[col_name]] == scale_max),
-             aes(y = ..count..),
-             fill = "gold2") +
+  p <- ggplot(df_copy, aes(x = !!sym(col_name))) +
+    geom_bar(aes(y = ..count.., fill = fill_category), alpha = 1) +
+    scale_fill_manual(
+      values = c("Lowest" = "dodgerblue", "Highest" = "gold2", "Middle" = "grey60")
+    ) +
     labs(title = dynamic_title, subtitle = fixed_sub_title) +
     scale_x_continuous(breaks = seq(floor(min(df_copy[[col_name]])), ceiling(max(df_copy[[col_name]])), by = 0.2)) +
     theme_minimal()
@@ -125,8 +127,11 @@ coloured_histogram <- function(df, col_name, scale_min, scale_max) {
 }
 
 
+
+
+
 # sample data
-my_data <- data.frame(my_column = sample(1:7, 1000, replace = TRUE))
+#my_data <- data.frame(my_column = sample(1:7, 1000, replace = TRUE))
 
 # head(my_data)
 # test
