@@ -95,6 +95,8 @@ here_read <- function(name) {
 # histogram function ------------------------------------------------------
 
 
+library(ggplot2)
+library(dplyr)
 
 
 coloured_histogram <- function(df, col_name, scale_min, scale_max) {
@@ -120,11 +122,12 @@ coloured_histogram <- function(df, col_name, scale_min, scale_max) {
       values = c("Lowest" = "dodgerblue", "Highest" = "gold2", "Middle" = "grey60")
     ) +
     labs(title = dynamic_title, subtitle = fixed_sub_title) +
-    scale_x_continuous(breaks = seq(floor(min(df_copy[[col_name]])), ceiling(max(df_copy[[col_name]])), by = 0.2)) +
+    scale_x_continuous(breaks = seq(floor(min(df_copy[[col_name]])), ceiling(max(df_copy[[col_name]])), by = 1)) +
     theme_minimal()
 
   return(p)
 }
+
 
 
 
