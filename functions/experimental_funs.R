@@ -150,10 +150,7 @@ margot_plot_exp <- function(.data,
   # conditionally apply reorder
   y_aes <- if (reorder_outcome) {
     reorder(outcome, .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]])
-  } else {
-    outcome
   }
-
 
   out <- ggplot(
     data = .data,
