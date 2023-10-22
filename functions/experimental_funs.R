@@ -109,6 +109,90 @@ transition_table <- function(data, state_names = NULL) {
 
 
 
+
+# margot_plot_experimental ------------------------------------------------
+
+
+margot_plot_exp <- function(.data,
+                        type = c("RD", "RR"),
+                        title,
+                        subtitle,
+                        xlab,
+                        ylab,
+                        reorder_outcome = TRUE,  # new argument
+                        estimate_scale = 1,
+                        base_size = 11,
+                        text_size = 2.75,
+                        point_size = .5,
+                        title_size = 10,
+                        subtitle_size = 9,
+                        legend_text_size = 6,
+                        legend_title_size = 6,
+                        x_offset = ifelse(type == "RR", 0, -1.75),
+                        x_lim_lo = ifelse(type == "RR", .1, -1.75),
+                        x_lim_hi = ifelse(type == "RR", 2.5, 1)) {
+
+
+  type <- match.arg(type)
+  xintercept <- if (type == "RR") 1 else 0
+  x_axis_label <- if (type == "RR") "Causal Risk Ratio Scale" else "Causal Difference Scale"
+
+  # Define Reliability based on type
+  if(type == "RR") {
+    .data$Reliability <- ifelse(.data$`2.5 %` > 1 & .data$`97.5 %` > 1, "positive",
+                                ifelse(.data$`2.5 %` < 1 & .data$`97.5 %` < 1, "negative", "zero_crossing"))
+  } else {
+    .data$Reliability <- ifelse(.data$`2.5 %` > 0 & .data$`97.5 %` > 0, "positive",
+                                ifelse(.data$`2.5 %` < 0 & .data$`97.5 %` < 0, "negative", "zero_crossing"))
+  }
+
+
+  # conditionally apply reorder
+  y_aes <- if (reorder_outcome) {
+    reorder(outcome, .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]])
+  } else {
+    outcome
+  }
+
+
+  out <- ggplot(
+    data = .data,
+    aes(
+      y = y_aes,
+      x = .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]],
+      xmin = `2.5 %`,
+      xmax = `97.5 %`,
+      group = Estimate,
+      color = Reliability
+    )
+  ) +
+    geom_errorbarh(aes(color = Reliability), height = .3, position = position_dodge(width = 0.3)) +
+    geom_point(size = point_size, position = position_dodge(width = 0.3)) +
+    geom_vline(xintercept = xintercept, linetype = "solid") +
+    theme_classic(base_size = base_size) +
+    scale_color_manual(values = c("positive" = "dodgerblue", "zero_crossing" = "black", "negative" = "orange")) +
+    labs(x = x_axis_label, y = " ", title = title, subtitle = subtitle) +
+    geom_text(aes(x = x_offset * estimate_scale, label = estimate_lab), size = text_size, hjust = 0,
+              fontface = ifelse(.data$Estimate == "unreliable", "plain", "bold")) +
+    coord_cartesian(xlim = c(x_lim_lo, x_lim_hi)) +
+    theme(
+      legend.position = "top",
+      legend.direction = "horizontal",
+      plot.title = element_text(face = "bold", size = title_size, hjust = 0),
+      plot.subtitle = element_text(face = "bold", size = subtitle_size, hjust = 0),
+      legend.text = element_text(size = legend_text_size),
+      legend.title = element_text(size = legend_title_size),
+      plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
+    )
+
+
+  return(out)
+}
+
+
+
+
+
 # interpretation of results -----------------------------------------------
 
 # takes an output from the sub_group_ate
