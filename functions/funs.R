@@ -1,4 +1,6 @@
 
+
+
 # source libraries
 
 # function for installing dependencies
@@ -38,14 +40,22 @@ packages <- c(
   "rlang",
   "survey",
   "EValue",
-  "CBPS", # propensity scores
-  "msm", # for validating change in the exposure
+  "CBPS",
+  # propensity scores
+  "msm",
+  # for validating change in the exposure
   "kableExtra",
-  "naniar", # for inspecting missing data
+  "naniar",
+  # for inspecting missing data
   "miceadds",
-  "lmtp", # the best! time-varying causal identification using superlearner
-  "SuperLearner", # for lmtp
-  "xgboost",# for lmtp
+  "ipw",
+  # inverse prob weighting in simple models
+  "lmtp",
+  # the best! time-varying causal identification using superlearner
+  "SuperLearner",
+  # for lmtp
+  "xgboost",
+  # for lmtp
   "glmnet",
   "ranger",
   "progressr" # progress bars
@@ -100,12 +110,12 @@ library(dplyr)
 
 
 coloured_histogram <- function(df, col_name, scale_min, scale_max) {
-
   epsilon <- 0.01  # small value to adjust range
 
   # title and subtitle
   dynamic_title <- paste("Density of responses for", col_name)
-  fixed_sub_title <- "Lowest compressed shift shaded blue; highest compressed-shift shaded gold."
+  fixed_sub_title <-
+    "Lowest shift shaded blue; highest shift shaded gold."
 
   # create a copy of the data to avoid modifying the original data
   df_copy <- df %>%
@@ -119,7 +129,12 @@ coloured_histogram <- function(df, col_name, scale_min, scale_max) {
   p <- ggplot(df_copy, aes(x = !!sym(col_name))) +
     geom_bar(aes(y = ..count.., fill = fill_category), alpha = 1) +
     scale_fill_manual(
-      values = c("Lowest" = "dodgerblue", "Highest" = "gold2", "Middle" = "grey60")
+      values = c(
+        "Lowest" = "dodgerblue",
+        "Highest" = "gold2",
+        "Middle" = "grey60"
+      ),
+      name = "Shift positions"  # Add this line
     ) +
     labs(title = dynamic_title, subtitle = fixed_sub_title) +
     scale_x_continuous(breaks = seq(floor(min(df_copy[[col_name]])), ceiling(max(df_copy[[col_name]])), by = 1)) +
@@ -128,6 +143,56 @@ coloured_histogram <- function(df, col_name, scale_min, scale_max) {
   return(p)
 }
 
+
+
+# get 1 -1 histogram from the mean
+coloured_histogram_sd <- function(df, col_name, binwidth = 30) {
+  # Compute statistics
+  avg_val <- mean(df[[col_name]], na.rm = TRUE)
+  std_val <- sd(df[[col_name]], na.rm = TRUE)
+
+  # Create data frame for v-lines and their descriptions
+  line_data <- data.frame(
+    value = c(avg_val, avg_val - std_val, avg_val + std_val),
+    description = c("Mean", "Mean - 1 SD", "Mean + 1 SD"),
+    color = c("black", "dodgerblue", "gold2")
+  )
+
+  # Create the plot
+  p <- ggplot(df, aes(x = !!sym(col_name))) +
+    geom_histogram(aes(y = ..count..),
+                   binwidth = binwidth,
+                   fill = "grey60") +
+    geom_vline(data = line_data,
+               aes(xintercept = value, color = description),
+               size = 1.5) +
+    geom_segment(
+      data = line_data,
+      aes(
+        x = avg_val,
+        y = 0,
+        xend = value,
+        yend = 0,
+        color = description
+      ),
+      arrow = arrow(
+        type = "closed",
+        ends = "last",
+        length = unit(0.2, "inches")
+      ),
+      size = 1.5
+    ) +
+    scale_color_manual(values = c(
+      "Mean - 1 SD" = "dodgerblue",
+      "Mean + 1 SD" = "gold2"
+    )) +
+    labs(title = "Histogram with Mean and Standard Deviation Intervals",
+         subtitle = "Arrows indicate one standard deviation from the mean.",
+         color = "Legend") +
+    theme_minimal()
+
+  return(p)
+}
 
 
 
@@ -141,390 +206,631 @@ coloured_histogram <- function(df, col_name, scale_min, scale_max) {
 #coloured_histogram(my_data, col_name = "my_column", scale_min = 1, scale_max = 7)
 
 
+
+# function to remove variable from list
+# Function to remove a variable from a list
+remove_var <- function(variable_list, remove_elements) {
+  # Remove the specified elements
+  updated_list <- setdiff(variable_list, remove_elements)
+
+  # Return the updated list
+  return(updated_list)
+}
+
+# # example
+# names_base_t2_hlth_fatigue_z <- c("t0_education_level_coarsen", "t0_eth_cat", "t0_sample_origin", "t0_total_siblings_factor",
+#                                   "t0_alert_level_combined_lead", "t0_male_z", "t0_age_z", "t0_nz_dep2018_z", "t0_nzsei13_z",
+#                                   "t0_born_nz_z", "t0_hlth_disability_z", "t0_kessler_latent_depression_z", "t0_kessler_latent_anxiety_z",
+#                                   "t0_support_z", "t0_belong_z", "t0_household_inc_log_z", "t0_partner_z", "t0_political_conservative_z",
+#                                   "t0_urban_z", "t0_children_num_z", "t0_hours_children_log_z", "t0_hours_work_log_z",
+#                                   "t0_hours_housework_log_z", "t0_hours_exercise_log_z", "t0_agreeableness_z", "t0_conscientiousness_z",
+#                                   "t0_extraversion_z", "t0_honesty_humility_z", "t0_openness_z", "t0_neuroticism_z",
+#                                   "t0_modesty_z", "t0_religion_identification_level_z", "t0_hlth_fatigue_z")
+#
+# # Elements to remove
+# elements_to_remove <- c("t0_alert_level_combined_lead", "t0_hlth_fatigue_z")
+#
+# # Remove the elements
+# updated_list_fatigue <- remove_var(names_base_t2_hlth_fatigue_z, elements_to_remove)
+#
+# # Display the updated list
+# print(updated_list)
+
+
+
+
 # functions for running OLS and LMER in place of causal models ------------
 
-run_ols <- function(dat, exposure, outcome, return_data = FALSE, sample_weights_var = "sample_weights", z_transform = TRUE,  new_name = NULL,
-                    default_vars = c(
-                      "male",
-                      "age",
-                      "education_level_coarsen",
-                      "eth_cat",
-                      "nz_dep2018",
-                      "nzsei13",
-                      "born_nz",
-                      "hlth_disability",
-                      "kessler_latent_depression",
-                      "kessler_latent_anxiety",
-                      "total_siblings_factor",
-                      "household_inc_log",
-                      "partner",
-                      "political_conservative",
-                      "urban",
-                      "children_num",
-                      "hours_children_log",
-                      "hours_work_log",
-                      "hours_housework_log",
-                      "hours_exercise_log",
-                      "agreeableness",
-                      "conscientiousness",
-                      "extraversion",
-                      "honesty_humility",
-                      "openness",
-                      "neuroticism",
-                      "modesty",
-                      "religion_church_round",
-                      "religion_spiritual_identification",
-                      "religion_identification_level"
-                    )) {
+run_ols <-
+  function(dat,
+           exposure,
+           outcome,
+           return_data = FALSE,
+           sample_weights_var = "sample_weights",
+           z_transform = TRUE,
+           new_name = NULL,
+           default_vars = c(
+             "male",
+             "age",
+             "education_level_coarsen",
+             "eth_cat",
+             "nz_dep2018",
+             "nzsei13",
+             "born_nz",
+             "hlth_disability",
+             "kessler_latent_depression",
+             "kessler_latent_anxiety",
+             "total_siblings_factor",
+             "household_inc_log",
+             "partner",
+             "political_conservative",
+             "urban",
+             "children_num",
+             "hours_children_log",
+             "hours_work_log",
+             "hours_housework_log",
+             "hours_exercise_log",
+             "agreeableness",
+             "conscientiousness",
+             "extraversion",
+             "honesty_humility",
+             "openness",
+             "neuroticism",
+             "modesty",
+             "religion_church_round",
+             "religion_spiritual_identification",
+             "religion_identification_level"
+           )) {
+    # prepare predictor variables, removing duplicates
+    predictors <- unique(c(exposure, default_vars))
+
+    # remove outcome from predictors if present
+    predictors <- setdiff(predictors, outcome)
 
 
-  # prepare predictor variables, removing duplicates
-  predictors <- unique(c(exposure, default_vars))
-
-  # remove outcome from predictors if present
-  predictors <- setdiff(predictors, outcome)
-
-
-  # conditionally z-transform the outcome variable
-  if (z_transform) {
-    outcome_z <- paste0(outcome, "_z")  # new name for z-transformed outcome
-    dat_long[[outcome_z]] <- scale(dat_long[[outcome]], center = TRUE, scale = TRUE)
-    outcome <- outcome_z  # update outcome variable to the z-transformed version
-  }
-
-
-
-  # Initialize sample_weights to NULL
-  sample_weights <- NULL
-
-  # Conditionally set sample_weights
-  if (!is.null(sample_weights_var)) {
-    sample_weights <- dat_long[[sample_weights_var]]
-  }
-
-  # construct and run the OLS model
-  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
-
-  original_model <- do.call("lm", list(formula = as.formula(formula_str), data = quote(dat), weights = quote(sample_weights)))
-
-  # generate summary using model_parameters
-  model_summary <- parameters::model_parameters(original_model)
-
-  # make data frame
-  model_summary_df <- as.data.frame(model_summary)
-
-  # # extract coefficient and CI for exposure
-  coef_exposure <- model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
-    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(OLS_coefficient = Coefficient)
-
-  rownames(coef_exposure)[1] <- paste0(new_name)
-
-  # standardise model with refit
-  model_summary_standardised <- parameters::model_parameters(original_model, standardise = "refit")
-
-  # make data frame
-  model_summary_standardised_df <- as.data.frame(model_summary_standardised)
-
-
-  # # extract coefficient and CI for exposure in the standardised model
-  coef_exposure_standardised <- model_summary_standardised_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
-    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |>  rename(OLS_coefficient = Coefficient)
-
-  rownames(coef_exposure_standardised)[1] <- paste0(new_name)
-
-
-  #
-  # prepare the return list
-  return_list <- list(
-    "Original_Model" = original_model,
-    "Model_Summary" = model_summary,
-    "Coef_Exposure" = coef_exposure,
-    "Coef_Exposure_Standardised" = coef_exposure_standardised
-  )
-
-  # include data if specified
-  if (return_data) {
-    return_list$Data <- dat
-  }
-
-  return(return_list)
-}
-
-
-run_glm <- function(dat, exposure, outcome, return_data = FALSE, sample_weights_var = "sample_weights", family = "binomial", new_name = NULL,
-                    default_vars = c(
-                      "male",
-                      "age",
-                      "education_level_coarsen",
-                      "eth_cat",
-                      "nz_dep2018",
-                      "nzsei13",
-                      "born_nz",
-                      "hlth_disability",
-                      "kessler_latent_depression",
-                      "kessler_latent_anxiety",
-                      "total_siblings_factor",
-                      "household_inc_log",
-                      "partner",
-                      "political_conservative",
-                      "urban",
-                      "children_num",
-                      "hours_children_log",
-                      "hours_work_log",
-                      "hours_housework_log",
-                      "hours_exercise_log",
-                      "agreeableness",
-                      "conscientiousness",
-                      "extraversion",
-                      "honesty_humility",
-                      "openness",
-                      "neuroticism",
-                      "modesty",
-                      "religion_church_round",
-                      "religion_spiritual_identification",
-                      "religion_identification_level"
-                    )) {
-
-  # prepare predictor variables, removing duplicates
-  predictors <- unique(c(exposure, default_vars))
-
-  # remove outcome from predictors if present
-  predictors <- setdiff(predictors, outcome)
-
-  # Initialize sample_weights to NULL
-  sample_weights <- NULL
-
-  # Conditionally set sample_weights
-  if (!is.null(sample_weights_var)) {
-    sample_weights <- dat[[sample_weights_var]]
-  }
-
-
-  # family function
-  if (is.character(family)) {
-    if (!family %in% c("gaussian", "binomial", "Gamma", "inverse.gaussian", "poisson", "quasibinomial", "quasipoisson", "quasi")) {
-      stop("Invalid 'family' argument. Please specify a valid family function.")
+    # conditionally z-transform the outcome variable
+    if (z_transform) {
+      outcome_z <-
+        paste0(outcome, "_z")  # new name for z-transformed outcome
+      dat_long[[outcome_z]] <-
+        scale(dat_long[[outcome]], center = TRUE, scale = TRUE)
+      outcome <-
+        outcome_z  # update outcome variable to the z-transformed version
     }
-    family_fun <- get(family, mode = "function", envir = parent.frame())
-  } else if (class(family) %in% c("family", "quasi")) {
-    family_fun <- family
-  } else {
-    stop("Invalid 'family' argument. Please specify a valid family function or character string.")
+
+
+
+    # Initialize sample_weights to NULL
+    sample_weights <- NULL
+
+    # Conditionally set sample_weights
+    if (!is.null(sample_weights_var)) {
+      sample_weights <- dat_long[[sample_weights_var]]
+    }
+
+    # construct and run the OLS model
+    formula_str <-
+      paste(outcome, "~", paste(predictors, collapse = " + "))
+
+    original_model <-
+      do.call("lm",
+              list(
+                formula = as.formula(formula_str),
+                data = quote(dat),
+                weights = quote(sample_weights)
+              ))
+
+    # generate summary using model_parameters
+    model_summary <- parameters::model_parameters(original_model)
+
+    # make data frame
+    model_summary_df <- as.data.frame(model_summary)
+
+    # # extract coefficient and CI for exposure
+    coef_exposure <-
+      model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+      dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(OLS_coefficient = Coefficient)
+
+    rownames(coef_exposure)[1] <- paste0(new_name)
+
+    # standardise model with refit
+    model_summary_standardised <-
+      parameters::model_parameters(original_model, standardise = "refit")
+
+    # make data frame
+    model_summary_standardised_df <-
+      as.data.frame(model_summary_standardised)
+
+
+    # # extract coefficient and CI for exposure in the standardised model
+    coef_exposure_standardised <-
+      model_summary_standardised_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+      dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |>  rename(OLS_coefficient = Coefficient)
+
+    rownames(coef_exposure_standardised)[1] <- paste0(new_name)
+
+
+    #
+    # prepare the return list
+    return_list <- list(
+      "Original_Model" = original_model,
+      "Model_Summary" = model_summary,
+      "Coef_Exposure" = coef_exposure,
+      "Coef_Exposure_Standardised" = coef_exposure_standardised
+    )
+
+    # include data if specified
+    if (return_data) {
+      return_list$Data <- dat
+    }
+
+    return(return_list)
   }
 
 
-  # construct and run the GLM model
-  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
-  glm_call <- list(formula = as.formula(formula_str), data = quote(dat), weights = quote(sample_weights), family = quote(family))
-  original_model <- do.call("glm", glm_call)
 
-  # generate summary using model_parameters
-  model_summary <- parameters::model_parameters(original_model, ci_method = "wald", exponentiate = TRUE)
 
-  # make data frame
-  model_summary_df <- as.data.frame(model_summary)
+# ols with censoring ------------------------------------------------------
 
-  # extract coefficient and CI for exposure
-  coef_exposure <- model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
-    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(GLM_coefficient = Coefficient)
+library(ipw)
+library(dplyr)
+library(parameters)
+run_ols_with_censoring_weights <- function(
+    dat,
+    exposure,
+    outcome,
+    sample_weights_var = "t0_sample_weights",
+    new_name = "CATE",
+    z_transform = FALSE,
+    default_vars = NULL) {  # Ensure default_vars is an argument
 
-  rownames(coef_exposure)[1] <- paste0(new_name)
+  # Add a check for default_vars
+  if (is.null(default_vars)) {
+    stop("default_vars cannot be NULL")
+  }
 
-  # prepare the return list
-  return_list <- list(
-    "Original_Model" = original_model,
-    "Model_Summary" = model_summary,
-    "Coef_Exposure" = coef_exposure
+  # Create censoring formula using default_vars
+  censoring_formula <- as.formula(paste("t1_not_lost ~", paste(default_vars, collapse = " + ")))
+
+  # Explicitly specify environment for censoring_formula
+  environment(censoring_formula) <- environment()
+
+  # Compute the censoring weights
+  censor_weights <- ipw::ipwpoint(
+    exposure = 1,
+    family = "binomial",
+    link = "logit",
+    numerator = ~ 1,
+    denominator = censoring_formula,
+    data = dat
   )
 
-  # include data if specified
-  if (return_data) {
-    return_list$Data <- dat
-  }
+  # Compute combined weights
+  combined_weights <- ifelse(!is.null(dat[[sample_weights_var]]), dat[[sample_weights_var]], 1) * censor_weights
 
-  return(return_list)
+  # Construct OLS formula
+  ols_formula <- as.formula(paste(outcome, "~", paste(c(exposure, default_vars), collapse = " + ")))
+
+  # Run OLS model with combined weights
+  ols_model <- lm(formula = ols_formula, data = dat, weights = combined_weights)
+
+  # Other function code
+
+  return(ols_model)  # Modify as needed
 }
 
 
 
+run_glm <-
+  function(dat,
+           exposure,
+           outcome,
+           return_data = FALSE,
+           sample_weights_var = "sample_weights",
+           family = "binomial",
+           new_name = NULL,
+           default_vars = c(
+             "male",
+             "age",
+             "education_level_coarsen",
+             "eth_cat",
+             "nz_dep2018",
+             "nzsei13",
+             "born_nz",
+             "hlth_disability",
+             "kessler_latent_depression",
+             "kessler_latent_anxiety",
+             "total_siblings_factor",
+             "household_inc_log",
+             "partner",
+             "political_conservative",
+             "urban",
+             "children_num",
+             "hours_children_log",
+             "hours_work_log",
+             "hours_housework_log",
+             "hours_exercise_log",
+             "agreeableness",
+             "conscientiousness",
+             "extraversion",
+             "honesty_humility",
+             "openness",
+             "neuroticism",
+             "modesty",
+             "religion_church_round",
+             "religion_spiritual_identification",
+             "religion_identification_level"
+           )) {
+    # prepare predictor variables, removing duplicates
+    predictors <- unique(c(exposure, default_vars))
+
+    # remove outcome from predictors if present
+    predictors <- setdiff(predictors, outcome)
+
+    # Initialize sample_weights to NULL
+    sample_weights <- NULL
+
+    # Conditionally set sample_weights
+    if (!is.null(sample_weights_var)) {
+      sample_weights <- dat[[sample_weights_var]]
+    }
 
 
-run_lmer <- function(dat_long, time_var, exposure, outcome,  return_data = FALSE,  z_transform = TRUE, sample_weights_var = "sample_weights", new_name = NULL, default_vars = c(
-  "male",
-  "age",
-  "education_level_coarsen",
-  "eth_cat",
-  "nz_dep2018",
-  "nzsei13",
-  "born_nz",
-  "hlth_disability",
-  "kessler_latent_depression",
-  "kessler_latent_anxiety",
-  "total_siblings_factor",
-  "household_inc_log",
-  "partner",
-  "political_conservative",
-  "urban",
-  "children_num",
-  "hours_children_log",
-  "hours_work_log",
-  "hours_housework_log",
-  "hours_exercise_log",
-  "agreeableness",
-  "conscientiousness",
-  "extraversion",
-  "honesty_humility",
-  "openness",
-  "neuroticism",
-  "modesty"
-)) {
+    # family function
+    if (is.character(family)) {
+      if (!family %in% c(
+        "gaussian",
+        "binomial",
+        "Gamma",
+        "inverse.gaussian",
+        "poisson",
+        "quasibinomial",
+        "quasipoisson",
+        "quasi"
+      )) {
+        stop("Invalid 'family' argument. Please specify a valid family function.")
+      }
+      family_fun <-
+        get(family, mode = "function", envir = parent.frame())
+    } else if (class(family) %in% c("family", "quasi")) {
+      family_fun <- family
+    } else {
+      stop(
+        "Invalid 'family' argument. Please specify a valid family function or character string."
+      )
+    }
 
 
-  # prepare predictor variables, removing duplicates
-  predictors <- unique(c(exposure, default_vars))
+    # construct and run the GLM model
+    formula_str <-
+      paste(outcome, "~", paste(predictors, collapse = " + "))
+    glm_call <-
+      list(
+        formula = as.formula(formula_str),
+        data = quote(dat),
+        weights = quote(sample_weights),
+        family = quote(family)
+      )
+    original_model <- do.call("glm", glm_call)
 
-  # remove outcome from predictors if present
-  predictors <- setdiff(predictors, outcome)
+    # generate summary using model_parameters
+    model_summary <-
+      parameters::model_parameters(original_model,
+                                   ci_method = "wald",
+                                   exponentiate = TRUE)
 
+    # make data frame
+    model_summary_df <- as.data.frame(model_summary)
 
-#  conditionally z-transform the outcome variable
-  if (z_transform) {
-    outcome_z <- paste0(outcome, "_z")  # new name for z-transformed outcome
-    dat_long[[outcome_z]] <- scale(dat_long[[outcome]], center = TRUE, scale = TRUE)
-    outcome <- outcome_z  # update outcome variable to the z-transformed version
+    # extract coefficient and CI for exposure
+    coef_exposure <-
+      model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+      dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(GLM_coefficient = Coefficient)
+
+    rownames(coef_exposure)[1] <- paste0(new_name)
+
+    # prepare the return list
+    return_list <- list(
+      "Original_Model" = original_model,
+      "Model_Summary" = model_summary,
+      "Coef_Exposure" = coef_exposure
+    )
+
+    # include data if specified
+    if (return_data) {
+      return_list$Data <- dat
+    }
+
+    return(return_list)
   }
 
-  # Initialize sample_weights to NULL
-  sample_weights <- NULL
 
-  # Conditionally set sample_weights
-  if (!is.null(sample_weights_var)) {
-    sample_weights <- dat_long[[sample_weights_var]]
+# run_glm_with_censoring_weights <- function(dat, exposure, outcome, ...) {
+#   # Other function code
+#
+#   # Create censoring formula using default_vars
+#   censoring_formula_denom <- as.formula(paste("~", paste(default_vars, collapse = " + ")))
+#
+#   # Fit model to get censoring weights using ipw package
+#   censor_weights <- ipwpoint(
+#     exposure = "t1_not_lost",
+#     family = "binomial",
+#     link = "logit",
+#     numerator = ~ 1,
+#     denominator = censoring_formula_denom,
+#     data = dat
+#   )
+#
+#   # Combine sample weights and censoring weights
+#   combined_weights <- ifelse(!is.null(dat$sample_weights_var), dat$sample_weights_var, 1) * censor_weights
+#
+#   # Include combined_weights in your glm
+#   glm_call$weights <- quote(combined_weights)
+#
+#   # Other function code
+# }
+
+
+
+
+
+
+# cate with censoring weights ---------------------------------------------
+
+# Required Libraries
+library(ipw)
+library(dplyr)
+
+library(ipw)
+library(dplyr)
+#
+# run_glm_with_censoring_weights <- function(dat, exposure, outcome, ...) {
+#   # Other function code
+#
+#   # Create censoring formula using default_vars
+#   censoring_formula_denom <- as.formula(paste("~", paste(default_vars, collapse = " + ")))
+#
+#   # Fit model to get censoring weights using ipw package
+#   censor_weights <- ipwpoint(
+#     exposure = "t1_not_lost",
+#     family = "binomial",
+#     link = "logit",
+#     numerator = ~ 1,
+#     denominator = censoring_formula_denom,
+#     data = dat
+#   )
+#
+#   # Combine sample weights and censoring weights
+#   combined_weights <- ifelse(!is.null(dat$sample_weights_var), dat$sample_weights_var, 1) * censor_weights
+#
+#   # Include combined_weights in your glm
+#   glm_call$weights <- quote(combined_weights)
+#
+#   # Other function code
+# }
+
+
+
+run_lmer <-
+  function(dat_long,
+           time_var,
+           exposure,
+           outcome,
+           return_data = FALSE,
+           z_transform = TRUE,
+           sample_weights_var = "sample_weights",
+           new_name = NULL,
+           default_vars = c(
+             "male",
+             "age",
+             "education_level_coarsen",
+             "eth_cat",
+             "nz_dep2018",
+             "nzsei13",
+             "born_nz",
+             "hlth_disability",
+             "kessler_latent_depression",
+             "kessler_latent_anxiety",
+             "total_siblings_factor",
+             "household_inc_log",
+             "partner",
+             "political_conservative",
+             "urban",
+             "children_num",
+             "hours_children_log",
+             "hours_work_log",
+             "hours_housework_log",
+             "hours_exercise_log",
+             "agreeableness",
+             "conscientiousness",
+             "extraversion",
+             "honesty_humility",
+             "openness",
+             "neuroticism",
+             "modesty"
+           )) {
+    # prepare predictor variables, removing duplicates
+    predictors <- unique(c(exposure, default_vars))
+
+    # remove outcome from predictors if present
+    predictors <- setdiff(predictors, outcome)
+
+
+    #  conditionally z-transform the outcome variable
+    if (z_transform) {
+      outcome_z <-
+        paste0(outcome, "_z")  # new name for z-transformed outcome
+      dat_long[[outcome_z]] <-
+        scale(dat_long[[outcome]], center = TRUE, scale = TRUE)
+      outcome <-
+        outcome_z  # update outcome variable to the z-transformed version
+    }
+
+    # Initialize sample_weights to NULL
+    sample_weights <- NULL
+
+    # Conditionally set sample_weights
+    if (!is.null(sample_weights_var)) {
+      sample_weights <- dat_long[[sample_weights_var]]
+    }
+
+    # construct and run the LME4 model
+    formula_str <-
+      paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
+    original_model <-
+      do.call("lmer",
+              list(
+                formula = as.formula(formula_str),
+                data = quote(dat_long),
+                weights = quote(sample_weights)
+              ))
+
+    # generate summary using model_parameters
+    model_summary <-
+      parameters::model_parameters(original_model, effects = "fixed",  ci_method = "wald")
+
+    # make data frame
+    model_summary_df <- as.data.frame(model_summary)
+
+    # # extract coefficient and CI for exposure
+    coef_exposure <-
+      model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+      dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(Multi_level_coefficient = Coefficient)
+
+    rownames(coef_exposure)[1] <- paste0(new_name)
+
+    return_list <- list(
+      "Original_Model" = original_model,
+      "Model_Summary" = model_summary,
+      "Coef_Exposure" = coef_exposure,
+    )
+
+    # include data if specified
+    if (return_data) {
+      return_list$Data <- dat
+    }
+
+    return(return_list)
   }
 
-  # construct and run the LME4 model
-  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
-  original_model <- do.call("lmer", list(formula = as.formula(formula_str), data = quote(dat_long), weights = quote(sample_weights)))
 
-  # generate summary using model_parameters
-  model_summary <- parameters::model_parameters(original_model, effects ="fixed",  ci_method = "wald")
+run_glmer <-
+  function(dat,
+           exposure,
+           outcome,
+           time_var,
+           return_data = FALSE,
+           sample_weights_var = "sample_weights",
+           family = "binomial",
+           new_name = NULL,
+           default_vars = c(
+             "male",
+             "age",
+             "education_level_coarsen",
+             "eth_cat",
+             "nz_dep2018",
+             "nzsei13",
+             "born_nz",
+             "hlth_disability",
+             "kessler_latent_depression",
+             "kessler_latent_anxiety",
+             "total_siblings_factor",
+             "household_inc_log",
+             "partner",
+             "political_conservative",
+             "urban",
+             "children_num",
+             "hours_children_log",
+             "hours_work_log",
+             "hours_housework_log",
+             "hours_exercise_log",
+             "agreeableness",
+             "conscientiousness",
+             "extraversion",
+             "honesty_humility",
+             "openness",
+             "neuroticism",
+             "modesty",
+             "religion_identification_level"
+           )) {
+    # default value for random_effects parameter
 
-  # make data frame
-  model_summary_df <- as.data.frame(model_summary)
+    # prepare predictor variables, removing duplicates
+    predictors <- unique(c(exposure, time_var, default_vars))
 
-  # # extract coefficient and CI for exposure
-  coef_exposure <- model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
-    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(Multi_level_coefficient = Coefficient)
+    # remove outcome from predictors if present
+    predictors <- setdiff(predictors, outcome)
 
-  rownames(coef_exposure)[1] <- paste0(new_name)
+    # initialise sample_weights to NULL
+    sample_weights <- NULL
 
-  return_list <- list(
-    "Original_Model" = original_model,
-    "Model_Summary" = model_summary,
-    "Coef_Exposure" = coef_exposure,
-  )
+    # conditionally set sample_weights
+    if (!is.null(sample_weights_var)) {
+      sample_weights <- dat[[sample_weights_var]]
+    }
 
-  # include data if specified
-  if (return_data) {
-    return_list$Data <- dat
+    # construct and run the GLMER model
+    formula_str <-
+      paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
+    glmer_call <-
+      list(
+        formula = as.formula(formula_str),
+        data = quote(dat),
+        weights = quote(sample_weights),
+        family = quote(family)
+      )
+    original_model <- do.call("glmer", glmer_call)
+
+    # generate summary using model_parameters
+    model_summary <-
+      parameters::model_parameters(
+        original_model,
+        effects = "fixed",
+        ci_method = "wald",
+        exponentiate = TRUE
+      )
+
+    # make data frame
+    model_summary_df <- as.data.frame(model_summary)
+
+    # extract coefficient and CI for exposure
+    coef_exposure <-
+      model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
+      dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(GLMER_coefficient = Coefficient)
+
+    rownames(coef_exposure)[1] <- paste0(new_name)
+
+    # prepare the return list
+    return_list <- list(
+      "Original_Model" = original_model,
+      "Model_Summary" = model_summary,
+      "Coef_Exposure" = coef_exposure
+    )
+
+    # include data if specified
+    if (return_data) {
+      return_list$Data <- dat
+    }
+
+    return(return_list)
   }
-
-  return(return_list)
-}
-
-
-run_glmer <- function(dat, exposure, outcome, time_var, return_data = FALSE, sample_weights_var = "sample_weights", family = "binomial", new_name = NULL,
-                      default_vars = c(
-                        "male",
-                        "age",
-                        "education_level_coarsen",
-                        "eth_cat",
-                        "nz_dep2018",
-                        "nzsei13",
-                        "born_nz",
-                        "hlth_disability",
-                        "kessler_latent_depression",
-                        "kessler_latent_anxiety",
-                        "total_siblings_factor",
-                        "household_inc_log",
-                        "partner",
-                        "political_conservative",
-                        "urban",
-                        "children_num",
-                        "hours_children_log",
-                        "hours_work_log",
-                        "hours_housework_log",
-                        "hours_exercise_log",
-                        "agreeableness",
-                        "conscientiousness",
-                        "extraversion",
-                        "honesty_humility",
-                        "openness",
-                        "neuroticism",
-                        "modesty",
-                        "religion_identification_level"
-                      )) { # default value for random_effects parameter
-
-  # prepare predictor variables, removing duplicates
-  predictors <- unique(c(exposure, time_var, default_vars))
-
-  # remove outcome from predictors if present
-  predictors <- setdiff(predictors, outcome)
-
-  # initialise sample_weights to NULL
-  sample_weights <- NULL
-
-  # conditionally set sample_weights
-  if (!is.null(sample_weights_var)) {
-    sample_weights <- dat[[sample_weights_var]]
-  }
-
-  # construct and run the GLMER model
-  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "), "+ (1|id)")
-  glmer_call <- list(formula = as.formula(formula_str), data = quote(dat), weights = quote(sample_weights), family = quote(family))
-  original_model <- do.call("glmer", glmer_call)
-
-  # generate summary using model_parameters
-  model_summary <- parameters::model_parameters(original_model,  effects ="fixed",  ci_method = "wald", exponentiate = TRUE)
-
-  # make data frame
-  model_summary_df <- as.data.frame(model_summary)
-
-  # extract coefficient and CI for exposure
-  coef_exposure <- model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
-    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(GLMER_coefficient = Coefficient)
-
-  rownames(coef_exposure)[1] <- paste0(new_name)
-
-  # prepare the return list
-  return_list <- list(
-    "Original_Model" = original_model,
-    "Model_Summary" = model_summary,
-    "Coef_Exposure" = coef_exposure
-  )
-
-  # include data if specified
-  if (return_data) {
-    return_list$Data <- dat
-  }
-
-  return(return_list)
-}
 
 # select and rename function for simplifying lmtp -------------------------
 #
-select_and_rename_cols <- function(names_base, baseline_vars, outcome) {
-  # Select columns that match with baseline_vars
-  selected_cols <- names_base[grepl(paste(baseline_vars, collapse = "|"), names_base)]
+select_and_rename_cols <-
+  function(names_base, baseline_vars, outcome) {
+    # Select columns that match with baseline_vars
+    selected_cols <-
+      names_base[grepl(paste(baseline_vars, collapse = "|"), names_base)]
 
-  # Rename the outcome variable prefix from t2 to t0
-  outcome_renamed <- gsub("t2_", "t0_", outcome)
+    # Rename the outcome variable prefix from t2 to t0
+    outcome_renamed <- gsub("t2_", "t0_", outcome)
 
-  # Append the renamed outcome to selected columns
-  final_cols <- c(selected_cols, outcome_renamed)
+    # Append the renamed outcome to selected columns
+    final_cols <- c(selected_cols, outcome_renamed)
 
-  return(final_cols)
-}
+    return(final_cols)
+  }
 
 # example usage
 # names_base <- c("t0_eth_cat", "t0_sample_origin", "t0_total_siblings_factor", "t0_smoker_binary", "t0_male_z")
@@ -542,78 +848,89 @@ select_and_rename_cols <- function(names_base, baseline_vars, outcome) {
 # format for lmtp table---------------------------------------------------
 
 
-margot_tab_lmtp <- function(tmtp_output, scale = c("RD", "RR"), new_name = "character_string") {
+margot_tab_lmtp <-
+  function(tmtp_output,
+           scale = c("RD", "RR"),
+           new_name = "character_string") {
+    scale <- match.arg(scale)
 
-  scale <- match.arg(scale)
+    require(dplyr)
 
-  require(dplyr)
+    tab_tmle <- cbind.data.frame(
+      tmtp_output$vals$theta,
+      tmtp_output$vals$std.error,
+      tmtp_output$vals$conf.low,
+      tmtp_output$vals$conf.high
+    )
 
-  tab_tmle <- cbind.data.frame(
-    tmtp_output$vals$theta,
-    tmtp_output$vals$std.error,
-    tmtp_output$vals$conf.low,
-    tmtp_output$vals$conf.high
-  )
+    if (scale == "RD") {
+      colnames(tab_tmle) <-
+        c("E[Y(1)]-E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
+    } else if (scale == "RR") {
+      colnames(tab_tmle) <-
+        c("E[Y(1)]/E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
+    }
 
-  if (scale == "RD") {
-    colnames(tab_tmle) <- c("E[Y(1)]-E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
-  } else if (scale == "RR") {
-    colnames(tab_tmle) <- c("E[Y(1)]/E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
+    tab_tmle_round <- tab_tmle |>
+      dplyr::mutate(across(where(is.numeric), round, digits = 4))
+
+    rownames(tab_tmle_round)[1] <- paste0(new_name)
+
+    return(tab_tmle_round)
   }
-
-  tab_tmle_round <- tab_tmle |>
-    dplyr::mutate(across(where(is.numeric), round, digits = 4))
-
-  rownames(tab_tmle_round)[1] <- paste0(new_name)
-
-  return(tab_tmle_round)
-}
 
 
 
 # evalues with lmtp -------------------------------------------------------
 # takes the object outputted by the function margot_tab_lmtp()
 # note, we may want to eventually combine margot_tab_lmtp and lmtp_evalue_tab
-lmtp_evalue_tab  <- function(x, delta = 1, sd = 1, scale = c("RD","RR")) {
-  require("EValue")
-  require(dplyr)
+lmtp_evalue_tab  <-
+  function(x,
+           delta = 1,
+           sd = 1,
+           scale = c("RD", "RR")) {
+    require("EValue")
+    require(dplyr)
 
-  scale <- match.arg(scale)
+    scale <- match.arg(scale)
 
-  tab0 <- as.data.frame(x)
+    tab0 <- as.data.frame(x)
 
-  if (scale == "RD") {
-    evalout <- as.data.frame(round(EValue::evalues.OLS(tab0[1, 1],
-                                                       se = tab0[1, 2],
-                                                       sd = sd,
-                                                       delta = delta,
-                                                       true = 0
-    ),
-    4
-    ))
-  } else {
-    evalout <- as.data.frame(round(EValue::evalues.RR(tab0[1, 1],
-                                                      lo = tab0[1, 3],
-                                                      hi = tab0[1, 4],
-                                                      true = 1
-    ),
-    3
-    ))
+    if (scale == "RD") {
+      evalout <- as.data.frame(round(
+        EValue::evalues.OLS(
+          tab0[1, 1],
+          se = tab0[1, 2],
+          sd = sd,
+          delta = delta,
+          true = 0
+        ),
+        4
+      ))
+    } else {
+      evalout <- as.data.frame(round(EValue::evalues.RR(
+        tab0[1, 1],
+        lo = tab0[1, 3],
+        hi = tab0[1, 4],
+        true = 1
+      ),
+      3))
+    }
+
+    evalout2 <- subset(evalout[2, ])
+    evalout3 <- evalout2 |>
+      select_if( ~ !any(is.na(.)))
+    colnames(evalout3) <- c("E_Value", "E_Val_bound")
+
+    if (scale == "RD") {
+      tab <-
+        cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
+    } else {
+      tab <- cbind.data.frame(tab0, evalout3)
+    }
+
+    return(tab)
   }
-
-  evalout2 <- subset(evalout[2, ])
-  evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
-  colnames(evalout3) <- c("E_Value", "E_Val_bound")
-
-  if (scale == "RD") {
-    tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
-  } else {
-    tab <- cbind.data.frame(tab0, evalout3)
-  }
-
-  return(tab)
-}
 
 
 # format for lmtp table DON'T USE WRONG---------------------------------------------------
@@ -666,19 +983,33 @@ group_tab_2 <- function(df, scale = c("RR", "RD")) {
     out <- df %>%
       mutate(abs_dist = abs(`E[Y(1)]/E[Y(0)]` - 1)) %>%
       arrange(desc(abs_dist)) %>%
-      dplyr::mutate(Estimate  = as.factor(ifelse(
-        `E[Y(1)]/E[Y(0)]` > 1 & `2.5 %` > 1,
-        "positive",
-        ifelse( `E[Y(1)]/E[Y(0)]` < 1 &
-                  `97.5 %` < 1, "negative",
-                "unreliable")
-      ))) %>%
+      dplyr::mutate(Estimate  = as.factor(
+        ifelse(
+          `E[Y(1)]/E[Y(0)]` > 1 & `2.5 %` > 1,
+          "positive",
+          ifelse(`E[Y(1)]/E[Y(0)]` < 1 &
+                   `97.5 %` < 1, "negative",
+                 "unreliable")
+        )
+      )) %>%
       rownames_to_column(var = "outcome") %>%
       mutate(
         across(where(is.numeric), round, digits = 3),
         estimate_lab = ifelse(
           E_value_exists & E_Val_bound_exists,
-          paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]"),
+          paste0(
+            `E[Y(1)]/E[Y(0)]`,
+            " (",
+            `2.5 %`,
+            "-",
+            `97.5 %`,
+            ")",
+            " [EV ",
+            `E_Value`,
+            "/",
+            `E_Val_bound`,
+            "]"
+          ),
           paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")")
         )
       )
@@ -689,14 +1020,26 @@ group_tab_2 <- function(df, scale = c("RR", "RD")) {
       dplyr::mutate(Estimate  = as.factor(ifelse(
         `2.5 %` > 0 & `97.5 %` > 0,
         "positive",
-        ifelse( `2.5 %` < 0 & `97.5 %` < 0, "negative", "unreliable")
+        ifelse(`2.5 %` < 0 & `97.5 %` < 0, "negative", "unreliable")
       ))) %>%
       rownames_to_column(var = "outcome") %>%
       mutate(
         across(where(is.numeric), round, digits = 3),
         estimate_lab = ifelse(
           E_value_exists & E_Val_bound_exists,
-          paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]"),
+          paste0(
+            `E[Y(1)]-E[Y(0)]`,
+            " (",
+            `2.5 %`,
+            "-",
+            `97.5 %`,
+            ")",
+            " [EV ",
+            `E_Value`,
+            "/",
+            `E_Val_bound`,
+            "]"
+          ),
           paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")")
         )
       )
@@ -716,38 +1059,46 @@ group_tab_2 <- function(df, scale = c("RR", "RD")) {
 # The quantile() function (used here) also ignores NA values, but it calculates the quartile boundaries based on the actual values of the data. Then, the cut() function assigns each non-NA data point to a quartile based on these boundaries. If there are ties in the data that fall on a boundary, all of the tied values will be assigned to the same quartile. Note: this will typically result in quartiles that do not have an equal number of cases.
 
 # new
-create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
-  # Check if n_divisions is NULL
-  if (is.null(n_divisions)) {
-    stop("Please specify the number of divisions.")
-  }
-
-  # Calculate quantile breaks
-  quantile_breaks <- quantile(df[[var_name]], probs = seq(0, 1, 1/n_divisions), na.rm = TRUE)
-
-  # Check if breaks are unique
-  if (length(unique(quantile_breaks)) != length(quantile_breaks)) {
-    warning("Quantile breaks are not unique. The data may have many identical values, or there may be too many divisions for this data.")
-    # Adjust the breaks slightly
-    quantile_breaks <- sort(unique(quantile_breaks))
-    while (length(quantile_breaks) < n_divisions + 1) {
-      quantile_breaks <- c(quantile_breaks, max(df[[var_name]], na.rm = TRUE) + 1)
+create_ordered_variable <-
+  function(df, var_name, n_divisions = NULL) {
+    # Check if n_divisions is NULL
+    if (is.null(n_divisions)) {
+      stop("Please specify the number of divisions.")
     }
+
+    # Calculate quantile breaks
+    quantile_breaks <-
+      quantile(df[[var_name]], probs = seq(0, 1, 1 / n_divisions), na.rm = TRUE)
+
+    # Check if breaks are unique
+    if (length(unique(quantile_breaks)) != length(quantile_breaks)) {
+      warning(
+        "Quantile breaks are not unique. The data may have many identical values, or there may be too many divisions for this data."
+      )
+      # Adjust the breaks slightly
+      quantile_breaks <- sort(unique(quantile_breaks))
+      while (length(quantile_breaks) < n_divisions + 1) {
+        quantile_breaks <-
+          c(quantile_breaks, max(df[[var_name]], na.rm = TRUE) + 1)
+      }
+    }
+
+    # Create labels based on the cut points in the desired format
+    cut_labels <- paste0("tile_", 1:n_divisions)
+
+    # Create the ordered factor variable with the new labels
+    df[[paste0(var_name, "_", n_divisions, "tile")]] <-
+      cut(
+        df[[var_name]],
+        breaks = quantile_breaks,
+        labels = cut_labels,
+        ordered_result = TRUE,
+        include.lowest = TRUE
+      )
+
+    # Return the updated data frame
+    return(df)
   }
-
-  # Create labels based on the cut points in the desired format
-  cut_labels <- paste0("tile_", 1:n_divisions)
-
-  # Create the ordered factor variable with the new labels
-  df[[paste0(var_name, "_", n_divisions, "tile")]] <- cut(df[[var_name]],
-                                                          breaks = quantile_breaks,
-                                                          labels = cut_labels,
-                                                          ordered_result = TRUE,
-                                                          include.lowest = TRUE)
-
-  # Return the updated data frame
-  return(df)
-}
 
 # old
 # calculate breakpoints by quantile.  in case break points are not unique add noise to obtain approximation
@@ -786,28 +1137,31 @@ create_ordered_variable <- function(df, var_name, n_divisions = NULL) {
 # }
 
 
-create_ordered_variable_custom <- function(df, var_name, breaks, labels) {
-  # Check if breaks and labels are NULL
-  if (is.null(breaks) || is.null(labels)) {
-    stop("Please specify the breaks and labels.")
+create_ordered_variable_custom <-
+  function(df, var_name, breaks, labels) {
+    # Check if breaks and labels are NULL
+    if (is.null(breaks) || is.null(labels)) {
+      stop("Please specify the breaks and labels.")
+    }
+
+    # Check if breaks and labels have correct lengths
+    if (length(breaks) != length(labels) + 1) {
+      stop("The length of breaks should be one more than the length of labels.")
+    }
+
+    # Create the ordered factor variable with the new labels
+    df[[paste0(var_name, "_coarsen")]] <- cut(
+      df[[var_name]],
+      breaks = breaks,
+      labels = labels,
+      include.lowest = TRUE,
+      right = TRUE,
+      ordered_result = TRUE
+    )
+
+    # Return the updated data frame
+    return(df)
   }
-
-  # Check if breaks and labels have correct lengths
-  if (length(breaks) != length(labels) + 1) {
-    stop("The length of breaks should be one more than the length of labels.")
-  }
-
-  # Create the ordered factor variable with the new labels
-  df[[paste0(var_name, "_coarsen")]] <- cut(df[[var_name]],
-                                            breaks = breaks,
-                                            labels = labels,
-                                            include.lowest = TRUE,
-                                            right = TRUE,
-                                            ordered_result = TRUE)
-
-  # Return the updated data frame
-  return(df)
-}
 
 # example:
 # dt <- create_ordered_variable_custom(dt, "hours_work", c(10, 30, 41, Inf), c("[10_30)", "[30_41)", "[41_up]"))
@@ -838,65 +1192,65 @@ my_render_cat <- function(x) {
 
 
 # baseline table # currently not using the shorten option
+#
+# baseline_table <- function(df, output_format = "markdown") {
+#   df_new <- df %>%
+#     select(starts_with("t0")) %>%
+#     rename_all( ~ stringr::str_replace(., "^t0_", "")) %>%
+#     mutate(wave = factor(rep("baseline", nrow(df)))) |>
+#     janitor::clean_names(case = "screaming_snake")
+#
+#
+#   # Function to create a formula string
+#   create_formula_string <- function(df_new) {
+#     baseline_vars_names <- df_new %>%
+#       select(-WAVE) %>%
+#       colnames()
+#
+#     table_baseline_vars <-
+#       paste(baseline_vars_names, collapse = "+")
+#     formula_string_table_baseline <-
+#       paste("~", table_baseline_vars, "|WAVE")
+#
+#     return(as.formula(formula_string_table_baseline))
+#   }
 
-baseline_table <- function(df, output_format = "markdown") {
+# Custom rendering functions for table1
+# my_render_cont <- function(x) {
+#   with(stats.apply.rounding(stats.default(x), digits = 3),
+#        c("", "Mean (SD)" = sprintf("%s (&plusmn; %s)", MEAN, SD)))
+# }
 
-  df_new <- df %>%
-    select(starts_with("t0")) %>%
-    rename_all(~stringr::str_replace(., "^t0_", "")) %>%
-    mutate(wave = factor(rep("baseline", nrow(df)))) |>
-    janitor::clean_names(case = "screaming_snake")
+# my_render_cat <- function(x) {
+#   c("", sapply(stats.default(x), function(y) {
+#     with(y, sprintf("%d (%0.0f %%)", FREQ, PCT))
+#   }))
+# }
 
+# Create baseline table
+create_table_baseline <- function(df_new, formula_obj) {
+  # removed "shorten" option
+  # render_cont <- if (shorten) my_render_cont else NULL
+  # render_cat <- if (shorten) my_render_cat else NULL
 
-  # Function to create a formula string
-  create_formula_string <- function(df_new) {
-    baseline_vars_names <- df_new %>%
-      select(-WAVE) %>%
-      colnames()
-
-    table_baseline_vars <- paste(baseline_vars_names, collapse = "+")
-    formula_string_table_baseline <- paste("~", table_baseline_vars, "|WAVE")
-
-    return(as.formula(formula_string_table_baseline))
-  }
-
-  # Custom rendering functions for table1
-  # my_render_cont <- function(x) {
-  #   with(stats.apply.rounding(stats.default(x), digits = 3),
-  #        c("", "Mean (SD)" = sprintf("%s (&plusmn; %s)", MEAN, SD)))
+  #   table1::table1(formula_obj,
+  #                  data = df_new,
+  #                  overall = FALSE#,
+  #                  #  render.continuous = if (!is.null(render_cont)) render_cont else NULL,
+  #                  #  render.categorical = if (!is.null(render_cat)) render_cat else NULL)
+  #                  }
+  #
+  #
+  # # Convert table to specified format
+  # table_to_output <- function(table, format) {
+  #   table %>%
+  #     as.data.frame() %>%
+  #     kbl(format = format)
   # }
-
-  # my_render_cat <- function(x) {
-  #   c("", sapply(stats.default(x), function(y) {
-  #     with(y, sprintf("%d (%0.0f %%)", FREQ, PCT))
-  #   }))
-  # }
-
-  # Create baseline table
-  create_table_baseline <- function(df_new, formula_obj) {
-    # removed "shorten" option
-    # render_cont <- if (shorten) my_render_cont else NULL
-    # render_cat <- if (shorten) my_render_cat else NULL
-
-    table1::table1(
-      formula_obj,
-      data = df_new,
-      overall = FALSE#,
-      #  render.continuous = if (!is.null(render_cont)) render_cont else NULL,
-      #  render.categorical = if (!is.null(render_cat)) render_cat else NULL
-    )
-  }
-
-
-  # Convert table to specified format
-  table_to_output <- function(table, format) {
-    table %>%
-      as.data.frame() %>%
-      kbl(format = format)
-  }
 
   formula_obj_baseline <- create_formula_string(df_new)
-  table_baseline <- create_table_baseline(df_new, formula_obj_baseline)
+  table_baseline <-
+    create_table_baseline(df_new, formula_obj_baseline)
   table_output <- table_to_output(table_baseline, output_format)
   print(table_output)
 }
@@ -906,77 +1260,90 @@ baseline_table <- function(df, output_format = "markdown") {
 # create wide data --------------------------------------------------------
 
 # this will be the function we use eventually
-margot_wide <- function(.data, baseline_vars, exposure_var, outcome_vars) {
-  require(tidyverse)
+margot_wide <-
+  function(.data,
+           baseline_vars,
+           exposure_var,
+           outcome_vars) {
+    require(tidyverse)
 
-  # Add a check for unused levels of factor variables
-  lapply(.data, function(column) {
-    if (is.factor(column) && any(table(column) == 0)) {
-      stop("There are unused levels in the factor variable: ", deparse(substitute(column)))
+    # Add a check for unused levels of factor variables
+    lapply(.data, function(column) {
+      if (is.factor(column) && any(table(column) == 0)) {
+        stop("There are unused levels in the factor variable: ",
+             deparse(substitute(column)))
+      }
+    })
+
+    # Add the 'time' column to the data
+    data_with_time <- .data %>%
+      mutate(time = as.numeric(wave) - 1) %>%
+      arrange(id, time)
+
+    # Filter the data based on the time condition
+    data_filtered <- data_with_time %>%
+      filter(time >= 0)
+
+    # Create the wide data frame
+    wide_data <- data_filtered %>%
+      pivot_wider(
+        id_cols = id,
+        names_from = time,
+        values_from = -c(id, time),
+        names_glue = "t{time}_{.value}",
+        names_prefix = "t"
+      )
+
+    # Define a custom function to filter columns based on conditions
+    custom_col_filter <- function(col_name) {
+      if (startsWith(col_name, "t0_")) {
+        return(col_name %in% c(
+          paste0("t0_", baseline_vars),
+          paste0("t0_", exposure_var),
+          paste0("t0_", outcome_vars)
+        ))
+      } else if (startsWith(col_name, "t1_")) {
+        return(col_name %in% paste0("t1_", exposure_var))
+      } else if (grepl("^t[2-9][0-9]*_", col_name)) {
+        return(col_name %in% paste0("t2_", outcome_vars))
+      } else {
+        return(FALSE)
+      }
     }
-  })
 
-  # Add the 'time' column to the data
-  data_with_time <- .data %>%
-    mutate(time = as.numeric(wave) - 1) %>%
-    arrange(id, time)
+    # Apply the custom function to select the desired columns
+    wide_data_filtered <- wide_data %>%
+      dplyr::select(id, which(sapply(
+        colnames(wide_data), custom_col_filter
+      ))) %>%
+      dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
+      arrange(id)
 
-  # Filter the data based on the time condition
-  data_filtered <- data_with_time %>%
-    filter(time >= 0)
+    # Extract unique time values from column names
+    time_values <-
+      gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
+    time_values <- time_values[grepl("^[0-9]+$", time_values)]
+    time_values <- unique(as.numeric(time_values))
+    time_values <- time_values[order(time_values)]
 
-  # Create the wide data frame
-  wide_data <- data_filtered %>%
-    pivot_wider(
-      id_cols = id,
-      names_from = time,
-      values_from = -c(id, time),
-      names_glue = "t{time}_{.value}",
-      names_prefix = "t"
-    )
+    # Relocate columns iteratively
+    for (i in 2:(length(time_values) - 1)) {
+      wide_data_filtered <- wide_data_filtered %>%
+        dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
+    }
 
-  # Define a custom function to filter columns based on conditions
-  custom_col_filter <- function(col_name) {
-    if (startsWith(col_name, "t0_")) {
-      return(col_name %in% c(
+    # Reorder t0_ columns
+    t0_column_order <-
+      c(
         paste0("t0_", baseline_vars),
         paste0("t0_", exposure_var),
         paste0("t0_", outcome_vars)
-      ))
-    } else if (startsWith(col_name, "t1_")) {
-      return(col_name %in% paste0("t1_", exposure_var))
-    } else if (grepl("^t[2-9][0-9]*_", col_name)) {
-      return(col_name %in% paste0("t2_", outcome_vars))
-    } else {
-      return(FALSE)
-    }
+      )
+    wide_data_ordered <- wide_data_filtered %>%
+      select(id, t0_column_order, everything())
+
+    return(data.frame(wide_data_ordered)) # Ensure output is a data.frame
   }
-
-  # Apply the custom function to select the desired columns
-  wide_data_filtered <- wide_data %>%
-    dplyr::select(id, which(sapply(colnames(wide_data), custom_col_filter))) %>%
-    dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
-    arrange(id)
-
-  # Extract unique time values from column names
-  time_values <- gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
-  time_values <- time_values[grepl("^[0-9]+$", time_values)]
-  time_values <- unique(as.numeric(time_values))
-  time_values <- time_values[order(time_values)]
-
-  # Relocate columns iteratively
-  for (i in 2:(length(time_values) - 1)) {
-    wide_data_filtered <- wide_data_filtered %>%
-      dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
-  }
-
-  # Reorder t0_ columns
-  t0_column_order <- c(paste0("t0_", baseline_vars), paste0("t0_", exposure_var), paste0("t0_", outcome_vars))
-  wide_data_ordered <- wide_data_filtered %>%
-    select(id, t0_column_order, everything())
-
-  return(data.frame(wide_data_ordered)) # Ensure output is a data.frame
-}
 
 
 
@@ -985,93 +1352,108 @@ margot_wide <- function(.data, baseline_vars, exposure_var, outcome_vars) {
 
 
 
-margot_wide_impute_baseline <- function(.data, baseline_vars, exposure_var, outcome_vars) {
-  require(tidyverse)
-  require(mice)
-  library(progressr)
+margot_wide_impute_baseline <-
+  function(.data,
+           baseline_vars,
+           exposure_var,
+           outcome_vars) {
+    require(tidyverse)
+    require(mice)
+    library(progressr)
 
 
-  # add a check for unused levels of factor variables
-  lapply(.data, function(column) {
-    if (is.factor(column) && any(table(column) == 0)) {
-      stop("There are unused levels in the factor variable: ", deparse(substitute(column)))
+    # add a check for unused levels of factor variables
+    lapply(.data, function(column) {
+      if (is.factor(column) && any(table(column) == 0)) {
+        stop("There are unused levels in the factor variable: ",
+             deparse(substitute(column)))
+      }
+    })
+
+    # add the 'time' column to the data
+    data_with_time <- .data %>%
+      mutate(time = as.numeric(wave) - 1) %>%
+      arrange(id, time)
+
+    # Filter the data based on the time condition
+    data_filtered <- data_with_time %>%
+      filter(time >= 0)
+
+    # Create the wide data frame
+    wide_data <- data_filtered %>%
+      pivot_wider(
+        id_cols = id,
+        names_from = time,
+        values_from = -c(id, time),
+        names_glue = "t{time}_{.value}",
+        names_prefix = "t"
+      )
+
+    # Identify the columns starting with "t0_" that need to be imputed
+    t0_columns <-
+      grepl("^t0_", names(wide_data)) &
+      names(wide_data) %in% paste0("t0_", c(baseline_vars, exposure_var, outcome_vars))
+
+    # Apply the imputation
+    t0_data <- wide_data[, t0_columns, drop = FALSE]
+    imputed_data <- mice(t0_data, method = 'pmm', m = 1)
+    complete_t0_data <- complete(imputed_data, 1)
+
+    # Merge the imputed data back into the wide data
+    wide_data[, t0_columns] <- complete_t0_data
+
+    # Define a custom function to filter columns based on conditions
+    custom_col_filter <- function(col_name) {
+      if (startsWith(col_name, "t0_")) {
+        return(col_name %in% c(
+          paste0("t0_", baseline_vars),
+          paste0("t0_", exposure_var),
+          paste0("t0_", outcome_vars)
+        ))
+      } else if (startsWith(col_name, "t1_")) {
+        return(col_name %in% paste0("t1_", exposure_var))
+      } else if (grepl("^t[2-9][0-9]*_", col_name)) {
+        return(col_name %in% paste0("t2_", outcome_vars))
+      } else {
+        return(FALSE)
+      }
     }
-  })
 
-  # add the 'time' column to the data
-  data_with_time <- .data %>%
-    mutate(time = as.numeric(wave) - 1) %>%
-    arrange(id, time)
+    # Apply the custom function to select the desired columns
+    wide_data_filtered <- wide_data %>%
+      dplyr::select(id, which(sapply(
+        colnames(wide_data), custom_col_filter
+      ))) %>%
+      dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
+      arrange(id)
 
-  # Filter the data based on the time condition
-  data_filtered <- data_with_time %>%
-    filter(time >= 0)
+    # Extract unique time values from column names
+    time_values <-
+      gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
+    time_values <- time_values[grepl("^[0-9]+$", time_values)]
+    time_values <- unique(as.numeric(time_values))
+    time_values <- time_values[order(time_values)]
 
-  # Create the wide data frame
-  wide_data <- data_filtered %>%
-    pivot_wider(
-      id_cols = id,
-      names_from = time,
-      values_from = -c(id, time),
-      names_glue = "t{time}_{.value}",
-      names_prefix = "t"
-    )
+    # Relocate columns iteratively
+    for (i in 2:(length(time_values) - 1)) {
+      wide_data_filtered <- wide_data_filtered %>%
+        dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
+    }
 
-  # Identify the columns starting with "t0_" that need to be imputed
-  t0_columns <- grepl("^t0_", names(wide_data)) & names(wide_data) %in% paste0("t0_", c(baseline_vars, exposure_var, outcome_vars))
-
-  # Apply the imputation
-  t0_data <- wide_data[, t0_columns, drop=FALSE]
-  imputed_data <- mice(t0_data, method='pmm', m=1)
-  complete_t0_data <- complete(imputed_data, 1)
-
-  # Merge the imputed data back into the wide data
-  wide_data[, t0_columns] <- complete_t0_data
-
-  # Define a custom function to filter columns based on conditions
-  custom_col_filter <- function(col_name) {
-    if (startsWith(col_name, "t0_")) {
-      return(col_name %in% c(
+    # Reorder t0_ columns
+    t0_column_order <-
+      c(
         paste0("t0_", baseline_vars),
         paste0("t0_", exposure_var),
         paste0("t0_", outcome_vars)
-      ))
-    } else if (startsWith(col_name, "t1_")) {
-      return(col_name %in% paste0("t1_", exposure_var))
-    } else if (grepl("^t[2-9][0-9]*_", col_name)) {
-      return(col_name %in% paste0("t2_", outcome_vars))
-    } else {
-      return(FALSE)
-    }
+      )
+    wide_data_ordered <- wide_data_filtered %>%
+      select(id, t0_column_order, everything())
+
+    return(data.frame(wide_data_ordered)) # Ensure output is a data.frame
+
+    return(data.frame(wide_data_ordered)) # Ensure output is a data.frame
   }
-
-  # Apply the custom function to select the desired columns
-  wide_data_filtered <- wide_data %>%
-    dplyr::select(id, which(sapply(colnames(wide_data), custom_col_filter))) %>%
-    dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
-    arrange(id)
-
-  # Extract unique time values from column names
-  time_values <- gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
-  time_values <- time_values[grepl("^[0-9]+$", time_values)]
-  time_values <- unique(as.numeric(time_values))
-  time_values <- time_values[order(time_values)]
-
-  # Relocate columns iteratively
-  for (i in 2:(length(time_values) - 1)) {
-    wide_data_filtered <- wide_data_filtered %>%
-      dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
-  }
-
-  # Reorder t0_ columns
-  t0_column_order <- c(paste0("t0_", baseline_vars), paste0("t0_", exposure_var), paste0("t0_", outcome_vars))
-  wide_data_ordered <- wide_data_filtered %>%
-    select(id, t0_column_order, everything())
-
-  return(data.frame(wide_data_ordered)) # Ensure output is a data.frame
-
-  return(data.frame(wide_data_ordered)) # Ensure output is a data.frame
-}
 
 
 
@@ -1144,135 +1526,155 @@ margot_wide_impute_baseline <- function(.data, baseline_vars, exposure_var, outc
 
 
 # older versions
-create_wide_data <- function(dat_long, baseline_vars, exposure_var, outcome_vars, exclude_vars = c()) {
-  require(tidyverse)
-  # Add the 'time' column to the data
-  data_with_time <- dat_long %>%
-    mutate(time = as.numeric(wave) - 1) %>%
-    arrange(id, time)
+create_wide_data <-
+  function(dat_long,
+           baseline_vars,
+           exposure_var,
+           outcome_vars,
+           exclude_vars = c()) {
+    require(tidyverse)
+    # Add the 'time' column to the data
+    data_with_time <- dat_long %>%
+      mutate(time = as.numeric(wave) - 1) %>%
+      arrange(id, time)
 
-  # Filter the data based on the time condition
-  data_filtered <- data_with_time %>%
-    filter(time >= 0)
+    # Filter the data based on the time condition
+    data_filtered <- data_with_time %>%
+      filter(time >= 0)
 
-  # Create the wide data frame
-  wide_data <- data_filtered %>%
-    dplyr::select(-exclude_vars)  %>%  # Exclude specified variables
-    pivot_wider(
-      id_cols = id,
-      names_from = time,
-      values_from = -c(id, time),
-      names_glue = "t{time}_{.value}",
-      names_prefix = "t"
-    )
+    # Create the wide data frame
+    wide_data <- data_filtered %>%
+      dplyr::select(-exclude_vars)  %>%  # Exclude specified variables
+      pivot_wider(
+        id_cols = id,
+        names_from = time,
+        values_from = -c(id, time),
+        names_glue = "t{time}_{.value}",
+        names_prefix = "t"
+      )
 
-  # Define a custom function to filter columns based on conditions
-  custom_col_filter <- function(col_name) {
-    if (startsWith(col_name, "t0_")) {
-      return(col_name %in% c(
+    # Define a custom function to filter columns based on conditions
+    custom_col_filter <- function(col_name) {
+      if (startsWith(col_name, "t0_")) {
+        return(col_name %in% c(
+          paste0("t0_", baseline_vars),
+          paste0("t0_", exposure_var),
+          paste0("t0_", outcome_vars)
+        ))
+      } else if (startsWith(col_name, "t1_")) {
+        return(col_name %in% paste0("t1_", exposure_var))
+      } else if (startsWith(col_name, "t2_")) {
+        return(col_name %in% paste0("t2_", outcome_vars))
+      } else if (startsWith(col_name, "t3_")) {
+        return(col_name %in% paste0("t3_", outcome_vars))
+      } else {
+        return(FALSE)
+      }
+    }
+
+    # Apply the custom function to select the desired columns
+    wide_data_filtered <- wide_data %>%
+      dplyr::select(id, which(sapply(
+        colnames(wide_data), custom_col_filter
+      ))) %>%
+      dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
+      dplyr::relocate(starts_with("t2_"), .after = starts_with("t1_"))  %>%
+      dplyr::relocate(starts_with("t3_"), .after = starts_with("t2_"))  %>%
+      arrange(id)
+
+    # Reorder t0_ columns
+    t0_column_order <-
+      c(
         paste0("t0_", baseline_vars),
         paste0("t0_", exposure_var),
         paste0("t0_", outcome_vars)
-      ))
-    } else if (startsWith(col_name, "t1_")) {
-      return(col_name %in% paste0("t1_", exposure_var))
-    } else if (startsWith(col_name, "t2_")) {
-      return(col_name %in% paste0("t2_", outcome_vars))
-    } else if (startsWith(col_name, "t3_")) {
-      return(col_name %in% paste0("t3_", outcome_vars))
-    } else {
-      return(FALSE)
-    }
-  }
-
-  # Apply the custom function to select the desired columns
-  wide_data_filtered <- wide_data %>%
-    dplyr::select(id, which(sapply(colnames(wide_data), custom_col_filter))) %>%
-    dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
-    dplyr::relocate(starts_with("t2_"), .after = starts_with("t1_"))  %>%
-    dplyr::relocate(starts_with("t3_"), .after = starts_with("t2_"))  %>%
-    arrange(id)
-
-  # Reorder t0_ columns
-  t0_column_order <-
-    c(
-      paste0("t0_", baseline_vars),
-      paste0("t0_", exposure_var),
-      paste0("t0_", outcome_vars)
-    )
-  wide_data_ordered <- wide_data_filtered %>%
-    select(id, t0_column_order, everything()) #%>%
+      )
+    wide_data_ordered <- wide_data_filtered %>%
+      select(id, t0_column_order, everything()) #%>%
     #select(-id)
 
-  return(wide_data_ordered)
-}
+    return(wide_data_ordered)
+  }
 
 # older
-create_wide_data_general <- function(dat_long, baseline_vars, exposure_var, outcome_vars, exclude_vars = c()) {
-  require(tidyverse)
-  # Add the 'time' column to the data
-  data_with_time <- dat_long %>%
-    mutate(time = as.numeric(wave) - 1) %>%
-    arrange(id, time)
+create_wide_data_general <-
+  function(dat_long,
+           baseline_vars,
+           exposure_var,
+           outcome_vars,
+           exclude_vars = c()) {
+    require(tidyverse)
+    # Add the 'time' column to the data
+    data_with_time <- dat_long %>%
+      mutate(time = as.numeric(wave) - 1) %>%
+      arrange(id, time)
 
-  # Filter the data based on the time condition
-  data_filtered <- data_with_time %>%
-    filter(time >= 0)
+    # Filter the data based on the time condition
+    data_filtered <- data_with_time %>%
+      filter(time >= 0)
 
-  # Create the wide data frame
-  wide_data <- data_filtered %>%
-    dplyr::select(-exclude_vars)  %>%  # Exclude specified variables
-    pivot_wider(
-      id_cols = id,
-      names_from = time,
-      values_from = -c(id, time),
-      names_glue = "t{time}_{.value}",
-      names_prefix = "t"
-    )
+    # Create the wide data frame
+    wide_data <- data_filtered %>%
+      dplyr::select(-exclude_vars)  %>%  # Exclude specified variables
+      pivot_wider(
+        id_cols = id,
+        names_from = time,
+        values_from = -c(id, time),
+        names_glue = "t{time}_{.value}",
+        names_prefix = "t"
+      )
 
-  # Define a custom function to filter columns based on conditions
-  custom_col_filter <- function(col_name) {
-    if (startsWith(col_name, "t0_")) {
-      return(col_name %in% c(
+    # Define a custom function to filter columns based on conditions
+    custom_col_filter <- function(col_name) {
+      if (startsWith(col_name, "t0_")) {
+        return(col_name %in% c(
+          paste0("t0_", baseline_vars),
+          paste0("t0_", exposure_var),
+          paste0("t0_", outcome_vars)
+        ))
+      } else if (startsWith(col_name, "t1_")) {
+        return(col_name %in% paste0("t1_", exposure_var))
+      } else if (grepl("^t[2-9][0-9]*_", col_name)) {
+        return(col_name %in% paste0("t2_", outcome_vars))
+      } else {
+        return(FALSE)
+      }
+    }
+
+    # Apply the custom function to select the desired columns
+    wide_data_filtered <- wide_data %>%
+      dplyr::select(id, which(sapply(
+        colnames(wide_data), custom_col_filter
+      ))) %>%
+      dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
+      arrange(id)
+
+    # Extract unique time values from column names
+    time_values <-
+      gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
+    time_values <- time_values[grepl("^[0-9]+$", time_values)]
+    time_values <- unique(as.numeric(time_values))
+    time_values <- time_values[order(time_values)]
+
+    # Relocate columns iteratively
+    for (i in 2:(length(time_values) - 1)) {
+      wide_data_filtered <- wide_data_filtered %>%
+        dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
+    }
+
+    # Reorder t0_ columns
+    t0_column_order <-
+      c(
         paste0("t0_", baseline_vars),
         paste0("t0_", exposure_var),
         paste0("t0_", outcome_vars)
-      ))
-    } else if (startsWith(col_name, "t1_")) {
-      return(col_name %in% paste0("t1_", exposure_var))
-    } else if (grepl("^t[2-9][0-9]*_", col_name)) {
-      return(col_name %in% paste0("t2_", outcome_vars))
-    } else {
-      return(FALSE)
-    }
+      )
+    wide_data_ordered <- wide_data_filtered %>%
+      select(id, t0_column_order, everything()) #%>%
+    # select(-id)
+
+    return(wide_data_ordered)
   }
-
-  # Apply the custom function to select the desired columns
-  wide_data_filtered <- wide_data %>%
-    dplyr::select(id, which(sapply(colnames(wide_data), custom_col_filter))) %>%
-    dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
-    arrange(id)
-
-  # Extract unique time values from column names
-  time_values <- gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
-  time_values <- time_values[grepl("^[0-9]+$", time_values)]
-  time_values <- unique(as.numeric(time_values))
-  time_values <- time_values[order(time_values)]
-
-  # Relocate columns iteratively
-  for (i in 2:(length(time_values) - 1)) {
-    wide_data_filtered <- wide_data_filtered %>%
-      dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
-  }
-
-  # Reorder t0_ columns
-  t0_column_order <- c(paste0("t0_", baseline_vars), paste0("t0_", exposure_var), paste0("t0_", outcome_vars))
-  wide_data_ordered <- wide_data_filtered %>%
-    select(id, t0_column_order, everything()) #%>%
-   # select(-id)
-
-  return(wide_data_ordered)
-}
 
 
 # create_filter_wide_dataframes -------------------------------------------
@@ -1289,8 +1691,10 @@ margot_filter <- function(dat_wide, exposure_vars) {
   }
 
   # Get factor and continuous exposure variables
-  factor_exposure_vars <- exposure_vars[sapply(dat_wide[exposure_vars], is.factor)]
-  continuous_exposure_vars <- setdiff(exposure_vars, factor_exposure_vars)
+  factor_exposure_vars <-
+    exposure_vars[sapply(dat_wide[exposure_vars], is.factor)]
+  continuous_exposure_vars <-
+    setdiff(exposure_vars, factor_exposure_vars)
 
   if (length(factor_exposure_vars) > 1) {
     stop("More than one factor exposure variable is not allowed")
@@ -1324,45 +1728,48 @@ margot_filter <- function(dat_wide, exposure_vars) {
 
 
 
-create_filtered_wide_dataframes <- function(dat_wide, exposure_vars) {
-  # Check if exposure_vars are in dat_wide
-  for (exposure_var in exposure_vars) {
-    if (!exposure_var %in% names(dat_wide)) {
-      stop(paste("exposure_var", exposure_var, "is not in the dataframe"))
+create_filtered_wide_dataframes <-
+  function(dat_wide, exposure_vars) {
+    # Check if exposure_vars are in dat_wide
+    for (exposure_var in exposure_vars) {
+      if (!exposure_var %in% names(dat_wide)) {
+        stop(paste("exposure_var", exposure_var, "is not in the dataframe"))
+      }
     }
-  }
 
-  # Get factor and continuous exposure variables
-  factor_exposure_vars <- exposure_vars[sapply(dat_wide[exposure_vars], is.factor)]
-  continuous_exposure_vars <- setdiff(exposure_vars, factor_exposure_vars)
+    # Get factor and continuous exposure variables
+    factor_exposure_vars <-
+      exposure_vars[sapply(dat_wide[exposure_vars], is.factor)]
+    continuous_exposure_vars <-
+      setdiff(exposure_vars, factor_exposure_vars)
 
-  if (length(factor_exposure_vars) > 1) {
-    stop("More than one factor exposure variable is not allowed")
-  }
-
-  # Create a list to store the filtered dataframes
-  list_filtered_df <- list()
-
-  if (length(factor_exposure_vars) == 1) {
-    # Get levels of the factor
-    factor_levels <- levels(dat_wide[[factor_exposure_vars]])
-
-    # Loop over each level and filter the dataframe
-    for (level in factor_levels) {
-      filtered_df <- dat_wide %>%
-        filter((!!rlang::sym(factor_exposure_vars)) == level) %>%
-        arrange(id)
-
-      list_filtered_df[[level]] <- filtered_df
+    if (length(factor_exposure_vars) > 1) {
+      stop("More than one factor exposure variable is not allowed")
     }
-  } else {
-    # If there are no factor exposure variables, just arrange by id
-    filtered_df <- dat_wide %>% arrange(id)
-    list_filtered_df[["data"]] <- filtered_df
-  }
 
-  return(list_filtered_df)
-}
+    # Create a list to store the filtered dataframes
+    list_filtered_df <- list()
+
+    if (length(factor_exposure_vars) == 1) {
+      # Get levels of the factor
+      factor_levels <- levels(dat_wide[[factor_exposure_vars]])
+
+      # Loop over each level and filter the dataframe
+      for (level in factor_levels) {
+        filtered_df <- dat_wide %>%
+          filter((!!rlang::sym(factor_exposure_vars)) == level) %>%
+          arrange(id)
+
+        list_filtered_df[[level]] <- filtered_df
+      }
+    } else {
+      # If there are no factor exposure variables, just arrange by id
+      filtered_df <- dat_wide %>% arrange(id)
+      list_filtered_df[["data"]] <- filtered_df
+    }
+
+    return(list_filtered_df)
+  }
 
 # test
 # Assume dat_long, baseline_vars, exposure_var, outcome_vars, and exclude_vars are defined
@@ -1381,76 +1788,89 @@ create_filtered_wide_dataframes <- function(dat_wide, exposure_vars) {
 
 # impute data by exposure level of variable -------------------------------
 
-impute_and_combine <- function(list_df, m = 10, exclude_vars = c("t0_sample_frame", "id", "t0_sample_origin_names_combined")) {
-  if (!require(mice, quietly = TRUE) || !require(dplyr, quietly = TRUE) || !require(miceadds, quietly = TRUE)) {
-    stop("The 'mice', 'dplyr', and 'miceadds' packages are required for this function to work. Please install them.")
+impute_and_combine <-
+  function(list_df,
+           m = 10,
+           exclude_vars = c("t0_sample_frame", "id", "t0_sample_origin_names_combined")) {
+    if (!require(mice, quietly = TRUE) ||
+        !require(dplyr, quietly = TRUE) ||
+        !require(miceadds, quietly = TRUE)) {
+      stop(
+        "The 'mice', 'dplyr', and 'miceadds' packages are required for this function to work. Please install them."
+      )
+    }
+
+    # The lapply function is used here to iterate over the list of data frames,
+    # which is more efficient and cleaner than a for loop.
+    list_completed_df <- lapply(list_df, function(df) {
+      # Create predictor matrix
+      init = mice::mice(df, maxit = 0)
+      predictorMatrix = init$predictorMatrix
+
+      # Exclude variables
+      predictorMatrix[, intersect(colnames(predictorMatrix), exclude_vars)] = 0
+
+      # Perform multiple imputation
+      mice_df <-
+        mice::mice(df, m = m, predictorMatrix = predictorMatrix)
+
+      # Complete the data
+      completed_df <- mice::complete(mice_df,  action = 'long')
+
+      # Reset rownames
+      rownames(completed_df) <- NULL
+
+      completed_df
+    })
+
+    # Bind rows
+    complete_df <- dplyr::bind_rows(list_completed_df)
+
+    # Assign new .imp and .id values
+    complete_df <- complete_df %>%
+      dplyr::group_by(.imp) %>%
+      dplyr::mutate(.id = row_number()) %>%
+      dplyr::ungroup()
+
+    # Convert to a list of data frames
+    data_list <- split(complete_df, complete_df$.imp)
+
+    # Convert to mids
+    mids_df <- miceadds::datalist2mids(data_list, progress = FALSE)
+
+    return(mids_df)
   }
-
-  # The lapply function is used here to iterate over the list of data frames,
-  # which is more efficient and cleaner than a for loop.
-  list_completed_df <- lapply(list_df, function(df) {
-    # Create predictor matrix
-    init = mice::mice(df, maxit = 0)
-    predictorMatrix = init$predictorMatrix
-
-    # Exclude variables
-    predictorMatrix[, intersect(colnames(predictorMatrix), exclude_vars)] = 0
-
-    # Perform multiple imputation
-    mice_df <- mice::mice(df, m = m, predictorMatrix = predictorMatrix)
-
-    # Complete the data
-    completed_df <- mice::complete(mice_df,  action = 'long')
-
-    # Reset rownames
-    rownames(completed_df) <- NULL
-
-    completed_df
-  })
-
-  # Bind rows
-  complete_df <- dplyr::bind_rows(list_completed_df)
-
-  # Assign new .imp and .id values
-  complete_df <- complete_df %>%
-    dplyr::group_by(.imp) %>%
-    dplyr::mutate(
-      .id = row_number()
-    ) %>%
-    dplyr::ungroup()
-
-  # Convert to a list of data frames
-  data_list <- split(complete_df, complete_df$.imp)
-
-  # Convert to mids
-  mids_df <- miceadds::datalist2mids(data_list, progress=FALSE)
-
-  return(mids_df)
-}
 
 
 # matching ----------------------------------------------------------------
 # method for propensity scores
 
-match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
-  require(WeightIt)
-  require(MatchThem)
+match_mi <-
+  function(data,
+           X,
+           baseline_vars ,
+           estimand,
+           method,
+           sample_weights) {
+    require(WeightIt)
+    require(MatchThem)
 
-  # if not binary, we model the interacton to obtain better weights
-  # not we can add survey weights at this point.
+    # if not binary, we model the interacton to obtain better weights
+    # not we can add survey weights at this point.
 
-  formula_str <- paste(X, "~", paste(baseline_vars, collapse = "+"))
+    formula_str <-
+      paste(X, "~", paste(baseline_vars, collapse = "+"))
 
-  dt_match <- weightthem(
-    as.formula(formula_str),
-    weights = sample_weights,
-    data,
-    estimand = estimand,
-    stabilize = TRUE,
-    method = method
-  )
-  dt_match
-}
+    dt_match <- weightthem(
+      as.formula(formula_str),
+      weights = sample_weights,
+      data,
+      estimand = estimand,
+      stabilize = TRUE,
+      method = method
+    )
+    dt_match
+  }
 
 
 
@@ -1506,64 +1926,81 @@ match_mi <- function(data, X, baseline_vars ,estimand, method, sample_weights) {
 
 
 # general function (work in progress)
-match_mi_general <- function(data, X, baseline_vars, estimand, method,  subgroup = NULL, focal = NULL, sample_weights = NULL) {
-  if (!requireNamespace("WeightIt", quietly = TRUE)) {
-    stop("Package 'WeightIt' is required but not installed. Please install it using 'install.packages(\"WeightIt\")'.")
-  }
-
-  if (!requireNamespace("MatchThem", quietly = TRUE)) {
-    stop("Package 'MatchThem' is required but not installed. Please install it using 'install.packages(\"MatchThem\")'.")
-  }
-
-  data_class <- class(data)
-
-  if (!data_class %in% c("mids", "data.frame")) {
-    stop("Input data must be either 'mids' or 'data.frame' object")
-  }
-
-  formula_str <- as.formula(paste(X, "~", paste(baseline_vars, collapse = "+")))
-
-  weight_function <- if (data_class == "mids") weightthem else weightit
-
-  perform_matching <- function(data_subset) {
-    if (is.null(sample_weights)) {
-      weight_function(
-        formula = formula_str,
-        data = data_subset,
-        estimand = estimand,
-        stabilize = TRUE,
-        method = method,
-        focal = focal
-      )
-    } else {
-      weight_function(
-        formula = formula_str,
-        data = data_subset,
-        estimand = estimand,
-        stabilize = TRUE,
-        method = method,
-        sample_weights = sample_weights,
-        focal = focal
+match_mi_general <-
+  function(data,
+           X,
+           baseline_vars,
+           estimand,
+           method,
+           subgroup = NULL,
+           focal = NULL,
+           sample_weights = NULL) {
+    if (!requireNamespace("WeightIt", quietly = TRUE)) {
+      stop(
+        "Package 'WeightIt' is required but not installed. Please install it using 'install.packages(\"WeightIt\")'."
       )
     }
+
+    if (!requireNamespace("MatchThem", quietly = TRUE)) {
+      stop(
+        "Package 'MatchThem' is required but not installed. Please install it using 'install.packages(\"MatchThem\")'."
+      )
+    }
+
+    data_class <- class(data)
+
+    if (!data_class %in% c("mids", "data.frame")) {
+      stop("Input data must be either 'mids' or 'data.frame' object")
+    }
+
+    formula_str <-
+      as.formula(paste(X, "~", paste(baseline_vars, collapse = "+")))
+
+    weight_function <-
+      if (data_class == "mids")
+        weightthem
+    else
+      weightit
+
+    perform_matching <- function(data_subset) {
+      if (is.null(sample_weights)) {
+        weight_function(
+          formula = formula_str,
+          data = data_subset,
+          estimand = estimand,
+          stabilize = TRUE,
+          method = method,
+          focal = focal
+        )
+      } else {
+        weight_function(
+          formula = formula_str,
+          data = data_subset,
+          estimand = estimand,
+          stabilize = TRUE,
+          method = method,
+          sample_weights = sample_weights,
+          focal = focal
+        )
+      }
+    }
+
+    if (is.null(subgroup)) {
+      dt_match <- perform_matching(data)
+    } else {
+      levels_list <- unique(data[[subgroup]])
+
+      dt_match_list <- lapply(levels_list, function(level) {
+        data_subset <- data[data[[subgroup]] == level, ]
+        perform_matching(data_subset)
+      })
+
+      names(dt_match_list) <- levels_list
+      dt_match <- dt_match_list
+    }
+
+    return(dt_match)
   }
-
-  if (is.null(subgroup)) {
-    dt_match <- perform_matching(data)
-  } else {
-    levels_list <- unique(data[[subgroup]])
-
-    dt_match_list <- lapply(levels_list, function(level) {
-      data_subset <- data[data[[subgroup]] == level, ]
-      perform_matching(data_subset)
-    })
-
-    names(dt_match_list) <- levels_list
-    dt_match <- dt_match_list
-  }
-
-  return(dt_match)
-}
 
 
 # latest double robust estimator and table --------------------------------
@@ -1734,48 +2171,104 @@ causal_contrast_engine <- function(df,
                                    splines = FALSE,
                                    vcov = "HC2",
                                    verbose = FALSE) {
-
   # Check if required packages are installed
   required_packages <- c("clarify", "rlang", "glue", "parallel")
   for (pkg in required_packages) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
-      stop(paste0("Package '", pkg, "' is needed for this function but is not installed"))
+      stop(paste0(
+        "Package '",
+        pkg,
+        "' is needed for this function but is not installed"
+      ))
     }
   }
 
   # check if the family argument is valid
   if (is.character(family)) {
-    if (!family %in% c("gaussian", "binomial", "Gamma", "inverse.gaussian", "poisson", "quasibinomial", "quasipoisson", "quasi")) {
+    if (!family %in% c(
+      "gaussian",
+      "binomial",
+      "Gamma",
+      "inverse.gaussian",
+      "poisson",
+      "quasibinomial",
+      "quasipoisson",
+      "quasi"
+    )) {
       stop("Invalid 'family' argument. Please specify a valid family function.")
     }
-    family_fun <- get(family, mode = "function", envir = parent.frame())
+    family_fun <-
+      get(family, mode = "function", envir = parent.frame())
   } else if (class(family) %in% c("family", "quasi")) {
     family_fun <- family
   } else {
-    stop("Invalid 'family' argument. Please specify a valid family function or character string.")
+    stop(
+      "Invalid 'family' argument. Please specify a valid family function or character string."
+    )
   }
 
   # build formula string
-  build_formula_str <- function(Y, X, continuous_X, splines, baseline_vars) {
-    if (continuous_X && splines) {
-      return(paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")"))
-    } else {
-      return(paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")"))
+  build_formula_str <-
+    function(Y,
+             X,
+             continuous_X,
+             splines,
+             baseline_vars) {
+      if (continuous_X && splines) {
+        return(paste(
+          Y,
+          "~ bs(",
+          X ,
+          ")",
+          "*",
+          "(",
+          paste(baseline_vars, collapse = "+"),
+          ")"
+        ))
+      } else {
+        return(paste(
+          Y,
+          "~",
+          X ,
+          "*",
+          "(",
+          paste(baseline_vars, collapse = "+"),
+          ")"
+        ))
+      }
     }
-  }
 
   # fit models using the complete datasets (all imputations) or single dataset
   if ("wimids" %in% class(df)) {
     fits <- purrr::map(complete(df, "all"), function(d) {
-      weight_var <- if (weights) d$weights else NULL
-      formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
-      glm(as.formula(formula_str), weights = weight_var, family = family_fun, data = d)
+      weight_var <- if (weights)
+        d$weights
+      else
+        NULL
+      formula_str <-
+        build_formula_str(Y, X, continuous_X, splines, baseline_vars)
+      glm(
+        as.formula(formula_str),
+        weights = weight_var,
+        family = family_fun,
+        data = d
+      )
     })
     sim.imp <- misim(fits, n = nsims, vcov = vcov)
   } else {
-    weight_var <- if (weights) df$weights else NULL
-    formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
-    fit <- glm(as.formula(formula_str), weights = weight_var, family = family_fun, data = df)
+    weight_var <- if (weights)
+      df$weights
+    else
+      NULL
+    formula_str <-
+      build_formula_str(Y, X, continuous_X, splines, baseline_vars)
+    fit <-
+      glm(
+        as.formula(formula_str),
+        weights = weight_var,
+        family = family_fun,
+        data = df
+      )
     sim.imp <- sim(fit, n = nsims, vcov = vcov)
   }
 
@@ -1787,19 +2280,40 @@ causal_contrast_engine <- function(df,
   # Fit models using the complete datasets (all imputations)
   fits <-  lapply(complete(df, "all"), function(d) {
     # Set weights variable based on the value of 'weights' argument
-    weight_var <- if (weights) d$weights else NULL
+    weight_var <- if (weights)
+      d$weights
+    else
+      NULL
 
     # check if continuous_X and splines are both TRUE
     if (continuous_X && splines) {
       require(splines) # splines package
-      formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
+      formula_str <-
+        paste(Y,
+              "~ bs(",
+              X ,
+              ")",
+              "*",
+              "(",
+              paste(baseline_vars, collapse = "+"),
+              ")")
     } else {
-      formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+      formula_str <-
+        paste(Y,
+              "~",
+              X ,
+              "*",
+              "(",
+              paste(baseline_vars, collapse = "+"),
+              ")")
     }
 
     glm(
       as.formula(formula_str),
-      weights = if (!is.null(weight_var)) weight_var else NULL,
+      weights = if (!is.null(weight_var))
+        weight_var
+      else
+        NULL,
       family = family,
       data = d
     )
@@ -1814,13 +2328,19 @@ causal_contrast_engine <- function(df,
     # build dynamic expression for subsetting
     subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
 
-    sim_estimand <- sim_ame(sim.imp,
-                            var = X,
-                            subset = eval(subset_expr),
-                            cl = cores,
-                            verbose = FALSE)
+    sim_estimand <- sim_ame(
+      sim.imp,
+      var = X,
+      subset = eval(subset_expr),
+      cl = cores,
+      verbose = FALSE
+    )
   } else {
-    sim_estimand <- sim_ame(sim.imp, var = X, cl = cores, verbose = FALSE)
+    sim_estimand <-
+      sim_ame(sim.imp,
+              var = X,
+              cl = cores,
+              verbose = FALSE)
 
     # convert treat_0 and treat_1 into strings that represent the column names
     treat_0_name <- paste0("`E[Y(", treat_0, ")]`")
@@ -1831,7 +2351,8 @@ causal_contrast_engine <- function(df,
       rr_expression <- rlang::parse_expr(rr_expression_str)
 
       # create a new column RR in the sim_estimand object
-      sim_estimand <- transform(sim_estimand, RR = eval(rr_expression))
+      sim_estimand <-
+        transform(sim_estimand, RR = eval(rr_expression))
 
       # create a summary of sim_estimand
       sim_estimand_summary <- summary(sim_estimand)
@@ -1843,7 +2364,8 @@ causal_contrast_engine <- function(df,
       rd_expression <- rlang::parse_expr(rd_expression_str)
 
       # Create a new column RD in the sim_estimand object
-      sim_estimand <- transform(sim_estimand, RD = eval(rd_expression))
+      sim_estimand <-
+        transform(sim_estimand, RD = eval(rd_expression))
 
       # Create a summary of sim_estimand
       sim_estimand_summary <- summary(sim_estimand)
@@ -1863,84 +2385,152 @@ causal_contrast_engine <- function(df,
 # Table is much better - we drop a redundant term
 
 
-tab_ate_engine <- function(x, new_name, delta = 1, sd = 1, scale = c("RD","RR"), continuous_X = FALSE) {
-  require("EValue")
-  require(dplyr)
+tab_ate_engine <-
+  function(x,
+           new_name,
+           delta = 1,
+           sd = 1,
+           scale = c("RD", "RR"),
+           continuous_X = FALSE) {
+    require("EValue")
+    require(dplyr)
 
-  scale <- match.arg(scale)
+    scale <- match.arg(scale)
 
-  x <- as.data.frame(x)
+    x <- as.data.frame(x)
 
-  if (continuous_X) {
-    rownames(x) <- scale
-  } else{
-    x
+    if (continuous_X) {
+      rownames(x) <- scale
+    } else{
+      x
+    }
+
+    out <- x %>%
+      dplyr::filter(row.names(x) == scale) %>%
+      dplyr::mutate(across(where(is.numeric), round, digits = 4))
+
+    if (scale == "RD") {
+      out <- out %>%
+        dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
+    } else {
+      out <- out %>%
+        dplyr::rename("E[Y(1)]/E[Y(0)]" = Estimate)
+    }
+
+    rownames(out)[1] <- paste0(new_name)
+    out <- as.data.frame(out)
+
+    if (scale == "RD") {
+      tab0 <-
+        out |>  dplyr::mutate(standard_error = abs(`2.5 %` - `97.5 %`) / 3.92)
+      evalout <- as.data.frame(round(
+        EValue::evalues.OLS(
+          tab0[1, 1],
+          se = tab0[1, 4],
+          sd = sd,
+          delta = delta,
+          true = 0
+        ),
+        3
+      ))
+    } else {
+      evalout <- as.data.frame(round(EValue::evalues.RR(
+        out[1, 1],
+        lo = out[1, 2],
+        hi = out[1, 3],
+        true = 1
+      ),
+      3))
+    }
+
+    evalout2 <- subset(evalout[2, ])
+    evalout3 <- evalout2 |>
+      select_if( ~ !any(is.na(.)))
+    colnames(evalout3) <- c("E_Value", "E_Val_bound")
+
+    if (scale == "RD") {
+      tab <-
+        cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
+    } else {
+      tab <- cbind.data.frame(out, evalout3)
+    }
+
+    return(tab)
   }
 
-  out <- x %>%
-    dplyr::filter(row.names(x) == scale) %>%
-    dplyr::mutate(across(where(is.numeric), round, digits = 4))
+double_robust <-
+  function(df,
+           Y,
+           X,
+           new_name,
+           baseline_vars = baseline_vars,
+           treat_0 = 0,
+           treat_1 = 1,
+           estimand = "ATE",
+           scale = c("RR", "RD"),
+           nsims = 200,
+           cores = parallel::detectCores(),
+           family = "gaussian",
+           weights = TRUE,
+           continuous_X = FALSE,
+           splines = FALSE,
+           delta = 1,
+           sd = 1,
+           type = c("RD", "RR"),
+           vcov = "HC2") {
+    if (continuous_X) {
+      # call the causal_contrast() function if continuous_X is TRUE
+      causal_contrast_result <-
+        causal_contrast(
+          df,
+          Y,
+          X,
+          baseline_vars,
+          treat_0,
+          treat_1,
+          estimand,
+          scale,
+          nsims,
+          cores,
+          family,
+          weights,
+          continuous_X,
+          splines,
+          vcov
+        )
+    } else {
+      # call the causal_contrast_engine_dev() function if continuous_X is FALSE
+      causal_contrast_result <-
+        causal_contrast_engine(
+          df,
+          Y,
+          X,
+          baseline_vars,
+          treat_0,
+          treat_1,
+          estimand,
+          scale,
+          nsims,
+          cores,
+          family,
+          weights,
+          continuous_X,
+          splines,
+          vcov
+        )
+    }
 
-  if (scale == "RD") {
-    out <- out %>%
-      dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
-  } else {
-    out <- out %>%
-      dplyr::rename("E[Y(1)]/E[Y(0)]" = Estimate)
+    # Call the tab_ate() function with the result from causal_contrast()
+    tab_ate_result <-
+      tab_ate_engine(causal_contrast_result,
+                     new_name,
+                     delta,
+                     sd,
+                     scale,
+                     continuous_X)
+
+    return(tab_ate_result)
   }
-
-  rownames(out)[1] <- paste0(new_name)
-  out <- as.data.frame(out)
-
-  if (scale == "RD") {
-    tab0 <- out |>  dplyr::mutate(standard_error = abs(`2.5 %` - `97.5 %`) / 3.92)
-    evalout <- as.data.frame(round(EValue::evalues.OLS(tab0[1, 1],
-                                                       se = tab0[1, 4],
-                                                       sd = sd,
-                                                       delta = delta,
-                                                       true = 0
-    ),
-    3
-    ))
-  } else {
-    evalout <- as.data.frame(round(EValue::evalues.RR(out[1, 1],
-                                                      lo = out[1, 2],
-                                                      hi = out[1, 3],
-                                                      true = 1
-    ),
-    3
-    ))
-  }
-
-  evalout2 <- subset(evalout[2, ])
-  evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
-  colnames(evalout3) <- c("E_Value", "E_Val_bound")
-
-  if (scale == "RD") {
-    tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
-  } else {
-    tab <- cbind.data.frame(out, evalout3)
-  }
-
-  return(tab)
-}
-
-double_robust <- function(df, Y, X, new_name, baseline_vars = baseline_vars, treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = "gaussian", weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC2") {
-
-  if (continuous_X) {
-    # call the causal_contrast() function if continuous_X is TRUE
-    causal_contrast_result <- causal_contrast(df, Y, X, baseline_vars, treat_0, treat_1, estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov)
-  } else {
-    # call the causal_contrast_engine_dev() function if continuous_X is FALSE
-    causal_contrast_result <- causal_contrast_engine(df, Y, X, baseline_vars, treat_0, treat_1, estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov)
-  }
-
-  # Call the tab_ate() function with the result from causal_contrast()
-  tab_ate_result <- tab_ate_engine(causal_contrast_result, new_name, delta, sd, scale, continuous_X)
-
-  return(tab_ate_result)
-}
 # old
 # double_robust <- function(df, Y, X, new_name, baseline_vars = baseline_vars, treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = "gaussian", weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC2") {
 #
@@ -1975,19 +2565,42 @@ margot_plot <- function(.data,
                         x_offset = ifelse(type == "RR", 0, -1.75),
                         x_lim_lo = ifelse(type == "RR", .1, -1.75),
                         x_lim_hi = ifelse(type == "RR", 2.5, 1)) {
-
-
   type <- match.arg(type)
-  xintercept <- if (type == "RR") 1 else 0
-  x_axis_label <- if (type == "RR") "Causal Risk Ratio Scale" else "Causal Difference Scale"
+  xintercept <- if (type == "RR")
+    1
+  else
+    0
+  x_axis_label <-
+    if (type == "RR")
+      "Causal Risk Ratio Scale"
+  else
+    "Causal Difference Scale"
 
   # Define Reliability based on type
-  if(type == "RR") {
-    .data$Reliability <- ifelse(.data$`2.5 %` > 1 & .data$`97.5 %` > 1, "positive",
-                                ifelse(.data$`2.5 %` < 1 & .data$`97.5 %` < 1, "negative", "zero_crossing"))
+  if (type == "RR") {
+    .data$Reliability <-
+      ifelse(
+        .data$`2.5 %` > 1 & .data$`97.5 %` > 1,
+        "positive",
+        ifelse(
+          .data$`2.5 %` < 1 &
+            .data$`97.5 %` < 1,
+          "negative",
+          "zero_crossing"
+        )
+      )
   } else {
-    .data$Reliability <- ifelse(.data$`2.5 %` > 0 & .data$`97.5 %` > 0, "positive",
-                                ifelse(.data$`2.5 %` < 0 & .data$`97.5 %` < 0, "negative", "zero_crossing"))
+    .data$Reliability <-
+      ifelse(
+        .data$`2.5 %` > 0 & .data$`97.5 %` > 0,
+        "positive",
+        ifelse(
+          .data$`2.5 %` < 0 &
+            .data$`97.5 %` < 0,
+          "negative",
+          "zero_crossing"
+        )
+      )
   }
 
   out <- ggplot(
@@ -2001,23 +2614,52 @@ margot_plot <- function(.data,
       color = Reliability
     )
   ) +
-    geom_errorbarh(aes(color = Reliability), height = .3, position = position_dodge(width = 0.3)) +
+    geom_errorbarh(aes(color = Reliability),
+                   height = .3,
+                   position = position_dodge(width = 0.3)) +
     geom_point(size = point_size, position = position_dodge(width = 0.3)) +
     geom_vline(xintercept = xintercept, linetype = "solid") +
     theme_classic(base_size = base_size) +
-    scale_color_manual(values = c("positive" = "dodgerblue", "zero_crossing" = "black", "negative" = "orange")) +
-    labs(x = x_axis_label, y = " ", title = title, subtitle = subtitle) +
-    geom_text(aes(x = x_offset * estimate_scale, label = estimate_lab), size = text_size, hjust = 0,
-              fontface = ifelse(.data$Estimate == "unreliable", "plain", "bold")) +
+    scale_color_manual(values = c(
+      "positive" = "dodgerblue",
+      "zero_crossing" = "black",
+      "negative" = "orange"
+    )) +
+    labs(
+      x = x_axis_label,
+      y = " ",
+      title = title,
+      subtitle = subtitle
+    ) +
+    geom_text(
+      aes(x = x_offset * estimate_scale, label = estimate_lab),
+      size = text_size,
+      hjust = 0,
+      fontface = ifelse(.data$Estimate == "unreliable", "plain", "bold")
+    ) +
     coord_cartesian(xlim = c(x_lim_lo, x_lim_hi)) +
     theme(
       legend.position = "top",
       legend.direction = "horizontal",
-      plot.title = element_text(face = "bold", size = title_size, hjust = 0),
-      plot.subtitle = element_text(face = "bold", size = subtitle_size, hjust = 0),
+      plot.title = element_text(
+        face = "bold",
+        size = title_size,
+        hjust = 0
+      ),
+      plot.subtitle = element_text(
+        face = "bold",
+        size = subtitle_size,
+        hjust = 0
+      ),
       legend.text = element_text(size = legend_text_size),
       legend.title = element_text(size = legend_title_size),
-      plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
+      plot.margin = margin(
+        t = 10,
+        r = 10,
+        b = 10,
+        l = 10,
+        unit = "pt"
+      )
     )
 
 
@@ -2149,127 +2791,232 @@ margot_plot <- function(.data,
 # }
 #https://eprints.whiterose.ac.uk/169886/3/Robust%20SE.%20manuscript.%20in%20White%20Rose.pdf
 
-causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = "HC") {
-  # Load required packages
-  require("clarify")
-  require("rlang") # for building dynamic expressions
-  require("glue") # for easier string manipulation
-  require("parallel") # detect cores
-  require("purrr")
+causal_contrast_general <-
+  function(df,
+           Y,
+           X,
+           baseline_vars = "1",
+           treat_0 = 0,
+           treat_1 = 1,
+           estimand = c("ATE", "ATT"),
+           scale = c("RR", "RD"),
+           nsims = 200,
+           cores = parallel::detectCores(),
+           family = binomial(),
+           weights = TRUE,
+           continuous_X = FALSE,
+           splines = FALSE,
+           vcov = "HC") {
+    # Load required packages
+    require("clarify")
+    require("rlang") # for building dynamic expressions
+    require("glue") # for easier string manipulation
+    require("parallel") # detect cores
+    require("purrr")
 
-  # Set vcov default based on family argument
-  if (is.null(vcov)) {
-    if (inherits(family, "quasibinomial")) {
-      vcov <- "HC" # to fix later
+    # Set vcov default based on family argument
+    if (is.null(vcov)) {
+      if (inherits(family, "quasibinomial")) {
+        vcov <- "HC" # to fix later
+      } else {
+        vcov <- "HC" # to fix later
+      }
+    }
+
+    if (continuous_X) {
+      estimand <- "ATE"
+    }
+
+    if ("wimids" %in% class(df)) {
+      fits <- complete(df, "all") %>%
+        purrr::map(function(d) {
+          weight_var <- if (weights)
+            d$weights
+          else
+            NULL
+          formula_str <-
+            build_formula_str(Y, X, continuous_X, splines, baseline_vars)
+          glm(
+            as.formula(formula_str),
+            weights = weight_var,
+            family = family,
+            data = d
+          )
+        })
+
+      sim.imp <-
+        misim(fits, n = nsims, vcov = vcov) #robust standard errors see CLARIFY package
     } else {
-      vcov <- "HC" # to fix later
+      weight_var <- if (weights)
+        df$weights
+      else
+        NULL
+      formula_str <-
+        build_formula_str(Y, X, continuous_X, splines, baseline_vars)
+      fit <-
+        glm(
+          as.formula(formula_str),
+          weights = weight_var,
+          family = family,
+          data = df
+        )
+      sim.imp <-
+        sim(fit, n = nsims, vcov = vcov)# robust covariance matrix see clarify package
+    }
+
+    if (!continuous_X && estimand == "ATT") {
+      subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
+      sim_estimand <-
+        sim_ame(
+          sim.imp,
+          var = X,
+          subset = eval(subset_expr),
+          cl = cores,
+          verbose = FALSE
+        )
+    } else {
+      sim_estimand <-
+        sim_ame(sim.imp,
+                var = X,
+                cl = cores,
+                verbose = FALSE)
+    }
+
+    if (continuous_X) {
+      return(summary(sim_estimand))
+    } else {
+      sim_estimand_df <- as.data.frame(sim_estimand) %>%
+        purrr::map_df(function(x) {
+          c(
+            Estimate = round(mean(x), 4),
+            `2.5 %` = round(quantile(x, 0.025), 4),
+            `97.5 %` = round(quantile(x, 0.975), 4)
+          )
+        }) %>%
+        mutate(
+          RR = case_when(
+            scale == "RR" ~ !!rlang::sym(paste0("E[Y(", treat_1, ")]")) / !!rlang::sym(paste0("E[Y(", treat_0, ")]"))
+          ),
+          RD = case_when(
+            scale == "RD" ~ !!rlang::sym(paste0("E[Y(", treat_1, ")]"))-!!rlang::sym(paste0("E[Y(", treat_0, ")]"))
+          )
+        )
+
+      colnames(sim_estimand_df) <-
+        c("Estimate", "2.5 %", "97.5 %")
+
+      return(sim_estimand_df)
     }
   }
 
-  if (continuous_X) {
-    estimand <- "ATE"
+build_formula_str <-
+  function(Y, X, continuous_X, splines, baseline_vars) {
+    if (continuous_X && splines) {
+      return(paste(
+        Y,
+        "~ bs(",
+        X ,
+        ")",
+        "*",
+        "(",
+        paste(baseline_vars, collapse = "+"),
+        ")"
+      ))
+    } else {
+      return(paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")"))
+    }
   }
-
-  if ("wimids" %in% class(df)) {
-    fits <- complete(df, "all") %>%
-      purrr::map(function(d) {
-        weight_var <- if (weights) d$weights else NULL
-        formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
-        glm(as.formula(formula_str), weights = weight_var, family = family, data = d)
-      })
-
-    sim.imp <- misim(fits, n = nsims, vcov = vcov) #robust standard errors see CLARIFY package
-  } else {
-    weight_var <- if (weights) df$weights else NULL
-    formula_str <- build_formula_str(Y, X, continuous_X, splines, baseline_vars)
-    fit <- glm(as.formula(formula_str), weights = weight_var, family = family, data = df)
-    sim.imp <- sim(fit, n = nsims, vcov = vcov)# robust covariance matrix see clarify package
-  }
-
-  if (!continuous_X && estimand == "ATT") {
-    subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
-    sim_estimand <- sim_ame(sim.imp, var = X, subset = eval(subset_expr), cl = cores, verbose = FALSE)
-  } else {
-    sim_estimand <- sim_ame(sim.imp, var = X, cl = cores, verbose = FALSE)
-  }
-
-  if (continuous_X) {
-    return(summary(sim_estimand))
-  } else {
-    sim_estimand_df <- as.data.frame(sim_estimand) %>%
-      purrr::map_df(function(x) {
-        c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
-      }) %>%
-      mutate(
-        RR = case_when(scale == "RR" ~ !!rlang::sym(paste0("E[Y(", treat_1, ")]")) / !!rlang::sym(paste0("E[Y(", treat_0, ")]"))),
-        RD = case_when(scale == "RD" ~ !!rlang::sym(paste0("E[Y(", treat_1, ")]")) - !!rlang::sym(paste0("E[Y(", treat_0, ")]")))
-        )
-
-        colnames(sim_estimand_df) <- c("Estimate", "2.5 %", "97.5 %")
-
-        return(sim_estimand_df)
-        }
-  }
-
-build_formula_str <- function(Y, X, continuous_X, splines, baseline_vars) {
-  if (continuous_X && splines) {
-    return(paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")"))
-  } else {
-    return(paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")"))
-  }
-}
 
 
 # slightly older
-causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, vcov = vcov) {
-  # Load required packages
-  require("clarify")
-  require("rlang") # for building dynamic expressions
-  require("glue") # for easier string manipulation
-  require("parallel") # detect cores
-  #require("survey") # correctly computes standard errors: to do
+causal_contrast <-
+  function(df,
+           Y,
+           X,
+           baseline_vars = "1",
+           treat_0 = 0,
+           treat_1 = 1,
+           estimand = c("ATE", "ATT"),
+           scale = c("RR", "RD"),
+           nsims = 200,
+           cores = parallel::detectCores(),
+           family = binomial(),
+           weights = TRUE,
+           continuous_X = FALSE,
+           splines = FALSE,
+           vcov = vcov) {
+    # Load required packages
+    require("clarify")
+    require("rlang") # for building dynamic expressions
+    require("glue") # for easier string manipulation
+    require("parallel") # detect cores
+    #require("survey") # correctly computes standard errors: to do
 
-  if (continuous_X) {
-    estimand <- "ATE"
-   # warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
-  }
-
-  # Fit models using the complete datasets (all imputations)
-  fits <-  lapply(complete(df, "all"), function(d) {
-    # Set weights variable based on the value of 'weights' argument
-    weight_var <- if (weights) d$weights else NULL
-
-    # Check if continuous_X and splines are both TRUE
-    if (continuous_X && splines) {
-      require(splines) # splines package
-      formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
-    } else {
-      formula_str <- paste(Y, "~", X , "*", "(", paste(baseline_vars, collapse = "+"), ")")
+    if (continuous_X) {
+      estimand <- "ATE"
+      # warning("When continuous_X = TRUE, estimand is always set to 'ATE'")
     }
 
-    glm(
-      as.formula(formula_str),
-      weights = if (!is.null(weight_var)) weight_var else NULL,
-      family = family,
-      data = d
-    )
-  })
-  # A `clarify_misim` object
+    # Fit models using the complete datasets (all imputations)
+    fits <-  lapply(complete(df, "all"), function(d) {
+      # Set weights variable based on the value of 'weights' argument
+      weight_var <- if (weights)
+        d$weights
+      else
+        NULL
 
-  sim.imp <- misim(fits, n = nsims, vcov = vcov)
+      # Check if continuous_X and splines are both TRUE
+      if (continuous_X && splines) {
+        require(splines) # splines package
+        formula_str <-
+          paste(Y,
+                "~ bs(",
+                X ,
+                ")",
+                "*",
+                "(",
+                paste(baseline_vars, collapse = "+"),
+                ")")
+      } else {
+        formula_str <-
+          paste(Y,
+                "~",
+                X ,
+                "*",
+                "(",
+                paste(baseline_vars, collapse = "+"),
+                ")")
+      }
 
-  # Compute the Average Marginal Effects
+      glm(
+        as.formula(formula_str),
+        weights = if (!is.null(weight_var))
+          weight_var
+        else
+          NULL,
+        family = family,
+        data = d
+      )
+    })
+    # A `clarify_misim` object
 
-  if (!continuous_X && estimand == "ATT") {
+    sim.imp <- misim(fits, n = nsims, vcov = vcov)
+
+    # Compute the Average Marginal Effects
+
+    if (!continuous_X && estimand == "ATT") {
       # Build dynamic expression for subsetting
-    subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
+      subset_expr <- rlang::expr(!!rlang::sym(X) == !!treat_1)
 
-    sim_estimand <- sim_ame(sim.imp,
-                              var = X,
-                              subset = eval(subset_expr),
-                              cl = cores,
-                              verbose = FALSE)
-    } else { # For ATE
+      sim_estimand <- sim_ame(
+        sim.imp,
+        var = X,
+        subset = eval(subset_expr),
+        cl = cores,
+        verbose = FALSE
+      )
+    } else {
+      # For ATE
       sim_estimand <- sim_ame(sim.imp,
                               var = X,
                               cl = cores,
@@ -2278,8 +3025,8 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
 
     if (continuous_X) {
       return(summary(sim_estimand))
-     # sim_estimand <- as.data.frame(sim_estimand). # not working
-     # rownames(sim_estimand) <- scale
+      # sim_estimand <- as.data.frame(sim_estimand). # not working
+      # rownames(sim_estimand) <- scale
 
     } else {
       # Convert sim_estimand to a data frame
@@ -2287,16 +3034,22 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
 
       # Transform the results based on the specified scale
       if (scale == "RR") {
-        sim_estimand_df$RR <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] / sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
+        sim_estimand_df$RR <-
+          sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] / sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
 
       } else {
-        sim_estimand_df$RD <- sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] - sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
+        sim_estimand_df$RD <-
+          sim_estimand_df[[paste0("E[Y(", treat_1, ")]")]] - sim_estimand_df[[paste0("E[Y(", treat_0, ")]")]]
 
       }
 
       # Calculate the desired summary statistics
       out <- t(sapply(sim_estimand_df, function(x) {
-        c(Estimate = round(mean(x), 4), `2.5 %` = round(quantile(x, 0.025), 4), `97.5 %` = round(quantile(x, 0.975), 4))
+        c(
+          Estimate = round(mean(x), 4),
+          `2.5 %` = round(quantile(x, 0.025), 4),
+          `97.5 %` = round(quantile(x, 0.975), 4)
+        )
       }))
 
       # Set the row names of the output to match the desired format
@@ -2308,116 +3061,172 @@ causal_contrast <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 
 
       return(out)
     }
-}
+  }
 
 
 # format table for tmle outputs
-format_tab_tmle <- function(tmtp_output, scale = c("RD", "RR"), new_name = "character_string") {
+format_tab_tmle <-
+  function(tmtp_output,
+           scale = c("RD", "RR"),
+           new_name = "character_string") {
+    scale <- match.arg(scale)
 
-  scale <- match.arg(scale)
+    require(dplyr)
 
-  require(dplyr)
+    tab_tmle <- cbind.data.frame(
+      tmtp_output$theta,
+      tmtp_output$standard_error,
+      tmtp_output$low,
+      tmtp_output$high
+    )
 
-  tab_tmle <- cbind.data.frame(
-    tmtp_output$theta,
-    tmtp_output$standard_error,
-    tmtp_output$low,
-    tmtp_output$high
-  )
+    if (scale == "RD") {
+      colnames(tab_tmle) <-
+        c("E[Y(1)]-E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
+    } else if (scale == "RR") {
+      colnames(tab_tmle) <-
+        c("E[Y(1)]/E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
+    }
 
-  if (scale == "RD") {
-    colnames(tab_tmle) <- c("E[Y(1)]-E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
-  } else if (scale == "RR") {
-    colnames(tab_tmle) <- c("E[Y(1)]/E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
+    tab_tmle_round <- tab_tmle |>
+      dplyr::mutate(across(where(is.numeric), round, digits = 4))
+
+    rownames(tab_tmle_round)[1] <- paste0(new_name)
+
+    return(tab_tmle_round)
   }
-
-  tab_tmle_round <- tab_tmle |>
-    dplyr::mutate(across(where(is.numeric), round, digits = 4))
-
-  rownames(tab_tmle_round)[1] <- paste0(new_name)
-
-  return(tab_tmle_round)
-}
 
 
 
 
 # general contrast table --------------------------------------------------
 
-tab_ate <- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), continuous_X = FALSE) {
-  require("EValue")
-  require(dplyr)
+tab_ate <-
+  function(x,
+           new_name,
+           delta = 1,
+           sd = 1,
+           type = c("RD", "RR"),
+           continuous_X = FALSE) {
+    require("EValue")
+    require(dplyr)
 
-  type <- match.arg(type)
+    type <- match.arg(type)
 
-  x <- as.data.frame(x)
+    x <- as.data.frame(x)
 
-  if (continuous_X) {
-    rownames(x) <- type
-  } else{
-   x
+    if (continuous_X) {
+      rownames(x) <- type
+    } else{
+      x
+    }
+
+    out <- x %>%
+      dplyr::filter(row.names(x) == type) %>%
+      dplyr::mutate(across(where(is.numeric), round, digits = 4))
+
+    if (type == "RD") {
+      out <- out %>%
+        dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
+    } else {
+      out <- out %>%
+        dplyr::rename("E[Y(1)]/E[Y(0)]" = Estimate)
+    }
+
+    rownames(out)[1] <- paste0(new_name)
+    out <- as.data.frame(out)
+
+    if (type == "RD") {
+      tab0 <-
+        out |>  dplyr::mutate(standard_error = abs(`2.5 %` - `97.5 %`) / 3.92)
+      evalout <- as.data.frame(round(
+        EValue::evalues.OLS(
+          tab0[1, 1],
+          se = tab0[1, 4],
+          sd = sd,
+          delta = delta,
+          true = 0
+        ),
+        3
+      ))
+    } else {
+      evalout <- as.data.frame(round(EValue::evalues.RR(
+        out[1, 1],
+        lo = out[1, 2],
+        hi = out[1, 3],
+        true = 1
+      ),
+      3))
+    }
+
+    evalout2 <- subset(evalout[2, ])
+    evalout3 <- evalout2 |>
+      select_if( ~ !any(is.na(.)))
+    colnames(evalout3) <- c("E_Value", "E_Val_bound")
+
+    if (type == "RD") {
+      tab <-
+        cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
+    } else {
+      tab <- cbind.data.frame(out, evalout3)
+    }
+
+    return(tab)
   }
-
-  out <- x %>%
-    dplyr::filter(row.names(x) == type) %>%
-    dplyr::mutate(across(where(is.numeric), round, digits = 4))
-
-  if (type == "RD") {
-    out <- out %>%
-      dplyr::rename("E[Y(1)]-E[Y(0)]" = Estimate)
-  } else {
-    out <- out %>%
-      dplyr::rename("E[Y(1)]/E[Y(0)]" = Estimate)
-  }
-
-  rownames(out)[1] <- paste0(new_name)
-  out <- as.data.frame(out)
-
-  if (type == "RD") {
-    tab0 <- out |>  dplyr::mutate(standard_error = abs(`2.5 %` - `97.5 %`) / 3.92)
-    evalout <- as.data.frame(round(EValue::evalues.OLS(tab0[1, 1],
-                                                       se = tab0[1, 4],
-                                                       sd = sd,
-                                                       delta = delta,
-                                                       true = 0
-    ),
-    3
-    ))
-  } else {
-    evalout <- as.data.frame(round(EValue::evalues.RR(out[1, 1],
-                                                      lo = out[1, 2],
-                                                      hi = out[1, 3],
-                                                      true = 1
-    ),
-    3
-    ))
-  }
-
-  evalout2 <- subset(evalout[2, ])
-  evalout3 <- evalout2 |>
-    select_if( ~ !any(is.na(.)))
-  colnames(evalout3) <- c("E_Value", "E_Val_bound")
-
-  if (type == "RD") {
-    tab <- cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
-  } else {
-    tab <- cbind.data.frame(out, evalout3)
-  }
-
-  return(tab)
-}
 
 # combine causal contrast and tab ate -------------------------------------
 
-gcomp_sim <- function(df, Y, X, new_name, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = "ATE", scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = quasibinomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE, delta = 1, sd = 1, type = c("RD", "RR"), vcov = "HC2") {
-  # Call the causal_contrast_general() function
-  causal_contrast_result <- causal_contrast(df, Y, X, baseline_vars, treat_0, treat_1,estimand, scale, nsims, cores, family, weights, continuous_X, splines, vcov = vcov)
+gcomp_sim <-
+  function(df,
+           Y,
+           X,
+           new_name,
+           baseline_vars = "1",
+           treat_0 = 0,
+           treat_1 = 1,
+           estimand = "ATE",
+           scale = c("RR", "RD"),
+           nsims = 200,
+           cores = parallel::detectCores(),
+           family = quasibinomial(),
+           weights = TRUE,
+           continuous_X = FALSE,
+           splines = FALSE,
+           delta = 1,
+           sd = 1,
+           type = c("RD", "RR"),
+           vcov = "HC2") {
+    # Call the causal_contrast_general() function
+    causal_contrast_result <-
+      causal_contrast(
+        df,
+        Y,
+        X,
+        baseline_vars,
+        treat_0,
+        treat_1,
+        estimand,
+        scale,
+        nsims,
+        cores,
+        family,
+        weights,
+        continuous_X,
+        splines,
+        vcov = vcov
+      )
 
-  # Call the tab_ate() function with the result from causal_contrast()
-  tab_ate_result <- tab_ate(causal_contrast_result, new_name, delta, sd, type, continuous_X)
+    # Call the tab_ate() function with the result from causal_contrast()
+    tab_ate_result <-
+      tab_ate(causal_contrast_result,
+              new_name,
+              delta,
+              sd,
+              type,
+              continuous_X)
 
-  return(tab_ate_result)
-}
+    return(tab_ate_result)
+  }
 
 
 
@@ -2473,32 +3282,60 @@ group_tab <- function(df, type = c("RR", "RD")) {
   if (type == "RR") {
     out <- df %>%
       arrange(desc(`E[Y(1)]/E[Y(0)]`)) %>%
-      dplyr::mutate(Estimate  = as.factor(ifelse(
-        `E[Y(1)]/E[Y(0)]` > 1 & `2.5 %` > 1,
-        "positive",
-        ifelse( `E[Y(1)]/E[Y(0)]` < 1 &
-                  `97.5 %` < 1, "negative",
-                "not reliable")
-      ))) %>%
+      dplyr::mutate(Estimate  = as.factor(
+        ifelse(
+          `E[Y(1)]/E[Y(0)]` > 1 & `2.5 %` > 1,
+          "positive",
+          ifelse(`E[Y(1)]/E[Y(0)]` < 1 &
+                   `97.5 %` < 1, "negative",
+                 "not reliable")
+        )
+      )) %>%
       rownames_to_column(var = "outcome") %>%
       mutate(
         across(where(is.numeric), round, digits = 3),
-        estimate_lab = paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]")
+        estimate_lab = paste0(
+          `E[Y(1)]/E[Y(0)]`,
+          " (",
+          `2.5 %`,
+          "-",
+          `97.5 %`,
+          ")",
+          " [EV ",
+          `E_Value`,
+          "/",
+          `E_Val_bound`,
+          "]"
+        )
       )
   } else {
     out <- df %>%
       arrange(desc(`E[Y(1)]-E[Y(0)]`)) %>%
-      dplyr::mutate(Estimate  = as.factor(ifelse(
-        `E[Y(1)]-E[Y(0)]` > 0 & `2.5 %` > 0,
-        "positive",
-        ifelse( `E[Y(1)]-E[Y(0)]` < 0 &
-                  `97.5 %` < 0, "negative",
-                "not reliable")
-      ))) %>%
+      dplyr::mutate(Estimate  = as.factor(
+        ifelse(
+          `E[Y(1)]-E[Y(0)]` > 0 & `2.5 %` > 0,
+          "positive",
+          ifelse(`E[Y(1)]-E[Y(0)]` < 0 &
+                   `97.5 %` < 0, "negative",
+                 "not reliable")
+        )
+      )) %>%
       rownames_to_column(var = "outcome") %>%
       mutate(
         across(where(is.numeric), round, digits = 3),
-        estimate_lab = paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]")
+        estimate_lab = paste0(
+          `E[Y(1)]-E[Y(0)]`,
+          " (",
+          `2.5 %`,
+          "-",
+          `97.5 %`,
+          ")",
+          " [EV ",
+          `E_Value`,
+          "/",
+          `E_Val_bound`,
+          "]"
+        )
       )
   }
 
@@ -2509,54 +3346,79 @@ group_tab <- function(df, type = c("RR", "RD")) {
 
 # group_plot  -------------------------------------------------------------------
 
-group_plot_ate <- function(.data, type = c("RD", "RR"), title, subtitle, xlab, ylab,
-                           x_offset = 0,
-                           x_lim_lo = 0,
-                           x_lim_hi = 1.5) {
-  type <- match.arg(type)
+group_plot_ate <-
+  function(.data,
+           type = c("RD", "RR"),
+           title,
+           subtitle,
+           xlab,
+           ylab,
+           x_offset = 0,
+           x_lim_lo = 0,
+           x_lim_hi = 1.5) {
+    type <- match.arg(type)
 
-  xintercept <- if (type == "RR") 1 else 0
-  x_axis_label <- if (type == "RR") "Causal Risk Ratio" else "Causal Risk Difference"
+    xintercept <- if (type == "RR")
+      1
+    else
+      0
+    x_axis_label <-
+      if (type == "RR")
+        "Causal Risk Ratio"
+    else
+      "Causal Risk Difference"
 
-  out <- ggplot(
-    data = .data,
-    aes(
-      y = reorder(outcome, .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]]),
-      x = .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]],
-      xmin = `2.5 %`,
-      xmax = `97.5 %`,
-      group = Estimate,
-      color = Estimate
-    )
-  ) +
-    geom_errorbarh(aes(color = Estimate), height = .3, position = position_dodge(width = 0.3)) +
-    geom_point(size = .5, position = position_dodge(width = 0.3)) +
-    geom_vline(xintercept = xintercept, linetype = "solid") +
-    theme_classic(base_size = 10) +
-    scale_color_manual(values = c("orange", "black", "dodgerblue")) +
-    labs(
-      x = x_axis_label,
-      y = " ",
-      title = title,
-      subtitle = subtitle
+    out <- ggplot(
+      data = .data,
+      aes(
+        y = reorder(outcome, .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]]),
+        x = .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]],
+        xmin = `2.5 %`,
+        xmax = `97.5 %`,
+        group = Estimate,
+        color = Estimate
+      )
     ) +
-    geom_text(
-      aes(x = x_offset, label = estimate_lab),
-      size = 2,
-      hjust = 0,
-      fontface = ifelse(.data$Estimate == "unreliable", "plain", "bold")
-    ) +
-    coord_cartesian(xlim = c(x_lim_lo, x_lim_hi)) +
-    theme(
-      legend.position = "top",
-      legend.direction = "horizontal",
-      plot.title = element_text(face = "bold", size = 12, hjust = 0),
-      plot.subtitle = element_text(size = 10, hjust = 0),
-      plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
-    )
+      geom_errorbarh(aes(color = Estimate),
+                     height = .3,
+                     position = position_dodge(width = 0.3)) +
+      geom_point(size = .5, position = position_dodge(width = 0.3)) +
+      geom_vline(xintercept = xintercept, linetype = "solid") +
+      theme_classic(base_size = 10) +
+      scale_color_manual(values = c("orange", "black", "dodgerblue")) +
+      labs(
+        x = x_axis_label,
+        y = " ",
+        title = title,
+        subtitle = subtitle
+      ) +
+      geom_text(
+        aes(x = x_offset, label = estimate_lab),
+        size = 2,
+        hjust = 0,
+        fontface = ifelse(.data$Estimate == "unreliable", "plain", "bold")
+      ) +
+      coord_cartesian(xlim = c(x_lim_lo, x_lim_hi)) +
+      theme(
+        legend.position = "top",
+        legend.direction = "horizontal",
+        plot.title = element_text(
+          face = "bold",
+          size = 12,
+          hjust = 0
+        ),
+        plot.subtitle = element_text(size = 10, hjust = 0),
+        plot.margin = margin(
+          t = 10,
+          r = 10,
+          b = 10,
+          l = 10,
+          unit = "pt"
+        )
+      )
 
-  return(out)
-}
+    return(out)
+  }
 
 
 # possible ways of adjusting the plot
@@ -2601,15 +3463,18 @@ interpret_table <- function(df, causal_scale, estimand) {
           E_Value >= 1.1 ~ "evidence for causality is weak",
           TRUE ~ "no reliable evidence for causality"
         ),
-        outcome_interpretation = if_else(Estimate == "unreliable",
-                                         glue("For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
-                                              "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
-                                              "The E-value for this outcome confirms the causal contrast unreliable."
-                                         ),
-                                         glue("For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
-                                              "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
-                                              "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
-                                         )
+        outcome_interpretation = if_else(
+          Estimate == "unreliable",
+          glue(
+            "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+            "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+            "The E-value for this outcome confirms the causal contrast unreliable."
+          ),
+          glue(
+            "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+            "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+            "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
+          )
         )
       )
   } else if (causal_scale == "causal_difference") {
@@ -2621,22 +3486,30 @@ interpret_table <- function(df, causal_scale, estimand) {
           E_Value >= 1.1 ~ "evidence for causality is weak",
           TRUE ~ "no reliable evidence for causality"
         ),
-        outcome_interpretation = if_else(Estimate == "unreliable",
-                                         glue("For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
-                                              "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
-                                              "The E-value for this outcome confirms the causal contrast is unreliable."
-                                         ),
-                                         glue("For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
-                                              "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
-                                              "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
-                                         )
+        outcome_interpretation = if_else(
+          Estimate == "unreliable",
+          glue(
+            "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+            "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+            "The E-value for this outcome confirms the causal contrast is unreliable."
+          ),
+          glue(
+            "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+            "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+            "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
+          )
         )
       )
   } else {
-    stop("Invalid causal_scale argument. Please use 'causal_risk_ratio' or 'causal_difference'.")
+    stop(
+      "Invalid causal_scale argument. Please use 'causal_risk_ratio' or 'causal_difference'."
+    )
   }
 
-  result <- glue("Table interpretation:\n\n{estimand_description}\n\n{paste(interpretation$outcome_interpretation, collapse = '\n\n')}")
+  result <-
+    glue(
+      "Table interpretation:\n\n{estimand_description}\n\n{paste(interpretation$outcome_interpretation, collapse = '\n\n')}"
+    )
   return(result)
 }
 
@@ -2646,62 +3519,79 @@ interpret_table <- function(df, causal_scale, estimand) {
 # new combo function ------------------------------------------------------
 
 # mine:
-gcomp_delta <- function(df, X, Y, baseline_vars, family, m = 10, min, max, r = 0, f = 1, splines = FALSE, delta = 1, sd = 1, new_name) {
-  require("splines")
-  require("mice")
-  require("EValue")
-  require("dplyr")
-  require("stdReg")
+gcomp_delta <-
+  function(df,
+           X,
+           Y,
+           baseline_vars,
+           family,
+           m = 10,
+           min,
+           max,
+           r = 0,
+           f = 1,
+           splines = FALSE,
+           delta = 1,
+           sd = 1,
+           new_name) {
+    require("splines")
+    require("mice")
+    require("EValue")
+    require("dplyr")
+    require("stdReg")
 
-  # Fit model with or without splines
-  if (splines) {
-    fits <- mice_generalised(df, X, Y, baseline_vars, family)
-  } else {
-    fits <- mice_generalised_lin(df, X, Y, baseline_vars, family)
+    # Fit model with or without splines
+    if (splines) {
+      fits <- mice_generalised(df, X, Y, baseline_vars, family)
+    } else {
+      fits <- mice_generalised_lin(df, X, Y, baseline_vars, family)
+    }
+
+    # Pool and compute the g-formula
+    pooled_results <-   pool_stglm_contrast(
+      fits,
+      df = df,
+      m = m,
+      X = X,
+      x = x,
+      r = r
+    )
+
+    focal_pooled_results <- pooled_results[match(p, x), ]
+
+    # Calculate RD
+    rd_result <-
+      c(focal_pooled_results$est[2] - pooled_results$est[1])
+
+
+    # Calculate upper 97.5
+    rd_ui <- focal_pooled_results$ui[2] - focal_pooled_results$ui[1]
+
+    # Calculate lower 2.5%
+    rd_li <- focal_pooled_results$li[2] - focal_pooled_results$li[1]
+
+    # Calculate EVALUES
+    evalues_results <-
+      vanderweelevalue_ols(pooled_results, f - min, delta, sd)
+
+    # Create compatible dataframe with tab_ate()
+    compatible_df <- data.frame(
+      "Estimate" = rd_result,
+      "2.5 %" = rd_li,
+      "97.5 %" = rd_ui,
+      "E_Value" = evalues_results$`E-value`,
+      "E_Val_bound" = evalues_results$`threshold`,
+      row.names = "RD"
+    )
+
+    compatible_df <- round(compatible_df, 4)
+
+    colnames(compatible_df) <-
+      c("E[Y(1)]-E[Y(0)]", "2.5 %", "97.5 %", "E_Value", "E_Val_bound")
+    rownames(compatible_df) <- new_name
+
+    return(compatible_df)
   }
-
-  # Pool and compute the g-formula
-  pooled_results <-   pool_stglm_contrast(
-    fits,
-    df = df,
-    m = m,
-    X = X,
-    x = x,
-    r = r
-  )
-
-  focal_pooled_results <- pooled_results[match(p, x), ]
-
-  # Calculate RD
-  rd_result <- c(focal_pooled_results$est[2] - pooled_results$est[1])
-
-
-  # Calculate upper 97.5
-  rd_ui <- focal_pooled_results$ui[2] - focal_pooled_results$ui[1]
-
-  # Calculate lower 2.5%
-  rd_li <- focal_pooled_results$li[2] - focal_pooled_results$li[1]
-
-  # Calculate EVALUES
-  evalues_results <-  vanderweelevalue_ols(pooled_results, f - min, delta, sd)
-
-  # Create compatible dataframe with tab_ate()
-  compatible_df <- data.frame(
-    "Estimate" = rd_result,
-    "2.5 %" = rd_li,
-    "97.5 %" = rd_ui,
-    "E_Value" = evalues_results$`E-value`,
-    "E_Val_bound" = evalues_results$`threshold`,
-    row.names = "RD"
-  )
-
-  compatible_df <- round(compatible_df, 4)
-
-  colnames(compatible_df) <- c("E[Y(1)]-E[Y(0)]", "2.5 %", "97.5 %", "E_Value", "E_Val_bound")
-  rownames(compatible_df) <- new_name
-
-  return(compatible_df)
-}
 
 
 
@@ -2710,13 +3600,18 @@ gcomp_delta <- function(df, X, Y, baseline_vars, family, m = 10, min, max, r = 0
 #table
 # functions for table
 my_render_cont <- function(x) {
-  with(stats.apply.rounding(stats.default(x), digits=3), c("",
-                                                           "Mean (SD)"=sprintf("%s (&plusmn; %s)", MEAN, SD)))
+  with(stats.apply.rounding(stats.default(x), digits = 3),
+       c("",
+         "Mean (SD)" =
+           sprintf("%s (&plusmn; %s)", MEAN, SD)))
 }
 
 my_render_cat <- function(x) {
-  c("", sapply(stats.default(x), function(y) with(y,
-                                                  sprintf("%d (%0.0f %%)", FREQ, PCT))))
+  c("", sapply(stats.default(x), function(y)
+    with(y,
+         sprintf(
+           "%d (%0.0f %%)", FREQ, PCT
+         ))))
 }
 
 
@@ -2733,38 +3628,52 @@ my_render_cat <- function(x) {
 # cl is number of computer cores
 # family is as it sounds
 
-glm_contrast_mi <- function(dt_match, nsims, Y, X, baseline_vars, cl,family, delta) {
-  require("clarify")
-  require("rlang") # for building dynamic expressions
+glm_contrast_mi <-
+  function(dt_match,
+           nsims,
+           Y,
+           X,
+           baseline_vars,
+           cl,
+           family,
+           delta) {
+    require("clarify")
+    require("rlang") # for building dynamic expressions
 
-  fits <-  lapply(complete(dt_match, "all"), function(d) {
-    glm(as.formula(paste( paste(Y, "~", X , "*", "("), paste(baseline_vars, collapse = "+"),paste(")"))),
-        weights = d$weights, # specify weights column from the dataset
+    fits <-  lapply(complete(dt_match, "all"), function(d) {
+      glm(
+        as.formula(paste(
+          paste(Y, "~", X , "*", "("),
+          paste(baseline_vars, collapse = "+"),
+          paste(")")
+        )),
+        weights = d$weights,
+        # specify weights column from the dataset
         family = family,
         data = d
+      )
+    })
+
+    sim.imp <- misim(fits, n = nsims, vcov = "HC")
+
+    # Build dynamic expression for subsetting
+    subset_expr <- rlang::expr(!!rlang::sym(X) == !!delta)
+
+    sim.att <- sim_ame(
+      sim.imp,
+      var = X,
+      subset = eval(subset_expr),
+      # Evaluate the subset_expr expression
+      cl = cl,
+      verbose = FALSE
     )
-  })
 
-  sim.imp <- misim(fits, n = nsims, vcov = "HC")
+    sim_est <- transform(sim.att, `RD` = `E[Y(1)]` - `E[Y(0)]`)
 
-  # Build dynamic expression for subsetting
-  subset_expr <- rlang::expr(!!rlang::sym(X) == !!delta)
+    out <- summary(sim_est)
 
-  sim.att <- sim_ame(
-    sim.imp,
-    var = X,
-    subset = eval(subset_expr),
-    # Evaluate the subset_expr expression
-    cl = cl,
-    verbose = FALSE
-  )
-
-  sim_est <- transform(sim.att, `RD` = `E[Y(1)]` - `E[Y(0)]`)
-
-  out <- summary(sim_est)
-
-  out
-}
+    out
+  }
 
 
 
@@ -2786,7 +3695,7 @@ glm_contrast_mi <- function(dt_match, nsims, Y, X, baseline_vars, cl,family, del
 #   x <- as.data.frame(x)
 #   out <- x %>%
 #     # take row that is needed
-#     dplyr::slice(3) %>%
+#     dplyr::dplyr::slice(3) %>%
 #     # use only three digits
 #     dplyr::mutate(across(where(is.numeric), round, digits = 4)) %>%
 #     # Estimand of interest is risk difference
@@ -2831,7 +3740,7 @@ glm_contrast_mi <- function(dt_match, nsims, Y, X, baseline_vars, cl,family, del
 #   x <- as.data.frame(x)
 #   out <- x %>%
 #     # take row that is needed
-#     dplyr::slice(3) %>%
+#     dplyr::dplyr::slice(3) %>%
 #     # use only three digits
 #     dplyr::mutate(across(where(is.numeric), round, digits = 4)) %>%
 #     # Estimand of interest is risk difference
@@ -3061,7 +3970,7 @@ gcomp_forestplot = function(out, title, ylim, xlab) {
     geom_errorbarh(height = .3, position = position_dodge(width = 0.3)) +
     geom_vline(xintercept = 0, linetype = "solid") +
     geom_vline(
-      xintercept = c(-.5,-.25, .25, .5),
+      xintercept = c(-.5, -.25, .25, .5),
       linetype = "twodash",
       alpha = .5
     ) + # experimental
@@ -3262,12 +4171,15 @@ glm_nomi = function(X, Y, df, baseline_vars, family = family) {
 glm_nomi_lin = function(X, Y, df, baseline_vars, family = family) {
   # requires that a MATCH THEM dataset is converted to a mice object
   # weights must be called "weights)
-  out_m <- glm(as.formula(paste(
-    paste(Y, "~ (", X , ")+"),
-    paste(baseline_vars, collapse = "+")
-  )), family = family,
-  weights = weights,
-  data = df)
+  out_m <- glm(
+    as.formula(paste(
+      paste(Y, "~ (", X , ")+"),
+      paste(baseline_vars, collapse = "+")
+    )),
+    family = family,
+    weights = weights,
+    data = df
+  )
   return(out_m)
 }
 
@@ -3320,8 +4232,8 @@ pool_stglm <- function(models, df, m, x, X) {
   #between-variance
   B <- apply(X = est.all, MARGIN = 1, FUN = var)
 
-# ammend? see:
-#chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://thestatsgeek.com/wp-content/uploads/2023/02/gformulaMI_CSM_2023_02_08.pdf
+  # ammend? see:
+  #chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://thestatsgeek.com/wp-content/uploads/2023/02/gformulaMI_CSM_2023_02_08.pdf
 
   #total variance
   var <- W + (1 + 1 / m) * B
@@ -3467,7 +4379,9 @@ ggplot_stglm <- function(out, ylim, main, xlab, ylab, min, p, sub) {
       x = xlab,
       y = ylab
     ) +
-    geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+    geom_pointrange(data = g1,
+                    aes(ymin = li, ymax = ui),
+                    colour = "red") +  # highlight contrast
     theme_classic()
 }
 
@@ -3503,7 +4417,9 @@ ggplot_stglm_nomi <-
         x = xlab,
         y = ylab
       ) +
-      geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+      geom_pointrange(data = g1,
+                      aes(ymin = li, ymax = ui),
+                      colour = "red") +  # highlight contrast
       theme_classic()
   }
 
@@ -3515,7 +4431,7 @@ ggplot_stglm_nomi <-
 vanderweelevalue_rr = function(out, f) {
   require("EValue")
   coef <- round(out, 3) %>%
-    slice(f + 1) |>
+    dplyr::slice(f + 1) |>
     select(-row)
   evalout <-
     as.data.frame(round(EValue::evalues.RR(
@@ -3537,7 +4453,7 @@ vanderweelevalue_rr = function(out, f) {
 vanderweelevalue_rr_lo = function(out, f) {
   require("EValue")
   coef <- round(out, 3) %>%
-    slice(r + 1) |>
+    dplyr::slice(r + 1) |>
     select(-row)
   evalout <-
     as.data.frame(round(EValue::evalues.RR(
@@ -3580,7 +4496,9 @@ ggplot_stglm_nomi <-
         x = xlab,
         y = ylab
       ) +
-      geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+      geom_pointrange(data = g1,
+                      aes(ymin = li, ymax = ui),
+                      colour = "red") +  # highlight contrast
       theme_classic()
   }
 
@@ -3606,7 +4524,9 @@ ggplot_stglm_nomi <-
         x = xlab,
         y = ylab
       ) +
-      geom_pointrange(data = g1, aes(ymin = li, ymax = ui), colour = "red") +  # highlight contrast
+      geom_pointrange(data = g1,
+                      aes(ymin = li, ymax = ui),
+                      colour = "red") +  # highlight contrast
       theme_classic()
   }
 
@@ -3617,7 +4537,7 @@ ggplot_stglm_nomi <-
 vanderweelevalue_ols = function(out, f, delta, sd) {
   require("EValue")
   coef <- round(out, 3) %>%
-    slice(f + 1) |>
+    dplyr::slice(f + 1) |>
     select(-row)
   evalout <-
     as.data.frame(round(
@@ -3644,7 +4564,7 @@ vanderweelevalue_ols = function(out, f, delta, sd) {
 vanderweelevalue_ols_lo = function(out, f, delta, sd) {
   require("EValue")
   coef <- round(out, 3) %>%
-    slice(r + 1) |>
+    dplyr::slice(r + 1) |>
     select(-row)
   evalout <-
     as.data.frame(round(
@@ -3669,7 +4589,7 @@ vanderweelevalue_ols_lo = function(out, f, delta, sd) {
 ## risk ratio vanderweelevalue
 vanderweelevalue_rr_nomi = function(out, f) {
   require("EValue")
-  coef <- round(out, 3) |>  slice(f + 1)
+  coef <- round(out, 3) |>  dplyr::slice(f + 1)
   evalout <-
     as.data.frame(round(EValue::evalues.RR(
       coef[1, 1] ,
@@ -3688,7 +4608,7 @@ vanderweelevalue_rr_nomi = function(out, f) {
 
 
 vanderweelevalue_ols_nomi = function(out_ct, f, delta, sd) {
-  coef <- round(out_ct, 3)  |>  slice(f + 1)
+  coef <- round(out_ct, 3)  |>  dplyr::slice(f + 1)
   evalout <-
     as.data.frame(round(
       EValue::evalues.OLS(
@@ -3715,7 +4635,7 @@ vanderweelevalue_ols_nomi = function(out_ct, f, delta, sd) {
 
 # vanderweelevalue_rr_nomi = function(out_ct, f) {
 #   require("EValue")
-#   coef <- round(out_ct, 3)  |>  slice(f + 1)
+#   coef <- round(out_ct, 3)  |>  dplyr::slice(f + 1)
 #   evalout <-
 #     as.data.frame(round(EValue::evalues.RR(
 #       coef[1, 1] ,
@@ -3735,7 +4655,7 @@ vanderweelevalue_ols_nomi = function(out_ct, f, delta, sd) {
 
 vanderweelevalue_rr_nomi = function(out_ct, f) {
   require("EValue")
-  coef <- round(out_ct, 3) |>  slice(f + 1)
+  coef <- round(out_ct, 3) |>  dplyr::slice(f + 1)
   evalout <-
     as.data.frame(round(EValue::evalues.RR(
       coef[1, 1] ,
@@ -3756,7 +4676,7 @@ vanderweelevalue_rr_nomi = function(out_ct, f) {
 
 vanderweelevalue_rr_nomi_lo = function(out, r) {
   require("EValue")
-  coef <- round(out, 3) |>  slice(r + 1)
+  coef <- round(out, 3) |>  dplyr::slice(r + 1)
   evalout <-
     as.data.frame(round(EValue::evalues.RR(
       coef[1, 1] ,
