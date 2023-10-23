@@ -113,24 +113,25 @@ transition_table <- function(data, state_names = NULL) {
 # margot_plot_experimental ------------------------------------------------
 
 
+
+# removing ordering from plot # hack
 margot_plot_exp <- function(.data,
-                        type = c("RD", "RR"),
-                        title,
-                        subtitle,
-                        xlab,
-                        ylab,
-                        reorder_outcome = TRUE,  # new argument
-                        estimate_scale = 1,
-                        base_size = 11,
-                        text_size = 2.75,
-                        point_size = .5,
-                        title_size = 10,
-                        subtitle_size = 9,
-                        legend_text_size = 6,
-                        legend_title_size = 6,
-                        x_offset = ifelse(type == "RR", 0, -1.75),
-                        x_lim_lo = ifelse(type == "RR", .1, -1.75),
-                        x_lim_hi = ifelse(type == "RR", 2.5, 1)) {
+                            type = c("RD", "RR"),
+                            title,
+                            subtitle,
+                            xlab,
+                            ylab,
+                            estimate_scale = 1,
+                            base_size = 11,
+                            text_size = 2.75,
+                            point_size = .5,
+                            title_size = 10,
+                            subtitle_size = 9,
+                            legend_text_size = 6,
+                            legend_title_size = 6,
+                            x_offset = ifelse(type == "RR", 0, -1.75),
+                            x_lim_lo = ifelse(type == "RR", .1, -1.75),
+                            x_lim_hi = ifelse(type == "RR", 2.5, 1)) {
 
 
   type <- match.arg(type)
@@ -144,12 +145,6 @@ margot_plot_exp <- function(.data,
   } else {
     .data$Reliability <- ifelse(.data$`2.5 %` > 0 & .data$`97.5 %` > 0, "positive",
                                 ifelse(.data$`2.5 %` < 0 & .data$`97.5 %` < 0, "negative", "zero_crossing"))
-  }
-
-
-  # conditionally apply reorder
-  y_aes <- if (reorder_outcome) {
-    reorder(outcome, .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]])
   }
 
   out <- ggplot(
@@ -185,6 +180,7 @@ margot_plot_exp <- function(.data,
 
   return(out)
 }
+
 
 
 
