@@ -155,7 +155,7 @@ margot_plot_exp <- function(.data,
   out <- ggplot(
     data = .data,
     aes(
-      y = y_aes,
+      y = outcome,
       x = .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]],
       xmin = `2.5 %`,
       xmax = `97.5 %`,
