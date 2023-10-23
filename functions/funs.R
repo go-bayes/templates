@@ -246,59 +246,15 @@ run_ols <-
            exposure,
            outcome,
            return_data = FALSE,
-           sample_weights_var = "sample_weights",
-           z_transform = TRUE,
+           sample_weights_var = NULL,
            new_name = NULL,
-           default_vars = c(
-             "male",
-             "age",
-             "education_level_coarsen",
-             "eth_cat",
-             "nz_dep2018",
-             "nzsei13",
-             "born_nz",
-             "hlth_disability",
-             "kessler_latent_depression",
-             "kessler_latent_anxiety",
-             "total_siblings_factor",
-             "household_inc_log",
-             "partner",
-             "political_conservative",
-             "urban",
-             "children_num",
-             "hours_children_log",
-             "hours_work_log",
-             "hours_housework_log",
-             "hours_exercise_log",
-             "agreeableness",
-             "conscientiousness",
-             "extraversion",
-             "honesty_humility",
-             "openness",
-             "neuroticism",
-             "modesty",
-             "religion_church_round",
-             "religion_spiritual_identification",
-             "religion_identification_level"
+           default_vars = NULL
            )) {
     # prepare predictor variables, removing duplicates
     predictors <- unique(c(exposure, default_vars))
 
     # remove outcome from predictors if present
     predictors <- setdiff(predictors, outcome)
-
-
-    # conditionally z-transform the outcome variable
-    if (z_transform) {
-      outcome_z <-
-        paste0(outcome, "_z")  # new name for z-transformed outcome
-      dat_long[[outcome_z]] <-
-        scale(dat_long[[outcome]], center = TRUE, scale = TRUE)
-      outcome <-
-        outcome_z  # update outcome variable to the z-transformed version
-    }
-
-
 
     # Initialize sample_weights to NULL
     sample_weights <- NULL
@@ -332,32 +288,12 @@ run_ols <-
       dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(OLS_coefficient = Coefficient)
 
     rownames(coef_exposure)[1] <- paste0(new_name)
-
-    # standardise model with refit
-    model_summary_standardised <-
-      parameters::model_parameters(original_model, standardise = "refit")
-
-    # make data frame
-    model_summary_standardised_df <-
-      as.data.frame(model_summary_standardised)
-
-
-    # # extract coefficient and CI for exposure in the standardised model
-    coef_exposure_standardised <-
-      model_summary_standardised_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
-      dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |>  rename(OLS_coefficient = Coefficient)
-
-    rownames(coef_exposure_standardised)[1] <- paste0(new_name)
-
-
     #
     # prepare the return list
     return_list <- list(
       "Original_Model" = original_model,
       "Model_Summary" = model_summary,
-      "Coef_Exposure" = coef_exposure,
-      "Coef_Exposure_Standardised" = coef_exposure_standardised
-    )
+      "Coef_Exposure" = coef_exposure )
 
     # include data if specified
     if (return_data) {
@@ -371,211 +307,66 @@ run_ols <-
 
 
 # ols with censoring ------------------------------------------------------
+un_ols <- function(dat,
+                   exposure,
+                   outcome,
+                   return_data = FALSE,
+                   sample_weights_var = NULL,
+                   new_name = NULL,
+                   default_vars = NULL) {
 
-library(ipw)
-library(dplyr)
-library(parameters)
-run_ols_with_censoring_weights <- function(
-    dat,
-    exposure,
-    outcome,
-    sample_weights_var = "t0_sample_weights",
-    new_name = "CATE",
-    z_transform = FALSE,
-    default_vars = NULL) {  # Ensure default_vars is an argument
-
-  # Add a check for default_vars
   if (is.null(default_vars)) {
     stop("default_vars cannot be NULL")
   }
 
-  # Create censoring formula using default_vars
-  censoring_formula <- as.formula(paste("t1_not_lost ~", paste(default_vars, collapse = " + ")))
+  predictors <- unique(c(exposure, default_vars))
+  predictors <- setdiff(predictors, outcome)
 
-  # Explicitly specify environment for censoring_formula
-  environment(censoring_formula) <- environment()
-
-  # Compute the censoring weights
-  censor_weights <- ipw::ipwpoint(
-    exposure = 1,
-    family = "binomial",
-    link = "logit",
-    numerator = ~ 1,
-    denominator = censoring_formula,
-    data = dat
-  )
-
-  # Compute combined weights
-  combined_weights <- ifelse(!is.null(dat[[sample_weights_var]]), dat[[sample_weights_var]], 1) * censor_weights
-
-  # Construct OLS formula
-  ols_formula <- as.formula(paste(outcome, "~", paste(c(exposure, default_vars), collapse = " + ")))
-
-  # Run OLS model with combined weights
-  ols_model <- lm(formula = ols_formula, data = dat, weights = combined_weights)
-
-  # Other function code
-
-  return(ols_model)  # Modify as needed
-}
-
-
-
-run_glm <-
-  function(dat,
-           exposure,
-           outcome,
-           return_data = FALSE,
-           sample_weights_var = "sample_weights",
-           family = "binomial",
-           new_name = NULL,
-           default_vars = c(
-             "male",
-             "age",
-             "education_level_coarsen",
-             "eth_cat",
-             "nz_dep2018",
-             "nzsei13",
-             "born_nz",
-             "hlth_disability",
-             "kessler_latent_depression",
-             "kessler_latent_anxiety",
-             "total_siblings_factor",
-             "household_inc_log",
-             "partner",
-             "political_conservative",
-             "urban",
-             "children_num",
-             "hours_children_log",
-             "hours_work_log",
-             "hours_housework_log",
-             "hours_exercise_log",
-             "agreeableness",
-             "conscientiousness",
-             "extraversion",
-             "honesty_humility",
-             "openness",
-             "neuroticism",
-             "modesty",
-             "religion_church_round",
-             "religion_spiritual_identification",
-             "religion_identification_level"
-           )) {
-    # prepare predictor variables, removing duplicates
-    predictors <- unique(c(exposure, default_vars))
-
-    # remove outcome from predictors if present
-    predictors <- setdiff(predictors, outcome)
-
-    # Initialize sample_weights to NULL
-    sample_weights <- NULL
-
-    # Conditionally set sample_weights
-    if (!is.null(sample_weights_var)) {
-      sample_weights <- dat[[sample_weights_var]]
-    }
-
-
-    # family function
-    if (is.character(family)) {
-      if (!family %in% c(
-        "gaussian",
-        "binomial",
-        "Gamma",
-        "inverse.gaussian",
-        "poisson",
-        "quasibinomial",
-        "quasipoisson",
-        "quasi"
-      )) {
-        stop("Invalid 'family' argument. Please specify a valid family function.")
-      }
-      family_fun <-
-        get(family, mode = "function", envir = parent.frame())
-    } else if (class(family) %in% c("family", "quasi")) {
-      family_fun <- family
-    } else {
-      stop(
-        "Invalid 'family' argument. Please specify a valid family function or character string."
-      )
-    }
-
-
-    # construct and run the GLM model
-    formula_str <-
-      paste(outcome, "~", paste(predictors, collapse = " + "))
-    glm_call <-
-      list(
-        formula = as.formula(formula_str),
-        data = quote(dat),
-        weights = quote(sample_weights),
-        family = quote(family)
-      )
-    original_model <- do.call("glm", glm_call)
-
-    # generate summary using model_parameters
-    model_summary <-
-      parameters::model_parameters(original_model,
-                                   ci_method = "wald",
-                                   exponentiate = TRUE)
-
-    # make data frame
-    model_summary_df <- as.data.frame(model_summary)
-
-    # extract coefficient and CI for exposure
-    coef_exposure <-
-      model_summary_df |> dplyr::filter(Parameter == exposure) |> select(c("Coefficient", "CI_low", "CI_high")) |>
-      dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |> rename(GLM_coefficient = Coefficient)
-
-    rownames(coef_exposure)[1] <- paste0(new_name)
-
-    # prepare the return list
-    return_list <- list(
-      "Original_Model" = original_model,
-      "Model_Summary" = model_summary,
-      "Coef_Exposure" = coef_exposure
-    )
-
-    # include data if specified
-    if (return_data) {
-      return_list$Data <- dat
-    }
-
-    return(return_list)
+  sample_weights <- NULL
+  if (!is.null(sample_weights_var)) {
+    sample_weights <- dat[[sample_weights_var]]
   }
 
+  formula_str <- paste(outcome, "~", paste(predictors, collapse = " + "))
 
-# run_glm_with_censoring_weights <- function(dat, exposure, outcome, ...) {
-#   # Other function code
-#
-#   # Create censoring formula using default_vars
-#   censoring_formula_denom <- as.formula(paste("~", paste(default_vars, collapse = " + ")))
-#
-#   # Fit model to get censoring weights using ipw package
-#   censor_weights <- ipwpoint(
-#     exposure = "t1_not_lost",
-#     family = "binomial",
-#     link = "logit",
-#     numerator = ~ 1,
-#     denominator = censoring_formula_denom,
-#     data = dat
-#   )
-#
-#   # Combine sample weights and censoring weights
-#   combined_weights <- ifelse(!is.null(dat$sample_weights_var), dat$sample_weights_var, 1) * censor_weights
-#
-#   # Include combined_weights in your glm
-#   glm_call$weights <- quote(combined_weights)
-#
-#   # Other function code
-# }
+  call_args <- list(formula = as.formula(formula_str), data = dat)
+  if (!is.null(sample_weights)) {
+    call_args$weights <- sample_weights
+  }
+
+  original_model <- do.call("lm", call_args)
 
 
+  # Generate summary using model_parameters
+  model_summary <- parameters::model_parameters(original_model, ci_method = "wald",)
 
+  # Create data frame from model summary
+  model_summary_df <- as.data.frame(model_summary)
 
+  # Extract coefficient and CI for exposure
+  coef_exposure <- model_summary_df |>
+    dplyr::filter(Parameter == exposure) |>
+    dplyr::select(c("Coefficient", "CI_low", "CI_high")) |>
+    dplyr::mutate(across(everything(), \(x) round(x, digits = 4))) |>
+    dplyr::rename(OLS_coefficient = Coefficient)
 
+  rownames(coef_exposure)[1] <- paste0(new_name)
 
-# cate with censoring weights ---------------------------------------------
+  # Prepare the return list
+  return_list <- list(
+    Original_Model = original_model,
+    Model_Summary = model_summary,
+    Coef_Exposure = coef_exposure
+  )
+
+  # Include data if specified
+  if (return_data) {
+    return_list$Data <- dat
+  }
+
+  return(return_list)
+}
+
 
 # Required Libraries
 library(ipw)
@@ -583,31 +374,6 @@ library(dplyr)
 
 library(ipw)
 library(dplyr)
-#
-# run_glm_with_censoring_weights <- function(dat, exposure, outcome, ...) {
-#   # Other function code
-#
-#   # Create censoring formula using default_vars
-#   censoring_formula_denom <- as.formula(paste("~", paste(default_vars, collapse = " + ")))
-#
-#   # Fit model to get censoring weights using ipw package
-#   censor_weights <- ipwpoint(
-#     exposure = "t1_not_lost",
-#     family = "binomial",
-#     link = "logit",
-#     numerator = ~ 1,
-#     denominator = censoring_formula_denom,
-#     data = dat
-#   )
-#
-#   # Combine sample weights and censoring weights
-#   combined_weights <- ifelse(!is.null(dat$sample_weights_var), dat$sample_weights_var, 1) * censor_weights
-#
-#   # Include combined_weights in your glm
-#   glm_call$weights <- quote(combined_weights)
-#
-#   # Other function code
-# }
 
 
 
