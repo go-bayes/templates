@@ -147,6 +147,17 @@ margot_plot_exp <- function(.data,
                                 ifelse(.data$`2.5 %` < 0 & .data$`97.5 %` < 0, "negative", "zero_crossing"))
   }
 
+<<<<<<< Updated upstream
+=======
+
+  # conditionally apply reorder
+  .data <- if (reorder_outcome) {
+    reorder(outcome, .data[[paste0("E[Y(1)]", ifelse(type == "RR", "/", "-"), "E[Y(0)]")]])
+  }{
+    .data
+  }
+
+>>>>>>> Stashed changes
   out <- ggplot(
     data = .data,
     aes(
