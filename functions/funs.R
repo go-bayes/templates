@@ -249,7 +249,7 @@ run_ols <-
            sample_weights_var = NULL,
            new_name = NULL,
            default_vars = NULL
-           )) {
+           ) {
     # prepare predictor variables, removing duplicates
     predictors <- unique(c(exposure, default_vars))
 
