@@ -102,6 +102,150 @@ here_read <- function(name) {
 }
 
 
+
+
+
+# back transform from sd units into the original scale --------------------
+
+# function to backtransform effect sizes and confidence intervals
+back_transform_minutes <- function(effect_sd, lb_sd, ub_sd, sigma, mean_hours) {
+  # calculate the back-transformed effect size in hours
+  effect_original_hours = (effect_sd * sigma) + mean_hours
+
+  # calculate the back-transformed lower and upper bounds in hours
+  lb_original_hours = (lb_sd * sigma) + mean_hours
+  ub_original_hours = (ub_sd * sigma) + mean_hours
+
+  # convert hours to minutes
+  effect_original_minutes = effect_original_hours * 60
+  lb_original_minutes = lb_original_hours * 60
+  ub_original_minutes = ub_original_hours * 60
+
+  # calculate the delta from mean in minutes for effect, lb and ub
+  delta_mean_minutes = (mean_hours - effect_original_hours) * 60
+  delta_mean_minutes_lb = (mean_hours - lb_original_hours) * 60
+  delta_mean_minutes_ub = (mean_hours - ub_original_hours) * 60
+
+  # create a list to store the results
+  result <- list(
+    effect_original_hours = effect_original_hours,
+    lb_original_hours = lb_original_hours,
+    ub_original_hours = ub_original_hours,
+    effect_original_minutes = effect_original_minutes,
+    lb_original_minutes = lb_original_minutes,
+    ub_original_minutes = ub_original_minutes,
+    delta_mean_minutes = delta_mean_minutes,
+    delta_mean_minutes_lb = delta_mean_minutes_lb,
+    delta_mean_minutes_ub = delta_mean_minutes_ub
+  )
+
+  return(result)
+}
+
+# example usage
+
+# example usage
+#sigma = 1.5  # replace with actual standard deviation of 'hours of sleep' from your data
+#mean_hours = 6.902239  # replace with actual mean of 'hours of sleep' from your data
+#effect_sd = -0.057
+#lb_sd = -0.096
+#ub_sd = -0.018
+
+# result_back_transform_minutes <- back_transform_minutes(effect_sd, lb_sd, ub_sd, sigma, mean_hours)
+# print(result_back_transform_minutes)
+
+
+
+# generic transform function
+# function to backtransform effect sizes and confidence intervals
+back_transform_generic <- function(effect_sd, lb_sd, ub_sd, sigma, mean_value) {
+  # calculate the back-transformed effect size
+  effect_original = (effect_sd * sigma) + mean_value
+
+  # calculate the back-transformed lower and upper bounds
+  lb_original = (lb_sd * sigma) + mean_value
+  ub_original = (ub_sd * sigma) + mean_value
+
+  # calculate the delta from mean for effect, lb and ub
+  delta_mean = mean_value - effect_original
+  delta_mean_lb = mean_value - lb_original
+  delta_mean_ub = mean_value - ub_original
+
+  # create a list to store the results
+  result <- list(
+    effect_original = effect_original,
+    lb_original = lb_original,
+    ub_original = ub_original,
+    delta_mean = delta_mean,
+    delta_mean_lb = delta_mean_lb,
+    delta_mean_ub = delta_mean_ub
+  )
+
+  return(result)
+}
+
+# function to back-transform log SD effect sizes and confidence intervals
+back_transform_logsd_adjusted <- function(log_effect, log_lb, log_ub) {
+  # exponentiate the log effect, lb and ub
+  effect_original = exp(log_effect) - 1
+  lb_original = exp(log_lb) - 1
+  ub_original = exp(log_ub) - 1
+
+  # create a list to store the results
+  result <- list(
+    effect_original = effect_original,
+    lb_original = lb_original,
+    ub_original = ub_original
+  )
+
+  return(result)
+}
+
+# example usage
+log_effect = 0.074
+log_lb = 0.007
+log_ub = 0.142
+
+back_transformed_result_adjusted <- back_transform_logsd_adjusted(log_effect, log_lb, log_ub)
+print(back_transformed_result_adjusted)
+
+
+
+
+#sigma = 1.5  # replace with actual standard deviation of 'hours of sleep' from your data
+#mean_hours = 6.902239  # replace with actual mean of 'hours of sleep' from your data
+#effect_sd = -0.057
+#lb_sd = -0.096
+#ub_sd = -0.018
+
+# result_back_transform_minutes <- back_transform_minutes(effect_sd, lb_sd, ub_sd, sigma, mean_hours)
+# print(result_back_transform_minutes)
+
+
+# more transform ----------------------------------------------------------
+
+# function to back-transform log mean and log sd to the original scale
+back_transform_logmean_logsd <- function(log_mean, log_sd) {
+  mean_original = exp(log_mean) - 1
+  sd_original = exp(log_mean + 0.5 * log_sd^2) - exp(log_mean)
+
+  # create a list to store the results
+  result <- list(
+    mean_original = mean_original,
+    sd_original = sd_original
+  )
+
+  return(result)
+}
+
+# example usage
+log_mean = 1.666063
+log_sd = 0.8090868
+
+back_transformed_result <- back_transform_logmean_logsd(log_mean, log_sd)
+print(back_transformed_result)
+
+
 # histogram function ------------------------------------------------------
 
 
