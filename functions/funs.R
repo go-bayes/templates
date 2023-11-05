@@ -1,6 +1,3 @@
-
-
-
 # source libraries
 
 # function for installing dependencies
@@ -58,7 +55,9 @@ packages <- c(
   # for lmtp
   "glmnet",
   "ranger",
-  "progressr" # progress bars
+  "progressr", # progress bars
+  "survey", # survey weights, design
+  "srvyr" # tidyverse wrapper
 )
 
 # install packages
