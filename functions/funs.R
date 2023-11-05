@@ -57,7 +57,10 @@ packages <- c(
   "ranger",
   "progressr", # progress bars
   "survey", # survey weights, design
-  "srvyr" # tidyverse wrapper
+  "srvyr", # tidyverse wrapper
+  "epikit"#,#  age_categories() function
+ # "matchmaker", # dictionary-based cleaning
+ # "rio" # importing data
 )
 
 # install packages
