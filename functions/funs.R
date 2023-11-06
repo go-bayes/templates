@@ -204,9 +204,7 @@ back_transform_logsd_adjusted <- function(log_effect, log_lb, log_ub) {
 }
 
 # example usage
-log_effect = 0.074
-log_lb = 0.007
-log_ub = 0.142
+
 
 back_transformed_result_adjusted <- back_transform_logsd_adjusted(log_effect, log_lb, log_ub)
 print(back_transformed_result_adjusted)
