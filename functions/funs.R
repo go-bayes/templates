@@ -205,9 +205,9 @@ back_transform_logsd_adjusted <- function(log_effect, log_lb, log_ub) {
 
 # example usage
 
-
-back_transformed_result_adjusted <- back_transform_logsd_adjusted(log_effect, log_lb, log_ub)
-print(back_transformed_result_adjusted)
+#
+# back_transformed_result_adjusted <- back_transform_logsd_adjusted(log_effect, log_lb, log_ub)
+# print(back_transformed_result_adjusted)
 
 
 
@@ -237,13 +237,13 @@ back_transform_logmean_logsd <- function(log_mean, log_sd) {
 
   return(result)
 }
-
-# example usage
-log_mean = 1.666063
-log_sd = 0.8090868
-
-back_transformed_result <- back_transform_logmean_logsd(log_mean, log_sd)
-print(back_transformed_result)
+#
+# # example usage
+# log_mean = 1.666063
+# log_sd = 0.8090868
+#
+# back_transformed_result <- back_transform_logmean_logsd(log_mean, log_sd)
+# print(back_transformed_result)
 
 
 # histogram function ------------------------------------------------------
