@@ -342,6 +342,78 @@ coloured_histogram_sd <- function(df, col_name, binwidth = 30) {
 
 
 
+# coloured shift histogram ------------------------------------------------
+
+
+coloured_histogram_shift <- function(df, col_name, binwidth = 30, range_highlight = NULL) {
+  # Compute statistics
+  avg_val <- mean(df[[col_name]], na.rm = TRUE)
+
+  # Adjust fill color based on the range_highlight parameter
+  fill_color <- case_when(
+    range_highlight == "below" & df[[col_name]] >= avg_val ~ "grey60",
+    range_highlight == "above" & df[[col_name]] <= avg_val ~ "grey60",
+    TRUE ~ ifelse(range_highlight == "below", "dodgerblue", "gold2")
+  )
+
+  # Create the base histogram plot
+  p <- ggplot(df, aes_string(x = col_name)) +
+    geom_histogram(aes(y = ..count.., fill = fill_color),
+                   binwidth = binwidth, color = "black") +
+    scale_fill_identity() +
+    geom_vline(xintercept = avg_val, color = "black", size = 1.5) +
+    labs(title = "Histogram of Shift Function",
+         subtitle = "Coloured shows population shifted",
+         fill = "Legend") +
+    theme_minimal()
+
+  # Add arrow based on range_highlight
+  if (!is.null(range_highlight)) {
+    if (range_highlight == "below") {
+      lowest_val <- min(df[[col_name]], na.rm = TRUE)
+      p <- p + geom_segment(
+        aes(
+          x = lowest_val,
+          y = 0,
+          xend = avg_val,
+          yend = 0
+        ),
+        arrow = arrow(
+          type = "closed",
+          ends = "last",
+          length = unit(0.2, "inches")
+        ),
+        color = "black",
+        size = 1.5
+      )
+    } else if (range_highlight == "above") {
+      highest_val <- max(df[[col_name]], na.rm = TRUE)
+      p <- p + geom_segment(
+        aes(
+          x = highest_val,
+          y = 0,
+          xend = avg_val,
+          yend = 0
+        ),
+        arrow = arrow(
+          type = "closed",
+          ends = "last",
+          length = unit(0.2, "inches")
+        ),
+        color = "black",
+        size = 1.5
+      )
+    }
+  }
+
+  return(p)
+}
+
+# Example usage
+#standard_deviation_exposure <- coloured_histogram_shift(dt_19, col_name = "forgiveness", binwidth = .5, range_highlight = "below")
+
+
+
 # sample data
 #my_data <- data.frame(my_column = sample(1:7, 1000, replace = TRUE))
 
