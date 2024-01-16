@@ -30,38 +30,29 @@
 \newcommand{\dottedleftarrowred}{\tikz[baseline=-0.5ex] \draw[red, dashed, latex-] (0,0) -- (0.5,0);}
 \newcommand*\circleblue[1]{\tikz[baseline=(char.base)]{\node[shape=circle, draw=blue!100,inner sep=2pt,fill=blue!10, dotted] (char) {#1};}}
 \newcommand*\boxedblue[1]{\tikz[baseline=(char.base)]{
- \node[shape=rectangle,draw=blue!100,inner sep=2pt,fill=blue!10] (char) {$#1$};}}
- \newcommand{\mediation}{A \to \boxed{L} \rightarrowdotted Y}
- \newcommand{\colliderr}{
- $$
- \begin{aligned}
-  A_{0_{\searrowred}} \\
-  ~~~\\
-  Y_{0}^{\nearrowred}
- \end{aligned}   \boxed{L}
- $$
- }
- \newcommand{\commoncause}{
- \begin{tikzpicture}
- \node [rectangle, draw=white] (L) at (0, 0) {L$_0$};
- \node [rectangle, draw=white] (A) at (1, 0) {A$_1$};
- \node [rectangle, draw=white] (Y) at (2, 0) {Y$_2$};
- \draw [-latex, draw = red] (L) to (A);
- \draw [-latex, draw = white, dotted] (A) to (Y);
- \draw [-latex, bend left=20, draw=red] (L) to (Y);
- \end{tikzpicture}
- }
- \newcommand{\commoncausesolved}{
- \begin{tikzpicture}
- \node [rectangle, draw=black] (L) at (0, 0) {L$_0$};
- \node [rectangle, draw=white] (A) at (1, 0) {A$_1$};
- \node [rectangle, draw=white] (Y) at (2, 0) {Y$_2$};
- \draw [-latex, draw = black] (L) to (A);
- \draw [-latex, draw = white, dotted] (A) to (Y);
- \draw [-latex, bend left=20, draw=black] (L) to (Y);
- \end{tikzpicture}
- }
- \newcommand{\commoncausesolvedchild}{
+\node[shape=rectangle,draw=blue!100,inner sep=2pt,fill=blue!10] (char) {$#1$};}}
+\newcommand{\mediation}{A \to \boxed{L} \rightarrowdotted Y}
+\newcommand{\commoncause}{
+\begin{tikzpicture}
+\node [rectangle, draw=white] (L) at (0, 0) {L$_0$};
+\node [rectangle, draw=white] (A) at (1, 0) {A$_1$};
+\node [rectangle, draw=white] (Y) at (2, 0) {Y$_2$};
+\draw [-latex, draw = red] (L) to (A);
+\draw [-latex, draw = white, dotted] (A) to (Y);
+\draw [-latex, bend left=20, draw=red] (L) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\commoncausesolved}{
+\begin{tikzpicture}
+\node [rectangle, draw=black] (L) at (0, 0) {L$_0$};
+\node [rectangle, draw=white] (A) at (1, 0) {A$_1$};
+\node [rectangle, draw=white] (Y) at (2, 0) {Y$_2$};
+\draw [-latex, draw = black] (L) to (A);
+\draw [-latex, draw = white, dotted] (A) to (Y);
+\draw [-latex, bend left=20, draw=black] (L) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\commoncausesolvedchild}{
  \begin{tikzpicture}
  \node [rectangle, draw=white] (L) at (-1, 0) {U};
  \node [rectangle, draw=black] (L1) at (0, 0) {L$^{\prime}_0$};
