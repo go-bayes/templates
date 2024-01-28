@@ -1,3 +1,6 @@
+\usepackage{array}
+%\usepackage{tabularx}
+%\usepackage{makecell}
 \usepackage{cancel}
 \usepackage{xcolor}
 \usepackage{amsmath}
@@ -10,6 +13,10 @@
 \renewcommand*{\Authands}{, }
 \renewcommand\Affilfont{\tiny}
 \usepackage[noblocks]{authblk}
+%\renewcommand\theadalign{tl} % Top and left alignment
+%\renewcommand\theadfont{\raggedright\arraybackslash\small} % Small font, ragged right
+%\renewcommand\theadgape{\Gape[4pt]} % Gap above the text in the cell
+\newcolumntype{T}[1]{>{\raggedright\arraybackslash\small}p{#1}}
 \usepackage{tikz}
 \usetikzlibrary{calc}
 \usetikzlibrary{arrows}
@@ -25,13 +32,13 @@
 %\captionsetup{justification=raggedright,singlelinecheck=false}
 \captionsetup{justification=raggedright,singlelinecheck=false}
 \newcommand{\association}{\tikz[baseline=-0.5ex] \draw[-] (0,0) -- (0.5,0);}
-\renewcommand{\rightarrow}{\tikz[baseline=-0.5ex] \draw[-latex] (0,0) to (0.5,0);}
-\renewcommand{\leftarrow}{\tikz[baseline=-0.5ex] \draw[-latex-] (0,0) -- (0.5,0);}
-\newcommand{\rightarrowblue}{\textcolor{blue}{\rightarrow}}
+\newcommand{\rightarrowNEW}{\tikz[baseline=-0.5ex] \draw[-latex] (0,0) to (0.5,0);}
+\newcommand{\leftarrowNEW}{\tikz[baseline=-0.5ex] \draw[-latex-] (0,0) -- (0.5,0);}
+\newcommand{\rightarrowblue}{\textcolor{blue}{\rightarrowNEW}}
 \newcommand{\rightarrowblueB}{\textcolor{blue}{\to}}
-\newcommand{\leftarrowblue}{\textcolor{blue}{\leftarrow}}
-\newcommand{\rightarrowred}{\textcolor{red}{\rightarrow}}
-\newcommand{\leftarrowred}{\textcolor{red}{\leftarrow}}
+\newcommand{\leftarrowblue}{\textcolor{blue}{\leftarrowNEW}}
+\newcommand{\rightarrowred}{\textcolor{red}{\rightarrowNEW}}
+\newcommand{\leftarrowred}{\textcolor{red}{\leftarrowNEW}}
 \newcommand{\searrowred}{\textcolor{red}{\tikz \draw[-latex] (0,-0) -- (.5,-0.5);}}
 \newcommand{\nearrowred}{\textcolor{red}{\tikz \draw[-latex] (0,0) -- (.5,0.5);}}
 \newcommand{\rightarrowdotted}{\tikz[baseline=-0.5ex] \draw[dashed, -latex] (0,0) -- (0.5,0);}
@@ -53,50 +60,50 @@
 }
 \newcommand{\xorx}{
 \begin{tikzpicture}
-\node [circle, inner sep = 2pt, draw=white] (A) at (0, 0) {X};
-\node [circle, inner sep = 2pt, draw=white] (Y) at (1.5, 0) {X$^{\prime}$};
+\node [draw=none, inner sep = 1] (A) at (0, 0) {X};
+\node [draw=none, inner sep = 1]  (Y) at (1, 0) {X$^{\prime}$};
 \draw [draw = black] (A) to (Y);
 \end{tikzpicture}
 }
 \newcommand{\xorxorx}{
 \begin{tikzpicture}
-\node [circle, inner sep = 2pt, draw=white] (X) at (0, 0) {X};
-\node [circle, inner sep = 2pt, draw=white] (X1) at (1, 0) {X$^{\prime}$};
-\node [circle, inner sep = 2pt, draw=white] (X2) at (2, 0) {X$^{\prime \prime}$};
+\node [draw=none, inner sep = 1]  (X) at (0, 0) {X};
+\node [draw=none, inner sep = 1]  (X1) at (1, 0) {X$^{\prime}$};
+\node [draw=none, inner sep = 1] (X2) at (2, 0) {X$^{\prime \prime}$};
 \draw [draw = black] (X) to (X1);
 \draw [draw = black, bend left = 40] (X) to (X2);
 \end{tikzpicture}
 }
 \newcommand{\xtox}{
 \begin{tikzpicture}
-\node [circle, inner sep = 2pt, draw=white] (A) at (0, 0)  {X$_\text{parent}$};
-\node [circle, inner sep = 2pt, draw=white] (Y) at (3, 0)  {X$_\text{child}$};
+\node [draw=none, inner sep = 1]  (A) at (0, 0)  {X$_\text{parent}$};
+\node [draw=none, inner sep = 1]  (Y) at (3, 0)  {X$_\text{child}$};
 \draw [-latex, draw = black] (A) to (Y);
 \end{tikzpicture}
 }
 \newcommand{\xtoxA}{
 \begin{tikzpicture}
-\node [circle, inner sep = 2pt, draw=white,  align=center] (A) at (0, 0)  {X$_0$};
-\node [circle, inner sep = 2pt, draw=white,  align=center] (Y) at (2, 0)  {X$_1$};
+\node [draw=none, inner sep = 1] (A) at (0, 0)  {X$_0$};
+\node [draw=none, inner sep = 1]  (Y) at (1, 0)  {X$_1$};
 \draw [-latex, draw = black] (A) to (Y);
 \end{tikzpicture}
 }
 \newcommand{\child}{
- \begin{tikzpicture}
- \node [rectangle, draw=white] (A) at (0, .25) {X$_1$};
- \node [rectangle, draw=white] (L) at (1, 0) {X$_3$};
- \node [rectangle, draw=black] (L1) at (2, 0) {X$_4$};
- \node [rectangle, draw=white] (Y) at (0, -.25) {X$_2$};
- \draw [-latex, draw = black] (A) to (L);
- \draw [-latex, draw = black] (Y) to (L);
- \draw [-latex, draw = black] (L) to (L1);
- \end{tikzpicture}
+\begin{tikzpicture}
+\node [draw=none, inner sep = 1]  (A) at (0, .25) {X$_1$};
+\node [draw=none, inner sep = 1]  (L) at (1, 0) {X$_3$};
+\node [draw=none, inner sep = 1]  (L1) at (2, 0) {X$_4$};
+\node [draw=none, inner sep = 1]  (Y) at (0, -.25) {X$_2$};
+\draw [-latex, draw = black] (A) to (L);
+\draw [-latex, draw = black] (Y) to (L);
+\draw [-latex, draw = black] (L) to (L1);
+\end{tikzpicture}
 }
 \newcommand{\fork}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (L) at (0, 0) {X$_0$};
-\node [rectangle, draw=white] (A) at (1, 0) {X$_1$};
-\node [rectangle, draw=white] (Y) at (2, 0) {X$_2$};
+\node [draw=none, inner sep = 1]  (L) at (0, 0) {X$_0$};
+\node [draw=none, inner sep = 1]  (A) at (1, 0) {X$_1$};
+\node [draw=none, inner sep = 1]  (Y) at (2, 0) {X$_2$};
 \draw [-latex, draw = black] (L) to (A);
 \draw [-latex, draw = white, dotted] (A) to (Y);
 \draw [-latex, bend left=20, draw=black] (L) to (Y);
@@ -104,44 +111,60 @@
 }
 \newcommand{\chain}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {X$_0$};
-\node [rectangle, draw=white] (M) at (1, 0) {X$_1$};
-\node [rectangle, draw=white] (Y) at (2, 0) {X$_2$};
+\node [draw=none, inner sep = 1]  (A) at (0, 0) {X$_0$};
+\node [draw=none, inner sep = 1] (M) at (1, 0) {X$_1$};
+\node [draw=none, inner sep = 1]  (Y) at (2, 0) {X$_2$};
 \draw [-latex, draw = black] (A) to (M);
 \draw [-latex, draw = black] (M) to (Y);
 \end{tikzpicture}
 }
 \newcommand{\immorality}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, .5) {X$_0$};
-\node [rectangle, draw=white] (L) at (1, 0) {X$_2$};
-\node [rectangle, draw=white] (Y) at (0, -.5) {X$_1$};
+\node [draw=none, inner sep = 1]  (A) at (0, .5) {X$_0$};
+\node [draw=none, inner sep = 1] (L) at (1, 0) {X$_2$};
+\node [draw=none, inner sep = 1]  (Y) at (0, -.5) {X$_1$};
 \draw [-latex, draw = black] (A) to (L);
 \draw [-latex, draw = black] (Y) to (L);
 \end{tikzpicture}
 }
 \newcommand{\network}{
 \begin{tikzpicture}
-\node [circle, inner sep=3pt, draw=black] (X1) at (0, 0) {X};
-\node [circle, inner sep=2pt, draw=black] (X2) at (1, 0) {X$^\prime$};
-\node [circle, inner sep=1pt, draw=black] (X3) at (2, 0) {X$^{\prime\prime}$};
-\node [circle, inner sep=1pt, draw=black] (X4) at (3, 0) {X$^{\prime\prime\prime}$};
+\node [circle, inner sep=3pt, draw=white] (X1) at (0, 0) {X};
+\node [circle, inner sep=2pt, draw=white] (X2) at (1, 0) {X$^\prime$};
+\node [circle, inner sep=1pt, draw=white] (X3) at (2, 0) {X$^{\prime\prime}$};
+\node [circle, inner sep=1pt, draw=white] (X4) at (3, 0) {X$^{\prime\prime\prime}$};
 \draw [draw = black] (X1) to (X2);
 \draw [bend left=40, draw=black] (X1) to (X3);
 \end{tikzpicture}
 }
 \newcommand{\aandy}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (1.5, 0) {Y$_2$};
+\node [draw=none, inner sep = 0]  (A) at (0, 0) {A$_1$};
+\node [draw=none, inner sep = 0]  (Y) at (1, 0) {Y$_2$};
+%\node [draw=none, align=center, font=\tiny] at (1.5,.4) {A and Y are not causally associated};
+\draw [-latex, draw = white] (A) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\abarandy}{
+\begin{tikzpicture}
+\node [draw=none, inner sep = 0]  (A) at (0, 0) {$\bar{A}$};
+\node [draw=none, inner sep = 0]  (Y) at (1, 0) {$Y$};
 %\node [draw=none, align=center, font=\tiny] at (1.5,.4) {A and Y are not causally associated};
 \draw [-latex, draw = white] (A) to (Y);
 \end{tikzpicture}
 }
 \newcommand{\atoy}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (1.5, 0) {Y$_2$};
+\node [draw=none, inner sep = 0] (A) at (0, 0) {$A_1$};
+\node [draw=none, inner sep = 0] (Y) at (1, 0) {$Y_2$};
+\draw [-latex, draw = black] (A) to (Y);
+%\node [draw=none, align=center, font=\tiny] at (1.25,.4) {A and Y are causally associated};
+\end{tikzpicture}
+}
+\newcommand{\abartoy}{
+\begin{tikzpicture}
+\node [draw=none, inner sep = 0] (A) at (0, 0) {$\bar{A}$};
+\node [draw=none, inner sep = 0] (Y) at (1, 0) {$Y$};
 \draw [-latex, draw = black] (A) to (Y);
 %\node [draw=none, align=center, font=\tiny] at (1.25,.4) {A and Y are causally associated};
 \end{tikzpicture}
@@ -159,85 +182,224 @@
 }
 \newcommand{\atoybiased}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (1.5, 0) {Y$_2$};
+\node [draw=none, inner sep = 1]  (A) at (0, 0) {A$_1$};
+\node [draw=none, inner sep = 1]  (Y) at (1.0, 0) {Y$_2$};
 %\node [draw=none, align=center, font=\tiny] at (1.5,.4) {Bias in causal association of A and Y};
-\draw [-latex, draw = red, dashed, thick] (A) to (Y);
+\draw [-latex, draw = red, dashed] (A) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\abartoybiased}{
+\begin{tikzpicture}
+\node [draw=none, inner sep = 1]  (A) at (0, 0) {$\bar{A}$};
+\node [draw=none, inner sep = 1]  (Y) at (1.0, 0) {Y$_2$};
+%\node [draw=none, align=center, font=\tiny] at (1.5,.4) {Bias in causal association of A and Y};
+\draw [-latex, draw = red, dashed] (A) to (Y);
 \end{tikzpicture}
 }
 \newcommand{\atoybiasedB}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (1.5, 0) {Y$_2$};
+\node [draw=none, inner sep = 1]  (A) at (0, 0) {$\bar{A}$};
+\node [draw=none, inner sep = 1]  (Y) at (1.0, 0) {Y$_2$};
 %\node [draw=none, align=center, font=\tiny] at (1.5,.4) {Estimates Direct Effect of A on Y};
 \draw [-latex, draw = black, dashed] (A) to (Y);
 \end{tikzpicture}
 }
 \newcommand{\ytoa}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (1.5, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (0, 0) {Y$_2$};
+\node [draw=none, align=center, font=\small] at (0,1) {\bf Timing};
+\node [draw=none, inner sep = 0] (A) at (1, 0) {$A_1$};
+\node [draw=none, inner sep = 0] (Y) at (0, 0) {$Y_2$};
 \draw [-latex, red] (Y) to (A);
-\node [draw=none, align=center, font=\tiny] at (1.5,.4) {Time-order of exposure/confounder};
 \end{tikzpicture}
 }
 \newcommand{\atwotoyone}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_2$};
-\node [rectangle, draw=white] (Y) at (1.5, 0) {Y$_1$};
+\node [draw=none, align=center, font=\small] at (0,1) {\bf Timing};
+\node [rectangle, draw=white] (A) at (0, 0) {$A_2$};
+\node [rectangle, draw=white] (Y) at (1.5, 0) {$Y_1$};
 \draw [-latex, draw = red] (A) to (Y);
-\node [draw=none, align=center, font=\tiny] at (1.5,.4) {Time-order of exposure/confounder};
 \end{tikzpicture}
 }
 \newcommand{\commoncause}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (L) at (0, 0) {L$_0$};
-\node [rectangle, draw=white] (A) at (1, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (2, 0) {Y$_2$};
+\node [draw=none, align=center, font=\small] at (.75,1) {\bf Common cause};
+\node [rectangle, draw=white] (L) at (0, 0) {$L_0$};
+\node [rectangle, draw=white] (A) at (1, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (2, 0) {$Y_2$};
 \draw [-latex, draw = red] (L) to (A);
 \draw [-latex, draw = white, dotted] (A) to (Y);
 \draw [-latex, bend left=20, draw=red] (L) to (Y);
-\node [draw=none, align=center, font=\tiny] at (-1.25,.4) {Fork};
+\end{tikzpicture}
+}
+\newcommand{\commoncauseA}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\small] at (.75,1) {\bf Common cause};
+\node [draw=none, inner sep = 0] (L) at (0, 0) {$L_0$};
+\node [draw=none, inner sep = 0] (A) at (1.5, 0) {$A_1$};
+\node [draw=none, inner sep = 0] (Y) at (3, 0) {$Y_2$};
+\draw [-latex, draw = red] (L) to (A);
+\draw [-latex, draw = white, dotted] (A) to (Y);
+\draw [-latex, bend left=20, draw=red] (L) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\commoncauseAshort}{
+\begin{tikzpicture}
+\node [draw=none, inner sep = 0] (L) at (0, 0) {$L_0$};
+\node [draw=none, inner sep = 0] (A) at (1, 0) {$A_1$};
+\node [draw=none, inner sep = 0] (Y) at (2, 0) {$Y_2$};
+\draw [-latex, draw = red] (L) to (A);
+\draw [-latex, draw = white, dotted] (A) to (Y);
+\draw [-latex, bend left=20, draw=red] (L) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\commoncauseAA}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\small] at (.75,1) {\bf Common cause};
+\node [draw=none, inner sep = 0] (L) at (0, 0) {$L_0$};
+\node [draw=none, inner sep = 0] (A) at (1.5, 0) {$A_1$};
+\node [draw=none, inner sep = 0] (Y) at (3, 0) {$Y_2$};
+\draw [-latex, draw = red] (L) to (A);
+\draw [-latex, draw = red, dashed] (A) to (Y);
+\draw [-latex, bend left=20, draw=red] (L) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\commoncauseAAshort}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\small] at (.75,1) {\bf Common cause};
+\node [draw=none, inner sep = 0] (L) at (0, 0) {$L_0$};
+\node [draw=none, inner sep = 0] (A) at (1, 0) {$A_1$};
+\node [draw=none, inner sep = 0] (Y) at (2, 0) {$Y_2$};
+\draw [-latex, draw = red] (L) to (A);
+\draw [-latex, draw = red, dashed] (A) to (Y);
+\draw [-latex, bend left=20, draw=red] (L) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\commoncauseALATENTshort}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\small] at (1.25,1) {\bf Condition on pre-exposure L};
+\node [circle, draw=black, dashed, inner sep = 1] (U) at (0, 0) {$U_0$};
+\node [draw=none, inner sep = 0]  (A) at (1, 0) {$A_1$};
+\node [draw=none, inner sep = 0]  (Y) at (2, 0) {$Y_2$};
+\draw [-latex, draw = red] (U) to (A);
+\draw [-latex, draw = white, dotted] (U) to (Y);
+\draw [-latex, bend left=30, draw=red] (U) to (Y);
 \end{tikzpicture}
 }
 \newcommand{\mediator}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_0$};
-\node [rectangle, draw=red, thick] (L) at (1.5, 0) {L$_1$};
-\node [rectangle, draw=white] (Y) at (3, 0) {Y$_2$};
+\node [draw=none, align=center, font=\small] at (.25,1) {\bf Mediator bias};
+\node [draw=none, inner sep = 0]  (A) at (0, 0) {$A_0$};
+\node [rectangle, draw=red] (L) at (1.5, 0) {$L_1$};
+\node [draw=none, inner sep = 0] (Y) at (3, 0) {$Y_2$};
 \draw [-latex, draw = red] (A) to (L);
 \draw [-latex, draw = red] (L) to (Y);
 \draw [-latex,  bend left=30, draw=red,dashed, thick] (A) to node[pos=0.5, above,draw=none, text = red] {\tiny attenuated} (Y); (Y);
-\node [draw=none, align=center, font=\tiny] at (.25,1) {Mediator bias};
+\end{tikzpicture}
+}
+\newcommand{\mediatorA}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\small] at (.25,1) {\bf Mediator bias};
+\node [draw=none, inner sep = 0](A) at (0, 0) {$A_0$};
+\node [rectangle, draw=red, thick] (L) at (1.5, 0) {$L_1$};
+\node [draw=none, inner sep = 0] (Y) at (3, 0) {$Y_2$};
+\draw [-latex, draw = red] (A) to (L);
+\draw [-latex, draw = red] (L) to (Y);
+\draw [-latex,  bend left=30, draw=red,dashed] (A) to node[pos=0.5, above,draw=none, text = red] {\tiny attenuated} (Y); (Y);
 \end{tikzpicture}
 }
 \newcommand{\collider}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, .25) {A$_0$};
-\node [rectangle,  draw=red, thick] (L) at (2, 0) {L$_1$};
-\node [rectangle, draw=white] (Y) at (0, -.25) {Y$_0$};
+\node [draw=none, align=center, font=\small] at (0,.75) {\bf Collider};
+\node [draw=none, inner sep = 0]  (A) at (0, .25) {$A_0$};
+\node [rectangle,  draw=red, thick] (L) at (2, 0) {$L_1$};
+\node [draw=none, inner sep = 0]  (Y) at (0, -.25) {$Y_0$};
 \draw [-latex, draw = red] (A) to (L);
 \draw [-latex, draw = red] (Y) to (L);
-\node [draw=none, align=center, font=\tiny] at (-1,.8) {Collider};
+\end{tikzpicture}
+}
+\newcommand{\colliderA}{
+\begin{tikzpicture}
+%node [draw=none, align=center, font=\small] at (0,.75) {\bf Collider};
+\node [draw=none, inner sep = 0]  (A) at (0, .25) {$A_0$};
+\node [rectangle,  draw=red, thick] (L) at (2, 0) {$L_1$};
+\node [draw=none, inner sep = 0] (Y) at (0, -.25) {$Y_0$};
+\draw [-latex, draw = red] (A) to (L);
+\draw [-latex, draw = red] (Y) to (L);
 \end{tikzpicture}
 }
 \newcommand{\descendantB}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, .25) {A$_0$};
+\node [draw=none, align=center, font=\small] at (1.5,.75) {\bf Descendant of collider};
+\node [rectangle, draw=white] (A) at (0, .25) {$A_0$};
 \node [rectangle, draw=white] (L) at (1, 0) {$L_1$};
 \node [rectangle, draw=black] (L1) at (2, 0) {$L'_1$};
-\node [rectangle, draw=white] (Y) at (0, -.25) {Y$_0$};
+\node [rectangle, draw=white] (Y) at (0, -.25) {$Y_0$};
 \draw [-latex, draw = red] (A) -- (L);
 \draw [-latex, draw = red] (Y) -- (L);
 \draw [-latex, draw = red] (L) -- (L1);
-\node [draw=none, align=center, font=\tiny] at (0,.8) {Condition on child of collider};
+\end{tikzpicture}
+}
+\newcommand{\descendantBB}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\small] at (1.5,.75) {\bf Descendant of collider};
+\node [rectangle, draw=white] (A) at (0, .25) {$A_0$};
+\node [rectangle, draw=white] (L) at (1, 0) {$L_1$};
+\node [rectangle, draw=black] (L1) at (2, 0) {$L'_1$};
+\node [rectangle, draw=white] (Y) at (0, -.25) {$Y_0$};
+\draw [-latex, draw = red] (A) -- (L);
+\draw [-latex, draw = red] (Y) -- (L);
+\draw [-latex, draw = red] (L) -- (L1);
+\end{tikzpicture}
+}
+\newcommand{\mediatorcollider}{
+\begin{tikzpicture}
+\node [draw=none, align=center, font=\small] at (2,1) {\bf Condition on child of collider};
+\node [rectangle, draw=white] (U) at (0, 0) {U};
+\node [ellipse, draw=white] (A) at (1, 0) {$A_{0}$};
+\node [rectangle, draw=black](L) at (2.5, 0) {$L_{1}$};
+\node [ellipse, draw=white] (Y) at (4, 0) {$Y_{2}$};
+\draw [-latex, bend right=20, draw = red] (U) to (L);
+\draw [-latex, bend left = 20, draw=red] (U) to (Y);
+\draw [-latex,draw=red] (A) to (L);
+\end{tikzpicture}
+}
+\newcommand{\downstreamconfounder}{
+\begin{tikzpicture}
+\node [draw=none, align=center, font=\small] at (2.5,1) {\bf Condition on child of unmeasured confounder};
+\node [rectangle, draw=white] (U) at (0, 0) {U};
+\node [rectangle, draw=white](A) at (1.5, 0) {$A_{1}$};
+\node [ellipse, draw=white] (Y) at (3, 0) {$Y_{2}$};
+\node [rectangle, draw=black] (L) at (4, 0) {$L^{\prime}_{3}$};
+\draw [-latex, bend right=20, draw =red] (U) to (Y);
+\draw [-latex, bend right = 20, draw=black] (U) to (L);
+\draw [-latex, draw =red] (U) to (A);
+\end{tikzpicture}
+}
+\newcommand{\downstream}{
+\begin{tikzpicture}
+\node [draw=none, align=center, font=\small] at (1.25,1) {\bf Unmeasured confounding};
+\node [rectangle, draw=white] (U) at (0, 0) {U};
+\node [rectangle, draw=white](A) at (1.5, 0) {$A_{1}$};
+\node [ellipse, draw=white] (Y) at (3, 0) {$Y_{2}$};
+\draw [-latex, bend right=25, draw =red] (U) to (Y);
+\draw [-latex, draw =red] (U) to (A);
 \end{tikzpicture}
 }
 \newcommand{\mediatorm}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_0$};
-\node [rectangle, draw=black, thick] (M) at (1.5, 0) {M$_1$};
-\node [rectangle, draw = white] (Y) at (3, 0) {Y$_2$};
+\node [rectangle, draw=white] (A) at (0, 0) {$A_0$};
+\node [rectangle, draw=black, thick] (M) at (1.5, 0) {$M_1$};
+\node [rectangle, draw = white] (Y) at (3, 0) {$Y_2$};
+\draw [-latex, draw = black] (A) to (M);
+\draw [-latex, draw = black] (M) to (Y);
+\draw [-latex,  bend left=30, draw=black, dashed, thick] (A) to node[pos=0.5, above, draw=none, text = black] {\tiny direct effect} (Y);
+\end{tikzpicture}
+}
+\newcommand{\mediatormSHORT}{
+\begin{tikzpicture}
+\node [draw=none, inner sep = 0]  (A) at (0, 0) {$A_0$};
+\node [rectangle, draw=black, thick,inner sep = 1] (M) at (1, 0) {$M_1$};
+\node [draw=none, inner sep = 0]  (Y) at (2, 0) {$Y_2$};
 \draw [-latex, draw = black] (A) to (M);
 \draw [-latex, draw = black] (M) to (Y);
 \draw [-latex,  bend left=30, draw=black, dashed, thick] (A) to node[pos=0.5, above, draw=none, text = black] {\tiny direct effect} (Y);
@@ -245,100 +407,130 @@
 }
 \newcommand{\mbias}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (UA) at (0, -.25) {U$_A$};
-\node [rectangle, draw=white] (UY) at (0, .25) {U$_Y$};
-\node [rectangle,  draw=red, thick] (L) at (1, 0) {L$_0$};
-\node [rectangle, draw=white] (A) at (2, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (3, 0) {Y$_2$};
+\node [draw=none, align=center, font=\small] at (-.25,1) {\bf M-bias};
+\node [rectangle, draw=white] (UA) at (0, -.25) {$U_A$};
+\node [rectangle, draw=white] (UY) at (0, .25) {$U_Y$};
+\node [rectangle,  draw=red, thick] (L) at (1, 0) {$L_0$};
+\node [rectangle, draw=white] (A) at (2, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (3, 0) {$Y_2$};
 \draw [-latex, draw = red] (UA) to (L);
 \draw [-latex, draw = red] (UY) to (L);
 \draw [-latex, draw = red, bend right = 30] (UA) to (A);
 \draw [-latex, draw = red, bend left = 30] (UY) to (Y);
-\node [draw=none, align=center, font=\tiny] at (0,1) {M-bias};
 \end{tikzpicture}
 }
 \newcommand{\mbiasdoomed}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (UA) at (0, -.25) {U$_A$};
-\node [rectangle, draw=white] (UY) at (0, .25) {U$_Y$};
-\node [rectangle,  draw=red, thick] (L) at (1, 0) {L$_0$};
-\node [rectangle, draw=white] (A) at (2, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (3, 0) {Y$_2$};
+\node [draw=none, align=center, font=\small] at (1.25,1) {\bf M-bias, L is confounder};
+\node [rectangle, draw=white] (UA) at (0, -.25) {$U_A$};
+\node [rectangle, draw=white] (UY) at (0, .25) {$U_Y$};
+\node [rectangle,  draw=red, thick] (L) at (1, 0) {$L_0$};
+\node [rectangle, draw=white] (A) at (2, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (3, 0) {$Y_2$};
 \draw [-latex, draw = black] (L) to (A);
 \draw [-latex, draw = black, bend left = 30] (L) to (Y);
 \draw [-latex, draw = red] (UA) to (L);
 \draw [-latex, draw = red] (UY) to (L);
 \draw [-latex, draw = red, bend right = 30] (UA) to (A);
 \draw [-latex, draw = red, bend left = 30] (UY) to (Y);
-\node [draw=none, align=center, font=\tiny] at (1,1) {M-bias, L is confounder};
 \end{tikzpicture}
 }
 % solutions 
 \newcommand{\aandysolution}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (1.5, 0) {Y$_2$};
-\node [draw=none, align=left, font=\tiny] at (-.5,.5) {Measure relative timing of A and Y};
+\node [draw=none, align=left, font=\small] at (1.25,1) {\bf Ensure relative timing of A and Y};
+\node [rectangle, draw=white] (A) at (0, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (1, 0) {$Y_2$};
 \draw [-latex, draw = white] (A) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\aandygenderalsolution}{
+\begin{tikzpicture}
+\node [draw=none, inner sep = 0] (A) at (0, 0) {$A_1$};
+\node [draw=none, inner sep = 0]  (Y) at (1, 0) {$Y_2$};
+\draw [-latex, draw = red, dashed] (A) to  node[pos=0.5, above, draw=none, text= red] {\large ?}(Y);
 \end{tikzpicture}
 }
 \newcommand{\commoncausesolved}{
 \begin{tikzpicture}
-\node [rectangle, draw=black] (L) at (0, 0) {L$_0$};
-\node [rectangle, draw=white] (A) at (1, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (2, 0) {Y$_2$};
+\node [draw=none, align=center, font=\small] at (1.25,1) {\bf Condition on pre-exposure L};
+\node [rectangle, draw=black] (L) at (0, 0) {$L_0$};
+\node [draw=none, inner sep = 0] (A) at (1, 0) {$A_1$};
+\node [draw=none, inner sep = 0]  (Y) at (2, 0) {$Y_2$};
 \draw [-latex, draw = black] (L) to (A);
 \draw [-latex, draw = white, dotted] (A) to (Y);
-\draw [-latex, bend left=20, draw=black] (L) to (Y);
-\node [draw=none, align=center, font=\tiny] at (-.5,.65) {Condition on pre-exposure L};
+\draw [-latex, bend left=30, draw=black] (L) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\commoncausesolvedA}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\small] at (1.25,1) {\bf Condition on pre-exposure L};
+\node [rectangle, draw=black] (L) at (0, 0) {$L_0$};
+\node [rectangle, draw=white] (A) at (1.5, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (3, 0) {$Y_2$};
+\draw [-latex, draw = black] (L) to (A);
+\draw [-latex, draw = white, dotted] (A) to (Y);
+\draw [-latex, bend left=30, draw=black] (L) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\commoncausesolvedAshort}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\small] at (1.25,1) {\bf Condition on pre-exposure L};
+\node [rectangle, draw=black] (L) at (0, 0) {$L_0$};
+\node [draw=none, inner sep = 0]  (A) at (1, 0) {$A_1$};
+\node [draw=none, inner sep = 0]  (Y) at (2, 0) {$Y_2$};
+\draw [-latex, draw = black] (L) to (A);
+\draw [-latex, draw = white, dotted] (A) to (Y);
+\draw [-latex, bend left=30, draw=black] (L) to (Y);
 \end{tikzpicture}
 }
 \newcommand{\mbiassolved}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (UA) at (0, -.25) {U$_A$};
-\node [rectangle, draw=white] (UY) at (0, .25) {U$_Y$};
-\node [rectangle,  draw=white, thick] (L) at (1, 0) {L$_0$};
-\node [rectangle, draw=white] (A) at (2, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (3, 0) {Y$_2$};
+\node [draw=none, align=center, font=\small] at (1,1) {\bf Do not condition on L};
+\node [draw=none, inner sep = 0]  (UA) at (0, -.25) {$U_A$};
+\node [draw=none, inner sep = 0]  (UY) at (0, .25) {$U_Y$};
+\node [rectangle,  draw=white, thick] (L) at (1, 0) {$L_0$};
+\node [rectangle, draw=white] (A) at (2, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (3, 0) {$Y_2$};
 \draw [-latex, draw = black] (UA) to (L);
 \draw [-latex, draw = black] (UY) to (L);
 \draw [-latex, draw = black, bend right = 30] (UA) to (A);
 \draw [-latex, draw = black, bend left = 30] (UY) to (Y);
-\node [draw=none, align=center, font=\tiny] at (0,1) {Do not condition on L};
 \end{tikzpicture}
 }
 \newcommand{\commoncausesolvedchild}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (U) at (-1, 0) {U};
-\node [rectangle, draw=black] (L1) at (0, 0) {L$^{\prime}_0$};
-\node [rectangle, draw=white] (A) at (1, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (2, 0) {Y$_2$};                        
+\node [draw=none, align=center, font=\small] at (.25,1) {\bf Condition on pre-exposure L$^\prime$};
+\node [draw=none, align=center, inner sep = 1](U) at (-1, 0) {U};
+\node [rectangle, draw=black] (L1) at (0, 0) {$L^{\prime}_0$};
+\node [draw=none, align=center, inner sep = 1] (A) at (1, 0) {$A_1$};
+\node [draw=none, align=center, inner sep = 1] (Y) at (2, 0) {$Y_2$};                        
 \draw [-latex, draw = black] (U) to (L1);
 \draw [-latex, draw = black] (L1) to (A);
 \draw [-latex, draw = black, bend left = 30] (U) to (Y);
-\node [draw=none, align=center, font=\tiny] at (-.5,.75) {Condition on pre-exposure L'};
 \end{tikzpicture}
 }
 \newcommand{\mbiasdoomedsolved}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (UA) at (-1.5, -.25) {U$_A$};
-\node [rectangle, draw=white] (UY) at (-1.5, .25) {U$_Y$};
-\node [rectangle,  draw=white, thick] (L) at (0, 0) {L$_0$};
-\node [rectangle,  draw=black, thick] (L1) at (0, .5) {L$^{UY}$};
-\node [rectangle, draw=white] (A) at (1, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (2, 0) {Y$_2$};
+\node [draw=none, font=\small] at (1.25, 1) {\bf Condition on measured child of UA OR UY};
+\node [rectangle, draw=white] (UA) at (-1.5, -.5) {$U_A$};
+\node [rectangle, draw=white] (UY) at (-1.5, .25) {$U_Y$};
+\node [draw=none, align=center] (L) at (0, 0) {$L_0$};
+\node [rectangle,  draw=black, inner sep = 1] (L1) at (0, .5) {$L^{UY}$};
+\node [draw=none, align=center, inner sep = 1] (A) at (1, 0) {A$_1$};
+\node [draw=none, align=center, inner sep = 1] (Y) at (2, 0) {Y$_2$};
 \draw [-latex, draw = black] (UA) to (L);
 \draw [-latex, draw = black] (UY) to (L);
+\draw [-latex, draw = black] (L) to (A);
 \draw [-latex, draw = black, bend right = 30] (UA) to (A);
 \draw [-latex, draw = black] (UY) to (L1);
-\node [draw=none, font=\tiny] at (.25,1) {Condition on measured child of UA OR UY};
 \end{tikzpicture}
 }
 \newcommand{\effectmodifierA}{
 \begin{tikzpicture}
 \node [rectangle,  inner sep=4pt,  draw=blue, thick] (Z) at (0,0) {$Z$};
-\node [rectangle, draw=white] (A) at (1.5, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (3, 0) {Y$_2$};
+\node [rectangle, draw=white] (A) at (1.5, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (3, 0) {$Y_2$};
 \draw [-latex, draw = blue, bend left = 20] (Z) to (Y);
 \draw [-latex, draw = black] (A) to (Y);
 \end{tikzpicture}
@@ -346,8 +538,8 @@
 \newcommand{\effectmodifierB}{
 \begin{tikzpicture}
 \node [circle,  inner sep=4pt,  draw=blue, dashed] (Z) at (0,0) {Z};
-\node [rectangle, draw=white] (A) at (1.5, 0) {A$_1$};
-\node [rectangle, draw=white] (Y) at (3, 0) {Y$_2$};
+\node [rectangle, draw=white] (A) at (1.5, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (3, 0) {$Y_2$};
 \draw [-latex, draw = blue, bend left = 20] (Z) to (Y);
 \draw [-latex, draw = black] (A) to (Y);
 \end{tikzpicture}
@@ -368,12 +560,12 @@
 %measurement
 \newcommand{\measurementerroruncorrelated}{
 \begin{tikzpicture}
-\node [circle, inner sep=2pt, draw=black, dashed] (A) at (0, 0) {$A_1$};
-\node [rectangle, draw=red, thick] (A1) at (0, 2) {$A'$};
-\node [circle, inner sep=2pt, draw=black, dashed] (Y) at (3, 0) {Y$_2$};
-\node [rectangle, draw=red, thick] (Y1) at (3, 2) {$Y'$};
-\draw [-latex, draw = red, dashed, thick] (A) to node[pos=0.5, sloped, above, draw=none, text= black] {\tiny error} (A1);
-\draw [-latex, draw = red, dashed, thick] (Y) to node[pos=0.5, sloped, above, draw=none, text= black] {\tiny error} (Y1);
+\node [circle, inner sep=2pt, draw=black, dashed, inner sep = 1] (A) at (0, 0) {$A_1$};
+\node [rectangle, draw=red, inner sep = 2]  (A1) at (0, 1.5) {$A'$};
+\node [circle, inner sep=2pt, draw=black, dashed, inner sep = 1] (Y) at (2, 0) {Y$_2$};
+\node [rectangle, draw=red, inner sep = 2] (Y1) at (2, 1.5) {$Y'$};
+\draw [-latex, draw = red, dashed] (A) to node[pos=0.5, sloped, above, draw=none, text= black] {\tiny error} (A1);
+\draw [-latex, draw = red, dashed] (Y) to node[pos=0.5, sloped, above, draw=none, text= black] {\tiny error} (Y1);
 \draw [-latex, draw = black] (A) to node[pos=0.5, above, draw=none, text= black] {\tiny truth} (Y);
 \draw [-latex, draw = red, dashed, thick] (A1) to node[pos=0.5, sloped, above, draw=none, text=black] {\tiny distorted} (Y1);
 \end{tikzpicture}
@@ -382,7 +574,7 @@
 \begin{tikzpicture}
 \node [circle, inner sep=2pt, draw=white] (UA) at (0, 0) {U$_{A}$};
 \node [circle, inner sep=2pt, draw=black, dashed] (A) at (2, 0) {$A_1$};
-\node [rectangle, draw=black, thick] (A1) at (4, 0) {$A'_1$};
+\node [rectangle, draw=black,thick] (A1) at (4, 0) {$A'_1$};
 \node [rectangle, draw=white] (UY) at (6, 0) {U$_{Y}$};
 \node [circle,  inner sep=2pt, draw=black, dashed] (Y) at (8, 0) {Y$_2$};
 \node [rectangle, draw=black, thick] (Y1) at (10, 0) {$Y'_2$};
@@ -394,10 +586,10 @@
 }
 \newcommand{\measurementUCORB}{
 \begin{tikzpicture}
-\node [circle, draw=blue, dashed, thick] (UA) at (0, 0) {U$_{A}$};
+\node [circle, draw=blue, dashed, thick] (UA) at (0, 0) {$U_{A}$};
 \node [circle, draw=black, dashed] (A) at (2, 0) {$A_1$};
 \node [rectangle, draw=red, thick] (A1) at (4, 0) {$A'_1$};
-\node [circle, draw=blue, dashed, thick] (UY) at (6, 0) {U$_{Y}$};
+\node [circle, draw=blue, dashed, thick] (UY) at (6, 0) {$U_{Y}$};
 \node [circle, draw=black, dashed] (Y) at (8, 0) {Y$_2$};
 \node [rectangle, draw=red, thick] (Y1) at (10, 0) {$Y'_2$};
 \draw [-latex, draw = blue, bend left = 40] (UA) to (A1);
@@ -458,9 +650,100 @@
 \begin{tikzpicture}
 \node [circle, draw=black, dashed] (A) at (0, 0) {$A_1$};
 \node [circle, draw=black, dashed] (Y) at (1.5, 0) {$Y_2$};
-\node [rectangle, draw=white] (UA) at (3, 0) {U$_A$};
+\node [rectangle, draw=white] (UA) at (3, 0) {$U_A$};
 \node [rectangle, draw=red, thick] (A1) at (4.5, 0) {$A'$};
-\node [rectangle, draw=white] (UY) at (6, 0) {U$_Y$};
+\node [rectangle, draw=white] (UY) at (6, 0) {$U_Y$};
+\node [rectangle,  draw=red, thick] (Y1) at (7.5, 0) {$Y'$};
+\draw [-latex, draw = red] (Y) to (UA);
+\draw [-latex, draw = red] (UA) to (A1);
+\draw [-latex, draw = black, bend right = 30] (A) to (A1);
+\draw [-latex, draw = black] (UY) to (Y1);
+\draw [-latex, draw = red, bend left = 30] (Y) to (Y1);
+\end{tikzpicture}
+}
+\newcommand{\measurementUNCORshort}{
+\begin{tikzpicture}
+\node [draw = none, inner sep = 1] (UA) at (0, 0) {U$_{A}$};
+\node [circle, inner sep=1pt, draw=black, dashed] (A) at (1, 0) {$A_1$};
+\node [rectangle, draw=black, thick] (A1) at (2.5, 0) {$A'_1$};
+\node [draw = none, inner sep = 1] (UY) at (4, 0) {U$_{Y}$};
+\node [circle,  inner sep=1pt, draw=black, dashed] (Y) at (5, 0) {Y$_2$};
+\node [rectangle, draw=black, thick] (Y1) at (6.5, 0) {$Y'_2$};
+\draw [-latex, draw = black, bend left = 40] (UA) to (A1);
+\draw [-latex, draw = black] (A) to (A1);
+\draw [-latex, draw = black] (Y) to (Y1);
+\draw [-latex, draw = black, bend left = 40] (UY) to (Y1);
+\end{tikzpicture}
+}
+\newcommand{\measurementUCORBshort}{
+\begin{tikzpicture}
+\node [draw = none, inner sep = 1] (UA) at (0, 0) {U$_{A}$};
+\node [circle, inner sep=1pt, draw=black, dashed] (A) at (1, 0) {$A_1$};
+\node [rectangle, draw=black, thick] (A1) at (2.5, 0) {$A'_1$};
+\node [draw = none, inner sep = 1] (UY) at (4, 0) {U$_{Y}$};
+\node [circle,  inner sep=1pt, draw=black, dashed] (Y) at (5, 0) {Y$_2$};
+\node [rectangle, draw=black, thick] (Y1) at (6.5, 0) {$Y'_2$};
+\draw [-latex, draw = blue, bend left = 40] (UA) to (A1);
+\draw [-latex, draw = black] (A) to (A1);
+\draw [-latex, draw = black] (Y) to (Y1);
+\draw [-latex, draw = blue, bend left = 30] (UY) to (Y1);
+\draw [-latex, bend right = 30, draw = black] (A) to node[pos=0.5, below, draw=none] {\tiny target}(Y);
+\draw [-latex, bend left = 30, draw = red,  dashed, thick] (A1) to node[pos=0.5, above, draw=none, text= red] {\tiny biased}(Y1);
+\end{tikzpicture}
+}
+\newcommand{\measurementCORshort}{
+\begin{tikzpicture}
+\node [rectangle, draw=white] (U) at (0, 0) {U$_{AY}$};
+\node [circle, draw=black, dashed] (A) at (1.25, 0) {$A_1$};
+\node [rectangle, draw=red, thick] (A1) at (3, 0) {$A'_1$};
+\node [circle, draw=black, dashed] (Y) at (4.5, 0) {Y$_2$};
+\node [rectangle, draw=red, thick] (Y1) at (6, 0) {$Y'_2$};
+\draw [-latex, draw = red, bend left = 30] (U) to (A1);
+\draw [-latex, draw = black] (A) to (A1);
+\draw [-latex, draw = red, bend left = 30] (U) to (Y1);
+\draw [-latex, draw = black] (Y) to (Y1);
+\end{tikzpicture}
+}
+\newcommand{\measurementDIRshort}{
+\begin{tikzpicture}
+\node [rectangle, draw=white] (UA) at (0, 0) {U$_A$};
+\node [circle, draw=black, dashed] (A) at (1.5, 0) {$A_1$};
+\node [rectangle,draw=red, thick] (A1) at (3, 0) {$A'_1$};
+\node [rectangle, draw=white] (UY) at (4.5, 0) {U$_Y$};
+\node [circle, draw=black, dashed] (Y) at (6, 0) {Y$_2$};
+\node [rectangle, draw=red, thick] (Y1) at (7.5, 0) {$Y'_2$};
+\draw [-latex, draw = black,  bend right = 40] (UA) to (A1);
+\draw [-latex, draw = red] (A) to (A1);
+\draw [-latex, draw = red, bend left = 40] (A) to (UY);
+\draw [-latex, draw =black] (Y) to (Y1);
+\draw [-latex, draw = red, bend right = 40] (UY) to (Y1);
+\end{tikzpicture}
+}
+\newcommand{\measurementCORDIRshort}{
+\begin{tikzpicture}
+\node [rectangle, draw=white] (UAY) at (0, 0) {U$_{AY}$};
+\node [rectangle, draw=white] (UA) at (1.5, 0) {U$_A$};
+\node [circle, draw=black, dashed] (A) at (2.5, 0) {$A_1$};
+\node [rectangle, draw=red, thick] (A1) at (4, 0) {$A'_1$};
+\node [rectangle, draw=white] (UY) at (5, 0) {U$_Y$};
+\node [circle, draw=black, dashed] (Y) at (6, 0) {Y$_2$};
+\node [rectangle, draw=red, thick] (Y1) at (7.5, 0) {$Y'_2$};
+\draw [-latex, draw = red] (UAY) to (UA);
+\draw [-latex, draw = red, bend right = 40] (UA) to (A1);
+\draw [-latex, draw = red] (A) to (A1);
+\draw [-latex, draw = red,bend right = 40] (UY) to (Y1);
+\draw [-latex, draw = black] (Y) to (Y1);
+\draw [-latex, draw = red, bend left = 40] (A) to (UY);
+\draw [-latex, draw = red, bend left = 40] (UAY) to (UY);
+\end{tikzpicture}
+}
+\newcommand{\measurementYshort}{
+\begin{tikzpicture}
+\node [circle, draw=black, dashed] (A) at (0, 0) {$A_1$};
+\node [circle, draw=black, dashed] (Y) at (1.5, 0) {$Y_2$};
+\node [rectangle, draw=white] (UA) at (3, 0) {$U_A$};
+\node [rectangle, draw=red, thick] (A1) at (4.5, 0) {$A'$};
+\node [rectangle, draw=white] (UY) at (6, 0) {$U_Y$};
 \node [rectangle,  draw=red, thick] (Y1) at (7.5, 0) {$Y'$};
 \draw [-latex, draw = red] (Y) to (UA);
 \draw [-latex, draw = red] (UA) to (A1);
@@ -472,26 +755,44 @@
 \newcommand{\effectmodification}{
 \begin{tikzpicture}
 \node [rectangle,thick, draw=blue] (Z) at (-1,0) {Z};
-\node [rectangle, draw=white] (A) at (0, 0) {A$_{1}$};
-\node [rectangle, draw=white] (Y) at (1.25, 0) {Y$_{2}$};
+\node [rectangle, draw=white] (A) at (0, 0)  {$A_1$};
+\node [rectangle, draw=white] (Y) at (1.25, 0) {$Y_{2}$};
 \draw [-latex, draw=black] (A) to (Y);
 \draw [-latex, bend left, draw=blue] (Z) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\effectmodificationSHORT}{
+\begin{tikzpicture}
+\node [rectangle,thick, draw=blue, inner sep = 1] (Z) at (0,0) {Z};
+\node [rectangle, draw=white] (A) at (.75, 0)  {$A_1$};
+\node [rectangle, draw=white] (Y) at (2, 0) {$Y_{2}$};
+\draw [-latex, draw=black] (A) to (Y);
+\draw [-latex, bend left=20, draw=blue] (Z) to (Y);
 \end{tikzpicture}
 }
 \newcommand{\effectmodificationunconditioned}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_{1}$};
-\node [rectangle, draw=white] (Y) at (1.25, 0) {Y$_{2}$};
-\node [circle, dashed, thick, draw=blue] (Z) at (-1,0) {Z};
+\node [rectangle, draw=white] (A) at (0, 0) {$A_{1}$};
+\node [rectangle, draw=white] (Y) at (1.25, 0) {$Y_{2}$};
+\node [circle, dashed, thick, draw=blue, inner sep = 2] (Z) at (-1,0) {$Z$};
 \draw [-latex, draw=black] (A) to (Y);
 \draw [-latex, bend left, draw=blue] (Z) to (Y);
 \end{tikzpicture}
 }
+\newcommand{\effectmodificationunconditionedSHORT}{
+\begin{tikzpicture}
+\node [circle, dashed, thick, draw=blue, inner sep = 1] (Z) at (0,0) {$Z$};
+\node [rectangle, draw=white] (A) at (.75, 0) {$A_{1}$};
+\node [rectangle, draw=white] (Y) at (2, 0) {$Y_{2}$};
+\draw [-latex, draw=black] (A) to (Y);
+\draw [-latex, bend left=20, draw=blue] (Z) to (Y);
+\end{tikzpicture}
+}
 \newcommand{\directeffectmodification}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_{1}$};
-\node [rectangle, draw=white] (Y) at (1.25, 0) {Y$_{2}$};
-\node [rectangle, draw=blue, thick] (Z) at (-2,0) {Z};
+\node [rectangle, draw=white] (A) at (0, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (1.25, 0) {$Y_2$};
+\node [rectangle, draw=blue, thick, inner sep = 2] (Z) at (-2,0) {$Z$};
 \node [rectangle, draw=white] (G) at (-1, 0) {G};
 \draw [-latex, draw=black] (A) to (Y);
 \draw [-latex, bend left, draw=blue] (Z) to (Y);
@@ -500,10 +801,10 @@
 }
 \newcommand{\indirecteffectmodification}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_{1}$};
-\node [rectangle, draw=white] (Y) at (1.25, 0) {Y$_{2}$};
-\node [circle,dashed,draw=blue, thick] (Z) at (-2,0) {Z};
-\node [rectangle, draw=blue, thick] (G) at (-1, 0) {G};
+\node [rectangle, draw=white] (A) at (0, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (1.25, 0) {$Y_2$};
+\node [circle,dashed,draw=blue, thick, inner sep = 2] (Z) at (-2,0) {$Z$};
+\node [rectangle, draw=blue, thick] (G) at (-1, 0) {$G$};
 \draw [-latex, draw=black] (A) to (Y);
 \draw [-latex, bend left, draw=blue] (Z) to (Y);
 \draw [-latex, draw = blue] (Z) to (G);
@@ -511,10 +812,10 @@
 }
 \newcommand{\indirecteffectmodificationB}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_{1}$};
-\node [rectangle, draw=white] (Y) at (1.25, 0) {Y$_{2}$};
-\node [circle, draw=blue, dashed, thick] (Z) at (-2,0) {Z};
-\node [rectangle, draw=white, dashed] (G) at (-1, 0) {G};
+\node [rectangle, draw=white] (A) at (0, 0)  {$A_1$};
+\node [rectangle, draw=white] (Y) at (1.25, 0) {$Y_2$};
+\node [circle, draw=blue, dashed, thick, inner sep = 2] (Z) at (-2,0) {$Z$};
+\node [rectangle, draw=black] (G) at (-1, 0) {$G$};
 \draw [-latex, draw=black] (A) to (Y);
 \draw [-latex, bend left, draw=blue] (Z) to (Y);
 \draw [-latex, draw = black] (Z) to (G);
@@ -522,10 +823,10 @@
 }
 \newcommand{\collidereffectmodification}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_{1}$};
-\node [rectangle, draw=white] (Y) at (1.25, 0) {Y$_{2}$};
-\node [circle, dashed, thick, draw=blue] (Z) at (-2, .5) {Z};
-\node [rectangle, thick, draw=blue, thick] (G) at (-2, -.5) {G};
+\node [rectangle, draw=white] (A) at (0, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (1.25, 0) {$Y_2$};
+\node [circle, dashed, thick, draw=blue, inner sep = 2] (Z) at (-2, .5) {$Z$};
+\node [rectangle, thick, draw=blue, thick] (G) at (-2, -.5) {$G$};
 \node [rectangle, thick, draw=blue] (B) at (-1,0) {B};
 \draw [-latex, draw=black] (A) to (Y);
 \draw [-latex, bend left, draw=blue] (Z) to (Y);
@@ -535,11 +836,11 @@
 }
 \newcommand{\childeffectmodification}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_{1}$};
-\node [rectangle, draw=white] (Y) at (1.25, 0) {Y$_{2}$};
-\node [rectangle, thick, draw=blue] (Z) at (-2, .5) {Z};
-\node [rectangle, draw=white] (G) at (-2, -.5) {G};
-\node [rectangle, draw=white] (B) at (-1,0) {B};
+\node [rectangle, draw=white] (A) at (0, 0) {$A_1$};
+\node [rectangle, draw=white] (Y) at (1.25, 0) {$Y_2$};
+\node [rectangle, thick, draw=blue] (Z) at (-2, .5) {$Z$};
+\node [rectangle, draw=black] (G) at (-2, -.5) {G};
+\node [rectangle, draw=black] (B) at (-1,0) {B};
 \draw [-latex, draw=black] (A) to (Y);
 \draw [-latex, bend left, draw=blue] (Z) to (Y);
 \draw [-latex, draw=black] (Z) to (B);
@@ -722,8 +1023,8 @@
 \newcommand{\feedbackB}{
 \begin{tikzpicture}
 \node [draw=none,  align=left, font = \small] (sign) at (4.5, 2) {Common cause of Exposure 1 and downstream confounder is a collider};
-\node [rectangle, draw=white] (U1) at (0, 0) {U1};
-\node [rectangle, draw=white] (U2) at (0, -1.5) {U2};
+\node [draw=none, inner sep = 1](U1) at (0, 0) {$U_{LY}$};
+\node [draw=none, inner sep = 1] (U2) at (0, -1.5) {$U_{AY}$};
 \node [rectangle, draw=black] (L0) at (2, 0) {L$_{0}$};
 \node [rectangle, draw=white] (A1) at (4, 0) {A$_{1}$};
 \node [rectangle, draw=white] (Y2) at (6, 0) {Y$_{2}$};
@@ -965,10 +1266,11 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 %standard dags
 \newcommand{\sdA}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (A) at (0, 0) {A$_1$};
-\node [ellipse, draw=white] (U) at (-1, 0) {U};
-\node [rectangle, draw=red, thick](S) at (1.5, 0) {$S=1$};
-\node [ellipse, draw=white] (Y) at (3, 0) {Y$_2$};
+\node [draw=none, align=center, font=\tiny] at (2,1.25) {Treatment affects attrition: standard DAG};
+\node [rectangle, draw=white] (A) at (1, 0) {A$_1$};
+\node [ellipse, draw=white] (U) at (0, 0) {U};
+\node [rectangle, draw=red, thick](S) at (2.5, 0) {$S=1$};
+\node [ellipse, draw=white] (Y) at (4, 0) {Y$_2$};
 \draw [-latex, bend left=50, draw=red] (U) to (Y);
 \draw [-latex, draw=red] (A) to (S);
 \draw [-latex, draw=red, bend right=50] (U) to (S);
@@ -976,10 +1278,11 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 }
 \newcommand{\sdB}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (U) at (0, 0) {U};
+\node [draw=none, align=center, font=\tiny] at (1.5,.75) {Common cause of exposure and attrition};
+\node [rectangle, draw=white] (U) at (0, 0) {$U_{\Delta Y}$};
 \node [rectangle, draw=white] (A) at (2, 0) {A$_{1}$};
 \node [rectangle, draw=white] (Y) at (4, 0) {Y$_{2}$};
-\node [rectangle, draw=red, thick](YS) at (6, 0) {$Y'_{2}$};
+\node [rectangle, draw=red, thick](YS) at (6, 0) {$Y^{S=1}_{2}$};
 \draw [-latex, draw=red, bend right=20] (U) to (YS);
 \draw [-latex, draw=red] (U) to (A);
 \draw [-latex, draw=black] (Y) to (YS);
@@ -987,9 +1290,10 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 }
 \newcommand{\sdC}{
 \begin{tikzpicture}
+\node [draw=none, align=center, font=\tiny] at (0.5,.75) {Treatment affects attrition};
 \node [rectangle, draw=white] (A) at (0, 0) {A$_{1}$};
-\node [rectangle, draw=white] (U) at (2, 0) {$U_{Y}$};
-\node [rectangle, draw=white] (Y) at (4, 0) {Y$_{2}$};
+\node [rectangle, draw=white] (U) at (2, 0) {$U_{\Delta Y}$};
+\node [rectangle, draw=white] (Y) at (4, 0) {$Y^{S=1}_{2}$};
 \node [rectangle,  draw=red, thick](YS) at (6, 0) {$Y'_{2}$};
 \draw [-latex, draw=red] (A) to (U);
 \draw [-latex, draw=red, bend right=20] (U) to (YS);
@@ -998,28 +1302,32 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 }
 \newcommand{\sdD}{
 \begin{tikzpicture}
+\node [draw=none, align=center, font=\tiny] at (3.0,.75) {Outcome affects attrition absent causation};
 \node [rectangle, draw=white] (A) at (2, 0) {A$_{1}$};
-\node [rectangle, draw=white] (Y) at (4, 0) {Y};
-\node [rectangle, draw=white] (U) at (6, 0) {U$_{Y}$};
-\node [rectangle,  draw=black, thick](YS) at (8, 0) {$Y'_{2}$};
+\node [circle, dashed, inner sep = 2pt, draw=black]  (Y) at (4, 0) {Y};
+\node [rectangle, draw=white] (U) at (6, 0) {$U_{\Delta Y}$};
+\node [rectangle,  draw=black, thick](YS) at (8, 0) {$Y^{S=1}_{2}$};
 \draw [-latex, draw=black] (Y) to (U);
 \draw [-latex, draw=black] (U) to (YS);
 \end{tikzpicture}
 }
 \newcommand{\sdDD}{
 \begin{tikzpicture}
+\node [draw=none, align=center, font=\tiny] at (3.5,.75) {True treatment effects differ in restricted sample};
 \node [rectangle, draw=white] (A) at (2, 0) {A$_{1}$};
-\node [rectangle, draw=white] (Y) at (4, 0) {Y};
-\node [rectangle, draw=white] (U) at (6, 0) {U$_{Y}$};
+\node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (4, 0) {Y};
+\node [rectangle, draw=white] (U) at (6, 0) {$U_{\Delta Y}$};
 \node [rectangle,  draw=red, thick](YS) at (8, 0) {$Y'_{2}$};
 \draw [-latex, draw=black] (A) to (Y);
+\draw [-latex, draw=red, dashed, thick, bend right = 20] (A) to (YS);
 \draw [-latex, draw=red] (Y) to (U);
 \draw [-latex, draw=red] (U) to (YS);
 \end{tikzpicture}
 }
 \newcommand{\sdE}{
 \begin{tikzpicture}
-\node [rectangle, draw=white] (U) at (0, 0) {U};
+\node [draw=none, align=center, font=\tiny] at (2,1.25) {Treatment affects attrition: standard DAG};
+\node [rectangle, draw=white] (U) at (0, 0) {$U_{\Delta Y}$};
 \node [rectangle, draw=black, align=left] (L) at (2, 0) {L$_{0}$};
 \node [rectangle, draw=white] (A) at (4, 0) {A$_{1}$};
 \node [rectangle, draw=black](S) at (6, 0) {S=1};
@@ -1034,6 +1342,7 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 }
 \newcommand{\sdF}{
 \begin{tikzpicture}
+\node [draw=none, align=center, font=\tiny] at (2,1.25) {Treatment affects attrition: standard DAG};
 \node [ellipse, draw=white] (U) at (0, 0) {U};
 \node [rectangle, draw=white] (A) at (2, 0) {A$_1$};
 \node [rectangle, draw=white](L) at (4, 0) {L$_1$};
@@ -1050,6 +1359,7 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 }
 \newcommand{\sdG}{
 \begin{tikzpicture}
+\node [draw=none, align=center, font=\tiny] at (2,1.25) {Treatment affects attrition: standard DAG};
 \node [ellipse, draw=white] (U) at (0, 0) {U};
 \node [rectangle, draw=white] (A) at (2, 0) {A$_1$};
 \node [rectangle, draw=red,thick](L) at (4, 0) {L$_1$};
@@ -1066,15 +1376,261 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 }
 \newcommand{\sdH}{
 \begin{tikzpicture}
+\node [draw=none, align=center, font=\tiny] at (1.5,1.25) {Common cause of exposure and attrition};
 \node [ellipse, draw=white] (U) at (0, 0) {U};
-\node [rectangle, draw=white] (A) at (2, 0) {A$_1$};
+\node [draw=none, inner sep = 0] (A) at (2, 0) {A$_1$};
 \node [rectangle, draw=white,text=black] (US) at (4,0) {$U_{\Delta Y}$};
-\node [rectangle, draw=white,text=black] (Y) at (6,0) {Y$_2$};
+\node [draw=none, inner sep = 0] (Y) at (6,0) {Y$_2$};
 \node [rectangle, draw=red, thick](YS) at (8, 0) {Y$_2^{S=1}$};
 \draw [-latex, draw=red] (U) to (A);
 \draw [-latex, draw = black] (Y) to (YS);
 \draw [-latex, draw=red,  bend right = 30] (US) to (YS);
 \draw [-latex, draw=red, bend left = 30] (U) to (US);
+\end{tikzpicture}
+}
+\newcommand{\sdBshort}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\tiny] at (1.25,.75) {Common cause of exposure and attrition};
+\node [rectangle, draw=white] (U) at (0, 0) {$U_{\Delta Y}$};
+\node [draw=none, inner sep = 1] (A) at (1.5, 0) {A$_{1}$};
+\node [circle, dashed, inner sep = 2pt, draw=black]  (Y) at (3, 0) {Y$_{2}$};
+\node [rectangle, draw=red, thick](YS) at (4.5, 0) {$Y^{S=1}_{2}$};
+\draw [-latex, draw=red, bend right=30] (U) to (YS);
+\draw [-latex, draw=red] (U) to (A);
+\draw [-latex, draw=black] (Y) to (YS);
+\end{tikzpicture}
+}
+\newcommand{\sdCshort}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\tiny] at (0.5,.75) {Treatment affects attrition};
+\node [rectangle, draw=white] (A) at (0, 0) {A$_{1}$};
+\node [draw=none, inner sep = 1] (U) at (1.5, 0) {$U_{\Delta Y}$};
+\node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (3, 0) {Y$_{2}$};
+\node [rectangle,  draw=red, thick](YS) at (4.5, 0) {$Y^{S=1}_{2}$};
+\draw [-latex, draw=red] (A) to (U);
+\draw [-latex, draw=red, bend right=30] (U) to (YS);
+\draw [-latex, draw=black] (Y) to (YS);
+\end{tikzpicture}
+}
+\newcommand{\sdDshort}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\tiny] at (1.25,.75) {Outcome affects attrition absent causation};
+\node [draw=none, inner sep = 0]  (A) at (0, 0) {A$_{1}$};
+\node [circle, dashed, inner sep = 2pt, draw=black]  (Y) at (1.5, 0) {$Y_2$};
+\node [draw=none, inner sep = 1]  (U) at (3, 0) {$U_{\Delta Y}$};
+\node [rectangle,  draw=black, thick](YS) at (4.5, 0) {$Y^{S=1}_{2}$};
+\draw [-latex, draw=black] (Y) to (U);
+\draw [-latex, draw=black] (U) to (YS);
+\end{tikzpicture}
+}
+\newcommand{\sdDDshort}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\tiny] at (2.5,.75) {True treatment effects differ in restricted sample: Y affects restriction};
+\node [draw=none, inner sep = 0] (A) at (0, 0) {A$_{1}$};
+\node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (1.5, 0) {$Y_2$};
+\node [draw=none, inner sep = 1] (U) at (3, 0) {$U_{\Delta Y}$};
+\node [rectangle,  draw=red, thick](YS) at (4.5, 0) {$Y'_{2}$};
+\draw [-latex, draw=black] (A) to (Y);
+\draw [-latex, draw=red, dashed,  bend right = 40] (A) to (YS);
+\draw [-latex, draw=red] (Y) to (U);
+\draw [-latex, draw=red] (U) to (YS);
+\end{tikzpicture}
+}
+\newcommand{\sdHshort}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\tiny] at (1.5,1.25) {Common cause of exposure and attrition};
+\node [draw=none, inner sep = 1]  (U) at (0, 0) {U};
+\node [draw=none, inner sep = 1] (A) at (1, 0) {A$_1$};
+\node [draw=none, inner sep = 1]  (US) at (2,0) {$U_{\Delta Y}$};
+\node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (3,0) {Y$_2$};
+\node [rectangle, draw=red, thick](YS) at (4.5, 0) {Y$_2^{S=1}$};
+\draw [-latex, draw=red] (U) to (A);
+\draw [-latex, draw = black] (Y) to (YS);
+\draw [-latex, draw=red,  bend right = 40] (US) to (YS);
+\draw [-latex, draw=red, bend left = 40] (U) to (US);
+\end{tikzpicture}
+}
+\newcommand{\sdGshort}{
+\begin{tikzpicture}
+%\node [draw=none, align=center, font=\tiny] at (1.25,1.25) {True treatment effects differ in restricted sample: no confounding};
+\node [circle, dashed, draw = blue, inner sep = 2] (Z) at (-1, 0) {$Z$};
+\node [draw=none, inner sep = 0] (A) at (0, 0) {A$_{1}$};
+\node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (1, 0) {$Y_2$};
+\node [circle, inner sep = 0, dashed, draw=blue] (U) at (3, 0) {$U_{\Delta Z' \to Y'}$};
+\node [rectangle,  draw=red, thick](YS) at (5, 0) {$Y'_{2}$};
+\draw [-latex, draw=black] (A) to (Y);
+\draw [-latex, draw=red, dashed, bend left = 40] (A) to (YS);
+\draw [-latex, draw=black, bend right = 40] (Y) to (YS);
+\draw [-latex, draw=blue, bend right = 40] (Z) to (YS);
+\draw [-latex, draw=blue] (U) to (YS);
+\end{tikzpicture}
+}
+\newcommand{\threeshort}{
+\begin{tikzpicture}
+%\node [draw=none,  align=left, font = \tiny] (sign) at (1.25, 1.25) {Control for exposure and outcome at baseline};
+\node [draw=none, inner sep = 1]  (U) at (0, 0) {U};
+\node [rectangle, draw=black,align=left] (L) at (2, 0) {L$_{0}$\\
+A$_{0}$\\ Y$_{0}$};
+\node [draw=none, inner sep = 1]  (A) at (4, 0) {A$_1$};
+\node [draw=none, inner sep = 1]  (Y) at (6,0) {Y$_2$};
+\draw [-latex] (U) to (L);
+\draw [-latex, bend left=35, red] (U) to  node[pos=0.5, above, draw=none, text =  red] {\small ?}(A);
+\draw [-latex, bend right=30, red] (U) to node[pos=0.5, above, draw=none, text =  red] {\small ?} (Y);
+\draw [-latex] (L) to (A);
+\draw [-latex,bend right=30] (L) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\threeshortB}{
+\begin{tikzpicture}
+\node [draw=none,  align=left, font = \small] (sign) at (1.25, 1) {\bf Residual confounding};
+\node [draw=none, inner sep = 1]  (U) at (0, 0) {U};
+\node [rectangle, draw=black,align=left] (L) at (1, 0) {L$_{0}$\\
+A$_{0}$\\ Y$_{0}$};
+\node [draw=none, inner sep = 1]  (A) at (2, 0) {A$_1$};
+\node [draw=none, inner sep = 1]  (Y) at (3,0) {Y$_2$};
+\draw [-latex] (U) to (L);
+\draw [-latex, bend left=80, red] (U) to  node[pos=0.9, above, draw=none, text =  red] {\small ?}(A);
+\draw [-latex, bend right=80, red] (U) to node[pos=0.5, above, draw=none, text =  red] {\small ?} (Y);
+\draw [-latex] (L) to (A);
+\draw [-latex,bend right=30] (L) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\threeBshort}{
+\begin{tikzpicture}
+\node [rectangle, draw=black,align=left] (L) at (0, 0) {L$_{0}$\\
+A$_{0}$\\ Y$_{0}$};
+\node [draw = none, inner sep = 1] (L1) at (1.5, 0) {L$_1$};
+\node [draw = none, inner sep = 1] (A) at (3, 0) {A$_1$};
+\node [draw = none, inner sep = 1](Y) at (4.5,0) {Y$_2$};
+\draw [-latex, bend right = 20] (L) to (A);
+\draw [-latex,bend right=20] (L) to (Y);
+\draw [-latex, red] (L1) to (A);
+\draw [-latex,bend left = 20, red] (L1) to node[pos=0.25, above, draw=none, text = red] {\tiny post-control confounder} (Y);
+\end{tikzpicture}
+}
+\newcommand{\threeCshort}{
+\begin{tikzpicture}
+\node [rectangle, draw=black,align=left] (L) at (0, 0) {L$_{0}$\\
+A$_{0}$\\ Y$_{0}$};
+\node [draw = none, inner sep = 1] (A) at (1.5, 0) {A$_1$};
+\node [rectangle, draw = red, thick] (L1) at (3, 0) {L$_1$};
+\node [draw = none, inner sep = 1]  (Y) at (4.5,0) {Y$_2$};
+\draw [-latex] (L) to (A);
+\draw [-latex,bend right=30] (L) to (Y);
+\draw [-latex, red] (A) to (L1);
+\draw [-latex, black, bend left = 20, draw=red, dashed] (A) to  node[pos=0.5, above, draw=none, text = red] {\tiny attenuated} (Y);
+\draw [-latex, red] (L1) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\mediationfullshort}{
+\begin{tikzpicture}[scale=1] % Adjust the scale factor as needed
+%\node [draw=none,  align=left, font = \tiny] (sign) at (2.25, 1.25) {Exposure affects confounder of mediator and outcome};
+\node [rectangle, draw=black, inner sep = 1, thin] (L) at (0, 0) {L$_{0}$};
+\node [rectangle, draw=black,  inner sep = 1, thin] (Q) at (1, 0) {Q$_{0}$};
+\node [draw = none, inner sep = 0] (A) at (2.25, 0) {A$_{1}$};
+\node [rectangle, draw=red, thick](V) at (3.5, 0) {V$_{2}$};
+\node [rectangle, draw = black,  inner sep = 1, thin](M) at (5, 0) {M$_{3}$};
+\node [draw=none, inner sep = 0] (Y) at (6, 0) {Y$_{4}$};
+\draw [-latex, draw=black, bend left = 30] (L) to (A);
+\draw [-latex, draw=black, bend right = 30] (L) to (Y);
+\draw [-latex, draw=black] (Q) to  (A);
+\draw [-latex, draw=black, bend right = 30] (Q) to (M);
+\draw [-latex, draw= red, bend left = 30,  dashed] (A) to  (M);
+\draw [-latex, draw= black, bend left = 30, dashed] (A) to (Y);
+\draw [-latex, draw=red] (A) to  (V);
+\draw [-latex, draw=red] (V) to (M);
+\draw [-latex, draw=black, bend right = 40] (V) to (Y);
+\draw [-latex, draw= black] (M) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\mediationfullshortB}{
+\begin{tikzpicture}[scale=1] % Adjust the scale factor as needed
+\node [draw=none,  align=left, font = \small] (sign) at (2.25, 1) {\bf $A$ affects confounder of $M\to Y$};
+\node [draw = none, inner sep = 0] (A) at (0, 0) {A$_{1}$};
+\node [rectangle, draw=red, thick](V) at (1.5, 0) {V$_{2}$};
+\node [rectangle, draw = black,  inner sep = 1, thin](M) at (3, 0) {M$_{3}$};
+\node [draw=none, inner sep = 0] (Y) at (4.5, 0) {Y$_{4}$};
+\draw [-latex, draw= red, bend left = 30,  dashed] (A) to  (M);
+\draw [-latex, draw= black, bend left = 30, dashed] (A) to (Y);
+\draw [-latex, draw=red] (A) to  (V);
+\draw [-latex, draw=red] (V) to (M);
+\draw [-latex, draw=black, bend right = 40] (V) to (Y);
+\draw [-latex, draw= black] (M) to (Y);
+\end{tikzpicture}
+}
+\newcommand{\feedbackshort}{
+\begin{tikzpicture}
+%\node [draw=none,  align=left, font = \tiny] (sign) at  (2.5, 1.25) {Exposure 1 affects confounder of Exposure 2 biasing true causality};
+\node [draw=none, inner sep = 1]  (A1) at (0, 0) {A$_{1}$};
+\node [draw=none, inner sep = 1] (Y2) at (1, 0) {Y$_{2}$};
+\node [rectangle, draw=red, thick] (L3) at (2, 0) {L$_{3}$};
+\node [draw=none, inner sep = 0] (A4) at (3, 0) {A$_{4}$};
+\node [draw=none, inner sep = 0] (Y5) at (4, 0) {Y$_{5}$};
+\draw [-latex,  draw=black] (A1) to (Y2);
+\draw [-latex,  draw=red, bend left = 30] (A1) to (L3);
+\draw [-latex,  draw=black] (L3) to (A4);
+\draw [-latex,  draw=red, bend right = 30] (L3) to (Y5);
+\draw [-latex,  draw=black] (A4) to (Y5);
+\draw [-latex,  draw=red, bend left = 30,  dashed] (A1) to (Y5);
+\end{tikzpicture}
+}
+\newcommand{\feedbackAshort}{
+\begin{tikzpicture}
+%\node [draw=none,  align=left, font = \tiny] (sign) at (3,1.25) {Exposure 1 affects confounder of Exposure 2: true causality absent};
+\node [draw=none, inner sep = 1] (U) at (0, 0) {U};
+\node [draw=none, inner sep = 1] (A1) at (1, 0) {A$_{1}$};
+\node [draw=none, inner sep = 1] (Y2) at (2, 0) {Y$_{2}$};
+\node [rectangle, draw=red, thick] (L2) at (3, 0) {L$_{3}$};
+\node [draw=none, inner sep = 1] (A3) at (4, 0) {A$_{4}$};
+\node [draw=none, inner sep = 0] (Y4) at (5, 0) {Y$_{5}$};
+\draw [-latex, draw=black] (L2) to (A3);
+\draw [-latex, draw=black, bend left = 30] (L2) to (Y4);
+\draw [-latex, bend left= 30, draw=red] (A1) to (L2);
+\draw [-latex, bend right= 30, draw=red] (U) to (L2);
+\draw [-latex, bend right= 30, draw=red] (U) to (Y4);
+\end{tikzpicture}
+}
+\newcommand{\feedbackAshortB}{
+\begin{tikzpicture}
+\node [draw=none,  align=left, font = \small] (sign) at (2.25, 1) {\bf Treatment Feedback};
+\node [draw=none, inner sep = 0] (U) at (0, 0) {U};
+\node [draw=none, inner sep = 0] (A1) at (1, 0) {$A_{1}$};
+\node [draw=none, inner sep = 0] (Y2) at (2, 0) {$Y_{2}$};
+\node [rectangle, draw=red, thick] (L2) at (3, 0) {$L_{3}$};
+\node [draw=none, inner sep = 0] (A3) at (4, 0) {$A_{3}$};
+\node [draw=none, inner sep = 0] (Y4) at (4.75, 0) {$Y_{4}$};
+\draw [-latex, draw=black] (L2) to (A3);
+\draw [-latex, draw=black, bend left = 30] (L2) to (Y4);
+\draw [-latex, bend left= 30, draw=red] (A1) to (L2);
+\draw [-latex, bend right= 30, draw=red] (U) to (L2);
+\draw [-latex, bend right= 30, draw=red] (U) to (Y4);
+\end{tikzpicture}
+}
+\newcommand{\feedbackBshort}{
+\begin{tikzpicture}
+%\node [draw=none,  align=left, font = \tiny] (sign) at (2.5, 1.25) {Common cause of Exposure 1 and downstream confounder is a collider};
+\node [draw=none, inner sep = 1](U1) at (0, .5) {$U_{LY}$};
+\node [draw=none, inner sep = 1] (U2) at (0, -.5) {$U_{AY}$};
+\node [draw=none, inner sep = 1] (A1) at (1.5, 0) {$A_{1}$};
+\node [rectangle, draw=red, thick] (L2) at (2.5, 0) {$L_{3}$};
+\node [draw=none, inner sep = 1](A3) at (4, 0) {$A_{4}$};
+\node [draw=none, inner sep = 1](Y4) at (5, 0) {$Y_{4}$};
+\draw [-latex, draw=black] (L2) to (A3);
+\draw [-latex, bend left= 10, draw=red] (U1) to (L2);
+\draw [-latex, bend left= 30, draw=red] (U1) to (Y4);
+\draw [-latex, draw=red, bend right = 10] (U2) to (L2);
+\draw [-latex, draw=red] (U2) to (A1);
+\draw [-latex, draw=black, bend left = 30] (L2) to (Y4);
+\end{tikzpicture}
+}
+\newcommand{\sensitivityanalysis}{
+\begin{tikzpicture}
+\node [draw=none,  align=left, font = \small] (sign) at (3.5, 1) {\bf Perform sensitivity analysis};
+\end{tikzpicture}
+}
+\newcommand{\specialestimator}{
+\begin{tikzpicture}
+\node [draw=none,  align=left, font = \small] (1) at (2.5, 1) {\bf Requires special estimators};
 \end{tikzpicture}
 }
 \newcommand{\crosscultureA}{
@@ -1144,3 +1700,20 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 \end{minipage}
 \end{figure}
 }
+\newcommand{\terminologydirectedgraph}{
+\centering
+\renewcommand{\arraystretch}{1.5} % Adjust the line spacing
+%\caption{Directed Graph}
+\textbf{Elements of a This Directed Graph} \\
+\vspace{.15cm} % larger space between tables
+%\vspace{0.5cm} %  larger space between tables
+%\begin{tabular}{>{\raggedright\arraybackslash\small}m{.75cm}|>{\raggedright\arraybackslash\small}m{4cm}|m{7.25cm}}
+\begin{tabular}{l|l|l}
+\textbf{No.} & \textbf{Graph} & \textbf{Meaning} \\ \hline
+1. & $\fork$ & Fork \\ 
+2. & $\chain$ & Chain \\ 
+3. & $\immorality$ & Collider \\ 
+4. & $\descendantA$ & Descendant \\ 
+\end{tabular}
+}
+
