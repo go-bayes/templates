@@ -344,70 +344,82 @@ coloured_histogram_sd <- function(df, col_name, binwidth = 30) {
 
 # coloured shift histogram ------------------------------------------------
 
-
+library(ggplot2)
+#
 coloured_histogram_shift <- function(df, col_name, binwidth = 30, range_highlight = NULL) {
-  # Compute statistics
+  # Ensure col_name is a symbol for aes()
+  col_name_sym <- rlang::sym(col_name)
+
+  # Calculate average value for the vertical line
   avg_val <- mean(df[[col_name]], na.rm = TRUE)
 
-  # Adjust fill color based on the range_highlight parameter
-  fill_color <- case_when(
-    range_highlight == "below" & df[[col_name]] >= avg_val ~ "grey60",
-    range_highlight == "above" & df[[col_name]] <= avg_val ~ "grey60",
-    TRUE ~ ifelse(range_highlight == "below", "dodgerblue", "gold2")
-  )
-
-  # Create the base histogram plot
-  p <- ggplot(df, aes_string(x = col_name)) +
-    geom_histogram(aes(y = ..count.., fill = fill_color),
-                   binwidth = binwidth, color = "black") +
-    scale_fill_identity() +
-    geom_vline(xintercept = avg_val, color = "black", size = 1.5) +
-    labs(title = "Histogram of Shift Function",
-         subtitle = "Coloured shows population shifted",
-         fill = "Legend") +
-    theme_minimal()
-
-  # Add arrow based on range_highlight
-  if (!is.null(range_highlight)) {
-    if (range_highlight == "below") {
-      lowest_val <- min(df[[col_name]], na.rm = TRUE)
-      p <- p + geom_segment(
-        aes(
-          x = lowest_val,
-          y = 0,
-          xend = avg_val,
-          yend = 0
-        ),
-        arrow = arrow(
-          type = "closed",
-          ends = "last",
-          length = unit(0.2, "inches")
-        ),
-        color = "black",
-        size = 1.5
-      )
-    } else if (range_highlight == "above") {
-      highest_val <- max(df[[col_name]], na.rm = TRUE)
-      p <- p + geom_segment(
-        aes(
-          x = highest_val,
-          y = 0,
-          xend = avg_val,
-          yend = 0
-        ),
-        arrow = arrow(
-          type = "closed",
-          ends = "last",
-          length = unit(0.2, "inches")
-        ),
-        color = "black",
-        size = 1.5
-      )
-    }
+  # Create a new column for fill color based on range_highlight
+  if (!is.null(range_highlight) && length(range_highlight) == 2) {
+    df$fill_color <- ifelse(df[[col_name]] >= range_highlight[1] & df[[col_name]] <= range_highlight[2], "gold", "grey60")
+  } else {
+    df$fill_color <- "grey60" # Default color
   }
+
+  # Create the histogram
+  p <- ggplot(df, aes(x = !!col_name_sym)) +
+    geom_histogram(aes(y = ..count.., fill = fill_color), binwidth = binwidth, color = "black") +
+    scale_fill_identity() +
+    geom_vline(xintercept = avg_val, color = "red", linetype = "dashed", size = 1) +
+    labs(title = "Histogram with Highlighted Range",
+         x = col_name,
+         y = "Count") +
+    theme_minimal()
 
   return(p)
 }
+
+
+coloured_histogram_shift_range <- function(df, col_name, binwidth = 30, range_highlight = NULL, shift = "up") {
+  # Ensure col_name is a symbol for aes()
+  col_name_sym <- rlang::sym(col_name)
+
+  # Determine the fill color based on the shift direction
+  highlight_color <- if(shift == "up") "gold" else "dodgerblue"
+
+  # Create a new column for fill color based on range_highlight
+  if (!is.null(range_highlight) && length(range_highlight) == 2) {
+    df$fill_color <- ifelse(df[[col_name]] >= range_highlight[1] & df[[col_name]] <= range_highlight[2], highlight_color, "grey60")
+  } else {
+    df$fill_color <- "grey60" # Default color if no range_highlight is provided
+  }
+
+  # Define subtitle based on the shift direction
+  subtitle_text <- if(shift == "up") {
+    "Gold region denotes population shifted"
+  } else {
+    "Blue region denotes population shifted"
+  }
+
+  # Create the histogram with the new fill_color column for coloring
+  p <- ggplot(df, aes(x = !!col_name_sym, fill = fill_color)) +
+    geom_histogram(binwidth = binwidth, color = "black", alpha = 0.7) +
+    scale_fill_identity() +
+    labs(title = "Histogram of Shift Intervention",
+         subtitle = subtitle_text,
+         x = col_name,
+         y = "Count") +
+    theme_minimal()
+
+  return(p)
+}
+
+
+# Call the function with the correct parameters
+graph_density_of_exposure <- coloured_histogram_shift(
+  df = dt_19,
+  col_name = "religion_church_round",
+  binwidth = 1, # Set an appropriate binwidth for your data
+  range_highlight = c(4,8)
+)
+
+# Print the graph
+graph_density_of_exposure
+
 
 # Example usage
 #standard_deviation_exposure <- coloured_histogram_shift(dt_19, col_name = "forgiveness", binwidth = .5, range_highlight = "below")
