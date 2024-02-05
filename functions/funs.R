@@ -410,15 +410,15 @@ coloured_histogram_shift_range <- function(df, col_name, binwidth = 30, range_hi
 
 
 # Call the function with the correct parameters
-graph_density_of_exposure <- coloured_histogram_shift(
-  df = dt_19,
-  col_name = "religion_church_round",
-  binwidth = 1, # Set an appropriate binwidth for your data
-  range_highlight = c(4,8)
-)
+# graph_density_of_exposure <- coloured_histogram_shift(
+#   df = dt_19,
+#   col_name = "religion_church_round",
+#   binwidth = 1, # Set an appropriate binwidth for your data
+#   range_highlight = c(4,8)
+# )
 
 # Print the graph
-graph_density_of_exposure
+# graph_density_of_exposure
 
 
 # Example usage
