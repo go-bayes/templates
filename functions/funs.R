@@ -189,7 +189,7 @@ transition_table_2 <- function(data, state_names = NULL) {
   markdown_table <- kable(df, format = "markdown", align = 'c', escape = FALSE)
 
   # explanation
-  explanation <- "This transition matrix captures the movement between states across consecutive waves. Entries on the diagonal (in bold) indicate the number of individuals who stayed in their initial state, signifying a steady state. In contrast, off-diagonal figures represent the transitions from one state to another, illustrating the dynamics of individual state changes. Specifically, a cell located at the intersection of row $i$ and column $j$, where $i \neq j$, shows the count of individuals moving from State $i$ to State $j$."
+  explanation <- "The table presents a transition matrix that describes stability and movement between the treatment from the baseline wave to the treatment wave. Entries on the diagonal (in bold) indicate the number of individuals who stayed in their initial state. In contrast, the off-diagonal shows the transitions from the initial state (bold) to another state the following wave (off diagnal). A cell located at the intersection of row $i$ and column $j$, where $i \neq j$, presents the count of individuals moving from state $i$ to state $j$."
 
   list(explanation = explanation, table = markdown_table)
 }
