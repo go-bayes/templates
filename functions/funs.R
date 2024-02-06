@@ -104,6 +104,96 @@ here_read <- function(name) {
 }
 
 
+# ordinary regressions ----------------------------------------------------
+
+regress_with_covariates <- function(data, outcome, exposure, baseline_vars) {
+  # Ensure baseline_vars is correctly formatted as a character vector if passed as a single string
+  if (!is.character(baseline_vars)) {
+    stop("baseline_vars must be a character vector.")
+  }
+
+  # Filter out the outcome and exposure from the baseline variables
+  covariates <- setdiff(baseline_vars, c(outcome, exposure))
+
+  # Construct the formula string
+  covariate_str <- paste(covariates, collapse = " + ")
+  formula_str <- paste(outcome, "~", exposure, "+", covariate_str)
+  formula <- as.formula(formula_str)
+
+  # Print the formula for verification
+  print(formula)
+
+  # Run the regression
+  model <- lm(formula, data = data)
+
+  return(model)
+}
+
+# Example usage:
+# Assuming `df` is your dataframe
+# Specify your baseline variables as
+
+# Example usage
+# Assuming `df` is your dataframe and `baseline_vars` is your vector of covariate names
+# outcome_var = "modesty"
+# exposure_var = "religion_church_round"
+# baseline_vars = c(
+#   "male", "age", "education_level_coarsen", "eth_cat", "sample_origin", "nz_dep2018", "nzsei13",
+#   "total_siblings_factor", "born_nz", "hlth_disability", "hlth_bmi", "kessler6_sum", "sfhealth",
+#   "hours_family_sqrt_round", "hours_friends_sqrt_round", "hours_community_sqrt_round", "household_inc_log",
+#   "partner", "political_conservative", "urban", "children_num", "hours_children_log", "hours_work_log",
+#   "hours_housework_log", "hours_exercise_log", "agreeableness", "conscientiousness", "extraversion",
+#   "honesty_humility", "openness", "neuroticism", "modesty", "religion_church_round", "sample_weights",
+#   "alert_level_combined_lead"
+# )
+#
+# model <- regress_with_covariates(df, outcome_var, exposure_var, baseline_vars)
+# summary(model)
+
+# transition table (updated) ----------------------------------------------
+
+library(dplyr)
+library(tidyr)
+library(knitr)
+
+library(dplyr)
+library(tidyr)
+library(knitr)
+
+transition_table_2 <- function(data, state_names = NULL) {
+  # ensure the data is a dataframe
+  if (!is.data.frame(data)) {
+    data <- as.data.frame(data)
+  }
+
+  # check if state names are provided
+  if (is.null(state_names)) {
+    state_names <- paste0("State ", sort(unique(c(data$from, data$to))))
+  }
+
+  # convert the data frame to a wide format and then to characters
+  df <- data %>%
+    pivot_wider(names_from = to, values_from = Freq, values_fill = list(Freq = 0)) %>%
+    mutate(from = factor(from, levels = sort(unique(from)))) %>%
+    arrange(from) %>%
+    mutate(from = state_names[from]) %>%
+    setNames(c("From", state_names)) %>%
+    mutate(across(everything(), as.character)) # Convert all columns to character
+
+  # apply bold formatting to the diagonal
+  for (i in 1:nrow(df)) {
+    df[i, i + 1] <- paste0("**", df[i, i + 1], "**") # Adjust for 'From' being the first column
+  }
+
+  # convert to markdown table directly, handling characters
+  markdown_table <- kable(df, format = "markdown", align = 'c', escape = FALSE)
+
+  # explanation
+  explanation <- "This transition matrix captures the movement between states across consecutive waves. Entries on the diagonal (in bold) indicate the number of individuals who stayed in their initial state, signifying a steady state. In contrast, off-diagonal figures represent the transitions from one state to another, illustrating the dynamics of individual state changes. Specifically, a cell located at the intersection of row $i$ and column $j$, where $i \neq j$, shows the count of individuals moving from State $i$ to State $j$."
+
+  list(explanation = explanation, table = markdown_table)
+}
+
 
 
 

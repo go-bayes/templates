@@ -122,6 +122,7 @@ packages <- c(
   "ranger",#ML
   "earth",#ML
   "glmnet",
+  "glue",
   "ipw" # iptweighting -- for simple uses
   # for simulation and modelling of design
   # see: https://declaredesign.org/getting-started.html
