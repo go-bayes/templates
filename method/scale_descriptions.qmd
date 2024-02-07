@@ -293,6 +293,20 @@ Participants were asked "How satisfied are you with your sex life?" (1 = Not sat
 
 Participants' subjective health was measured using one item ("Do you have a health condition or disability that limits you, and that has lasted for 6+ months?"; 1 = Yes, 0 = No) adapted from @verbrugge1997.
 
+
+#### Siblings (time 8, time 10)
+
+Participants were asked the following questions related to sibling counts: 
+ 
+ - Were you the 1st born, 2nd born, or 3rd born, etc, child of your mother?
+ - Do you have siblings?
+ - How many older sisters do you have?
+ - How many younger sisters do you have?
+ - How many older brothers do you have?
+ - How many younger brothers do you have?
+
+A single score was obtained from sibling counts by summing responses to the "How many..." items. From these scores an ordered factor was created ranging from 0 to 7, where participants with more than 7 siblings were grouped into the highest category. 
+
 #### Smoker
 
 We asked participants whether they are currently smoking or not (1 = Yes or 0 = No), using a single item ("Do you currently smoke?) from @muriwai_looking_2018.
@@ -301,6 +315,16 @@ We asked participants whether they are currently smoking or not (1 = Yes or 0 = 
 
 Spiritual identification was measured using one item ("I identify as a spiritual person.") from @postmes_single-item_2013. Participants indicated their agreement with this item (1 = Strongly Disagree to 7 = Strongly Agree).
 
+
+#### Socialising (time 10, time 11)
+
+As part of the time usage measures, participants were asked to state how many hour the spent in activities related to socialising with the following groups:
+
+  - Hours spent … socialising with family
+  - Hours spent … socialising with friends
+  - Hours spent … socialising with community groups
+  - Hours spent … socialising with religious groups
+
 #### Standard Living
 
 We measured participants' satisfaction with their standard of living using an item from the Australian Unity Wellbeing Index [@cummins_developing_2003]. Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item ("Your standard of living") on a 10-point scale (0 = completely dissatisfied to 10 = completely satisfied).
@@ -308,6 +332,16 @@ We measured participants' satisfaction with their standard of living using an it
 #### Support
 
 Participants' perceived social support was measured using three items from @cutrona1987 and @williams_cyberostracism_2000: (1) "There are people I can depend on to help me if I really need it"; (2) "There is no one I can turn to for guidance in times of stress"; (3) "I know there are people I can turn to when I need help." Participants indicated the extent to which they agree with those items (1 = Strongly Disagree to 7 = Strongly Agree). The second item was negatively-worded, so we reversely recorded the responses to this item.
+
+
+#### Support received (times 10-13)
+
+The NZAVS has a 'revealed' measure of received help and support measured in hours. The items are: 
+
+Received help and support - hours
+  - family
+  - friends
+  - others in my community
 
 #### Living in an Urban Area
 
@@ -325,9 +359,9 @@ Participants were asked,"Please estimate how many hours you spent doing each of 
 
 We measured participants' subjective wellbeing using three items from the Australian Unity Wellbeing Index [@cummins_developing_2003]: (1) your health; (2) your future security; (3) your future security. Participants read an instruction ("The following items assess your current satisfaction with different aspects of your life and aspects of New Zealand more generally") and indicated their satisfaction with those items (0 = Completely Dissatisfied to 10 = Completely Satisfied).
 
-#### Feeling Thermometer
+#### Feeling Thermometer (Warmth)
 
-Warmth toward groups was rated by a one-item measure using the "feeling thermometer" scale. Participants were asked to rate their feeling of warmth toward the following groups: NZ European, Māori, Asians in general, Pacific Islanders, Elderly people, People with a disability, Overweight people, Immigrants in general, Chinese, Indians, Muslims, and People with mental illness. Ratings were on a 7-point scale from (1 = least warmth toward a group to 7 = most warmth toward a group, with 4 being neutral. In this study we use \`\`warmth" and \`\`acceptance" interchangeably. (Modelled on affect thermometer items in United States National Election Study [@sibley2020].
+Warmth toward groups was rated by a one-item measure using the "feeling thermometer" scale. Participants were asked to rate their feeling of warmth toward the following groups: NZ European, Māori, Asians in general, Pacific Islanders, Elderly people, People with a disability, Overweight people, Immigrants in general, Chinese, Indians, Muslims, and People with mental illness. Ratings were on a 7-point scale from (1 = least warmth toward a group to 7 = most warmth toward a group, with 4 being neutral. This measure is modelled on affect thermometer items in United States National Election Study [@sibley2020].
 
 \pagebreak
 
