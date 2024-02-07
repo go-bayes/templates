@@ -93,7 +93,6 @@
 \draw [-latex, black] (L0) to (A1);
 \draw [-latex, black] (L1) to (A2);
 \draw [-latex, red] (A1) to (L1);
-
 \end{tikzpicture}
 }
 \newcommand{\mediation}{A \to \boxed{L} \rightarrowdotted Y}
@@ -503,7 +502,7 @@
 \draw [-latex, draw = red, bend left = 30] (UY) to (Y);
 \end{tikzpicture}
 }
-% solutions 
+% solutions
 \newcommand{\aandysolution}{
 \begin{tikzpicture}
 %\node [draw=none, align=left, font=\small] at (1.25,1) {\bf Ensure relative timing of A and Y};
@@ -574,7 +573,7 @@
 \node [draw=none, align=center, inner sep = 1](U) at (-1, 0) {$U$};
 \node [rectangle, draw=black] (L1) at (0, 0) {$L^{\prime}_0$};
 \node [draw=none, align=center, inner sep = 1] (A) at (1, 0) {$A_1$};
-\node [draw=none, align=center, inner sep = 1] (Y) at (2, 0) {$Y_2$};                        
+\node [draw=none, align=center, inner sep = 1] (Y) at (2, 0) {$Y_2$};
 \draw [-latex, draw = black] (U) to (L1);
 \draw [-latex, draw = black] (L1) to (A);
 \draw [-latex, draw = black, bend left = 30] (U) to (Y);
@@ -746,23 +745,53 @@
 \draw [-latex, draw = black, bend left = 40] (UY) to (Y1);
 \end{tikzpicture}
 }
+% \newcommand{\measurementUNCORshortTEST}{
+% \begin{tikzpicture}
+% \node [circle, inner sep=1pt, draw=black, dashed] (A) at (0, 0) {$A_1$};
+% \node [rectangle, draw = black, inner sep = 4, thick] (UA) at (1.5, 0) {$U_A$};
+% \node [draw = none, inner sep = 1] (A1) at (3, 0) {$A'_1$};
+% \node [circle,  inner sep=1pt, draw=black, dashed] (Y) at (5, 0) {$Y_2$};
+% \node [rectangle, draw = black, inner sep = 4, thick](UY) at (6.5, 0) {$U_Y$};
+% \node [draw = none, inner sep = 1] (Y1) at (8, 0) {$Y'_2$};
+% \draw [-latex, draw = black] (A) to (UA);
+% \draw [-latex, draw = black] (UA) to (A1);
+% \draw [-latex, draw = black] (Y) to (UY);
+% \draw [-latex, draw = black] (UY) to (Y1);
+% \end{tikzpicture}
+% }
 \newcommand{\measurementUCORBshort}{
 \begin{tikzpicture}
-\node [circle, draw = blue, inner sep = 4, dashed] (UA) at (0, 0) {$U_A$};
+\node [draw = none, inner sep = 4, dashed] (UA) at (0, 0) {$U_A$};
 \node [circle, inner sep=2pt, draw=black, dashed] (A) at (1.5, 0) {$A_1$};
 \node [rectangle, draw=black] (A1) at (3, 0) {$A'_1$};
-\node [circle, draw = blue, inner sep = 4, dashed]  (UY) at (5, 0) {$U_Y$};
+\node [draw = none, inner sep = 4, dashed]  (UY) at (5, 0) {$U_Y$};
 \node [circle,  inner sep=2pt, draw=black, dashed] (Y) at (7, 0) {$Y_2$};
 \node [rectangle, draw=black] (Y1) at (9, 0) {$Y'_2$};
-\draw [-latex, draw = blue, bend left = 30] (UA) to (A1);
-\draw [-latex, draw = blue] (A) to (A1);
-\draw [-latex, draw = blue] (Y) to (Y1);
-\draw [-latex, draw = blue, bend left = 30] (UY) to (Y1);
+\draw [-latex, draw = black, bend left = 30] (UA) to (A1);
+\draw [-latex, draw = black] (A) to (A1);
+\draw [-latex, draw = black] (Y) to (Y1);
+\draw [-latex, draw = black, bend left = 30] (UY) to (Y1);
 %\draw [-latex, draw = blue, bend right = 30, thick] (UA) to (Y1);
 \draw [-latex, bend right = 30, draw = black] (A) to node[pos=0.5, above, draw=none] {\tiny target}(Y);
 \draw [-latex, bend left = 30, draw = red,  dashed] (A1) to node[pos=0.5, above, draw=none, text= red] {\tiny biased for target}(Y1);
 \end{tikzpicture}
 }
+% \newcommand{\measurementUCORBshortTEST}{
+% \begin{tikzpicture}
+% \node [circle, inner sep=1pt, draw=black, dashed] (A) at (0, 0) {$A_1$};
+% \node [rectangle, draw = black, inner sep = 4, thick] (UA) at (1.5, 0) {$U_A$};
+% \node [draw = none, inner sep = 1] (A1) at (3, 0) {$A'_1$};
+% \node [circle,  inner sep=1pt, draw=black, dashed] (Y) at (5, 0) {$Y_2$};
+% \node [rectangle, draw = black, inner sep = 4, thick](UY) at (6.5, 0) {$U_Y$};
+% \node [draw = none, inner sep = 1] (Y1) at (8, 0) {$Y'_2$};
+% \draw [-latex, draw = black] (A) to (UA);
+% \draw [-latex, draw = black] (UA) to (A1);
+% \draw [-latex, draw = black] (Y) to (UY);
+% \draw [-latex, draw = black] (UY) to (Y1);
+% \draw [-latex, bend right = 30, draw = black] (A) to node[pos=0.5, above, draw=none] {\tiny target}(Y);
+% \draw [-latex, bend left = 30, draw = red,  dashed] (A1) to node[pos=0.5, above, draw=none, text= red] {\tiny biased for target}(Y1);
+% \end{tikzpicture}
+% }
 \newcommand{\measurementCORshort}{
 \begin{tikzpicture}
 \node [draw = none, inner sep = 1] (U) at (0, 0) {$U_{AY}$};
@@ -1036,7 +1065,7 @@
 }
 \newcommand{\measurementCORDIRshortCULTURE}{
 \begin{tikzpicture}
-\node [circle, draw = black, dashed, inner sep = 0] (UAY) at (0, 0) {$U_{AY^{T}}$};
+\node [draw = none, dashed, inner sep = 0] (UAY) at (0, 0) {$U_{AY^{T}}$};
 \node [draw = none, inner sep = 0](UA) at (1.0, 0) {$U_A$};
 \node [circle, draw=black, dashed, inner sep = 1] (A) at (3, 0) {$A_1$};
 \node [rectangle, draw=red] (A1) at (5, 0) {$A^{'}_1$};
@@ -1054,7 +1083,7 @@
 }
 \newcommand*{\restrictionbaselineCULTURE}{
 \begin{tikzpicture}
-\node [circle, draw = black, dashed, inner sep = 0] (ULY) at (0, 0) {$U_{LY^{T}}$};
+\node [draw = none, dashed, inner sep = 0] (ULY) at (0, 0) {$U_{LY^{T}}$};
 \node [draw = none, inner sep = 0](UL) at (1.5, 0) {$U_L$};
 \node [circle, draw=black, dashed] (L) at (2.5, 0) {$L$};
 \node [rectangle, draw=red, thick] (L1) at (4, 0) {$L^{'}_1$};
@@ -1281,7 +1310,7 @@
 \node [draw = none, inner sep = 1] (R)  at (1.75, 0) {$R$};
 \node [draw = none, inner sep = 1] (A) at (2.5, 0) {$A_{1}$};
 \node [draw = none, inner sep = 1] (Y) at (3.25, 0) {$Y_{2}$};
-\node [rectangle, draw=black, inner sep =1] (L) at (1,0.5) {$L_{0}$}; 
+\node [rectangle, draw=black, inner sep =1] (L) at (1,0.5) {$L_{0}$};
 \draw [-latex, draw=black] (U1) to (S);
 \draw [-latex, draw =black] (U2) to (S);
 \draw [-latex, draw=black, bend left = 10] (U1) to (L);
@@ -1525,15 +1554,16 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 }
 \newcommand{\threeFF}{
 \begin{tikzpicture}
-\node [draw=none,  align=left, font = \small] (sign) at (4, 3.25) {Unmeasured common cause of exposure and restriction};
-\node [rectangle] (U) at (0, 0) {$U$};
+%\node [draw=none,  align=left, font = \small] (sign) at (4, 3.25) {Unmeasured common cause of exposure and restriction};
+\node [draw = none, inner sep = 1] (U) at (0, 0) {$U$};
 \node [rectangle, draw=black,align=left, thick] (L) at (2, 0) {$L_{0}$\\ $A_{0}$\\ $Y_{0}$};
-\node [rectangle] (A) at (5, 0) {$A_1$};
-\node [circle, inner sep=2pt, thick, dashed, draw = black, text=black] (Y) at (7.5,0)  {Y$_2^{S=\{0,1\}}$};
-\node [rectangle, draw=white,text=black] (US) at (10,3){$U_{\Delta A \rightarrowred Y'}$};
-\node [rectangle, draw=red, thick](YS) at (10, 0) {Y$^{S=1}$};
-\draw [-latex, draw = black] (Y) to (YS);
-\draw [-latex, draw=red] (US) to (YS);
+\node [draw = none, inner sep = 1] (A) at (5, 0) {$A_1$};
+\node [circle, inner sep=4pt, dashed, draw = black] (Y) at (7.5,0)  {Y$_2$};
+\node [draw = none, inner sep = 1] (US) at (10,3){$U_{\Delta A \rightarrowred Y'}$};
+\node [rectangle, draw=red, thick, inner sep = 1](YS) at (10, 0) {Y$^{S=1}$};
+\draw [-latex, black] (Y) to (YS);
+\draw [-latex, red] (US) to (YS);
+\draw [-latex,red] (A) to (US);
 \draw [-latex, bend left=40, red] (U) to (A);
 \draw [-latex] (U) to (L);
 \draw [-latex, bend left=20, red] (U) to (US);
@@ -1745,7 +1775,7 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 \newcommand{\sdBshort}{
 \begin{tikzpicture}
 %\node [draw=none, align=center, font=\tiny] at (1.25,.75) {Common cause of exposure and attrition};
-\node [draw = none, inner sep = 1] (U) at (0, 0) {$U_{\Delta Y}$};
+\node [draw = none, inner sep = 1] (U) at (0, 0) {$U_{}$};
 \node [draw=none, inner sep = 1] (A) at (2, 0) {$A_{1}$};
 \node [circle, dashed, inner sep = 2pt, draw=black]  (Y) at (4, 0) {$Y_{2}$};
 \node [rectangle, draw=red, thick](YS) at (6, 0) {$Y^{\prime}_{2}$};
@@ -1794,7 +1824,7 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 %\node [draw=none, align=center, font=\tiny] at (2.5,.75) {True treatment effects differ in restricted sample: Y affects restriction};
 \node [draw=none, inner sep = 0] (A) at (0, 0) {$A_{1}$};
 \node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (2, 0) {$Y_2$};
-\node [draw=none, inner sep = 1] (U) at (4, 0) {$U_{\Delta Y}$};
+\node [draw=none, inner sep = 1] (U) at (4, 0) {$U_{\Delta^{A \to Y}}$};
 \node [rectangle,  draw=red, thick](YS) at (6, 0) {$Y'_{2}$};
 \draw [-latex, draw=black] (A) to (Y);
 \draw [-latex, draw=red, dashed,  bend left = 20] (A) to node[pos=0.5, above, draw=none, text= red]{\tiny biased for target} (YS);
@@ -1822,32 +1852,32 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 \node [circle, dashed, draw = blue, inner sep = 4, thick] (Z) at (0, 0) {$Z$};
 \node [draw=none, inner sep = 1] (A) at (2, 0) {$A_{1}$};
 \node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (4, 0) {$Y_{2}$};
-\node [circle, inner sep = 1, dashed, draw=blue, thick] (U) at (6, 0) {$U_{\Delta Z}$}; %{$U_{\Delta Z \to Y'}$};
+\node [draw=none, inner sep = 1] (U) at (6, 0) {$U_{\Delta^{Z \to Y}}$}; %{$U_{\Delta Z \to Y'}$};
 \node [rectangle,  draw=red](YS) at (8, 0) {$Y^{\prime}_{2}$};
 \draw [-latex, draw=black] (A) to node[pos=0.5, above, draw=none, text= black] {\tiny target}(Y);
 \draw [-latex, draw=red, dashed, bend left = 25] (A) to node[pos=0.5, above, draw=none, text= red] {\tiny biased for target}(YS);
 \draw [-latex, draw=blue, bend right = 30] (Z) to (Y);
-\draw [-latex, draw=blue] (U) to (YS);
+\draw [-latex, draw=black] (U) to (YS);
 \end{tikzpicture}
 }
 \newcommand{\sdGshortTARGET}{
 \begin{tikzpicture}
 %\node [draw=none, align=center, font=\tiny] at (1.25,1.25) {True treatment effects differ in restricted sample: no confounding};
-\node [circle, dashed, draw = blue, inner sep = 2, thick] (Z) at (0, 0) {$Z^T$};
+\node [circle, dashed, draw = blue, inner sep = 2] (Z) at (0, 0) {$Z^T$};
 \node [draw=none, inner sep = 1] (A) at (1.25, 0)  {$A_{1}^T$};
 \node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (4.5, 0) {$Y_{2}^T$};
-\node [circle, inner sep = 1, dashed, draw=blue, thick] (U) at (6.25, 0) {$U_{\Delta Z^T}$}; %
-\node [rectangle,  draw=red, thin](YS) at (9, 0) {$Y^{T=1}_{2}$};
+\node [inner sep = 1, dashed, draw=none] (U) at (6.25, 0) {$U_{\Delta^{Z^T \to Y^T}}$}; %
+\node [rectangle,  draw=red, thin](YS) at (8.5, 0) {$Y^{T=1}_{2}$};
 \draw [-latex, draw=black] (A) to node[pos=0.5, above, draw=none, text= black] {\tiny ATE target}(Y);
 \draw [-latex, draw=red, dashed, bend left = 20] (A) to node[pos=0.5, above, draw=none, text= red]{\tiny ATE biased for sample}(YS);
-\draw [-latex, draw=blue, bend right = 20] (Z) to (Y);
-\draw [-latex, draw=blue] (U) to (YS);
+\draw [-latex, draw=black, bend right = 20] (Z) to (Y);
+\draw [-latex, draw=black] (U) to (YS);
 \end{tikzpicture}
 }
 \newcommand{\sdGshortTARGETresponse}{
 \begin{tikzpicture}
 %\node [draw=none, align=center, font=\tiny] at (1.25,1.25) {True treatment effects differ in restricted sample: no confounding};
-\node [circle, dashed, draw = blue, inner sep = 2, thick] (Z) at (0, 0) {$Z^T$};
+\node [circle, dashed, draw = blue, inner sep = 2] (Z) at (0, 0) {$Z^T$};
 \node [draw=none, inner sep = 1] (A) at (1.25, 0)  {$A_{1}^T$};
 \node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (4.5, 0) {$Y_{2}^T$};
 \draw [-latex, draw=black] (A) to node[pos=0.5, above, draw=none, text= black] {\tiny ATE target}(Y);
@@ -1861,19 +1891,19 @@ A$_{0}^{S=\{0,1\}}$\\ Y$_{0}^{S=\{0,1\}}$};
 \node [circle, dashed, draw = blue, inner sep = 2, thick] (Z) at (0, 0) {$Z^{T'}$};
 \node [draw=none, inner sep = 1] (A) at (1.25, 0)  {$A_{1}^{T'}$};
 \node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (4.5, 0) {$Y_{2}^{T'}$};
-\node [circle, inner sep = 1, dashed, draw=blue, thick] (U) at (6.25, 0) {$U_{\Delta Z^{T'}}$}; 
-\node [rectangle,  draw=red, thin](YS) at (9, 0) {$Y^{T}_{2}$};
+\node [inner sep = 1, dashed, draw=none] (U) at (6.25, 0){$U_{\Delta^{Z^{T'} \to Y^{T'}}}$};
+\node [rectangle,  draw=red, thin](YS) at (8.5, 0) {$Y^{T}_{2}$};
 \draw [-latex, draw=black] (A) to node[pos=0.5, above, draw=none, text= black] {\tiny ATE eligible}(Y);
 \draw [-latex, draw=red, dashed, bend left = 20] (A) to node[pos=0.5, above, draw=none, text= red]{\tiny ATE biased for eligible}(YS);
 \draw [-latex, draw=blue, bend right = 20] (Z) to (Y);
-\draw [-latex, draw=blue] (U) to (YS);
+\draw [-latex, draw=black] (U) to (YS);
 \end{tikzpicture}
 }
 \newcommand{\sdGshortTARGETTWOresponse}{
 \begin{tikzpicture}
 \node [circle, dashed, draw = blue, inner sep = 2, thick] (Z) at (0, 0) {$Z^{T'}$};
 \node [draw=none, inner sep = 1] (A) at (1.25, 0)  {$A_{1}^{T'}$};
-\node [circle, dashed, inner sep = 2pt, draw=black] (Y) at (4.5, 0) {$Y_{2}^{T'}$};
+\node [inner sep = 2pt, draw=none] (Y) at (4.5, 0) {$Y_{2}^{T'}$};
 \draw [-latex, draw=black] (A) to node[pos=0.5, above, draw=none, text= black] {\tiny ATE eligible}(Y);
 \draw [-latex, draw=blue, bend right = 20] (Z) to (Y);
 \end{tikzpicture}
@@ -2093,8 +2123,8 @@ $M$ & Mediator of $A$ on $Y$\\
 \newcommand{\terminologyundirectedgraphs}{
 \centering
 \renewcommand{\arraystretch}{1.0} % Adjust the line spacing
-\textbf{Undirected Graphs} \\ 
-\bigskip %  
+\textbf{Undirected Graphs} \\
+\bigskip %
 \begin{tabular}{l|l}
 \textbf{Graph} & \textbf{Feature} \\ \toprule
 X & Node. \\
@@ -2111,21 +2141,21 @@ $\network$ & $X^{\prime\prime\prime}$ is not associated with other nodes. \\
 \centering
 \renewcommand{\arraystretch}{1.4} % Adjust the line spacing
 \textbf{Elements of a Directed Acyclic Graph and d-Separation Rules} \\
-\vspace{.5cm} 
+\vspace{.5cm}
 \bigskip
 \begin{tabular}{>{\raggedright\arraybackslash\small}m{1.5cm}m{3.5cm}m{4cm}m{4cm}}
-\textbf{Type} & \textbf{Graph} & \textbf{Explanation} & \textbf{d-Separation Rule} \\  
-\toprule 
+\textbf{Type} & \textbf{Graph} & \textbf{Explanation} & \textbf{d-Separation Rule} \\
+\toprule
 \multicolumn{4}{c}{\bf Two variables}\\
-\cmidrule{1-4} 
-{\bf Causality Absent}  & $\xorxA$  & $X_0$ and $X_1$ have no causal effect on each other. & $X_0 \coprod X_1$ (independent)\\ 
+\cmidrule{1-4}
+{\bf Causality Absent}  & $\xorxA$  & $X_0$ and $X_1$ have no causal effect on each other. & $X_0 \coprod X_1$ (independent)\\
 {\bf Causality}  & $\xtoxA$  &  $X_0$ causally affects $X_1$, and they are associated. & $X_0 \cancel\coprod X_1$ (dependent)\\
-\cmidrule{1-4} 
+\cmidrule{1-4}
 \multicolumn{4}{c}{\bf Three variables}\\
-\cmidrule{1-4} 
+\cmidrule{1-4}
 \textbf{Fork} &  $\fork$   &  $X_0$ causally affects both $X_1$ and $X_2$; $X_1$ and $X_2$ are conditionally independent given $X_0$. & If $\boxed{X_0}$, then $X_1 \coprod X_2 | X_0$\\
 \textbf{Chain} &  $\chain$ &  $X_2$ is affected by $X_1$ which is, in turn, affected by $X_0$; $X_0$ and $X_2$ are conditionally independent given $X_1$. & If \boxed{X_1}, then $X_0 \coprod X_2 | X_1$ \\
-\textbf{Collider} &  $\immoralityChild$   &  $X_2$ is affected by both $X_0$ and $X_1$, which are independent; conditioning on $X_2$ induces association between $X_0$ and $X_1$. & If \boxed{X_2} or \boxed{X_3} (a descendant of $X_2$), then $X_0 \cancel\coprod X_1 | X_2$. Equally, because $X_3$ is associated with $X_2$, then $X_0 \cancel\coprod X_1 | X_3$ \\
+\textbf{Collider} &  $\immorality$   &  $X_2$ is affected by both $X_0$ and $X_1$, which are independent; conditioning on $X_2$ induces association between $X_0$ and $X_1$. & If \boxed{X_2}, then $X_0 \cancel\coprod X_1 | X_2$.\\
 \multicolumn{4}{p{15cm}}{\footnotesize  Nodes are indexed by temporal order, e.g., $X_t$ precedes $X_{t+1}$. A boxed node, \boxed{X_t}, indicates conditioning on that variable. $\rightarrowNEW$ denotes a directed causal path. The symbol $\coprod$ signifies conditional independence, assessed with the conditioning bar `$|$'. According to the rules of d-separation, in the fork graph, conditioning on $X_0$ blocks the association between the non-adjacent nodes $X_1$ and $X_2$; in a chain graph, conditioning on $X_1$ blocks the association between the non-adjacent nodes $X_0$ and $X_2$.  In a collider graph, conditioning on (\boxed{X_2})  or its descendant (\boxed{X_3}) introduces an association between the non-adjacent nodes $X_0$ and $X_1$. These elementary graphs and rules help to clarify strategies for causal identification from the assumptions encoded in graphs.}
 \end{tabular}
 }
@@ -2135,7 +2165,7 @@ $\network$ & $X^{\prime\prime\prime}$ is not associated with other nodes. \\
 \textbf{Causal Diagram Graph Conventions} \\
 \vspace{.25cm} % Larger space between tables
 \begin{tabular}{>{\centering\arraybackslash\small}m{1.5cm} >{\raggedright\arraybackslash\small}m{6.5cm} l}
-\toprule 
+\toprule
 \textbf{Symbol} & \textbf{Meaning} & \textbf{Example} \\ \midrule
 $X$ & \textbf{Node:} variable, denoted by a letter & $A$ \\
 $X_t$ & \textbf{Time-indexed node}: denotes relative chronology & $\aandy$ \\
@@ -2159,7 +2189,7 @@ $\circledottedblue{Z}\rightarrowblue Y$ & \textbf{Dashed blue circle and blue ar
 \textbf{Causal Diagram Graph Conventions} \\
 \vspace{.25cm} % Larger space between tables
 \begin{tabular}{>{\centering\arraybackslash\small}m{1.5cm} >{\raggedright\arraybackslash\small}m{6.5cm} l}
-\toprule 
+\toprule
 \textbf{Symbol} & \textbf{Meaning} & \textbf{Example} \\ \midrule
 $X$ & \textbf{Node:} variable, denoted by a letter & $A$ \\
 $X_t$ & \textbf{Time-indexed node}: denotes relative chronology & $\aandy$ \\
@@ -2179,7 +2209,7 @@ $\circledotted{X}$ & \textbf{Dashed circle:} no adjustment for variable & $\comm
 }
 \newcommand{\terminologyeffectmodification}{
 \centering
-\renewcommand{\arraystretch}{1} 
+\renewcommand{\arraystretch}{1}
 \textbf{Conventions for Effect-Modification} \\
 \vspace{.25cm} %  larger space between tables
 \begin{tabular}{>{\raggedright\arraybackslash\small}m{1.5cm} >{\raggedright\arraybackslash\small}m{7cm} >{\raggedright\arraybackslash\small}m{3cm}}
@@ -2243,7 +2273,7 @@ $\circledottedblue{Z}\rightarrowblue Y$ & \textbf{Dashed blue circle and blue ar
 % \multicolumn{3}{c}{\bf More complex scenarios}\\
 % \textbf{\small Bias} & \textbf{\small Problem} & \textbf{\small Response} \\ \midrule
 % \textbf{M-bias}: Over-conditioning bias. Response: do not condition on $L$ & $\mbias$ & $\mbiassolved$ \\
-% \textbf{Unmeasured common cause} If a proxy of an unmeasured confounder is not a mediator or collider, conditioning will reduce bias even if the proxy occurs after the outcome.& $\downstream$ & $\downstreamconfounder$ \\ 
+% \textbf{Unmeasured common cause} If a proxy of an unmeasured confounder is not a mediator or collider, conditioning will reduce bias even if the proxy occurs after the outcome.& $\downstream$ & $\downstreamconfounder$ \\
 % \textbf{Unmeasured common cause} Conditioning on baseline exposure and baseline outcome exerts powerful confounding control and recovers incident effect. & \downstream & \three \\
 % \bottomrule
 % \end{tabular}
@@ -2262,8 +2292,8 @@ $\circledottedblue{Z}\rightarrowblue Y$ & \textbf{Dashed blue circle and blue ar
 & \multicolumn{3}{c}{\bf More complex scenarios}\\
 & \textbf{\small Bias} & \textbf{\small Problem} & \textbf{\small Response} \\ \midrule
 5 & \textbf{M-bias}: Over-conditioning bias. Response: do not condition on $L$ & $\mbias$ & $\mbiassolved$ \\
-6 & \textbf{Unmeasured common cause} If a proxy of an unmeasured confounder is not a mediator or collider, conditioning will reduce bias even if the proxy occurs after the outcome.& $\downstream$ & $\downstreamconfounder$ \\ 
-7 & \textbf{Unmeasured common cause} Conditioning on baseline exposure and baseline outcome exerts powerful confounding control and recovers incident effect. & \downstream & \three \\
+6 & \textbf{Unmeasured common cause} If a proxy of an unmeasured confounder is not a mediator or collider, conditioning will reduce bias even if the proxy occurs after the outcome.& $\downstream$ & $\downstreamconfounder$ \\
+7 & \textbf{Unmeasured common cause} Conditioning on baseline exposure and baseline outcome exerts powerful confounding control and recovers incident exposure effect. & \downstream & \three \\
 \bottomrule
 \end{tabular}
 
@@ -2279,11 +2309,11 @@ $\circledottedblue{Z}\rightarrowblue Y$ & \textbf{Dashed blue circle and blue ar
 \textbf{Reverse causation}: incorrectly assuming $Y$ is caused by $A$. & $\ytoa$ & $\aandysolution$ \\
 \textbf{Incorrect timing of exposure/outcome}: $A$ is mistakenly timed after $Y$. & $\atwotoyone$ & $\aandysolution$ \\
 \textbf{Measured common cause}: the typical problem we hope to solve: an unmeasured variable is assumed to cause both $A$ and $Y$. & $\commoncauseA$ & $\commoncausesolvedA$ \\
-\textbf{Unmeasured common cause} conditioning on baseline exposure and baseline outcome exerts powerful confounding control and recovers incident effect. & \downstream & \three \\
 \textbf{Mediator bias}: conditioning on a mediator, which can distort the true causal effect. & $\mediatorA$ & $\commoncausesolvedA$ \\
 \textbf{Collider bias}: controlling for a variable that is affected by both $A$ and $Y$ can introduce spurious association. & $\colliderALONG$ & $\commoncausesolvedA$ \\
 \textbf{Collider proxy bias}: conditioning on a descendant of a collider can introduce bias. & $\descendantBBLONG$ & $\commoncausesolvedchild$ \\
 \textbf{Post-exposure collider stratification bias}: conditioning on a variable that is affected by exposure but does not have a direct causal effect on outcome. & $\mediatorcollider$ & $\commoncausesolvedA$ \\
+\textbf{Unmeasured common cause} conditioning on baseline exposure and baseline outcome exerts powerful confounding control and recovers incident exposure effect. & \downstream & \three \\
 \bottomrule
 \multicolumn{3}{p{15cm}}{\footnotesize Correctly aligning confounders, exposures, and outcomes with the arrow of time avoids common scenarios of confounding.} \\
 \end{tabular}
@@ -2302,6 +2332,30 @@ $\circledottedblue{Z}\rightarrowblue Y$ & \textbf{Dashed blue circle and blue ar
 \textbf{Residual confounding} \textbf{Response}: sensitivity analysis. & $\threeshortB$ &  \footnotesize{Sensitivity analysis} \\
 \textbf{Treatment affects confounder of mediator/outcome path} \textbf{Response}: special estimators& $\mediationfullshortB$ & {Special estimators}\\
 \textbf{Treatment/confounder feedback}: feedback in sequential exposures raises special problems. Here: to avoid confounding, we must condition on $L$; yet doing so leads to collider confounding. \textbf{Response}: special estimators & $\feedbackAshortB$ & \footnotesize{Special estimators} \\
+\bottomrule
+\end{tabular}
+}
+\newcommand{\terminologythreewaveproblems}{
+\centering
+\textbf{Three-wave panel: confounding not addressed}\\
+\medskip
+\renewcommand{\arraystretch}{1} % Adjust the line spacing to match the first table
+\begin{tabular}{
+>{\raggedright\arraybackslash\footnotesize\bfseries}m{.5cm}
+>{\raggedright\arraybackslash\footnotesize}m{4.5cm}
+>{\raggedright\arraybackslash\footnotesize\bfseries}m{9cm}
+} % Adjust column widths for a better fit
+\toprule
+\textbf{No.} & \textbf{Bias} & \textbf{Causal Graph} \\
+\midrule
+1. & \textbf{Problem}: Residual confounding. \newline \textbf{Response}: Sensitivity analysis. & $\threeshort$ \\
+2. & \textbf{Problem}: Post-baseline confounding. \newline \textbf{Response}: Condition on $L_1$ if not a mediator. & $\threeBshort$ \\
+3. & \textbf{Problem}: Confounding by common cause of treatment and outcome in the censored. \newline \textbf{Response}: IPCW & $\sdBshort$ \\
+4. & \textbf{Problem}: Confounding by common cause of treatment and attrition. \newline \textbf{Response}: IPCW & $\sdHshort$ \\
+5. & \textbf{Problem}: Treatment affects censoring. \newline \textbf{Response}: IPCW & $\sdCshort$ \\
+6. & \textbf{Problem}: No treatment effect when outcome causing censoring: \textit{\textbf{no bias}}. \newline \textbf{Response}: IPCW & $\sdDshort$ \\
+7. & \textbf{Problem}: Treatment effect when outcome causes censoring \textit{\textbf{bias}}. \newline \textbf{Response}: IPCW & $\sdDDshort$ \\
+8. & \textbf{Problem}: Treatment effect and effect-modifiers differ in censored (restriction bias without confounding). \newline \textbf{Response}: Sensitivity analysis/special estimators & $\sdGshort$ \\
 \bottomrule
 \end{tabular}
 }
@@ -2326,7 +2380,7 @@ $\circledottedblue{Z}\rightarrowblue Y$ & \textbf{Dashed blue circle and blue ar
 }
 \newcommand{\terminologyeffectmodificationtypes}{
 \centering
-\renewcommand{\arraystretch}{1.25} 
+\renewcommand{\arraystretch}{1.25}
 \textbf{Classification of Effect-Modification: Direct and Indirect}\\
 \bigskip
 \begin{tabular}{>{\raggedright\arraybackslash\footnotesize\bf}m{0.5cm} >{\raggedright\arraybackslash\footnotesize}m{7cm} m{4.5cm}}
@@ -2338,9 +2392,9 @@ $\circledottedblue{Z}\rightarrowblue Y$ & \textbf{Dashed blue circle and blue ar
 4.& \textbf{G is an indirect effect-modifier by proxy}: when not conditioning on $Z$, $G$ is an indirect effect modifier of $A_1 \rightarrowNEW Y_2$. & $\indirecteffectmodification$ \\
 5.& \textbf{Conditioning on B makes G a surrogate effect-modifier}: when not conditioning on $Z$, conditioning on collider $B$ opens a path from $G$ to $Y$ through $Z$, making $G$ and $B$ indirect effect-modifiers of $A_1 \rightarrowNEW Y_2$. & $\collidereffectmodification$ \\
 6.& \textbf{Only Z is a direct effect-modifier}: conditioning on $Z$ renders its descendants independent of $Y$, leaving only $Z$ as the effect-modifier of $A_1 \rightarrowNEW Y_2$. & $\childeffectmodification$ \\
-\\ 
+\\
 \bottomrule
-\multicolumn{3}{m{12cm}}{\footnotesize Take home lesson 1. The classification of an indirect effect modifier depends on model specification. 
+\multicolumn{3}{m{12cm}}{\footnotesize Take home lesson 1. The classification of an indirect effect modifier depends on model specification.
 Take home lesson 2. Whether conditioned upon or not, the differences in the distribution of effect modifiers between the sample and population will often lead to {\it restriction} bias. That is, if the distribution of effect modifiers varies between the sample and the target populations, the sample's Average Treatment Effect (ATE) may not accurately reflect the target population's ATE. For this reason, we draw a causal diagram for the {\it target} population.} \\
 \end{tabular}
 }
@@ -2375,8 +2429,8 @@ Take home lesson 2. Whether conditioned upon or not, the differences in the dist
 1.& Confounding by common cause of treatment and outcome in the censored & $\sdBshort$ \\
 2.& Confounding by common cause of treatment and attrition & $\sdHshort$ \\
 3.& Treatment affects censoring & $\sdCshort$ \\
-4.& No treatment effect and outcome causes censoring: {\it \bf  no bias}  & $\sdDshort$ \\
-5.& Treatment effect and outcome causes censoring {\it \bf bias}  & $\sdDDshort$ \\
+4.& No treatment effect when outcome causing censoring: {\it \bf  no bias}  & $\sdDshort$ \\
+5.& Treatment effect when outcome causes censoring {\it \bf bias}  & $\sdDDshort$ \\
 6.& Treatment effect and effect-modifiers differ in censored (restriction bias without confounding). & $\sdGshort$ \\
 \bottomrule
 %\bottomrule
@@ -2386,7 +2440,7 @@ Take home lesson 2. Whether conditioned upon or not, the differences in the dist
 \newcommand{\terminologyselectionrestrictionclassic}{
 % \centering
 \centering
-\textbf{External Validity (restriction/eligibility at baseline)}\\
+\textbf{External Validity: {\small sample restriction or poor eligibility}}\\
 %\medskip
 \renewcommand{\arraystretch}{.75} % Adjust the line spacing
 \centering
@@ -2401,7 +2455,7 @@ Take home lesson 2. Whether conditioned upon or not, the differences in the dist
 \newcommand{\terminologyselectionrestrictionbaseline}{
 % \centering
 \centering
-\textbf{External Validity (restriction/eligibility at baseline)}\\
+\textbf{External Validity}\\
 %\medskip
 \renewcommand{\arraystretch}{.75} % Adjust the line spacing
 \centering
@@ -2434,25 +2488,56 @@ Take home lesson 2. Whether conditioned upon or not, the differences in the dist
 \begin{tabular}{>{\raggedright\arraybackslash\footnotesize\bf}m{.5cm}>{\raggedright\arraybackslash\footnotesize}m{4.5cm} >{\raggedright\arraybackslash\footnotesize\bf}m{9cm}} % Adjust column widths for a better fit
 \toprule
 \textbf{No.} & \textbf{Bias} & \textbf{Causal Graph} \\ \midrule
-1.& \textbf{Problem}: residual confounding. 
+1.& \textbf{Problem}: residual confounding.
 
 \textbf{Response}: sensitivity analysis.  & $\threeshort$ \\
-2.& \textbf{Problem}: post-baseline confounding 
+2.& \textbf{Problem}: post-baseline confounding
 
 \textbf{Response}: condition on $L_1$ if not a mediator.& $\threeBshort$ \\
-3.& \textbf{Problem}: {over-adjustment bias} 
+3.& \textbf{Problem}: {over-adjustment bias}
 
 \textbf{Response}: do not condition on $L_1$.& $\threeCshort$ \\
-4.& \textbf{Problem}: exposure affects confounder of mediator and outcome. 
+4.& \textbf{Problem}: exposure affects confounder of mediator and outcome.
 
 \textbf{Response}: sensitivity analysis/special estimators.& $\mediationfullshort$ \\
-5.& \textbf{Problem}: Treatment 1 affects confounder of Treatment 2. 
+5.& \textbf{Problem}: Treatment 1 affects confounder of Treatment 2.
 
 \textbf{Response}: special estimators.& $\feedbackshort$ \\
-6.& \textbf{Problem}: Treatment 1 and unmeasured confounder affect Treatment 2. 
+6.& \textbf{Problem}: Treatment 1 and unmeasured confounder affect Treatment 2.
 \textbf{Response}: special estimators & $\feedbackAshort$ \\
 
 7.&  \textbf{Problem}: unmeasured time-varying confounders induce feedback.
 \textbf{Response}: sensitivity analysis/special estimators & $\feedbackBshort$ \\ \bottomrule
 \end{tabular}
 }
+\newcommand{\terminologythreewave}{
+\centering
+\textbf{Time-varying confounding}\\
+\medskip
+\renewcommand{\arraystretch}{1} % Adjust the line spacing to match the first table
+\begin{tabular}{>{\raggedright\arraybackslash\footnotesize\bf}m{.5cm}>{\raggedright\arraybackslash\footnotesize}m{4.5cm} >{\raggedright\arraybackslash\footnotesize\bf}m{9cm}} % Adjust column widths for a better fit
+\toprule
+\textbf{No.} & \textbf{Bias} & \textbf{Causal Graph} \\ \midrule
+1.& \textbf{Problem}: residual confounding.
+
+\textbf{Response}: sensitivity analysis.  & $\threeshort$ \\
+2.& \textbf{Problem}: post-baseline confounding
+
+\textbf{Response}: condition on $L_1$ if not a mediator.& $\threeBshort$ \\
+3.& \textbf{Problem}: {over-adjustment bias}
+
+\textbf{Response}: do not condition on $L_1$.& $\threeCshort$ \\
+4.& \textbf{Problem}: exposure affects confounder of mediator and outcome.
+
+\textbf{Response}: sensitivity analysis/special estimators.& $\mediationfullshort$ \\
+5.& \textbf{Problem}: Treatment 1 affects confounder of Treatment 2.
+
+\textbf{Response}: special estimators.& $\feedbackshort$ \\
+6.& \textbf{Problem}: Treatment 1 and unmeasured confounder affect Treatment 2.
+\textbf{Response}: special estimators & $\feedbackAshort$ \\
+
+7.&  \textbf{Problem}: unmeasured time-varying confounders induce feedback.
+\textbf{Response}: sensitivity analysis/special estimators & $\feedbackBshort$ \\ \bottomrule
+\end{tabular}
+}
+
