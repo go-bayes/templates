@@ -70,7 +70,7 @@
 \node [rectangle, inner sep = 1] (A2) at (5, 0) {$A_2$};
 \node [draw=none, inner sep = 1] (Y3) at (6, 0) {$Y_3$};
 \draw [-latex, bend left = 30 ] (R) to (A1);
-\draw [-latex, bend left = 30] (R) to (A2);
+%\draw [-latex, bend left = 30] (R) to (A2);
 \draw [-latex, bend right = 20, red] (U) to (L0);
 \draw [-latex, bend right = 20, red] (U) to (L1);
 \draw [-latex, bend right = 20, red] (U) to (Y3);
@@ -2651,6 +2651,35 @@ To denote relative timing we place subscripts on nodes (e.g., $L_0, A_1, Y_2$)}
 \stepcounter{exprownum}\arabic{exprownum} & Per protocol: unmeasured variable and treatment both affect adherence & \perprotocolTWO  &  Use special estimators\\
 \stepcounter{exprownum}\arabic{exprownum} & Per protocol: unmeasured variable and treatment both affect adherence & \perprotocolTWOS  &  Use special estimators: stronger assumptions\\
 \bottomrule
+\multicolumn{4}{>{\arraybackslash\footnotesize}p{15cm}}{
+$A$ denotes the treatment.
+
+$Y$ denotes the outcome.
+
+$U$ denotes an unmeasured confounder.
+
+$L$ denotes a measured confounder.
+
+%$L'$ denotes a proxy for an unmeasured confounder.
+
+%$M$ denotes a mediator.
+
+$\mathcal{R}$ denotes randomisation into treatment $A_1$
+
+$\boxed{L}$ \textbf{black box} denotes conditioning on variable $L$.
+
+$\rightarrowNEW$ \textbf{black arrow} denotes an assumed causal pathway.
+
+$\rightarrowred$ \textbf{red arrow} denotes a pathway of bias. %(e.g.: where $\commoncauseAshort$, the path of bias runs $A_1 \association L_0 \association Y_2$).
+
+$\boxedred{L}$ \textbf{red box} denotes case when conditioning on $L$ induces bias.
+
+$X_t$: \textbf{Time-indexed node}: denotes true/known relative chronology
+
+%$X_{\customphi{t}}$: textbf{time-indexed node asserted}: relative chronology is assumed but not known.
+
+\textbf{Longitudinal data threat}: even after conditioning on the baseline exposure and baseline outcome there is unmeasured confounding.}\\
+\bottomrule
 \end{tabular}
 }
 \newcommand{\terminologythreewaveproblems}{
@@ -2847,7 +2876,7 @@ Take home lesson 2. Whether conditioned upon or not, the differences in the dist
 \bigskip
 \begin{tabular}{>{\raggedright\arraybackslash\small}m{0.5cm} >{\raggedright\arraybackslash\small}m{5cm} >{\raggedright\arraybackslash\small}m{4cm} >{\raggedright\arraybackslash\small}m{4cm}}
 \toprule
-& \textbf{\small Assumed Causation Scenarios} & \textbf{\small Directed Acyclic Graph} & \textbf{\small Control Strategy} \\ \midrule
+& \textbf{\small Assumed Causation Scenarios} & \textbf{\small Confounding Threat} & \textbf{\small Control Strategy} \\ \midrule
 1 & \textbf{L is a confounder}: $A_{\phi 1} $ and $Y_{\phi 2}$ share a common cause $L_{\phi 0}$; confounding control strategy: condition on $\boxed{ L_{\phi 0}}$ to block the open backdoor path.& $\commoncauseAASERTED$  &  \commoncausesolvedAASSERTED\\
 2  & \textbf{L is a mediator}: $\boxed{L_{\phi 1}}$ blocks true causal association $A\to Y$. & $\mediatorAASERTED$   &  \aandyASSERTEDLONG \\
 \midrule
@@ -2888,7 +2917,7 @@ $X_{\customphi{t}}$: textbf{time-indexed node asserted}: relative chronology is 
 \bigskip
 \begin{tabular}{>{\raggedright\arraybackslash\small}m{4.5cm} >{\raggedright\arraybackslash\small}m{5cm} >{\raggedright\arraybackslash\small}m{5cm}}
 \toprule
-\textbf{\small Assumed Causation} & \textbf{\small Directed Acyclic Graph} & \textbf{\small Control Strategy} \\ \midrule
+\textbf{\small Assumed Causation} & \textbf{\small Confounding Threat} & \textbf{\small Control Strategy} \\ \midrule
 \textbf{Unmeasured confounder}: $A_{1} $ and $Y_{2}$ share both measured and unmeasured common causes $\{L_{0}, U\}$;
 
 \textbf{Confounding control strategy}: to reduce confounding we condition on (1) all measured baseline confounders that are associated with the treatment, outcome or both, or that are proxies of unmeasured confounders; (2) the baseline measure of the exposure and (3) the baseline measure of the outcome, such that any residual confounding must be orthogonal to the baseline exposure and outcome: $\boxed{
@@ -2911,6 +2940,8 @@ $L$ denotes a measured confounder.
 %$L'$ denotes a proxy for an unmeasured confounder.
 
 %$M$ denotes a mediator.
+
+%$\mathcal{R}$ denotes randomisation into treatment $A_1$
 
 $\boxed{L}$ \textbf{black box} denotes conditioning on variable $L$.
 
