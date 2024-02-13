@@ -3187,7 +3187,6 @@ format_tab_tmle <-
 
 
 # general contrast table --------------------------------------------------
-
 tab_ate <-
   function(x,
            new_name,
@@ -3210,7 +3209,7 @@ tab_ate <-
 
     out <- x %>%
       dplyr::filter(row.names(x) == type) %>%
-      dplyr::mutate(across(where(is.numeric), round, digits = 4))
+      dplyr::mutate(across(where(is.numeric), round, digits = 2))
 
     if (type == "RD") {
       out <- out %>%
@@ -3234,7 +3233,7 @@ tab_ate <-
           delta = delta,
           true = 0
         ),
-        3
+        2
       ))
     } else {
       evalout <- as.data.frame(round(EValue::evalues.RR(
@@ -3243,7 +3242,7 @@ tab_ate <-
         hi = out[1, 3],
         true = 1
       ),
-      3))
+      2))
     }
 
     evalout2 <- subset(evalout[2, ])
