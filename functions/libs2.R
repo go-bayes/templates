@@ -123,6 +123,17 @@ packages <- c(
   "earth",#ML
   "glmnet",
   "glue",
+  "grf",
+  "lmtp",
+  # the best! time-varying causal identification using superlearner
+  "SuperLearner",
+  # for lmtp
+  "xgboost",
+  # for lmtp
+  "glmnet",
+  "ranger",
+  "progressr", # progress bars
+  "survey", # survey weights, design
   "ipw" # iptweighting -- for simple uses
   # for simulation and modelling of design
   # see: https://declaredesign.org/getting-started.html

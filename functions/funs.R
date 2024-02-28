@@ -3529,73 +3529,107 @@ group_plot_ate <-
 library(tidyverse)
 library(glue)
 
-
+#
+# interpret_table <- function(df, causal_scale, estimand) {
+#   estimand_description <- case_when(
+#     estimand == "PATE" ~ "Population Average Treatment Effect (PATE) represents the expected difference in outcomes between treatment and control groups for the New Zealand population.",
+#     estimand == "ATE" ~ "Average Treatment Effect (ATE) represents the expected difference in outcomes between treatment and control groups for the population.",
+#     estimand %in% c("PATT", "ATT") ~ "Average Treatment Effect on the Treated (ATT) represents the expected difference in outcomes between treatment and control groups for the individuals who received the treatment.",
+#     estimand %in% "CATE" ~ "Conditional Average Treatment Effect (CATE) represents the expected difference in outcomes between treatment and control groups for a specific subgroup of individuals.",
+#     estimand %in% c("SATE", "SATT") ~ "Sample Average Treatment Effect (SATE) represents the expected difference in outcomes between treatment and control groups within the sampled population.",
+#     TRUE ~ "The specified estimand is not recognized. Please use one of the following: 'PATE', 'PATT', 'ATE', 'ATT', 'CATE', 'SATE', 'SATT'."
+#   )
+#
+#   if (causal_scale == "causal_risk_ratio") {
+#     interpretation <- df %>%
+#       mutate(
+#         causal_contrast = round(`E[Y(1)]/E[Y(0)]`, 3),
+#         strength_of_evidence = case_when(
+#           E_Value >= 1.2 ~ "reliable evidence for causality",
+#           E_Value >= 1.05 ~ "evidence for causality is weak",
+#           TRUE ~ "no reliable evidence for causality"
+#         ),
+#         outcome_interpretation = if_else(
+#           Estimate == "unreliable",
+#           glue(
+#             "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+#             "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+#             "The E-value for this outcome confirms the causal contrast unreliable."
+#           ),
+#           glue(
+#             "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+#             "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+#             "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
+#           )
+#         )
+#       )
+#   } else if (causal_scale == "causal_difference") {
+#     interpretation <- df %>%
+#       mutate(
+#         causal_contrast = round(`E[Y(1)]-E[Y(0)]`, 3),
+#         strength_of_evidence = case_when(
+#           E_Value >= 1.2 ~ "reliable evidence for causality",
+#           E_Value >= 1.05 ~ "evidence for causality is weak",
+#           TRUE ~ "no reliable evidence for causality"
+#         ),
+#         outcome_interpretation = if_else(
+#           Estimate == "unreliable",
+#           glue(
+#             "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+#             "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+#             "The E-value for this outcome confirms the causal contrast is unreliable."
+#           ),
+#           glue(
+#             "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+#             "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
+#             "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
+#           )
+#         )
+#       )
+#   } else {
+#     stop(
+#       "Invalid causal_scale argument. Please use 'causal_risk_ratio' or 'causal_difference'."
+#     )
+#   }
+#
+#   result <-
+#     glue(
+#       "Table interpretation:\n\n{estimand_description}\n\n{paste(interpretation$outcome_interpretation, collapse = '\n\n')}"
+#     )
+#   return(result)
+# }
 interpret_table <- function(df, causal_scale, estimand) {
   estimand_description <- case_when(
     estimand == "PATE" ~ "Population Average Treatment Effect (PATE) represents the expected difference in outcomes between treatment and control groups for the New Zealand population.",
     estimand == "ATE" ~ "Average Treatment Effect (ATE) represents the expected difference in outcomes between treatment and control groups for the population.",
-    estimand %in% c("PATT", "ATT") ~ "Average Treatment Effect on the Treated (ATT) represents the expected difference in outcomes between treatment and control groups for the individuals who received the treatment.",
-    estimand %in% "CATE" ~ "Conditional Average Treatment Effect (CATE) represents the expected difference in outcomes between treatment and control groups for a specific subgroup of individuals.",
-    estimand %in% c("SATE", "SATT") ~ "Sample Average Treatment Effect (SATE) represents the expected difference in outcomes between treatment and control groups within the sampled population.",
-    TRUE ~ "The specified estimand is not recognized. Please use one of the following: 'PATE', 'PATT', 'ATE', 'ATT', 'CATE', 'SATE', 'SATT'."
+    TRUE ~ "The specified estimand is not recognized. Please use one of the following: 'PATE', 'ATE'."
   )
 
-  if (causal_scale == "causal_risk_ratio") {
-    interpretation <- df %>%
-      mutate(
-        causal_contrast = round(`E[Y(1)]/E[Y(0)]`, 3),
-        strength_of_evidence = case_when(
-          E_Value >= 1.25 ~ "reliable evidence for causality",
-          E_Value >= 1.1 ~ "evidence for causality is weak",
-          TRUE ~ "no reliable evidence for causality"
-        ),
-        outcome_interpretation = if_else(
-          Estimate == "unreliable",
-          glue(
-            "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
-            "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
-            "The E-value for this outcome confirms the causal contrast unreliable."
-          ),
-          glue(
-            "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
-            "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
-            "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
-          )
-        )
+  interpretation <- df %>%
+    mutate(
+      causal_contrast = case_when(
+        causal_scale == "causal_difference" ~ round(`E[Y(1)]-E[Y(0)]`, 2),
+        TRUE ~ NA_real_  # Placeholder, adjust as needed if adding other scales
+      ),
+      E_Value = round(E_Value, 2),  # Ensure all rounding is to 2 decimal places
+      `2.5 %` = round(`2.5 %`, 2),
+      `97.5 %` = round(`97.5 %`, 2),
+      strength_of_evidence = case_when(
+        E_Value < 1.05 | (`2.5 %` <= 0 & `97.5 %` >= 0) ~ "no reliable evidence for causality",
+        E_Value < 1.2 ~ "evidence for causality is weak",
+        TRUE ~ "reliable evidence for causality"
+      ),
+      outcome_interpretation = glue::glue(
+        "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
+        "The E-value for this outcome is {E_Value}; ",
+        "The confidence interval ranges from {`2.5 %`} to {`97.5 %`}. ",
+        "Overall, we find {strength_of_evidence}."
       )
-  } else if (causal_scale == "causal_difference") {
-    interpretation <- df %>%
-      mutate(
-        causal_contrast = round(`E[Y(1)]-E[Y(0)]`, 3),
-        strength_of_evidence = case_when(
-          E_Value >= 1.25 ~ "reliable evidence for causality",
-          E_Value >= 1.1 ~ "evidence for causality is weak",
-          TRUE ~ "no reliable evidence for causality"
-        ),
-        outcome_interpretation = if_else(
-          Estimate == "unreliable",
-          glue(
-            "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
-            "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
-            "The E-value for this outcome confirms the causal contrast is unreliable."
-          ),
-          glue(
-            "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}. ",
-            "The confidence interval ranges from {round(`2.5 %`, 3)} to {round(`97.5 %`, 3)}. ",
-            "The E-value for this outcome is {round(E_Value, 3)}, indicating {strength_of_evidence}."
-          )
-        )
-      )
-  } else {
-    stop(
-      "Invalid causal_scale argument. Please use 'causal_risk_ratio' or 'causal_difference'."
     )
-  }
 
-  result <-
-    glue(
-      "Table interpretation:\n\n{estimand_description}\n\n{paste(interpretation$outcome_interpretation, collapse = '\n\n')}"
-    )
+  result <- glue::glue(
+    "Table interpretation:\n\n{estimand_description}\n\n{paste(interpretation$outcome_interpretation, collapse = '\n\n')}"
+  )
   return(result)
 }
 
