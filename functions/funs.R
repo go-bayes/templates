@@ -160,7 +160,7 @@ library(dplyr)
 library(tidyr)
 library(knitr)
 
-transition_table_2 <- function(data, state_names = NULL) {
+transition_table <- function(data, state_names = NULL) {
   # ensure the data is a dataframe
   if (!is.data.frame(data)) {
     data <- as.data.frame(data)
@@ -1354,7 +1354,7 @@ margot_wide <-
            outcome_vars) {
     require(tidyverse)
 
-    # Add a check for unused levels of factor variables
+    # add a check for unused levels of factor variables
     lapply(.data, function(column) {
       if (is.factor(column) && any(table(column) == 0)) {
         stop("There are unused levels in the factor variable: ",
@@ -1362,16 +1362,16 @@ margot_wide <-
       }
     })
 
-    # Add the 'time' column to the data
+    # sdd the 'time' column to the data
     data_with_time <- .data %>%
       mutate(time = as.numeric(wave) - 1) %>%
       arrange(id, time)
 
-    # Filter the data based on the time condition
+    # filter the data based on the time condition
     data_filtered <- data_with_time %>%
       filter(time >= 0)
 
-    # Create the wide data frame
+    # create the wide data frame
     wide_data <- data_filtered %>%
       pivot_wider(
         id_cols = id,
@@ -1381,7 +1381,7 @@ margot_wide <-
         names_prefix = "t"
       )
 
-    # Define a custom function to filter columns based on conditions
+    # define a custom function to filter columns based on conditions
     custom_col_filter <- function(col_name) {
       if (startsWith(col_name, "t0_")) {
         return(col_name %in% c(
@@ -1398,7 +1398,7 @@ margot_wide <-
       }
     }
 
-    # Apply the custom function to select the desired columns
+    # apply the custom function to select the desired columns
     wide_data_filtered <- wide_data %>%
       dplyr::select(id, which(sapply(
         colnames(wide_data), custom_col_filter
@@ -1406,14 +1406,14 @@ margot_wide <-
       dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
       arrange(id)
 
-    # Extract unique time values from column names
+    # extract unique time values from column names
     time_values <-
       gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
     time_values <- time_values[grepl("^[0-9]+$", time_values)]
     time_values <- unique(as.numeric(time_values))
     time_values <- time_values[order(time_values)]
 
-    # Relocate columns iteratively
+    # elocate columns iteratively
     for (i in 2:(length(time_values) - 1)) {
       wide_data_filtered <- wide_data_filtered %>%
         dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
@@ -1436,6 +1436,7 @@ margot_wide <-
 
 
 # impute baseline for lmtp ------------------------------------------------
+
 
 
 
