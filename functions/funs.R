@@ -196,6 +196,46 @@ transition_table <- function(data, state_names = NULL) {
 
 
 
+library(dplyr)
+library(tidyr)
+library(knitr)
+
+transition_table <- function(data, state_names = NULL) {
+  # ensure the data is a dataframe
+  if (!is.data.frame(data)) {
+    data <- as.data.frame(data)
+  }
+
+  # check if state names are provided
+  if (is.null(state_names)) {
+    state_names <- paste0("State ", sort(unique(c(data$from, data$to))))
+  }
+
+  # convert the data frame to a wide format and then to characters
+  df <- data %>%
+    pivot_wider(names_from = to, values_from = Freq, values_fill = list(Freq = 0)) %>%
+    mutate(from = factor(from, levels = sort(unique(from)))) %>%
+    arrange(from) %>%
+    mutate(from = state_names[from]) %>%
+    setNames(c("From", state_names)) %>%
+    mutate(across(everything(), as.character)) # Convert all columns to character
+
+  # apply bold formatting to the diagonal
+  for (i in 1:nrow(df)) {
+    df[i, i + 1] <- paste0("**", df[i, i + 1], "**") # Adjust for 'From' being the first column
+  }
+
+  # convert to markdown table directly, handling characters
+  markdown_table <- kable(df, format = "markdown", align = 'c', escape = FALSE)
+
+  # explanation
+  explanation <- "The table presents a transition matrix that describes stability and movement between the treatment from the baseline wave to the treatment wave. Entries on the diagonal (in bold) indicate the number of individuals who stayed in their initial state. In contrast, the off-diagonal shows the transitions from the initial state (bold) to another state the following wave (off diagnal). A cell located at the intersection of row $i$ and column $j$, where $i \neq j$, presents the count of individuals moving from state $i$ to state $j$."
+
+  list(explanation = explanation, table = markdown_table)
+}
+
+
+
 
 # back transform from sd units into the original scale --------------------
 
