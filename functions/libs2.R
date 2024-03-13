@@ -134,7 +134,8 @@ packages <- c(
   "ranger",
   "progressr", # progress bars
   "survey", # survey weights, design
-  "ipw" # iptweighting -- for simple uses
+  "ipw", # iptweighting -- for simple uses
+  "gtsummary"
   # for simulation and modelling of design
   # see: https://declaredesign.org/getting-started.html
 )
