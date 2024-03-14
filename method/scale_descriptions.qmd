@@ -103,9 +103,9 @@ Using one item from Eurobarometer (2005), we asked participants "Do you believe 
 
 We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument [@hagerty1995]: (1) "Know that people in my life accept and value me"; (2) "Feel like an outsider"; (3) "Know that people around me share my attitudes and beliefs". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.
 
-#### Charity Donation
+#### Charitable Donations
 
-Using one item from @hoverd_religious_2010, we asked participants "How much money have you donated to charity in the last year?". To stablise this indicator, we first took the natural log of the response + 1, and then centred and standardised the log-transformed indicator.
+Using one item from @hoverd_religious_2010, we asked participants "How much money have you donated to charity in the last year?". To stablise this indicator, we took the natural log of the response + 1.
 
 #### Number of Children
 
@@ -147,17 +147,46 @@ We asked participants' gender in an open-ended question ("what is your gender?".
 
 We assessed the extent to which participants have gratitude, using three items from @mccullough_grateful_2002: (1) "I have much in my life to be thankful for."; (2) "When I look at the world, I don't see much to be grateful for."; (3) "I am grateful to a wide variety of people.". Participants indicated their agreement with these items (1 = Strongly Disagree to 7 = Strongly Agree). The second item was reversely coded.
 
+#### Has Siblings
+
+"Do you have siblings?" [@stronge2019onlychild]
+
+
 #### Home Owner
 
-Using one item from @houkamau_looking_2015, we asked participants "(Māori) Do you own your own home?(either partly or fully owned)" (1 = Yes, 0 = No)
+Using one item from @houkamau_looking_2015, we asked participants "Do you own your own home?(either partly or fully owned)" (1 = Yes, 0 = No)
+
+#### Hours of Childcare
+
+We measured hours of exercising using one item from @sibley2011: 'Hours spent … looking after children."
+
+To stablise this indicator, we took the natural log of the response + 1.
+
+
+#### Hours of Housework
+
+We measured hours of exercising using one item from @sibley2011: "Hours spent … housework/cooking"
+
+To stablise this indicator, we took the natural log of the response + 1.
 
 #### Hours of Exercise
 
-We measured hours of exercising using one item from @sibley2011. We asked participants to estimate and report how many hours they spend in exercise/physical activity last week. To stablise this indicator, we first took the natural log of the response + 1, and then centred and standardised the log-transformed indicator.
+We measured hours of exercising using one item from @sibley2011: "Hours spent … exercising/physical activity" 
+
+To stablise this indicator, we took the natural log of the response + 1.
+
+#### Hours Volunteering
+
+We measured hours of volunterering using one item from @sibley2011: "Hours spent … voluntary/charitable work."
+
+To stablise this indicator, we took the natural log of the response + 1.
 
 #### Hours of Work
 
-We measured hours of Work using one item from @sibley2011. We asked participants to estimate and report how many hours they spend in working in paid employment last week.
+We measured hours of work using one item from @sibley2011:"Hours spent … working in paid employment."
+
+To stablise this indicator, we took the natural log of the response + 1.
+
 
 #### Body Mass Index
 
@@ -182,6 +211,10 @@ We assessed ethnic group impermeability using one item from @mummendey_social_19
 #### Income
 
 Participants were asked "Please estimate your total household income (before tax) for the year XXXX". To stablise this indicator, we first took the natural log of the response + 1, and then centred and standardised the log-transformed indicator.
+
+#### Opt-in
+
+The New Zealand Attitudes and Values Study allows opt-ins to the study. Because the opt-in population may differ from those sampled randomly from the New Zealand electoral role; although the opt-in rate is low, we include an indicator (yes/no) for this variable.
 
 #### Psychological Distress
 
@@ -351,9 +384,6 @@ We coded whether they are living in an urban or rural area (1 = Urban, 0 = Rural
 
 We assessed participants' vengeful rumination using three items, respectively adapted from @caprara_indicators_1986 and @berry_forgivingness_2005, and developed for NZAVS: (1) Sometimes I can't sleep because of thinking about past wrongs I have suffered; (2) I can usually forgive and forget when someone does me wrong; (3) I find myself regularly thinking about past times that I have been wronged. Participants indicated their agreeement with these items (1 = Strongly Disagree to 7 = Strongly Agree). The values for the sencond item were reversely coded.
 
-#### Volunteers
-
-Participants were asked,"Please estimate how many hours you spent doing each of the following things last week" and responded to an item ("voluntary/charitable work"), from [@sibley2011].
 
 #### Subjective Wellbeing
 
