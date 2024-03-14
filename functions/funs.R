@@ -996,7 +996,7 @@ margot_tab_lmtp <-
     }
 
     tab_tmle_round <- tab_tmle |>
-      dplyr::mutate(across(where(is.numeric), round, digits = 4))
+      dplyr::mutate(across(where(is.numeric), round, digits = 2))
 
     rownames(tab_tmle_round)[1] <- paste0(new_name)
 
@@ -1029,7 +1029,7 @@ lmtp_evalue_tab  <-
           delta = delta,
           true = 0
         ),
-        4
+        2
       ))
     } else {
       evalout <- as.data.frame(round(EValue::evalues.RR(
@@ -3674,6 +3674,52 @@ interpret_table <- function(df, causal_scale, estimand) {
   return(result)
 }
 
+
+
+margot_interpret_table <- function(df, causal_scale, estimand) {
+  estimand_description <- dplyr::case_when(
+    estimand == "PATE" ~ "The Population Average Treatment Effect (PATE) represents the expected difference in outcomes between treatment and control groups for the New Zealand population.",
+    estimand == "ATE" ~ "The Average Treatment Effect (ATE) represents the expected difference in outcomes between treatment and control groups for the population.",
+    estimand == "ATT" ~ "Average Treatment Effect (ATT) represents the expected difference in outcomes between treatment and control groups for the treated population.",
+    TRUE ~ "The specified estimand is not recognized. Please use one of the following: 'PATE', 'ATE', 'ATT'."
+  )
+
+  interpretation <- df %>%
+    dplyr::mutate(
+      causal_contrast = dplyr::case_when(
+        causal_scale == "causal_difference" ~ round(`E[Y(1)]-E[Y(0)]`, 2),
+        TRUE ~ NA_real_  # Placeholder, adjust as needed if adding other scales
+      ),
+      E_Value = round(E_Value, 2),
+      E_Val_bound = round(E_Val_bound, 2),
+      `2.5 %` = round(`2.5 %`, 2),
+      `97.5 %` = round(`97.5 %`, 2)
+    ) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      strength_of_evidence = dplyr::case_when(
+        E_Val_bound == 1 ~ "no reliable evidence for causality",
+        E_Val_bound <= 1 | (`2.5 %` <= 0 & `97.5 %` >= 0) ~ "no reliable evidence for causality",
+        E_Val_bound > 1 & E_Val_bound < 1.1 ~ "the evidence for causality is weak",
+        TRUE ~ "reliable evidence for causality"
+      ),
+      outcome_interpretation = if_else(E_Val_bound == 1,
+                                       glue::glue("For the outcome '{outcome}', given the lower bound of the E-value equals 1; we find no reliable evidence for causality."),
+                                       glue::glue(
+                                         "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}, 95% confidence interval: {`2.5 %`} to {`97.5 %`}. ",
+                                         "The E-value for this outcome is {E_Value}. ",
+                                         "The lower bound of the E-value for this outcome is {E_Val_bound}; At this bound, an unmeasured confounder associated with both the treatment and outcome by a risk ratio of {E_Val_bound} each could explain away the observed effect; weaker confounding would not. ",
+                                         "Overall, we find {strength_of_evidence}."
+                                       )
+      )
+    ) %>%
+    dplyr::ungroup()
+
+  result <- glue::glue(
+    "Table interpretation:\n\n{estimand_description}\n\n{paste(interpretation$outcome_interpretation, collapse = '\n\n')}"
+  )
+  return(result)
+}
 
 
 
