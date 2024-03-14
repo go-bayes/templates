@@ -3674,8 +3674,7 @@ interpret_table <- function(df, causal_scale, estimand) {
   return(result)
 }
 
-
-
+# use this one
 margot_interpret_table <- function(df, causal_scale, estimand) {
   estimand_description <- dplyr::case_when(
     estimand == "PATE" ~ "The Population Average Treatment Effect (PATE) represents the expected difference in outcomes between treatment and control groups for the New Zealand population.",
@@ -3701,14 +3700,15 @@ margot_interpret_table <- function(df, causal_scale, estimand) {
         E_Val_bound == 1 ~ "no reliable evidence for causality",
         E_Val_bound <= 1 | (`2.5 %` <= 0 & `97.5 %` >= 0) ~ "no reliable evidence for causality",
         E_Val_bound > 1 & E_Val_bound < 1.1 ~ "the evidence for causality is weak",
-        TRUE ~ "reliable evidence for causality"
+        E_Val_bound > 2 ~ "strong evidence for causality",
+        TRUE ~ "evidence for causality"
       ),
       outcome_interpretation = if_else(E_Val_bound == 1,
-                                       glue::glue("For the outcome '{outcome}', given the lower bound of the E-value equals 1; we find no reliable evidence for causality."),
+                                       glue::glue("For the outcome '{outcome}', given the lower bound of the E-value equals 1, we find no reliable evidence for causality."),
                                        glue::glue(
-                                         "For the outcome '{outcome}', the {estimand} causal contrast is {causal_contrast}, 95% confidence interval: {`2.5 %`} to {`97.5 %`}. ",
-                                         "The E-value for this outcome is {E_Value}. ",
-                                         "The lower bound of the E-value for this outcome is {E_Val_bound}; At this bound, an unmeasured confounder associated with both the treatment and outcome by a risk ratio of {E_Val_bound} each could explain away the observed effect; weaker confounding would not. ",
+                                         "For the outcome '{outcome}', the {estimand} is {causal_contrast} [{`2.5 %`},{`97.5 %`}]. ",
+                                         "The E-value for this effect estimate is {E_Value} ",
+                                         "with a lower bound of {E_Val_bound}. At this bound, an unmeasured confounder associated with both the treatment and outcome by a risk ratio of {E_Val_bound} each could explain away the observed effect; weaker confounding would not. ",
                                          "Overall, we find {strength_of_evidence}."
                                        )
       )
@@ -3716,11 +3716,10 @@ margot_interpret_table <- function(df, causal_scale, estimand) {
     dplyr::ungroup()
 
   result <- glue::glue(
-    "Table interpretation:\n\n{estimand_description}\n\n{paste(interpretation$outcome_interpretation, collapse = '\n\n')}"
+    "\n\n{estimand_description}\n\n{paste(interpretation$outcome_interpretation, collapse = '\n\n')}"
   )
   return(result)
 }
-
 
 
 # new combo function ------------------------------------------------------
