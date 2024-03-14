@@ -3709,7 +3709,7 @@ margot_interpret_table <- function(df, causal_scale, estimand) {
                                          "For the outcome '{outcome}', the {estimand} is {causal_contrast} [{`2.5 %`},{`97.5 %`}]. ",
                                          "The E-value for this effect estimate is {E_Value} ",
                                          "with a lower bound of {E_Val_bound}. At this bound, an unmeasured confounder associated with both the treatment and outcome by a risk ratio of {E_Val_bound} each could explain away the observed effect; weaker confounding would not. ",
-                                         "Overall, we find {strength_of_evidence}."
+                                         "Here, we find {strength_of_evidence}."
                                        )
       )
     ) %>%
