@@ -1008,53 +1008,101 @@ margot_tab_lmtp <-
 # evalues with lmtp -------------------------------------------------------
 # takes the object outputted by the function margot_tab_lmtp()
 # note, we may want to eventually combine margot_tab_lmtp and lmtp_evalue_tab
-lmtp_evalue_tab  <-
-  function(x,
-           delta = 1,
-           sd = 1,
-           scale = c("RD", "RR")) {
-    require("EValue")
-    require(dplyr)
+# lmtp_evalue_tab  <-
+#   function(x,
+#            delta = 1,
+#            sd = 1,
+#            scale = c("RD", "RR")) {
+#     require("EValue")
+#     require(dplyr)
+#
+#     scale <- match.arg(scale)
+#
+#     tab0 <- as.data.frame(x)
+#
+#     if (scale == "RD") {
+#       evalout <- as.data.frame(round(
+#         EValue::evalues.OLS(
+#           tab0[1, 1],
+#           se = tab0[1, 2],
+#           sd = sd,
+#           delta = delta,
+#           true = 0
+#         ),
+#         2
+#       ))
+#     } else {
+#       evalout <- as.data.frame(round(EValue::evalues.RR(
+#         tab0[1, 1],
+#         lo = tab0[1, 3],
+#         hi = tab0[1, 4],
+#         true = 1
+#       ),
+#       3))
+#     }
+#
+#     evalout2 <- subset(evalout[2, ])
+#     evalout3 <- evalout2 |>
+#       select_if( ~ !any(is.na(.)))
+#     colnames(evalout3) <- c("E_Value", "E_Val_bound")
+#
+#     if (scale == "RD") {
+#       tab <-
+#         cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
+#     } else {
+#       tab <- cbind.data.frame(tab0, evalout3)  |> dplyr::select(-c(standard_error))
+#     }
+#
+#     return(tab)
+#   }
+#
 
-    scale <- match.arg(scale)
 
-    tab0 <- as.data.frame(x)
+# no longer has Standard Error
+lmtp_evalue_tab <- function(x, delta = 1, sd = 1, scale = c("RD", "RR")) {
+  require("EValue")
+  require(dplyr)
 
-    if (scale == "RD") {
-      evalout <- as.data.frame(round(
-        EValue::evalues.OLS(
-          tab0[1, 1],
-          se = tab0[1, 2],
-          sd = sd,
-          delta = delta,
-          true = 0
-        ),
-        2
-      ))
-    } else {
-      evalout <- as.data.frame(round(EValue::evalues.RR(
+  scale <- match.arg(scale)
+
+  tab0 <- as.data.frame(x)
+
+  if (scale == "RD") {
+    evalout <- as.data.frame(round(
+      EValue::evalues.OLS(
         tab0[1, 1],
-        lo = tab0[1, 3],
-        hi = tab0[1, 4],
-        true = 1
+        se = tab0[1, 2],
+        sd = sd,
+        delta = delta,
+        true = 0
       ),
-      3))
-    }
-
-    evalout2 <- subset(evalout[2, ])
-    evalout3 <- evalout2 |>
-      select_if( ~ !any(is.na(.)))
-    colnames(evalout3) <- c("E_Value", "E_Val_bound")
-
-    if (scale == "RD") {
-      tab <-
-        cbind.data.frame(tab0, evalout3) |> dplyr::select(-c(standard_error))
-    } else {
-      tab <- cbind.data.frame(tab0, evalout3)
-    }
-
-    return(tab)
+      2
+    ))
+  } else {
+    evalout <- as.data.frame(round(EValue::evalues.RR(
+      tab0[1, 1],
+      lo = tab0[1, 3],
+      hi = tab0[1, 4],
+      true = 1
+    ),
+    3))
   }
+
+  # Assuming evalout[2, ] fetches the row for E-Values, and you reshape it correctly.
+  evalout2 <- evalout[2, , drop = FALSE] # Keep it as a dataframe
+  evalout3 <- evalout2 %>%
+    select_if(~ !any(is.na(.))) %>%
+    `colnames<-`(c("E_Value", "E_Val_bound"))
+
+  # Bind evalout3 to tab0 while excluding 'standard_error'
+  tab <- tab0 %>%
+    cbind(evalout3) %>%
+    select(-standard_error) # Correctly reference the column to exclude
+
+  return(tab)
+}
+
+
 
 
 # format for lmtp table DON'T USE WRONG---------------------------------------------------

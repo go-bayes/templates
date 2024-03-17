@@ -174,7 +174,7 @@ margot_plot_exp <- function(.data,
       plot.subtitle = element_text(face = "bold", size = subtitle_size, hjust = 0),
       legend.text = element_text(size = legend_text_size),
       legend.title = element_text(size = legend_title_size),
-      plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
+      plot.margin = ggplot2::margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
     )
 
 
@@ -806,7 +806,7 @@ sub_group_plot_ate <- function(.data, type = "RD", title, subtitle, xlab, ylab,
       legend.direction = "horizontal",
       plot.title = element_text(face = "bold", size = 12, hjust = 0),
       plot.subtitle = element_text(size = 10, hjust = 0),
-      plot.margin = margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
+      plot.margin = ggplot2::margin(t = 10, r = 10, b = 10, l = 10, unit = "pt")
     )
 
   return(out)
