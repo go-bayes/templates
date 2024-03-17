@@ -132,6 +132,7 @@ packages <- c(
   # for lmtp
   "glmnet",
   "ranger",
+  "ggdag",
   "progressr", # progress bars
   "survey", # survey weights, design
   "ipw", # iptweighting -- for simple uses
@@ -148,9 +149,9 @@ ipak(packages)
 #   devtools::install_github("rmcelreath/rethinking")
 # }
 
-if (!require(CMAverse)) {
-  devtools::install_github("BS1125/CMAverse")
-}
+# if (!require(CMAverse)) {
+#   devtools::install_github("BS1125/CMAverse")
+# }
 
 # install.packages("remotes")
 
