@@ -12,6 +12,7 @@ ipak <- function(pkg) {
 packages <- c(
   "tidyverse",
   "fs",
+  "qs", # storage
   "here",
   "clarify",
   "arrow",
