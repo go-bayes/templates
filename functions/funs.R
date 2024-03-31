@@ -997,7 +997,7 @@ margot_tab_lmtp <-
     }
 
     tab_tmle_round <- tab_tmle |>
-      dplyr::mutate(across(where(is.numeric), round, digits = 2))
+      dplyr::mutate(across(where(is.numeric), round, digits = 3))
 
     rownames(tab_tmle_round)[1] <- paste0(new_name)
 
@@ -1077,7 +1077,7 @@ lmtp_evalue_tab <- function(x, delta = 1, sd = 1, scale = c("RD", "RR")) {
         delta = delta,
         true = 0
       ),
-      2
+      3
     ))
   } else {
     evalout <- as.data.frame(round(EValue::evalues.RR(
@@ -3299,7 +3299,7 @@ tab_ate <-
 
     out <- x %>%
       dplyr::filter(row.names(x) == type) %>%
-      dplyr::mutate(across(where(is.numeric), round, digits = 2))
+      dplyr::mutate(across(where(is.numeric), round, digits = 3))
 
     if (type == "RD") {
       out <- out %>%
@@ -3323,7 +3323,7 @@ tab_ate <-
           delta = delta,
           true = 0
         ),
-        2
+        3
       ))
     } else {
       evalout <- as.data.frame(round(EValue::evalues.RR(
@@ -3332,7 +3332,7 @@ tab_ate <-
         hi = out[1, 3],
         true = 1
       ),
-      2))
+      3))
     }
 
     evalout2 <- subset(evalout[2, ])
@@ -3698,12 +3698,12 @@ interpret_table <- function(df, causal_scale, estimand) {
   interpretation <- df %>%
     mutate(
       causal_contrast = case_when(
-        causal_scale == "causal_difference" ~ round(`E[Y(1)]-E[Y(0)]`, 2),
+        causal_scale == "causal_difference" ~ round(`E[Y(1)]-E[Y(0)]`, 3),
         TRUE ~ NA_real_  # Placeholder, adjust as needed if adding other scales
       ),
-      E_Value = round(E_Value, 2),  # Ensure all rounding is to 2 decimal places
-      `2.5 %` = round(`2.5 %`, 2),
-      `97.5 %` = round(`97.5 %`, 2),
+      E_Value = round(E_Value, 3),  # Ensure all rounding is to 2 decimal places
+      `2.5 %` = round(`2.5 %`, 3),
+      `97.5 %` = round(`97.5 %`, 3),
       strength_of_evidence = case_when(
         E_Value < 1.05 | (`2.5 %` <= 0 & `97.5 %` >= 0) ~ "no reliable evidence for causality",
         E_Value < 1.2 ~ "evidence for causality is weak",
@@ -3736,13 +3736,13 @@ margot_interpret_table <- function(df, causal_scale, estimand) {
   interpretation <- df %>%
     dplyr::mutate(
       causal_contrast = dplyr::case_when(
-        causal_scale == "causal_difference" ~ round(`E[Y(1)]-E[Y(0)]`, 2),
+        causal_scale == "causal_difference" ~ round(`E[Y(1)]-E[Y(0)]`, 3),
         TRUE ~ NA_real_  # Placeholder, adjust as needed if adding other scales
       ),
-      E_Value = round(E_Value, 2),
-      E_Val_bound = round(E_Val_bound, 2),
-      `2.5 %` = round(`2.5 %`, 2),
-      `97.5 %` = round(`97.5 %`, 2)
+      E_Value = round(E_Value, 3),
+      E_Val_bound = round(E_Val_bound, 3),
+      `2.5 %` = round(`2.5 %`, 3),
+      `97.5 %` = round(`97.5 %`, 3)
     ) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(
