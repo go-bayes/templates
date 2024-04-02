@@ -996,8 +996,12 @@ margot_tab_lmtp <-
         c("E[Y(1)]/E[Y(0)]", "standard_error", "2.5 %", "97.5 %")
     }
 
+    # tab_tmle_round <- tab_tmle |>
+    #   dplyr::mutate(across(where(is.numeric), round, digits = 3))
+
     tab_tmle_round <- tab_tmle |>
-      dplyr::mutate(across(where(is.numeric), round, digits = 3))
+      dplyr::mutate(across(where(is.numeric), ~ round(.x, digits = 3)))
+
 
     rownames(tab_tmle_round)[1] <- paste0(new_name)
 
@@ -3748,19 +3752,25 @@ margot_interpret_table <- function(df, causal_scale, estimand) {
     dplyr::mutate(
       strength_of_evidence = dplyr::case_when(
         E_Val_bound == 1 ~ "no reliable evidence for causality",
-        E_Val_bound <= 1 | (`2.5 %` <= 0 & `97.5 %` >= 0) ~ "no reliable evidence for causality",
-        E_Val_bound > 1 & E_Val_bound < 1.1 ~ "the evidence for causality is weak",
+        E_Val_bound <= 1 |
+          (`2.5 %` <= 0 &
+             `97.5 %` >= 0) ~ "no reliable evidence for causality",
+        E_Val_bound > 1 &
+          E_Val_bound < 1.1 ~ "the evidence for causality is weak",
         E_Val_bound > 2 ~ "strong evidence for causality",
         TRUE ~ "evidence for causality"
       ),
-      outcome_interpretation = if_else(E_Val_bound == 1,
-                                       glue::glue("For the outcome '{outcome}', given the lower bound of the E-value equals 1, we find no reliable evidence for causality."),
-                                       glue::glue(
-                                         "For the outcome '{outcome}', the {estimand} is {causal_contrast} [{`2.5 %`},{`97.5 %`}]. ",
-                                         "The E-value for this effect estimate is {E_Value} ",
-                                         "with a lower bound of {E_Val_bound}. At this bound, an unmeasured confounder associated with both the treatment and outcome by a risk ratio of {E_Val_bound} each could explain away the observed effect; weaker confounding would not. ",
-                                         "Here, we find {strength_of_evidence}."
-                                       )
+      outcome_interpretation = if_else(
+        E_Val_bound == 1,
+        glue::glue(
+          "For the outcome '{outcome}', given the lower bound of the E-value equals 1, we find no reliable evidence for causality."
+        ),
+        glue::glue(
+          "For the outcome '{outcome}', the {estimand} is {causal_contrast} [{`2.5 %`},{`97.5 %`}]. ",
+          "The E-value for this effect estimate is {E_Value} ",
+          "with a lower bound of {E_Val_bound}. In this context, if there exists an unmeasured confounder that is associated with both the treatment and the outcome, and this association has a risk ratio of {E_Val_bound}, then it is possible for such a confounder to negate the observed effect. Conversely, any confounder with a weaker association (i.e., a risk ratio less than {E_Val_bound}) would not be sufficient to fully account for the observed effect.",
+          "Here, we find {strength_of_evidence}."
+        )
       )
     ) %>%
     dplyr::ungroup()
