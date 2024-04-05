@@ -2107,6 +2107,8 @@ match_mi <-
 
 
 # general function (work in progress)
+# wrapper for the WeightIt package
+# there can be no missing values in the exposure variable X
 match_mi_general <-
   function(data,
            X,

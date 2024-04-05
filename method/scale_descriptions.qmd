@@ -403,11 +403,6 @@ The New Zealand Attitudes and Values Study allows opt-ins to the study. Because 
 #### Sample Origin
 
 
-
-
-
-
-
 #### Self-Respect
 
 We assessed participants' levels of self-respect using an item adapted from @tyler_understanding_1996. Participant indicated the extent to which they agree with the statement ("If they knew me, most NZers would respect what I have accomplished in life") on a likert scale (1 = Strongly Disagree to 7 = Strongly Agree)
