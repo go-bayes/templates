@@ -68,44 +68,44 @@ library(kableExtra)
 # transition objects takes the output of an library(msm) object
 # e.g.
 # out <- msm::statetable.msm(round(hours_exercise_coarsen_n, 0), id, data = dt_exposure_maori)
-
-
-transition_table <- function(data, state_names = NULL) {
-  # Ensure the data is a dataframe
-  if (!is.data.frame(data)) {
-    data <- as.data.frame(data)
-  }
-
-  # Check if state names are provided
-  if (is.null(state_names)) {
-    state_names <- paste0("State ", sort(unique(c(
-      data$from, data$to
-    ))))
-  }
-
-  # Convert the data frame to a wide format
-  df <- data %>%
-    pivot_wider(names_from = to, values_from = Freq) %>%
-    mutate(from = factor(from, levels = sort(unique(from)))) %>%
-    arrange(from) %>%
-    mutate(from = state_names[from]) %>%
-    setNames(c("From", state_names))
-
-  # Create the markdown table using knitr's kable function
-  markdown_table <- df %>%
-    kbl(format = "markdown", align = 'c')
-
-  # Create the explanation
-  explanation <- paste(
-    "This transition matrix describes the shifts from one state to another between the baseline wave and the following wave.",
-    "The numbers in the cells represent the number of individuals who transitioned from one state (rows) to another (columns).",
-    "For example, the cell in the first row and second column shows the number of individuals who transitioned from the first state (indicated by the left-most cell in the row) to the second state.",
-    "The top left cell shows the number of individuals who remained in the first state."
-  )
-
-  list(explanation = explanation, table = markdown_table)
-}
-
+#
+#
+#
+# transition_table <- function(data, state_names = NULL) {
+#   # Ensure the data is a dataframe
+#   if (!is.data.frame(data)) {
+#     data <- as.data.frame(data)
+#   }
+#
+#   # Check if state names are provided
+#   if (is.null(state_names)) {
+#     state_names <- paste0("State ", sort(unique(c(
+#       data$from, data$to
+#     ))))
+#   }
+#
+#   # Convert the data frame to a wide format
+#   df <- data %>%
+#     pivot_wider(names_from = to, values_from = Freq) %>%
+#     mutate(from = factor(from, levels = sort(unique(from)))) %>%
+#     arrange(from) %>%
+#     mutate(from = state_names[from]) %>%
+#     setNames(c("From", state_names))
+#
+#   # Create the markdown table using knitr's kable function
+#   markdown_table <- df %>%
+#     kbl(format = "markdown", align = 'c')
+#
+#   # Create the explanation
+#   explanation <- paste(
+#     "This transition matrix describes the shifts from one state to another between the baseline wave and the following wave.",
+#     "The numbers in the cells represent the number of individuals who transitioned from one state (rows) to another (columns).",
+#     "For example, the cell in the first row and second column shows the number of individuals who transitioned from the first state (indicated by the left-most cell in the row) to the second state.",
+#     "The top left cell shows the number of individuals who remained in the first state."
+#   )
+#
+#   list(explanation = explanation, table = markdown_table)
+# }
 
 
 
@@ -677,10 +677,10 @@ sub_tab_ate<- function(x, new_name, delta = 1, sd = 1, type = c("RD","RR"), cont
 
   out <- x %>%
     dplyr::filter(stringr::str_detect(row.names(x), paste0("^", type))) %>%
-    dplyr::mutate(across(where(is.numeric), round, digits = 4))
+    dplyr::mutate(across(where(is.numeric), round, digits = 2))
 
   out <- out %>%
-    dplyr::mutate(across(where(is.numeric), round, digits = 4))
+    dplyr::mutate(across(where(is.numeric), round, digits = 2))
 
   if (type == "RD") {
     out <- out %>%
@@ -742,7 +742,7 @@ sub_group_tab <- function(df, type = c("RR", "RD")) {
       ))) |>
       rownames_to_column(var = "group") %>%
       mutate(
-        across(where(is.numeric), round, digits = 3),
+        across(where(is.numeric), round, digits = 2),
         estimate_lab = paste0(`E[Y(1)]/E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]")
       )
   } else {
@@ -754,7 +754,7 @@ sub_group_tab <- function(df, type = c("RR", "RD")) {
       ))) |>
       rownames_to_column(var = "group") %>%
       mutate(
-        across(where(is.numeric), round, digits = 3),
+        across(where(is.numeric), round, digits = 2),
         estimate_lab = paste0(`E[Y(1)]-E[Y(0)]`, " (", `2.5 %`, "-", `97.5 %`, ")", " [EV ", `E_Value`, "/",  `E_Val_bound`, "]")
       )
   }

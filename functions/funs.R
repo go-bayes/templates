@@ -137,14 +137,10 @@ regress_with_covariates <- function(data, outcome, exposure, baseline_vars) {
 # Example usage
 # Assuming `df` is your dataframe and `baseline_vars` is your vector of covariate names
 # outcome_var = "modesty"
-# exposure_var = "religion_church_round"
+# exposure_var = "agreeableness"
 # baseline_vars = c(
-#   "male", "age", "education_level_coarsen", "eth_cat", "sample_origin", "nz_dep2018", "nzsei13",
-#   "total_siblings_factor", "born_nz", "hlth_disability", "hlth_bmi", "kessler6_sum", "sfhealth",
-#   "hours_family_sqrt_round", "hours_friends_sqrt_round", "hours_community_sqrt_round", "household_inc_log",
-#   "partner", "political_conservative", "urban", "children_num", "hours_children_log", "hours_work_log",
-#   "hours_housework_log", "hours_exercise_log", "agreeableness", "conscientiousness", "extraversion",
-#   "honesty_humility", "openness", "neuroticism", "modesty", "religion_church_round", "sample_weights",
+#   "male", "age", "edu", "eth_cat", "born_nz", "agreeableness", "conscientiousness", "extraversion",
+#   "honesty_humility", "openness", "neuroticism", "sample_weights",
 #   "alert_level_combined_lead"
 # )
 #
@@ -200,40 +196,40 @@ transition_table <- function(data, state_names = NULL) {
 library(dplyr)
 library(tidyr)
 library(knitr)
-
-transition_table <- function(data, state_names = NULL) {
-  # ensure the data is a dataframe
-  if (!is.data.frame(data)) {
-    data <- as.data.frame(data)
-  }
-
-  # check if state names are provided
-  if (is.null(state_names)) {
-    state_names <- paste0("State ", sort(unique(c(data$from, data$to))))
-  }
-
-  # convert the data frame to a wide format and then to characters
-  df <- data %>%
-    pivot_wider(names_from = to, values_from = Freq, values_fill = list(Freq = 0)) %>%
-    mutate(from = factor(from, levels = sort(unique(from)))) %>%
-    arrange(from) %>%
-    mutate(from = state_names[from]) %>%
-    setNames(c("From", state_names)) %>%
-    mutate(across(everything(), as.character)) # Convert all columns to character
-
-  # apply bold formatting to the diagonal
-  for (i in 1:nrow(df)) {
-    df[i, i + 1] <- paste0("**", df[i, i + 1], "**") # Adjust for 'From' being the first column
-  }
-
-  # convert to markdown table directly, handling characters
-  markdown_table <- kable(df, format = "markdown", align = 'c', escape = FALSE)
-
-  # explanation
-  explanation <- "The table presents a transition matrix that describes stability and movement between the treatment from the baseline wave to the treatment wave. Entries on the diagonal (in bold) indicate the number of individuals who stayed in their initial state. In contrast, the off-diagonal shows the transitions from the initial state (bold) to another state the following wave (off diagnal). A cell located at the intersection of row $i$ and column $j$, where $i \neq j$, presents the count of individuals moving from state $i$ to state $j$."
-
-  list(explanation = explanation, table = markdown_table)
-}
+#
+# transition_table <- function(data, state_names = NULL) {
+#   # ensure the data is a dataframe
+#   if (!is.data.frame(data)) {
+#     data <- as.data.frame(data)
+#   }
+#
+#   # check if state names are provided
+#   if (is.null(state_names)) {
+#     state_names <- paste0("State ", sort(unique(c(data$from, data$to))))
+#   }
+#
+#   # convert the data frame to a wide format and then to characters
+#   df <- data %>%
+#     pivot_wider(names_from = to, values_from = Freq, values_fill = list(Freq = 0)) %>%
+#     mutate(from = factor(from, levels = sort(unique(from)))) %>%
+#     arrange(from) %>%
+#     mutate(from = state_names[from]) %>%
+#     setNames(c("From", state_names)) %>%
+#     mutate(across(everything(), as.character)) # Convert all columns to character
+#
+#   # apply bold formatting to the diagonal
+#   for (i in 1:nrow(df)) {
+#     df[i, i + 1] <- paste0("**", df[i, i + 1], "**") # Adjust for 'From' being the first column
+#   }
+#
+#   # convert to markdown table directly, handling characters
+#   markdown_table <- kable(df, format = "markdown", align = 'c', escape = FALSE)
+#
+#   # explanation
+#   explanation <- "The table presents a transition matrix that describes stability and movement between the treatment from the baseline wave to the treatment wave. Entries on the diagonal (in bold) indicate the number of individuals who stayed in their initial state. In contrast, the off-diagonal shows the transitions from the initial state (bold) to another state the following wave (off diagnal). A cell located at the intersection of row $i$ and column $j$, where $i \neq j$, presents the count of individuals moving from state $i$ to state $j$."
+#
+#   list(explanation = explanation, table = markdown_table)
+# }
 
 
 
@@ -355,26 +351,47 @@ back_transform_logsd_adjusted <- function(log_effect, log_lb, log_ub) {
 
 # more transform ----------------------------------------------------------
 
-# function to back-transform log mean and log sd to the original scale
-back_transform_logmean_logsd <- function(log_mean, log_sd) {
+# # function to back-transform log mean and log sd to the original scale
+# back_transform_logmean_logsd <- function(log_mean, log_sd) {
+#   mean_original = exp(log_mean) - 1
+#   sd_original = exp(log_mean + 0.5 * log_sd^2) - exp(log_mean)
+#
+#   # create a list to store the results
+#   result <- list(
+#     mean_original = mean_original,
+#     sd_original = sd_original
+#   )
+#
+#   return(result)
+# }
+# #
+# # # example usage
+# # log_mean = 1.666063
+# # log_sd = 0.8090868
+# #
+# # back_transformed_result <- back_transform_logmean_logsd(log_mean, log_sd)
+# # print(back_transformed_result)
+#
+#
+
+back_transform_logmean <- function(log_mean) {
+  # Back-transform the mean. The standard deviation cannot be accurately back-transformed directly.
   mean_original = exp(log_mean) - 1
-  sd_original = exp(log_mean + 0.5 * log_sd^2) - exp(log_mean)
 
   # create a list to store the results
   result <- list(
-    mean_original = mean_original,
-    sd_original = sd_original
+    mean_original = mean_original
   )
 
   return(result)
 }
-#
-# # example usage
-# log_mean = 1.666063
-# log_sd = 0.8090868
-#
-# back_transformed_result <- back_transform_logmean_logsd(log_mean, log_sd)
-# print(back_transformed_result)
+
+# example
+log_mean = 1.098612
+
+back_transformed_result <- back_transform_logmean(log_mean)
+print(back_transformed_result)
+
 
 
 # histogram function ------------------------------------------------------
@@ -383,172 +400,279 @@ back_transform_logmean_logsd <- function(log_mean, log_sd) {
 library(ggplot2)
 library(dplyr)
 
+library(dplyr)
+coloured_histogram <- function(df, col_name, binwidth = 1, scale_min = NULL, scale_max = NULL, highlight_range = "highest") {
+  # Validate input
+  if(!col_name %in% names(df)) stop("col_name does not exist in the dataframe.")
+  if(all(is.na(df[[col_name]]))) stop("The specified column contains only NA values.")
 
-coloured_histogram <- function(df, col_name, scale_min, scale_max) {
-  epsilon <- 0.01  # small value to adjust range
+  # Automatically determine scale_min and scale_max if not provided
+  if(is.null(scale_min)) scale_min <- min(df[[col_name]], na.rm = TRUE)
+  if(is.null(scale_max)) scale_max <- max(df[[col_name]], na.rm = TRUE)
 
-  # title and subtitle
-  dynamic_title <- paste("Density of responses for", col_name)
-  fixed_sub_title <-
-    "Lowest shift shaded blue; highest shift shaded gold."
+  # Adjust scale_min and scale_max to create thresholds for highlighting
+  adjusted_min <- scale_min + .99
+  adjusted_max <- scale_max - .99
 
-  # create a copy of the data to avoid modifying the original data
+  # Title and subtitle using Title Case for the column name
+  library(tools)
+  dynamic_title <- paste("Density of Responses for", tools::toTitleCase(gsub("_", " ", col_name)))
+  fixed_sub_title <- paste(
+    "Highlights",
+    ifelse(highlight_range == "both", "both the lowest and highest", highlight_range),
+    "ranges within 1 unit of limit."
+  )
+
+  # Categorize data based on proximity to min/max and chosen highlight range
   df_copy <- df %>%
     mutate(fill_category = case_when(
-      between(!!sym(col_name), scale_min, scale_min + 1 - epsilon) ~ "Lowest",
-      between(!!sym(col_name), scale_max - 1 + epsilon, scale_max) ~ "Highest",
-      TRUE ~ "Full shift"
+      .data[[col_name]] <= adjusted_min & (highlight_range %in% c("lowest", "both")) ~ "Lowest",
+      .data[[col_name]] >= adjusted_max & (highlight_range %in% c("highest", "both")) ~ "Highest",
+      TRUE ~ "Within Range"
     ))
 
-  # create bar plot
-  p <- ggplot(df_copy, aes(x = !!sym(col_name))) +
-    geom_bar(aes(y = ..count.., fill = fill_category), alpha = 1) +
+  # Create the plot
+  p <- ggplot(df_copy, aes_string(x = col_name, fill = "fill_category")) +
+    geom_histogram(binwidth = binwidth, alpha = 1, position = "identity") +
     scale_fill_manual(
-      values = c(
-        "Lowest" = "dodgerblue",
-        "Highest" = "gold2",
-        "Middle" = "grey60"
-      ),
-      name = "Shift positions"  # Add this line
+      values = c("Lowest" = "dodgerblue", "Highest" = "gold2", "Within Range" = "lightgray"),
+      name = "Response Category"
     ) +
-    labs(title = dynamic_title, subtitle = fixed_sub_title) +
-    scale_x_continuous(breaks = seq(floor(min(df_copy[[col_name]])), ceiling(max(df_copy[[col_name]])), by = 1)) +
+    labs(title = dynamic_title, subtitle = fixed_sub_title, x = tools::toTitleCase(gsub("_", " ", col_name)), y = "Count") +
     theme_minimal()
 
   return(p)
 }
 
-
+#
+# # requires one wave
+# df_19 <- df_nz |>
+#   dplyr::filter(wave == 2019)
+#
+# # graph
+# graph <- coloured_histogram(
+#   df = df_19,
+#   col_name = "forgiveness",
+#   scale_min = 1,
+#   scale_max = 7,
+#   highlight_range = "highest",
+#   binwidth = .1 # set an appropriate binwidth for your data
+# )
+# graph
 
 # get 1 -1 histogram from the mean
-coloured_histogram_sd <- function(df, col_name, binwidth = 30) {
+coloured_histogram_sd <- function(df, col_name, binwidth = 1) {
   # Compute statistics
   avg_val <- mean(df[[col_name]], na.rm = TRUE)
   std_val <- sd(df[[col_name]], na.rm = TRUE)
 
-  # Create data frame for v-lines and their descriptions
+  # Create data frame for v-lines and arrows
   line_data <- data.frame(
-    value = c(avg_val, avg_val - std_val, avg_val + std_val),
-    description = c("Mean", "Mean - 1 SD", "Mean + 1 SD"),
-    color = c("black", "dodgerblue", "gold2")
+    value = c(avg_val - std_val, avg_val, avg_val + std_val),
+    description = c("Mean - 1 SD", "Mean", "Mean + 1 SD"),
+    color = c("dodgerblue", "darkgray", "gold2")
   )
 
+  # Create arrow data specifically for mean to +/- 1 SD
+  arrow_data <- data.frame(
+    x = avg_val,
+    xend = c(avg_val - std_val, avg_val + std_val),
+    y = 0,
+    yend = 0,
+    color = c("Mean to Mean - 1 SD", "Mean to Mean + 1 SD")
+  )
+
+  # Dynamically construct the title, capitalizing the first letter of the column name
+  dynamic_title <- paste(tools::toTitleCase(col_name), "Histogram with Mean and Standard Deviation Intervals")
+
   # Create the plot
-  p <- ggplot(df, aes(x = !!sym(col_name))) +
-    geom_histogram(aes(y = ..count..),
-                   binwidth = binwidth,
-                   fill = "grey60") +
-    geom_vline(data = line_data,
-               aes(xintercept = value, color = description),
-               size = 1.5) +
-    geom_segment(
-      data = line_data,
-      aes(
-        x = avg_val,
-        y = 0,
-        xend = value,
-        yend = 0,
-        color = description
-      ),
-      arrow = arrow(
-        type = "closed",
-        ends = "last",
-        length = unit(0.2, "inches")
-      ),
-      size = 1.5
-    ) +
+  p <- ggplot(df, aes(x = !!rlang::sym(col_name))) +
+    geom_histogram(aes(y = ..count..), binwidth = binwidth, fill = "lightgray") +
+    geom_vline(data = line_data, aes(xintercept = value, color = description), linewidth = 1.5) +
+    geom_segment(data = arrow_data, aes(x = x, y = y, xend = xend, yend = yend, color = color),
+                 arrow = arrow(type = "closed", ends = "last", length = unit(0.1, "inches")),
+                 linewidth = 1) +
     scale_color_manual(values = c(
       "Mean - 1 SD" = "dodgerblue",
-      "Mean + 1 SD" = "gold2"
+      "Mean" = "black",
+      "Mean + 1 SD" = "gold2",
+      "Mean to Mean - 1 SD" = "dodgerblue",  # Use the same colors for arrows as the lines they connect
+      "Mean to Mean + 1 SD" = "gold2"
     )) +
-    labs(title = "Histogram with Mean and Standard Deviation Intervals",
-         subtitle = "Arrows indicate one standard deviation from the mean.",
-         color = "Legend") +
-    theme_minimal()
-
-  return(p)
-}
-
-
-
-
-
-# coloured shift histogram ------------------------------------------------
-
-library(ggplot2)
-#
-coloured_histogram_shift <- function(df, col_name, binwidth = 30, range_highlight = NULL) {
-  # Ensure col_name is a symbol for aes()
-  col_name_sym <- rlang::sym(col_name)
-
-  # Calculate average value for the vertical line
-  avg_val <- mean(df[[col_name]], na.rm = TRUE)
-
-  # Create a new column for fill color based on range_highlight
-  if (!is.null(range_highlight) && length(range_highlight) == 2) {
-    df$fill_color <- ifelse(df[[col_name]] >= range_highlight[1] & df[[col_name]] <= range_highlight[2], "gold", "grey60")
-  } else {
-    df$fill_color <- "grey60" # Default color
-  }
-
-  # Create the histogram
-  p <- ggplot(df, aes(x = !!col_name_sym)) +
-    geom_histogram(aes(y = ..count.., fill = fill_color), binwidth = binwidth, color = "black") +
-    scale_fill_identity() +
-    geom_vline(xintercept = avg_val, color = "red", linetype = "dashed", size = 1) +
-    labs(title = "Histogram with Highlighted Range",
-         x = col_name,
+    labs(title = dynamic_title,
+         subtitle = "Vertical lines indicate the mean and one standard deviation from the mean. Arrows highlight the direction of deviation.",
+         color = "Legend",
+         x = tools::toTitleCase(col_name),  # Optionally set the x-axis label similarly
          y = "Count") +
     theme_minimal()
 
   return(p)
 }
 
+# # get one wave of data
+# df_19 <- df_nz |>
+#   dplyr::filter(wave == 2019)
+#
+# # graph
+# graph_density_of_exposure <- coloured_histogram_sd(
+#   df = df_19,
+#   col_name = "forgiveness",
+#   binwidth = .5 # set an appropriate binwidth for your data
+# )
 
-coloured_histogram_shift_range <- function(df, col_name, binwidth = 30, range_highlight = NULL, shift = "up") {
+# # print
+# graph_density_of_exposure
+#
+
+
+# coloured shift histogram ------------------------------------------------
+
+library(ggplot2)
+# # #
+# coloured_histogram_shift_one <- function(df, col_name, binwidth = 1, range_highlight = NULL) {
+#   # Ensure col_name is a symbol for aes()
+#   col_name_sym <- rlang::sym(col_name)
+#
+#   # Calculate average value for the vertical line
+#   avg_val <- mean(df[[col_name]], na.rm = TRUE)
+#
+#   # Create a new column for fill color based on range_highlight
+#   if (!is.null(range_highlight) && length(range_highlight) == 2) {
+#     df$fill_color <- ifelse(df[[col_name]] >= range_highlight[1] & df[[col_name]] <= range_highlight[2], "gold", "grey60")
+#   } else {
+#     df$fill_color <- "grey60" # Default color
+#   }
+#
+#   # Create the histogram
+#   p <- ggplot(df, aes(x = !!col_name_sym)) +
+#     geom_histogram(aes(y = ..count.., fill = fill_color), binwidth = binwidth, color = "black") +
+#     scale_fill_identity() +
+#     geom_vline(xintercept = avg_val, color = "red", linetype = "dashed", size = 1) +
+#     labs(title = "Histogram with Highlighted Range",
+#          x = col_name,
+#          y = "Count") +
+#     theme_minimal()
+#
+#   return(p)
+# }
+# requires individual wave
+# df_19 <- df_nz |>
+#   dplyr::filter(wave == 2019)
+#
+# # graph
+# graph <- coloured_histogram_shift_one(
+#   df = df_19,
+#   col_name = "forgiveness",
+#   binwidth = .5, # Set an appropriate binwidth for your data
+#   range_highlight = c(3.9,10)
+# )
+# graph
+
+
+# coloured_histogram_shift_range <- function(df, col_name, binwidth = 30, range_highlight = NULL, shift = "up") {
+#   # Ensure col_name is a symbol for aes()
+#   col_name_sym <- rlang::sym(col_name)
+#
+#   # Determine the fill color based on the shift direction
+#   highlight_color <- if(shift == "up") "gold" else "dodgerblue"
+#
+#   # Create a new column for fill color based on range_highlight
+#   if (!is.null(range_highlight) && length(range_highlight) == 2) {
+#     df$fill_color <- ifelse(df[[col_name]] >= range_highlight[1] & df[[col_name]] <= range_highlight[2], highlight_color, "grey60")
+#   } else {
+#     df$fill_color <- "grey60" # Default color if no range_highlight is provided
+#   }
+#
+#   # Define subtitle based on the shift direction
+#   subtitle_text <- if(shift == "up") {
+#     "Gold region denotes population shifted"
+#   } else {
+#     "Blue region denotes population shifted"
+#   }
+#
+#   # Create the histogram with the new fill_color column for coloring
+#   p <- ggplot(df, aes(x = !!col_name_sym, fill = fill_color)) +
+#     geom_histogram(binwidth = binwidth, color = "black", alpha = 0.7) +
+#     scale_fill_identity() +
+#     labs(title = "Histogram of Shift Intervention",
+#          subtitle = subtitle_text,
+#          x = col_name,
+#          y = "Count") +
+#     theme_minimal()
+#
+#   return(p)
+# }
+library(ggplot2)
+coloured_histogram_shift <- function(df, col_name, binwidth = 1, range_highlight = NULL, shift = "up", show_avg_line = TRUE) {
   # Ensure col_name is a symbol for aes()
   col_name_sym <- rlang::sym(col_name)
 
-  # Determine the fill color based on the shift direction
+  # calculate average value for the vertical line
+  avg_val <- mean(df[[col_name]], na.rm = TRUE)
+
+  # determine the fill colour based on the shift direction
   highlight_color <- if(shift == "up") "gold" else "dodgerblue"
 
-  # Create a new column for fill color based on range_highlight
+  # create a new column for fill colour based on range_highlight
   if (!is.null(range_highlight) && length(range_highlight) == 2) {
     df$fill_color <- ifelse(df[[col_name]] >= range_highlight[1] & df[[col_name]] <= range_highlight[2], highlight_color, "grey60")
   } else {
     df$fill_color <- "grey60" # Default color if no range_highlight is provided
   }
 
-  # Define subtitle based on the shift direction
+  # define subtitle based on the shift direction
   subtitle_text <- if(shift == "up") {
-    "Gold region denotes population shifted"
+    "Gold region denotes population shifted up to grey"
   } else {
-    "Blue region denotes population shifted"
+    "Blue region denotes population shifted down to grey"
   }
 
-  # Create the histogram with the new fill_color column for coloring
+  # Optionally add average line description to the subtitle if the line is to be shown
+  if(show_avg_line) {
+    subtitle_text <- paste(subtitle_text, "Red dashed line represents the average value.")
+  }
+
+  # Convert col_name to title case for the title
+  col_name_title_case <- tools::toTitleCase(col_name)
+
+  # create the histogram with the new fill_colour column for colouring
   p <- ggplot(df, aes(x = !!col_name_sym, fill = fill_color)) +
     geom_histogram(binwidth = binwidth, color = "black", alpha = 0.7) +
     scale_fill_identity() +
-    labs(title = "Histogram of Shift Intervention",
+    labs(title = paste("Histogram of", col_name_title_case, "Shift Intervention"),
          subtitle = subtitle_text,
-         x = col_name,
+         x = col_name_title_case,
          y = "Count") +
     theme_minimal()
+
+  # Conditionally add the average value line
+  if(show_avg_line) {
+    p <- p + geom_vline(xintercept = avg_val, color = "red", linetype = "dashed", size = .75)
+  }
 
   return(p)
 }
 
 
+
+
 # Call the function with the correct parameters
+
+# requires individual wave
+# df_19 <- df_nz |>
+#   dplyr::filter(wave == 2019)
+#
+# # graph
 # graph_density_of_exposure <- coloured_histogram_shift(
-#   df = dt_19,
-#   col_name = "religion_church_round",
-#   binwidth = 1, # Set an appropriate binwidth for your data
-#   range_highlight = c(4,8)
+#   df = df_19,
+#   shift = "down",
+#   col_name = "forgiveness",
+#   show_avg_line = TRUE,
+#   binwidth = .5, # Set an appropriate binwidth for your data
+#   range_highlight = c(3.9,10)
 # )
 
-# Print the graph
+# # print the graph
 # graph_density_of_exposure
 
 
@@ -939,23 +1063,23 @@ run_glmer <-
 
     return(return_list)
   }
-
-# select and rename function for simplifying lmtp -------------------------
 #
-select_and_rename_cols <-
-  function(names_base, baseline_vars, outcome) {
-    # Select columns that match with baseline_vars
-    selected_cols <-
-      names_base[grepl(paste(baseline_vars, collapse = "|"), names_base)]
-
-    # Rename the outcome variable prefix from t2 to t0
-    outcome_renamed <- gsub("t2_", "t0_", outcome)
-
-    # Append the renamed outcome to selected columns
-    final_cols <- c(selected_cols, outcome_renamed)
-
-    return(final_cols)
-  }
+# # select and rename function for simplifying lmtp -------------------------
+# #
+# select_and_rename_cols <-
+#   function(names_base, baseline_vars, outcome) {
+#     # Select columns that match with baseline_vars
+#     selected_cols <-
+#       names_base[grepl(paste(baseline_vars, collapse = "|"), names_base)]
+#
+#     # Rename the outcome variable prefix from t2 to t0
+#     outcome_renamed <- gsub("t2_", "t0_", outcome)
+#
+#     # Append the renamed outcome to selected columns
+#     final_cols <- c(selected_cols, outcome_renamed)
+#
+#     return(final_cols)
+#   }
 
 # example usage
 # names_base <- c("t0_eth_cat", "t0_sample_origin", "t0_total_siblings_factor", "t0_smoker_binary", "t0_male_z")
@@ -964,9 +1088,50 @@ select_and_rename_cols <-
 #
 # final_cols <- select_and_rename_cols(names_base, baseline_vars, outcome)
 # print(final_cols)
+select_and_rename_cols <- function(names_base, baseline_vars, outcome, from_prefix = "t2", to_prefix = "t0") {
+  # Input validation
+  if (!is.character(names_base) || !is.character(baseline_vars) || !is.character(outcome)) {
+    stop("All inputs must be character vectors.")
+  }
+  if (!is.character(from_prefix) || !is.character(to_prefix)) {
+    stop("`from_prefix` and `to_prefix` must be character strings.")
+  }
+  if (length(outcome) != 1) {
+    stop("`outcome` must be a single character string.")
+  }
+  if (!outcome %in% names_base) {
+    stop("The outcome variable is not present in `names_base`.")
+  }
 
+  # Select columns that match with baseline_vars
+  selected_cols <- grep(paste(baseline_vars, collapse = "|"), names_base, value = TRUE)
 
+  if (length(selected_cols) == 0) {
+    warning("No matching baseline variables found in `names_base`.")
+  }
 
+  # Detect and replace the specified prefix in the outcome variable
+  outcome_renamed <- gsub(paste0("^", from_prefix, "_"), paste0(to_prefix, "_"), outcome)
+
+  # Check if the renaming process might have generated a duplicate name in the final set
+  if (outcome_renamed %in% selected_cols) {
+    stop("Renaming `outcome` results in a duplicate name in the selected columns.")
+  }
+
+  # Append the renamed outcome to selected columns
+  final_cols <- c(selected_cols, outcome_renamed)
+
+  return(final_cols)
+}
+# # example use
+# names_base <- c("t1_age", "t2_weight", "t3_height", "t2_outcome")
+# baseline_vars <- c("age", "weight")
+# outcome_var <- "t2_outcome"
+#
+# # This will select "t1_age" and "t2_weight", and rename "t2_outcome" to "t0_outcome"
+# final_columns <- select_and_rename_cols(names_base, baseline_vars, outcome_var, "t2", "t0")
+# print(final_columns)
+#
 
 
 
@@ -3475,7 +3640,7 @@ group_tab <- function(df, type = c("RR", "RD")) {
       )) %>%
       rownames_to_column(var = "outcome") %>%
       mutate(
-        across(where(is.numeric), round, digits = 3),
+        across(where(is.numeric), round, digits = 2),
         estimate_lab = paste0(
           `E[Y(1)]/E[Y(0)]`,
           " (",
@@ -3504,7 +3669,7 @@ group_tab <- function(df, type = c("RR", "RD")) {
       )) %>%
       rownames_to_column(var = "outcome") %>%
       mutate(
-        across(where(is.numeric), round, digits = 3),
+        across(where(is.numeric), round, digits = 2),
         estimate_lab = paste0(
           `E[Y(1)]-E[Y(0)]`,
           " (",
