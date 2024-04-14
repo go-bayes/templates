@@ -478,25 +478,28 @@ We measured participants' satisfaction with their standard of living using an it
 Participants' perceived social support was measured using three items from @cutrona1987 and @williams_cyberostracism_2000: (1) "There are people I can depend on to help me if I really need it"; (2) "There is no one I can turn to for guidance in times of stress"; (3) "I know there are people I can turn to when I need help." Participants indicated the extent to which they agree with those items (1 = Strongly Disagree to 7 = Strongly Agree). The second item was negatively-worded, so we reversely recorded the responses to this item.
 
 
-#### Support received money (times 10-13)
+#### Support received: money (waves 10-12) (Study 4 outcomes)
 
 The NZAVS has a 'revealed' measure of received help and support measured in hours of support in the previous week. The items are: 
 
-Received help and support - hours
-  - family
-  - friends
-  - others in my community
-  
-  
-#### Support received time (times 10-13)
 
-The NZAVS has a 'revealed' measure of received help and support measured in hours of support in the previous week. The items are: 
+*Please estimate how much help you have received from the following sources in the last week?*
 
-Received help and support - hours
-  - family
-  - friends
-  - others in my community
-  
+- *family...MONEY (hours)*
+- *friends...MONEY (hours)*
+- *members of my community...MONEY (hours)*
+
+
+Because this measure is highly variable, we convert responses to binary indicators: *0 = none/ 1=any*
+
+
+#### Support received: time (waves 10-13) (Study 3 outcomes)
+
+*Please estimate how much help you have received from the following sources in the last week?*
+
+- *family...TIME (hours)*
+- *friends...TIME (hours)*
+- *members of my community.. TIME (hours)*
 
 #### Urban Living Area
 
