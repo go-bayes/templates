@@ -578,8 +578,8 @@ causal_contrast_x <-
 
 ### Matching with subgroups
 
-match_mi_sub <-
-  match_mi_general_subgroup <-
+# match_mi_sub <-
+match_mi_general_subgroup <-
   function(data,
            X,
            baseline_vars,
@@ -956,4 +956,3 @@ generate_date_tscore_string <- function(start_date, end_date) {
 #   end_date <- dmy(pair[2])
 #   print(generate_date_tscore_string(start_date, end_date))
 # }
-
