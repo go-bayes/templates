@@ -221,18 +221,31 @@ Participants indicated their feeling of job security by answering "How secure do
 #### Kessler-6: Psychological Distress  (waves: 2-3,4-15)
 
 We measured psychological distress using the Kessler-6 scale (kessler2002?), which exhibits
-strong diagnostic concordance for moderate and severe psychological distress in large, crosscultural
-samples (kessler2010?; prochaska2012?). Participants rated during the past 30
-days, how often did… (1) “… you feel hopeless”; (2) “… you feel so depressed that nothing
-could cheer you up”; (3) “… you feel restless or fidgety”; (4)“… you feel that everything was
-an effort”; (5) “… you feel worthless”; (6) ” you feel nervous?” Ordinal response alternatives
-for the Kessler-6 are: “None of the time”; “A little of the time”; “Some of the time”; “Most of
-the time”; “All of the time.”
+strong diagnostic concordance for moderate and severe psychological distress in large, crosscultural samples [@kessler2002; @kessler2010?; @prochaska2012]. 
+
+
+Participants rated during the past 30 days, how often did...
+
+(i) "... you feel hopeless"; 
+(ii) "...you feel so depressed that nothing could cheer you up"; 
+(iii) "...you feel restless or fidgety"; 
+(iv)"...you feel that everything was an effort"; 
+(v) "... you feel worthless"; 
+(vi) "...you feel nervous?"
+
+Ordinal response options for the Kessler-6 are:
+
+1. "None of the time"
+2. "A little of the time"
+3. "Some of the time"
+4. "Most of the time"
+5. "All of the time."
+
 
 A two-factor model fits this scale. We describe the decomposition as: 
 
-**Kesser-6-latent-anxiety**:  “… you feel restless or fidgety”; ” you feel nervous?” “… you feel that everything was
-an effort.”
+**Kesser-6-latent-anxiety**:  "… you feel restless or fidgety”; ” you feel nervous?” “… you feel that everything was
+an effort."
 
 **Kesser-6-latent-anxiety**:  “… you feel hopeless”; “… you feel so depressed that nothing
 could cheer you up”; “… you feel worthless.”
