@@ -477,6 +477,8 @@ The New Zealand Attitudes and Values Study allows opt-ins to the study. Because 
 
 #### Sample Origin
 
+Wave enrolled in NZAVS, see @sibley2021.
+
 
 #### Self-Esteem (1 = Very inaccurate to 7 = Very accurate)
 
@@ -643,6 +645,10 @@ Participants read an instruction ("Please rate your level of satisfaction with t
 * "Your Health"
 
 From the Australian Unity Wellbeing Index [@cummins_developing_2003].
+
+
+
+
 
 
 
