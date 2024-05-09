@@ -1,7 +1,7 @@
 ---
 title: "Scale Descriptions"
 format: html
-bibliography: references.bib
+bibliography: /Users/joseph/GIT/templates/bib/references.bib
 csl: apa.csl
 ---
 
@@ -71,9 +71,11 @@ We measured participants personality with the Mini International Personality Ite
 
 Each dimension was assessed with four items and participants rated the accuracy of each item as it applies to them from 1 (Very Inaccurate) to 7 (Very Accurate). Items marked with (r) are reverse coded.
 
-#### Age
 
-We asked participants' age in an open-ended question ("What is your age?").
+#### Age (waves: 1-15)
+
+We asked participants' ages in an open-ended question ("What is your age?" or "What is your date of birth?").
+
 
 #### Alcohol Frequency
 
@@ -85,12 +87,12 @@ We measured participants' intensity of drinking alcohol using one item adapted f
 
 #### Body Mass Index
 
-Participants were asked "What is your height? (metres)" and "What is your weight? (kg)". Based on participants indication of their height and weight we calculated the BMI by dividing the weight in kilograms by the square of the height in meters.
+We asked participants "What is your height? (metres)" and "What is your weight? (kg)". Based on participants indication of their height and weight we calculated the BMI by dividing the weight in kilograms by the square of the height in meters.
 
 
 #### Body Satisfaction
 
-We measured body satisfaction with one item from @stronge_facebook_2015: "I am satisfied with the appearance, size and shape of my body", which participants rated from 1 (very inaccurate) to 7 (very accurate).
+We measured body satisfaction with one item from @stronge_facebook_2015: "I am satisfied with the appearance, size and shape of my body," which participants rated from 1 (very inaccurate) to 7 (very accurate).
 
 
 
@@ -119,9 +121,6 @@ We measured number of children using one item from @Bulbulia_2015. We asked part
 We measured sense of community with a single item from @sengupta2013: "I feel a sense of community with others in my local neighbourhood." Participants answered on a scale of 1 (strongly disagree) to 7 (strongly agree).
 
 
-#### Community: Felt Belongingness
-
-We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument [@hagerty1995]: (1) "Know that people in my life accept and value me"; (2) "Feel like an outsider"; (3) "Know that people around me share my attitudes and beliefs". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.
 
 #### COVID-19 Alert Level
 
@@ -140,7 +139,11 @@ Participants were asked "What is your highest level of qualification?". We coded
 
 #### Emotional Regulation
 
-We measured participants' levels of emotional regulation using three items adpated from @gratz_multidimensional_2004 and @gross_individual_2003: (1) "When I feel negative emotions, my emotions feel out of control."; (2) "When I feel negative emotions, I suppress or hide my emotions."; (3) "When I feel negative emotions, I change the way I think to help me stay calm.". Participants were asked to indicate the extent to which they agree with these items (1 = Strongly Disagree to 7 = Strongly Agree).
+We measured participants' levels of emotional regulation using three items adapted from @gratz_multidimensional_2004 and @gross_individual_2003: 
+
+(1) "When I feel negative emotions, my emotions feel out of control.";
+(2) "When I feel negative emotions, I suppress or hide my emotions."; 
+(3) "When I feel negative emotions, I change the way I think to help me stay calm."
 
 
 #### Employment
@@ -166,13 +169,30 @@ We assessed ethnic group impermeability using one item from @mummendey_social_19
 
 We assessed subjective fatigue by asking participants, "During the last 30 days, how often did ... you feel exhausted?" Responses were collected on an ordinal scale (0 = None of The Time, 1 = A little of The Time, 2 = Some of The Time, 3 = Most of The Time, 4 = All of The Time).
 
+
+#### Forgiveness
+
+We assessed participants' forgiveness using reversed scores of a the NZAVS "vengeful rumination scale." This scale contains three items, adapted from @caprara_indicators_1986 and @berry_forgivingness_2005, and developed for NZAVS: 
+
+(1) Sometimes I can't sleep because of thinking about past wrongs I have suffered; 
+(2) I can usually forgive and forget when someone does me wrong (reversed scored); 
+(3) I find myself regularly thinking about past times that I have been wronged. 
+
+Participants indicated their agreement with these items (1 = Strongly Disagree to 7 = Strongly Agree). 
+
+
+
 #### Gender
 
 We asked participants' gender in an open-ended question ("what is your gender?". Female was coded as 0, Male was coded as 1, and gender diverse coded as 3 [@fraser_coding_2020].
 
-#### Gratitude
+#### Gratitude  (1 = Strongly Disagree to 7 = Strongly Agree).
 
-We assessed the extent to which participants have gratitude, using three items from @mccullough_grateful_2002: (1) "I have much in my life to be thankful for."; (2) "When I look at the world, I don't see much to be grateful for."; (3) "I am grateful to a wide variety of people.". Participants indicated their agreement with these items (1 = Strongly Disagree to 7 = Strongly Agree). The second item was reversely coded.
+We assessed the extent to which participants have gratitude, using three items from @mccullough_grateful_2002: 
+
+(1) "I have much in my life to be thankful for."; 
+(2) "When I look at the world, I don't see much to be grateful for."; (reversed)
+(3) "I am grateful to a wide variety of people."
 
 #### Has Siblings
 
@@ -184,19 +204,19 @@ Using one item from @houkamau_looking_2015, we asked participants "Do you own yo
 
 #### Hours of Childcare
 
-We measured hours of exercising using one item from @sibley2011: 'Hours spent … looking after children."
+We measured hours of childcare using one item from @sibley2011: 'Hours spent … looking after children."
 
 <!-- To stablise this indicator, we took the natural log of the response + 1. -->
 
 #### Hours of Housework
 
-We measured hours of exercising using one item from @sibley2011: "Hours spent … housework/cooking"
+We measured hours of housework using one item from @sibley2011: "Hours spent … housework/cooking"
 
 <!-- To stablise this indicator, we took the natural log of the response + 1. -->
 
 #### Hours of Exercise
 
-We measured hours of exercising using one item from @sibley2011: "Hours spent … exercising/physical activity" 
+We measured hours of exercise using one item from @sibley2011: "Hours spent … exercising/physical activity" 
 
 <!-- To stablise this indicator, we took the natural log of the response + 1. -->
 
@@ -208,7 +228,7 @@ We measured hours of work using one item from @sibley2011:"Hours spent … worki
 
 #### Hours of Sleep
 
-Participants were asked "During the past month, on average, how many hours of *actual sleep* did you get per night".
+"During the past month, on average, how many hours of *actual sleep* did you get per night".
 
 #### Income
 
@@ -218,7 +238,10 @@ Participants were asked "Please estimate your total household income (before tax
 
 Participants indicated their feeling of job security by answering "How secure do you feel in your current job?" on a scale from 1 (not secure) to 7 (very secure).
 
+
 #### Kessler-6: Psychological Distress  (waves: 2-3,4-15)
+
+#### Kessler 6 Anxiety and Kessler 6 Depression
 
 We measured psychological distress using the Kessler-6 scale (kessler2002?), which exhibits
 strong diagnostic concordance for moderate and severe psychological distress in large, crosscultural samples [@kessler2002; @kessler2010?; @prochaska2012]. 
@@ -226,12 +249,12 @@ strong diagnostic concordance for moderate and severe psychological distress in 
 
 Participants rated during the past 30 days, how often did...
 
-(i) "... you feel hopeless"; 
-(ii) "...you feel so depressed that nothing could cheer you up"; 
-(iii) "...you feel restless or fidgety"; 
-(iv)"...you feel that everything was an effort"; 
-(v) "... you feel worthless"; 
-(vi) "...you feel nervous?"
+(1) "... you feel hopeless"; 
+(2) "...you feel so depressed that nothing could cheer you up"; 
+(3) "...you feel restless or fidgety"; 
+(4)"...you feel that everything was an effort"; 
+(5) "... you feel worthless"; 
+(6) "...you feel nervous?"
 
 Ordinal response options for the Kessler-6 are:
 
@@ -249,6 +272,7 @@ an effort."
 
 **Kesser-6-latent-anxiety**:  “… you feel hopeless”; “… you feel so depressed that nothing
 could cheer you up”; “… you feel worthless.”
+
 
 
 #### Opt-in
@@ -274,13 +298,23 @@ We measured participants' political right-wing orientation using a single item a
 (1 = Extremely left-wing to 7 = Extremely right-wing)
 
 
-#### Life Meaning
+#### Life Meaning (1 = Strongly Disagree to 7 = Strongly Agree)
 
-We assessed participants' levels of life meaning using two items from @steger_meaning_2006: (1) My life has a clear sense of purpose; (2) I have a good sense of what makes my life meaningful. Participants indicated their agreement with these items (1 = Strongly Disagree to 7 = Strongly Agree).
+(1) "My life has a clear sense of purpose;"
+(2) "I have a good sense of what makes my life meaningful." 
 
-#### Life Satisfaction
+From @steger_meaning_2006
 
-We measured life satisfaction with two items adapted from the Satisfaction with Life Scale [@diener1985a]: "I am satisfied with my life" and "In most ways my life is close to ideal". Participants responded on a scale from 1 (Strongly Disagree) to 7 (Strongly Agree).
+We assessed these dimensions separately.
+
+
+#### Life Satisfaction (1 = Strongly Disagree to 7 = Strongly Agree)
+
+1. "I am satisfied with my life"  
+2. "In most ways my life is close to ideal". 
+
+From the Satisfaction with Life Scale @diener1985a.
+
 
 #### Lost Job
 
@@ -351,19 +385,33 @@ Participants were asekd "Do you live with your partner?" (1 = Yes, 0 = No).
 
 
 
+#### Perfectionism (1 = Strongly Disagree to 7 = Strongly Agree)
+
+We assessed participants' perfectionism using three items from @rice_short_2014.
+
+(1) Doing my best never seems to be enough; 
+(2) My performance rarely measures up to my standards; 
+(3) I am hardly ever satisfied with my performance. Participants indicated the extent to which they agree with these items 
 
 
-#### Perfectionism
+#### Permeability of the Self (1 = Strongly Disagree to 7 = Strongly Agree)
 
-We assessed participants' perfectionism using three items from @rice_short_2014: (1) Doing my best never seems to be enough; (2) My performance rarely measures up to my standards; (3) I am hardly ever satisfied with my performance. Participants indicated the extent to which they agree with these items (1 = Strongly Disagree to 7 = Strongly Agree).
+"I believe I am capable, as an individual, of improving my status in society."
+
+From @tausch2015does.
 
 #### Political Orientation
 
 We measured participants' political orientation using a single item adapted from @jost_end_2006-1. Participants were asked to rate how politically left-wing versus right-wing they see themselves as being (1 = Extremely Left-wing to 7 = Extremely Right-wing)
 
-#### Power Dependence
+#### Power Dependence (1 = Strongly Disagree to 7 = Strongly Agree).
 
-Participants' Power dependence was measured using two items: (1) I do not have enough power or control over important parts of my life; (2) Other people have too much power or control over important parts of my life. Participants indicated their agreement with these items (1 = Strongly Disagree to 7 = Strongly Agree).
+Participants' Power dependence was measured using two items: 
+
+(1) I do not have enough power or control over important parts of my life; 
+(2) Other people have too much power or control over important parts of my life. 
+
+From @overall2016power.
 
 #### Religion: Belief in God
 
@@ -416,28 +464,51 @@ The New Zealand Attitudes and Values Study allows opt-ins to the study. Because 
 #### Sample Origin
 
 
-#### Self-Respect
+#### Self-Esteem (1 = Very inaccurate to 7 = Very accurate)
+
+Participants were instructed to circle the number that best represents how accurately each statement describes them. Participants responded to the items 
+
+1. "On the whole am satisfied with myself;"
+2. "Take a positive attitude toward myself;" 
+3. "Am inclined to feel that I am a failure." 
+
+Adapted from @Rosenberg1965.
+
+#### Self Control (has) & Self Control (wish had more) (1 = Strongly Disagree to 7 = Strongly Agree).
+
+Participants were asked to indicate the extent to which they endorse the two items:
+
+1. "In general, I have a lot of self-control"
+2. "I wish I had more self-discipline" from @tangney_high_2004. 
+
+We assessed these dimensions separatedly
+
+
+
+#### Self-Respect (1 = Strongly Disagree to 7 = Strongly Agree)
 
 We assessed participants' levels of self-respect using an item adapted from @tyler_understanding_1996. Participant indicated the extent to which they agree with the statement ("If they knew me, most NZers would respect what I have accomplished in life") on a likert scale (1 = Strongly Disagree to 7 = Strongly Agree)
 
 
+#### Sense of Belonging
+
+We assessed social belonging with three items adapted from the Sense of Belonging Instrument [@hagerty1995]: Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). 
+
+(1) "Know that people in my life accept and value me"; 
+(2) "Feel like an outsider" (reversed); 
+(3) "Know that people around me share my attitudes and beliefs". 
+
+
 #### Social Support (waves: 1-3, 4-15)
 
-Participants’ perceived social support was measured using three items from @cutrona1987
-and @williams2000cyberostracism: (1) “There are people I can depend on to help me if I really need
-it”; (2) “There is no one I can turn to for guidance in times of stress”; (3) “I know there
-are people I can turn to when I need help.” Participants indicated the extent to which they
-agree with those items (1 = Strongly Disagree to 7 = Strongly Agree). The second item was
-negatively-worded, so we reversely recorded the responses to this item.
+We measured ocial support using three items from @cutrona1987 perceived social support was measured using three items from @cutrona1987 and @williams2000cyberostracism (1 = Strongly Disagree to 7 = Strongly Agree). 
+
+(1) "There are people I can depend on to help me if I really need
+it;" 
+(2) "There is no one I can turn to for guidance in times of stress;"  (reversed)
+(3) "I know there are people I can turn to when I need help." 
 
 
-#### Self-Control
-
-Participants were asked to indicate the extent to which they endorse the two items ("In general, I have a lot of self-control", "I wish I had more self-discipline") from @tangney_high_2004. The responses to the items ranged from 1 (Strongly Disagree) to 7 (Strongly Agree).
-
-#### Self-Esteem
-
-We measured participants' self-esteem using three items adapted from @Rosenberg1965. Participants were instructed to circle the number that best represents how accurately each statement describes them. Participants responded to the items ("On the whole am satisfied with myself.", "Take a positive attitude toward myself", "Am inclined to feel that I am a failure") on a likert-type scale (1 = Very inaccurate to 7 = Very accurate).
 
 #### Semiretired
 
@@ -447,14 +518,9 @@ SAME AS RETIRED
 
 Participants were asked to report their sexual orientation: "How would you describe your sexual orientation? (e.g., heterosexual, homosexual, straight, gay, lesbian, bisexual, etc.)".
 
-#### Sexual Satisfaction
+#### Sexual Satisfaction (1 = Not satisfied to 7 = Very satisfied).
 
-Participants were asked "How satisfied are you with your sex life?" (1 = Not satisfied to 7 = Very satisfied).
-
-#### Short-Form Health
-
-Participants' subjective health was measured using one item ("Do you have a health condition or disability that limits you, and that has lasted for 6+ months?"; 1 = Yes, 0 = No) adapted from @verbrugge1997.
-
+"How satisfied are you with your sex life?" (developed for the NZAVS).
 
 #### Siblings (time 8, time 10)
 
@@ -525,16 +591,59 @@ We coded whether they are living in an urban or rural area (1 = Urban, 0 = Rural
 We measured participants' subjective wellbeing using three items from the Australian Unity Wellbeing Index [@cummins_developing_2003]: (1) your health; (2) your future security; (3) your future security. Participants read an instruction ("The following items assess your current satisfaction with different aspects of your life and aspects of New Zealand more generally") and indicated their satisfaction with those items (0 = Completely Dissatisfied to 10 = Completely Satisfied).
 
 
+
+Alternative
+
+#### Personal Well-being Relationships  (0 = completely dissatisfied to 10 = completely satisfied)
+
+We measured participants' satisfaction with their standard of living using an item from the Australian Unity Wellbeing Index [@cummins_developing_2003]. Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
+
+* "Your relationships"
+
+From the Australian Unity Wellbeing Index [@cummins_developing_2003]
+
+
+#### Personal Well-being Security   (0 = completely dissatisfied to 10 = completely satisfied)
+
+* "Your future security"
+
+Australian From the Australian Unity Wellbeing Index [@cummins_developing_2003]
+Unity Wellbeing Index [@cummins_developing_2003]
+
+
+#### Personal Well-being Standard Living  (0 = completely dissatisfied to 10 = completely satisfied)
+
+
+* "Your standard of living"
+
+Australian Unity Wellbeing Index [@cummins_developing_2003]
+
+#### Personal Well-being Your Health   (0 = completely dissatisfied to 10 = completely satisfied)
+
+* "Your Health"
+
+From the Australian Unity Wellbeing Index [@cummins_developing_2003]
+
+
+
+
+
+
 #### Feeling Thermometer (Warmth)
 
 Warmth toward groups was rated by a one-item measure using the "feeling thermometer" scale. Participants were asked to rate their feeling of warmth toward the following groups: NZ European, Māori, Asians in general, Pacific Islanders, Elderly people, People with a disability, Overweight people, Immigrants in general, Chinese, Indians, Muslims, and People with mental illness. Ratings were on a 7-point scale from (1 = least warmth toward a group to 7 = most warmth toward a group, with 4 being neutral. This measure is modelled on affect thermometer items in United States National Election Study [@sibley2020].
 
 
+####  Short-Form Subjective Health Scale (General Health Perception Subscale), from @instrument1992mos, scored ordinal (1-7)
 
+1. "In general, would you say your health is..."
+2. "I seem to get sick a little easier than other people." (reversed)
+3. "I expect my health to get worse." (reversed)
 
-#### Vengeful Rumination
+#### ELSE
 
-We assessed participants' vengeful rumination using three items, respectively adapted from @caprara_indicators_1986 and @berry_forgivingness_2005, and developed for NZAVS: (1) Sometimes I can't sleep because of thinking about past wrongs I have suffered; (2) I can usually forgive and forget when someone does me wrong; (3) I find myself regularly thinking about past times that I have been wronged. Participants indicated their agreeement with these items (1 = Strongly Disagree to 7 = Strongly Agree). The values for the sencond item were reversely coded.
+Participants health was measured using one item ("Do you have a health condition or disability that limits you, and that has lasted for 6+ months?"; 1 = Yes, 0 = No) adapted from @verbrugge1997.
+
 
 
 \pagebreak
