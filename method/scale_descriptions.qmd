@@ -90,10 +90,13 @@ We measured participants' intensity of drinking alcohol using one item adapted f
 We asked participants "What is your height? (metres)" and "What is your weight? (kg)". Based on participants indication of their height and weight we calculated the BMI by dividing the weight in kilograms by the square of the height in meters.
 
 
-#### Body Satisfaction
 
-We measured body satisfaction with one item from @stronge_facebook_2015: "I am satisfied with the appearance, size and shape of my body," which participants rated from 1 (very inaccurate) to 7 (very accurate).
+#### Body Satisfaction (1 = Very inaccurate to 7 = Very accurate)
 
+
+* "I am satisfied with the appearance, size and shape of my body"
+
+From @stronge2015facebook
 
 
 #### Charitable Donations
@@ -165,9 +168,15 @@ We assessed ethnic group impermeability using one item from @mummendey_social_19
 
 <!-- Participants were asekd "Which ethnic group do you belong to (NZ census question)?". Europeans were coded as 1, wherease other ethniciities were coded as 0. -->
 
-#### Fatigue
+#### Fatigue (ordinal)
 
-We assessed subjective fatigue by asking participants, "During the last 30 days, how often did ... you feel exhausted?" Responses were collected on an ordinal scale (0 = None of The Time, 1 = A little of The Time, 2 = Some of The Time, 3 = Most of The Time, 4 = All of The Time).
+* "During the last 30 days, how often did ... you feel exhausted?" 
+
+Ordinal responses: 0 = None of The Time, 1 = A little of The Time, 2 = Some of The Time, 3 = Most of The Time, 4 = All of The Time.
+
+
+From @sibley2020effects
+
 
 
 #### Forgiveness
@@ -239,9 +248,7 @@ Participants were asked "Please estimate your total household income (before tax
 Participants indicated their feeling of job security by answering "How secure do you feel in your current job?" on a scale from 1 (not secure) to 7 (very secure).
 
 
-#### Kessler-6: Psychological Distress  (waves: 2-3,4-15)
-
-#### Kessler 6 Anxiety and Kessler 6 Depression
+#### Kessler 6 Anxiety and Kessler 6 Depression (ordinal) (waves: 2-3,4-15)
 
 We measured psychological distress using the Kessler-6 scale (kessler2002?), which exhibits
 strong diagnostic concordance for moderate and severe psychological distress in large, crosscultural samples [@kessler2002; @kessler2010?; @prochaska2012]. 
@@ -256,14 +263,15 @@ Participants rated during the past 30 days, how often did...
 (5) "... you feel worthless"; 
 (6) "...you feel nervous?"
 
-Ordinal response options for the Kessler-6 are:
+Ordinal responses: 0 = None of The Time, 1 = A little of The Time, 2 = Some of The Time, 3 = Most of The Time, 4 = All of The Time.
 
-1. "None of the time"
-2. "A little of the time"
-3. "Some of the time"
-4. "Most of the time"
-5. "All of the time."
+A two-factor model fits this scale. We describe the decomposition as: 
 
+**Kesser-6-latent-anxiety**:  "… you feel restless or fidgety”; ” you feel nervous?” “… you feel that everything was
+an effort."
+
+**Kesser-6-latent-anxiety**:  “… you feel hopeless”; “… you feel so depressed that nothing
+could cheer you up”; “… you feel worthless.”
 
 A two-factor model fits this scale. We describe the decomposition as: 
 
@@ -450,9 +458,15 @@ Spiritual identification was measured using one item ("I identify as a spiritual
 
 Participants were asked to indicate whether they were retiered or not in the last year (1 = Yes, 0 = No).
 
-#### Rumination
+#### Rumination (ordinal)
 
-We used a single item adapted from @nolen-hoeksema_effects_1993 to measure participants' level of rumination. Participants were asked, "During the last 30 days, how often did...you have negative thoughts that repeated over and over?" and indicated their frequency of rumination on an ordinal scale (0 = None of The time, 1 = A little of the time, 2 = some of the time, 3 = most of the time, 4 = all of the time)
+
+* "During the last 30 days, how often did...you have negative thoughts that repeated over and over?" and indicated their frequency of rumination on an ordinal scale 
+
+From @nolen-hoeksema_effects_1993 
+
+Ordinal responses: 0 = None of The Time, 1 = A little of The Time, 2 = Some of The Time, 3 = Most of The Time, 4 = All of The Time.
+
 
 
 #### Sample Opt-in
@@ -490,18 +504,16 @@ We assessed these dimensions separatedly
 We assessed participants' levels of self-respect using an item adapted from @tyler_understanding_1996. Participant indicated the extent to which they agree with the statement ("If they knew me, most NZers would respect what I have accomplished in life") on a likert scale (1 = Strongly Disagree to 7 = Strongly Agree)
 
 
-#### Sense of Belonging
-
-We assessed social belonging with three items adapted from the Sense of Belonging Instrument [@hagerty1995]: Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). 
+#### Sense of Belonging (1 = Very Inaccurate to 7  = Very Accurate)
 
 (1) "Know that people in my life accept and value me"; 
 (2) "Feel like an outsider" (reversed); 
 (3) "Know that people around me share my attitudes and beliefs". 
 
+Adapted from the Sense of Belonging Instrument [@hagerty1995]
 
-#### Social Support (waves: 1-3, 4-15)
 
-We measured ocial support using three items from @cutrona1987 perceived social support was measured using three items from @cutrona1987 and @williams2000cyberostracism (1 = Strongly Disagree to 7 = Strongly Agree). 
+#### Social Support (1 = Strongly Disagree to 7 = Strongly Agree)
 
 (1) "There are people I can depend on to help me if I really need
 it;" 
@@ -509,6 +521,7 @@ it;"
 (3) "I know there are people I can turn to when I need help." 
 
 
+From @cutrona1987 and @williams2000cyberostracism 
 
 #### Semiretired
 
@@ -596,36 +609,40 @@ Alternative
 
 #### Personal Well-being Relationships  (0 = completely dissatisfied to 10 = completely satisfied)
 
-We measured participants' satisfaction with their standard of living using an item from the Australian Unity Wellbeing Index [@cummins_developing_2003]. Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
+Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
 
 * "Your relationships"
 
 From the Australian Unity Wellbeing Index [@cummins_developing_2003]
 
 
-#### Personal Well-being Security   (0 = completely dissatisfied to 10 = completely satisfied)
+#### Personal Well-being Security  (0 = completely dissatisfied to 10 = completely satisfied)
 
-* "Your future security"
+Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
 
-Australian From the Australian Unity Wellbeing Index [@cummins_developing_2003]
-Unity Wellbeing Index [@cummins_developing_2003]
+* "Your future security" 
+
+From the Australian Unity Wellbeing Index [@cummins_developing_2003].
 
 
 #### Personal Well-being Standard Living  (0 = completely dissatisfied to 10 = completely satisfied)
 
+Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
 
-* "Your standard of living"
 
-Australian Unity Wellbeing Index [@cummins_developing_2003]
+* "Your standard of living" 
+
+From the Australian Unity Wellbeing Index [@cummins_developing_2003].
+
 
 #### Personal Well-being Your Health   (0 = completely dissatisfied to 10 = completely satisfied)
 
+Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
+
+
 * "Your Health"
 
-From the Australian Unity Wellbeing Index [@cummins_developing_2003]
-
-
-
+From the Australian Unity Wellbeing Index [@cummins_developing_2003].
 
 
 
