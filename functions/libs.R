@@ -25,7 +25,7 @@ library("WeightIt")# Weights for propensity scores
 library("optmatch")# Weights for propensity scores
 #library("cmdstanr") # Bayesian estimation
 library("formula.tools") #
-library("CMAverse") # causal mediation
+#library("CMAverse") # causal mediation
 library("splines") # estimation
 library("gghighlight") # highlight points
 library("parameters") # working with models
