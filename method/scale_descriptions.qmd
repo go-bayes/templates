@@ -5,6 +5,12 @@ bibliography: /Users/joseph/GIT/templates/bib/references.bib
 csl: apa.csl
 ---
 
+
+## notes
+Ordinal response (1 = Strongly Disagree to 7 = Strongly Agree).
+
+Ordinal response (0 = completely dissatisfied to 10 = completely satisfied).
+
 #### Mini-IPIP 6
 
 We measured participants personality with the Mini International Personality Item Pool 6 (Mini-IPIP6) [@sibley2011] which consists of six dimensions and each dimensions is measured with four items:
@@ -231,7 +237,7 @@ We measured hours of exercise using one item from @sibley2011: "Hours spent … 
 
 #### Hours of Work
 
-We measured hours of work using one item from @sibley2011:"Hours spent … working in paid employment."
+We measured hours of work using one item from @sibley2011:  "Hours spent … working in paid employment."
 
 <!-- To stablise this indicator, we took the natural log of the response + 1. -->
 
@@ -399,7 +405,9 @@ We assessed participants' perfectionism using three items from @rice_short_2014.
 
 (1) Doing my best never seems to be enough; 
 (2) My performance rarely measures up to my standards; 
-(3) I am hardly ever satisfied with my performance. Participants indicated the extent to which they agree with these items 
+(3) I am hardly ever satisfied with my performance. 
+
+Participants indicated the extent to which they agree with these items 
 
 
 #### Permeability of the Self (1 = Strongly Disagree to 7 = Strongly Agree)
@@ -486,7 +494,7 @@ Participants were instructed to circle the number that best represents how accur
 
 1. "On the whole am satisfied with myself;"
 2. "Take a positive attitude toward myself;" 
-3. "Am inclined to feel that I am a failure." 
+3. "Am inclined to feel that I am a failure." (reversed)
 
 Adapted from @Rosenberg1965.
 
@@ -613,7 +621,7 @@ Alternative
 
 Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
 
-* "Your relationships"
+* "Your personal relationships."
 
 From the Australian Unity Wellbeing Index [@cummins_developing_2003]
 
