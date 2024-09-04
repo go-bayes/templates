@@ -4,214 +4,25 @@
 set.seed(123)
 #detach("package:margot", unload = TRUE)
 devtools::install_github("go-bayes/margot")
+library(margot)
 packageVersion(pkg = 'margot')# set
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(tidyr)
+library(stringr)
+library(cli)
 push_mods <- here::here("/Users/joseph/Library/CloudStorage/Dropbox-v-project/data/00-talks")
 
 path_talk = push_mods
 pull_path <- fs::path_expand("/Users/joseph/Library/CloudStorage/Dropbox-v-project/Joseph Bulbulia/00Bulbulia Pubs/DATA/nzavs-current/r-data/nzavs_data_qs")
 
-
-# references --------------------------------------------------------------
-
 # read and preprocess data ------------------------------------------------
 # import data
 dat <- qs::qread(here::here(pull_path))
 
+dat <- dat |> mutate(doubts_official_version_truth = conspiracy_beliefs)
 
-# test --------------------------------------------------------------------
-
-#' Visualize Shifts in Data Distributions with Highlighted Ranges
-#'
-#' This function creates a histogram that highlights a specified range of values to visualize shifts in data distributions.
-#' The highlighted range can indicate areas of interest, such as shifts up or down in the distribution.
-#' This visualization is useful for understanding the implications of causal contrasts, such as modified treatment policies.
-#' The fill colour of the histogram is dynamically adjusted based on the specified direction of the shift.
-#'
-#' @param df A dataframe containing the variable of interest.
-#' @param col_name The name of the column in `df` to be visualized in the histogram. This should be a numeric variable.
-#' @param binwidth The width of the bins for the histogram. Default is 1. Adjust this based on the distribution and scale of your data.
-#' @param range_highlight A numeric vector of length 2 specifying the start and end of the range to highlight. If `NULL`, no range is highlighted.
-#' @param shift A character string indicating the direction of the shift, either "up" or "down". Default is "up".
-#' @param show_avg_line A logical value indicating whether to display a vertical line representing the average value. Default is `TRUE`.
-#' @param title An optional custom title for the plot. If NULL, a default title will be generated.
-#' @param subtitle An optional custom subtitle for the plot. If NULL, a default subtitle will be generated.
-#' @param x_lab An optional label for the x-axis. If NULL, the formatted column name is used.
-#' @param y_lab The label for the y-axis. Default is "Count".
-#' @param save_path An optional path to save the plot. If NULL, the plot will not be saved.
-#' @param width The width of the saved plot in inches. Default is 10.
-#' @param height The height of the saved plot in inches. Default is 6.
-#'
-#' @return A ggplot object representing the histogram with specified highlights.
-#'
-#' @import ggplot2
-#' @importFrom rlang sym
-#' @importFrom cli cli_alert_info cli_alert_success cli_alert_danger cli_h1
-#' @importFrom margot here_save_qs
-#' @importFrom stringr str_to_title
-#'
-#' @export
-margot_plot_shift <- function(df, col_name, binwidth = 1, range_highlight = NULL, shift = "up", show_avg_line = TRUE,
-                              title = NULL, subtitle = NULL, x_lab = NULL, y_lab = "Count",
-                              save_path = NULL, width = 10, height = 6) {
-
-
-# read and preprocess data ------------------------------------------------
-# import data
-
-# Function to prepare panel data
-library(dplyr)
-library(ggplot2)
-library(lubridate)
-library(plotly)
-library(here)
-library(ggokabeito)
-library(cli)
-library(margot)
-library(patchwork)
-
-
-
-# functions ---------------------------------------------------------------
-  #' Visualize Shifts in Data Distributions with Highlighted Ranges
-  #'
-  #' This function creates a histogram that highlights a specified range of values to visualize shifts in data distributions.
-  #' The highlighted range can indicate areas of interest, such as shifts up or down in the distribution.
-  #' This visualization is useful for understanding the implications of causal contrasts, such as modified treatment policies.
-  #' The fill colour of the histogram is dynamically adjusted based on the specified direction of the shift.
-  #'
-  #' @param df A dataframe containing the variable of interest.
-  #' @param col_name The name of the column in `df` to be visualized in the histogram. This should be a numeric variable.
-  #' @param binwidth The width of the bins for the histogram. Default is 1. Adjust this based on the distribution and scale of your data.
-  #' @param range_highlight A numeric vector of length 2 specifying the start and end of the range to highlight. If `NULL`, no range is highlighted.
-  #' @param shift A character string indicating the direction of the shift, either "up" or "down". Default is "up".
-  #' @param show_avg_line A logical value indicating whether to display a vertical line representing the average value. Default is `TRUE`.
-  #' @param title An optional custom title for the plot. If NULL, a default title will be generated.
-  #' @param subtitle An optional custom subtitle for the plot. If NULL, a default subtitle will be generated.
-  #' @param x_lab An optional label for the x-axis. If NULL, the formatted column name is used.
-  #' @param y_lab The label for the y-axis. Default is "Count".
-  #' @param save_path An optional path to save the plot. If NULL, the plot will not be saved.
-  #' @param width The width of the saved plot in inches. Default is 10.
-  #' @param height The height of the saved plot in inches. Default is 6.
-  #'
-  #' @return A ggplot object representing the histogram with specified highlights.
-  #'
-  #' @import ggplot2
-  #' @importFrom rlang sym
-  #' @importFrom cli cli_alert_info cli_alert_success cli_alert_danger cli_h1
-  #' @importFrom margot here_save_qs
-  #' @importFrom stringr str_to_title
-  #'
-  #' @export
-  margot_plot_shift <- function(df, col_name, binwidth = 1, range_highlight = NULL, shift = "up", show_avg_line = TRUE,
-                                title = NULL, subtitle = NULL, x_lab = NULL, y_lab = "Count",
-                                save_path = NULL, width = 10, height = 6) {
-
-    cli::cli_h1("Margot Plot Shift")
-
-    tryCatch({
-      # Input validation
-      if(!col_name %in% names(df)) {
-        cli::cli_alert_danger("Column '{col_name}' not found in the dataframe.")
-        return(NULL)
-      }
-      if(all(is.na(df[[col_name]]))) {
-        cli::cli_alert_danger("The specified column contains only NA values.")
-        return(NULL)
-      }
-      if(!shift %in% c("up", "down")) {
-        cli::cli_alert_danger("'shift' must be either 'up' or 'down'.")
-        return(NULL)
-      }
-
-      # Function to convert to title case and remove underscores
-      format_label <- function(x) {
-        stringr::str_to_title(gsub("_", " ", x))
-      }
-
-      # Format column name for labels
-      formatted_col_name <- format_label(col_name)
-
-      # Calculate average value for the vertical line
-      avg_val <- mean(df[[col_name]], na.rm = TRUE)
-      cli::cli_alert_info("Average value of {formatted_col_name}: {round(avg_val, 2)}")
-
-      # Determine the fill colour based on the shift direction
-      highlight_color <- if(shift == "up") "gold2" else "dodgerblue"
-
-      # Create a new column for fill colour based on range_highlight
-      if (!is.null(range_highlight) && length(range_highlight) == 2) {
-        df$fill_color <- ifelse(df[[col_name]] >= range_highlight[1] & df[[col_name]] <= range_highlight[2], highlight_color, "lightgray")
-        cli::cli_alert_info("Highlighting range: [{range_highlight[1]}, {range_highlight[2]}]")
-      } else {
-        df$fill_color <- "lightgray" # Default colour if no range_highlight is provided
-        cli::cli_alert_info("No range highlighted")
-      }
-
-      # Define subtitle based on the shift direction
-      if (is.null(subtitle)) {
-        subtitle <- if(shift == "up") {
-          "Highlights region shifted up to boundary with grey"
-        } else {
-          "Highlights region shifted down to boundary with grey"
-        }
-        if(show_avg_line) {
-          subtitle <- paste(subtitle, "\nRed dashed line shows the average value")
-        }
-      }
-
-      # Create the plot
-      p <- ggplot(df, aes(x = !!rlang::sym(col_name), fill = fill_color)) +
-        geom_histogram(binwidth = binwidth, alpha = 0.7) +
-        scale_fill_identity() +
-        labs(title = ifelse(is.null(title), paste("Distribution of", formatted_col_name, "with Shift Intervention"), title),
-             subtitle = subtitle,
-             x = ifelse(is.null(x_lab), formatted_col_name, x_lab),
-             y = y_lab,
-             caption = sprintf("N = %d observations", nrow(df))) +
-        theme_minimal() +
-        theme(text = element_text(size = 12),
-              axis.text.x = element_text(angle = 45, hjust = 1))
-
-      # Conditionally add the average value line
-      if(show_avg_line) {
-        p <- p + geom_vline(xintercept = avg_val, color = "darkred", linetype = "dashed", linewidth = .75)
-      }
-
-      # Save plot if a save path is provided
-      if (!is.null(save_path)) {
-        filename <- paste0(
-          "shift_", col_name, "_", shift,
-          "_", format(Sys.Date(), "%Y%m%d")
-        )
-
-        cli::cli_alert_info("Saving plot...")
-
-        ggsave(
-          plot = p,
-          filename = file.path(save_path, paste0(filename, ".png")),
-          width = width,
-          height = height,
-          units = "in",
-          device = 'png',
-          dpi = 300
-        )
-
-        margot::here_save_qs(p, filename, save_path, preset = "high", nthreads = 1)
-
-        cli::cli_alert_success("Plot saved successfully as '{filename}' in '{save_path}'")
-      } else {
-        cli::cli_alert_info("No save path provided. Plot not saved.")
-      }
-
-      cli::cli_alert_success("Margot plot shift created successfully \U0001F44D")
-
-      return(p)
-    }, error = function(e) {
-      cli::cli_alert_danger("An error occurred: {conditionMessage(e)}")
-      print(e)
-      return(NULL)
-    })
-  }
 
 # create response timeline ------------------------------------------------
 # step 1: prepare NZAVS-specific wave breaks
@@ -274,8 +85,8 @@ discontinuity_plot_muslim_warmth <- margot_plot_discontinuity(
   event_dates = c("2019-03-15", "2020-03-26"),
   event_names = c("Christchurch Attack", "COVID-19 Lockdown"),
   start_date = "2012-06-06",
- # title = "Discontinuity Christchurch Attaks & Covid 19",
-#  y_label = "Muslim Warmth",
+  # title = "Discontinuity Christchurch Attaks & Covid 19",
+  #  y_label = "Muslim Warmth",
   x_label = "NZAVS Time 4 - 14 Cohort (2012-2023)",
   point_alpha = 0.02,
   smoothing_method = "gam",
@@ -283,6 +94,8 @@ discontinuity_plot_muslim_warmth <- margot_plot_discontinuity(
   data_fraction = 1,
   event_label_size = 4,
   seed = 123,
+  width = 12,
+  height = 8,
   save_path = here::here(push_mods)
 )
 # file: discontinuity_plot_warm_muslims_20240902.qs
@@ -295,9 +108,9 @@ discontinuity_plot_trust_police <- margot_plot_discontinuity(
   data = dat,
   y_var = "police_trust",
   event_dates = c("2020-03-26"),
- # title = "Trust in Police: Pre/Post Covid-19",
+  # title = "Trust in Police: Pre/Post Covid-19",
   event_names = c("COVID-19 Lockdown"),
- # y_label = "Trust in Police",
+  # y_label = "Trust in Police",
   x_label = "NZAVS Waves",
   point_alpha = 0.02,
   smoothing_method = "gam",
@@ -305,6 +118,8 @@ discontinuity_plot_trust_police <- margot_plot_discontinuity(
   data_fraction = 1,
   event_label_size = 4,
   seed = 123,
+  width = 12,
+  height = 8,
   save_path = here::here(push_mods)
 )
 
@@ -319,7 +134,7 @@ discontinuity_plot_trust_politicians <- margot_plot_discontinuity(
   data = dat,
   y_var = "pol_politician_trust",
   event_dates = c("2020-03-26"),
-#  title = "Trust in Politicians: Pre/Post Covid-19",
+  #  title = "Trust in Politicians: Pre/Post Covid-19",
   event_names = c("COVID-19 Lockdown"),
   y_label = "Trust in Politicians",
   x_label = "NZAVS Waves",
@@ -329,6 +144,8 @@ discontinuity_plot_trust_politicians <- margot_plot_discontinuity(
   data_fraction = 1,
   event_label_size = 4,
   seed = 123,
+  width = 12,
+  height = 8,
   save_path = here::here(push_mods)
 )
 
@@ -342,7 +159,7 @@ discontinuity_plot_trust_science_community <- margot_plot_discontinuity(
   data = dat,
   y_var = "trust_science_high_confidence_scientific_community",
   event_dates = c("2020-03-26"),
- # title = "Trust in Scientific Community: Pre/Post Covid-19",
+  # title = "Trust in Scientific Community: Pre/Post Covid-19",
   event_names = c("COVID-19 Lockdown"),
   start_date = "2019-10-01",
   y_label = "Trust in Scientific Community",
@@ -353,6 +170,8 @@ discontinuity_plot_trust_science_community <- margot_plot_discontinuity(
   data_fraction = 1,
   event_label_size = 4,
   seed = 123,
+  width = 12,
+  height = 8,
   save_path = here::here(push_mods)
 )
 
@@ -366,7 +185,7 @@ discontinuity_plot_trust_science_in_society <- margot_plot_discontinuity(
   data = dat,
   y_var = "trust_science_our_society_places_too_much_emphasis_reversed",
   event_dates = c("2020-03-26"),
- # title = "Trust in Scientific Community: Pre/Post Covid-19",
+  # title = "Trust in Scientific Community: Pre/Post Covid-19",
   event_names = c("COVID-19 Lockdown"),
   start_date = "2019-10-01",
   y_label = "Values Place of Science in Society",
@@ -377,13 +196,16 @@ discontinuity_plot_trust_science_in_society <- margot_plot_discontinuity(
   data_fraction = 1,
   event_label_size = 4,
   seed = 123,
+  width = 12,
+  height = 8,
   save_path = here::here(push_mods)
 )
 
+# view
+discontinuity_plot_trust_science_in_society
+
 # path: discontinuity_plot_trust_science_our_society_places_too_much_emphasis_reversed_20240902
 
-# view
-discontinuity_plot_trust_science_in_society /discontinuity_plot_trust_science_community
 
 # Free speech
 # 5. Free Speech before/after COVID-19
@@ -392,8 +214,8 @@ discontinuity_plot_free_speech <- margot_plot_discontinuity(
   y_var = "free_speech",
   event_dates = c("2020-03-26"),
   event_names = c("COVID-19 Lockdown"),
- # start_date = "2019-10-01",
- # y_label = "",
+  # start_date = "2019-10-01",
+  # y_label = "",
   x_label = "NZAVS Waves",
   point_alpha = 0.02,
   smoothing_method = "gam",
@@ -401,6 +223,8 @@ discontinuity_plot_free_speech <- margot_plot_discontinuity(
   data_fraction = 1,
   event_label_size = 4,
   seed = 123,
+  width = 12,
+  height = 8,
   save_path = here::here(push_mods)
 )
 # path: discontinuity_plot_free_speech_20240902.qs
@@ -409,13 +233,13 @@ discontinuity_plot_free_speech <- margot_plot_discontinuity(
 discontinuity_plot_free_speech
 
 # 6. Conspiracy Beliefs before/after COVID-19
-discontinuity_plot_conspiracy_beliefs <- margot_plot_discontinuity(
+discontinuity_plot_doubts_official_version_truth <- margot_plot_discontinuity(
   data = dat,
-  y_var = "conspiracy_beliefs",
+  y_var = "doubts_official_version_truth",
   event_dates = c("2020-03-26"),
   event_names = c("COVID-19 Lockdown"),
   start_date = "2019-10-01",
- # y_label = "Trust in Scientific Community",
+  # y_label = "Trust in Scientific Community",
   x_label = "NZAVS Waves",
   point_alpha = 0.02,
   smoothing_method = "gam",
@@ -423,8 +247,11 @@ discontinuity_plot_conspiracy_beliefs <- margot_plot_discontinuity(
   data_fraction = 1,
   event_label_size = 4,
   seed = 123,
+  width = 12,
+  height = 8,
   save_path = here::here(push_mods)
 )
+discontinuity_plot_conspiracy_beliefs
 
 # path: discontinuity_plot_conspiracy_beliefs_20240902.qs
 
@@ -443,7 +270,7 @@ warm_names_list <- as.list(warm_column_names)  # No need for extra quotes
 
 # Use in your function
 
-all <- margot_plot_slope(
+warmth_time <- margot_plot_slope(
   data = dat,
   y_vars = warm_names_list,
   y_label = "Warmth",
@@ -475,7 +302,9 @@ muslims_and_others <- margot::margot_plot_slope(
   y_vars = list("warm_muslims", "warm_asians", "warm_indians", "warm_immigrants"), #"conspiracy_beliefs",
   # event_dates = c("2020-03-26"),
   # event_names = c("COVID-19 Lockdown"),
-   y_label = "Warmth"#,
+   y_label = "Warmth",
+  width = 12,
+  height = 8
  # x_label = "NZAVS Waves",
  # use_facets = FALSE
   )
@@ -486,6 +315,8 @@ test_2 <- margot_plot_boxplot(
   y_vars = list("warm_muslims", "warm_asians", "warm_indians", "warm_immigrants"),
   x_label = "NZAVS Waves",
   x_var = "wave"
+  width = 12,
+  height = 8
 )
 print( test_2 )
 
@@ -497,6 +328,8 @@ test_3 <- margot_plot_slope_covariate(
   y_label = "Warmth",
   x_label = "Wave",
   color_label = "Work Hours"
+  width = 12,
+  height = 8
 )
 test_3
 
@@ -516,6 +349,8 @@ test_5 <- margot_plot_slope_covariate(
   data = dat,
   formula = warm_muslims ~ wave:pol_wing,
   terms = c("wave", "pol_wing"),
+  width = 12,
+  height = 8
   #title = "Warmth Towards Muslims by Work Hours Over Time",
  # y_label = "Warmth",
 #  x_label = "Wave",
@@ -531,7 +366,9 @@ test_3 <- margot_plot_slope_covariate(
   #title = "Warmth Towards Muslims by Work Hours Over Time",
   y_label = "Warmth",
   x_label = "Wave",
-  color_label = "Work Hours"
+  color_label = "Work Hours",
+  width = 12,
+  height = 8
 )
 test_3
 
@@ -543,7 +380,9 @@ test_multi <- margot_plot_histogram(
   wave_col = "wave",
   waves = c(2018, 2020, 2021),
   binwidth = 0.5,
-  facet_scales = "free"
+  facet_scales = "free",
+  width = 12,
+  height = 8
 )
 
 test_multi
@@ -586,12 +425,15 @@ dat_test<- dat |> dplyr::filter(wave %in% c(2018,2020,2021)) |> select("warm_imm
 
 dat_test
 
-this_works <- margot_plot_boxplot(data = dat, y_vars = c("warm_muslims", "warm_immigrants"), x_var = "wave")
+this_works <- margot_plot_boxplot(data = dat, y_vars = c("warm_muslims", "warm_immigrants"))
 
 this_works
 
-this_also_works <- margot_plot_boxplot(data = dat_2022, y_vars = c("warm_muslims", "warm_immigrants"), x_var = "wave")
+this_also_works <- margot_plot_boxplot(data = dat, y_vars = c("warm_muslims", "warm_immigrants"), coord_flip = TRUE)
 
+this_also_works
+
+this_also_works <- margot_plot_boxplot(data = dat, y_vars = c("warm_muslims", "warm_immigrants"), wave = c("2012", "2022"))
 this_also_works
 
 this_works_too <- margot_plot_boxplot(data = dat_2022, y_vars = "warm_muslims", x_var = "wave")
@@ -619,3 +461,240 @@ hist
 
 interactive_hist<- plotly::ggplotly(hist)
 interactive_hist
+
+
+
+
+
+# plot individual responses -----------------------------------------------
+margot_plot_individual_responses <- function(data,
+                                             y_vars,
+                                             id_col = "id",
+                                             wave_col = "wave",
+                                             waves = NULL,
+                                             data_fraction = 1,
+                                             random_draws = NULL,
+                                             title = NULL,
+                                             y_label = NULL,
+                                             x_label = NULL,
+                                             color_palette = NULL,
+                                             theme = theme_classic(),
+                                             include_timestamp = FALSE,
+                                             save_path = NULL,
+                                             width = 16,
+                                             height = 8,
+                                             seed = NULL,
+                                             wave_label_angle = 45,
+                                             full_response_scale = TRUE,
+                                             scale_range = NULL,
+                                             prefix = NULL,
+                                             jitter_amount = 0.05,
+                                             legend_position = "top") {
+
+  cli::cli_h1("Margot Plot Individual Responses")
+
+  # Check for required columns
+  required_cols <- c(id_col, wave_col, y_vars)
+  if (!all(required_cols %in% colnames(data))) {
+    missing_cols <- setdiff(required_cols, colnames(data))
+    cli::cli_alert_danger("Missing required columns: {paste(missing_cols, collapse = ', ')}")
+    return(NULL)
+  }
+
+  # Prepare the data
+  cli::cli_alert_info("Preparing data...")
+
+  # Filter waves if specified
+  if (!is.null(waves)) {
+    data <- data[data[[wave_col]] %in% waves, ]
+  }
+
+  # Determine number of waves
+  unique_waves <- unique(data[[wave_col]])
+  num_waves <- length(unique_waves)
+
+  # Calculate eligibility
+  cli::cli_alert_info("Calculating eligibility...")
+
+  # Function to check if an ID meets the eligibility criteria
+  check_eligibility <- function(id_data) {
+    all(!is.na(id_data[, y_vars])) && nrow(id_data) == num_waves
+  }
+
+  # Apply eligibility criteria
+  eligible_ids <- data %>%
+    group_by(!!sym(id_col)) %>%
+    group_map(~ if(check_eligibility(.x)) .y[[id_col]] else NULL) %>%
+    unlist()
+
+  data <- data[data[[id_col]] %in% eligible_ids, ]
+
+  # Check if there's any data left after filtering
+  if (nrow(data) == 0) {
+    cli::cli_alert_danger("No data left after applying eligibility criteria.")
+    return(NULL)
+  }
+
+  # Sample IDs if data_fraction < 1 or random_draws is specified
+  if (data_fraction < 1 || !is.null(random_draws)) {
+    cli::cli_alert_info("Sampling IDs...")
+    if (!is.null(seed)) set.seed(seed)
+
+    unique_ids <- unique(data[[id_col]])
+    n_ids <- length(unique_ids)
+
+    if (!is.null(random_draws)) {
+      sample_size <- min(random_draws, n_ids)
+    } else {
+      sample_size <- max(1, round(n_ids * data_fraction))
+    }
+
+    sampled_ids <- sample(unique_ids, size = sample_size)
+    data <- data[data[[id_col]] %in% sampled_ids, ]
+  }
+
+  cli::cli_alert_info("Pivoting data...")
+  df <- tidyr::pivot_longer(data, cols = all_of(y_vars), names_to = "variable", values_to = "value")
+
+  # Remove rows with missing values
+  df <- df[!is.na(df$value), ]
+
+  df$variable <- gsub("_", " ", df$variable)
+  df$variable <- tools::toTitleCase(df$variable)
+
+  # Determine y-axis limits if full_response_scale is TRUE
+  if (full_response_scale) {
+    cli::cli_alert_info("Calculating response scale limits...")
+    if (is.null(scale_range)) {
+      y_limits <- range(df$value, na.rm = TRUE, finite = TRUE)
+      if (!all(is.finite(y_limits))) {
+        cli::cli_alert_warning("Unable to determine y-axis limits from data. Using default range 0 to 1.")
+        y_limits <- c(0, 1)
+      }
+    } else {
+      if (length(scale_range) != 2 || !is.numeric(scale_range) || scale_range[1] >= scale_range[2]) {
+        cli::cli_alert_danger("Invalid scale_range. Using default range 0 to 1.")
+        y_limits <- c(0, 1)
+      } else {
+        y_limits <- scale_range
+      }
+    }
+  } else {
+    y_limits <- NULL
+  }
+
+  # Create the plot
+  cli::cli_alert_info("Creating plot...")
+
+  p <- tryCatch({
+    ggplot(df, aes(x = !!sym(wave_col), y = value, color = variable, group = interaction(!!sym(id_col), variable))) +
+      geom_point(position = position_jitter(height = jitter_amount, width = 0)) +
+      geom_line(position = position_jitter(height = jitter_amount, width = 0),
+                data = function(d) {
+                  d %>%
+                    group_by(!!sym(id_col), variable) %>%
+                    filter(n() > 1) %>%
+                    ungroup()
+                }) +
+      facet_wrap(as.formula(paste("~", id_col))) +
+      theme +
+      theme(axis.text.x = element_text(angle = wave_label_angle, hjust = 1),
+            legend.position = legend_position) +
+      labs(title = title,
+           y = y_label %||% "Value",
+           x = x_label %||% "Wave",
+           color = "Variable")
+  }, error = function(e) {
+    cli::cli_alert_danger("Error creating plot: {conditionMessage(e)}")
+    return(NULL)
+  })
+
+  if (is.null(p)) {
+    return(NULL)
+  }
+
+  # Apply y-axis limits if full_response_scale is TRUE
+  if (full_response_scale && !is.null(y_limits)) {
+    y_range <- diff(y_limits)
+    p <- p + coord_cartesian(ylim = c(y_limits[1] - y_range * 0.05, y_limits[2] + y_range * 0.05))
+  }
+
+  # Apply color palette
+  if (is.null(color_palette)) {
+    color_palette <- c("#56B4E9", "#E69F00", "#009E73", "#F0E442", "#0072B2",
+                       "#D55E00", "#CC79A7", "#000000", "#999999")
+  }
+  p <- p + scale_color_manual(values = color_palette)
+
+  # Save plot if a save path is provided
+  if (!is.null(save_path)) {
+    cli::cli_alert_info("Saving plot...")
+    tryCatch({
+      filename <- "individual_responses_plot"
+
+      if (!is.null(prefix) && nzchar(prefix)) {
+        filename <- paste0(prefix, "_", filename)
+      }
+
+      filename <- paste0(filename, "_", paste(y_vars, collapse = "_"))
+
+      if (include_timestamp) {
+        filename <- paste0(filename, "_", format(Sys.time(), "%Y%m%d_%H%M%S"))
+      }
+
+      full_path_png <- file.path(save_path, paste0(filename, ".png"))
+      ggsave(
+        plot = p,
+        filename = full_path_png,
+        width = width,
+        height = height,
+        units = "in",
+        dpi = 300
+      )
+      cli::cli_alert_success("Plot saved as PNG: {.file {full_path_png}}")
+
+      margot::here_save_qs(p, filename, save_path, preset = "high", nthreads = 1)
+      full_path_qs <- file.path(save_path, paste0(filename, ".qs"))
+      cli::cli_alert_success("Plot object saved using qs: {.file {full_path_qs}}")
+
+    }, error = function(e) {
+      cli::cli_alert_danger("An error occurred while saving the plot: {conditionMessage(e)}")
+    })
+  } else {
+    cli::cli_alert_info("No save path provided. Plot not saved.")
+  }
+
+  cli::cli_alert_success("Plot created successfully \U0001F44D")
+
+  # Return the plot object directly
+  return(p)
+}
+plot_individual_warmth_muslims <- margot_plot_individual_responses(data = dat,
+                                                                   random_draws = 20,
+                                                                   y_vars = "warm_muslims",
+                                                                   waves = c(2016:2022),
+                                                                   seed = 123)
+plot_individual_warmth_muslims
+
+
+
+plot_individual_bmi <- margot_plot_individual_responses(
+  data = dat,
+  random_draws = 50,
+  y_vars = "hlth_bmi",
+  waves = c(2010:2022),
+  seed = 123
+)
+plot_individual_bmi
+
+
+
+plot_individual_religion_identification_level <- margot_plot_individual_responses(
+  data = dat,
+  random_draws = 100,
+  y_vars = "religion_identification_level",
+  waves = c(2010:2022),
+  seed = 123
+)
+plot_individual_religion_identification_level
++
