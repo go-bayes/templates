@@ -406,15 +406,15 @@ coloured_histogram <- function(df, col_name, binwidth = 1, scale_min = NULL, sca
   if(!col_name %in% names(df)) stop("col_name does not exist in the dataframe.")
   if(all(is.na(df[[col_name]]))) stop("The specified column contains only NA values.")
 
-  # Automatically determine scale_min and scale_max if not provided
+  #  determine scale_min and scale_max if not provided
   if(is.null(scale_min)) scale_min <- min(df[[col_name]], na.rm = TRUE)
   if(is.null(scale_max)) scale_max <- max(df[[col_name]], na.rm = TRUE)
 
-  # Adjust scale_min and scale_max to create thresholds for highlighting
+  # adjust scale_min and scale_max to create thresholds for highlighting
   adjusted_min <- scale_min + .99
   adjusted_max <- scale_max - .99
 
-  # Title and subtitle using Title Case for the column name
+  # title and subtitle using Title Case for the column name
   library(tools)
   dynamic_title <- paste("Density of Responses for", tools::toTitleCase(gsub("_", " ", col_name)))
   fixed_sub_title <- paste(
@@ -423,7 +423,7 @@ coloured_histogram <- function(df, col_name, binwidth = 1, scale_min = NULL, sca
     "ranges within 1 unit of limit."
   )
 
-  # Categorize data based on proximity to min/max and chosen highlight range
+  # cat data based on proximity to min/max and chosen highlight range
   df_copy <- df %>%
     mutate(fill_category = case_when(
       .data[[col_name]] <= adjusted_min & (highlight_range %in% c("lowest", "both")) ~ "Lowest",
@@ -444,36 +444,21 @@ coloured_histogram <- function(df, col_name, binwidth = 1, scale_min = NULL, sca
   return(p)
 }
 
-#
-# # requires one wave
-# df_19 <- df_nz |>
-#   dplyr::filter(wave == 2019)
-#
-# # graph
-# graph <- coloured_histogram(
-#   df = df_19,
-#   col_name = "forgiveness",
-#   scale_min = 1,
-#   scale_max = 7,
-#   highlight_range = "highest",
-#   binwidth = .1 # set an appropriate binwidth for your data
-# )
-# graph
 
 # get 1 -1 histogram from the mean
 coloured_histogram_sd <- function(df, col_name, binwidth = 1) {
-  # Compute statistics
+  # compute statistics
   avg_val <- mean(df[[col_name]], na.rm = TRUE)
   std_val <- sd(df[[col_name]], na.rm = TRUE)
 
-  # Create data frame for v-lines and arrows
+  # make data frame for v-lines and arrows
   line_data <- data.frame(
     value = c(avg_val - std_val, avg_val, avg_val + std_val),
     description = c("Mean - 1 SD", "Mean", "Mean + 1 SD"),
     color = c("dodgerblue", "darkgray", "gold2")
   )
 
-  # Create arrow data specifically for mean to +/- 1 SD
+  # make arrow data specifically for mean to +/- 1 SD
   arrow_data <- data.frame(
     x = avg_val,
     xend = c(avg_val - std_val, avg_val + std_val),
@@ -482,10 +467,10 @@ coloured_histogram_sd <- function(df, col_name, binwidth = 1) {
     color = c("Mean to Mean - 1 SD", "Mean to Mean + 1 SD")
   )
 
-  # Dynamically construct the title, capitalizing the first letter of the column name
+  #  construct the title, capitalizing the first letter of the column name
   dynamic_title <- paste(tools::toTitleCase(col_name), "Histogram with Mean and Standard Deviation Intervals")
 
-  # Create the plot
+  # make plot
   p <- ggplot(df, aes(x = !!rlang::sym(col_name))) +
     geom_histogram(aes(y = ..count..), binwidth = binwidth, fill = "lightgray") +
     geom_vline(data = line_data, aes(xintercept = value, color = description), linewidth = 1.5) +
@@ -508,22 +493,6 @@ coloured_histogram_sd <- function(df, col_name, binwidth = 1) {
 
   return(p)
 }
-
-# # get one wave of data
-# df_19 <- df_nz |>
-#   dplyr::filter(wave == 2019)
-#
-# # graph
-# graph_density_of_exposure <- coloured_histogram_sd(
-#   df = df_19,
-#   col_name = "forgiveness",
-#   binwidth = .5 # set an appropriate binwidth for your data
-# )
-
-# # print
-# graph_density_of_exposure
-#
-
 
 # coloured shift histogram ------------------------------------------------
 
@@ -627,15 +596,15 @@ coloured_histogram_shift <- function(df, col_name, binwidth = 1, range_highlight
     "Blue region denotes population shifted down to grey"
   }
 
-  # Optionally add average line description to the subtitle if the line is to be shown
+  #  add average line description to the subtitle if the line is to be shown
   if(show_avg_line) {
     subtitle_text <- paste(subtitle_text, "Red dashed line represents the average value.")
   }
 
-  # Convert col_name to title case for the title
+  # convert col_name to title case for the title
   col_name_title_case <- tools::toTitleCase(col_name)
 
-  # create the histogram with the new fill_colour column for colouring
+  # make histogram with new fill_colour column for colouring
   p <- ggplot(df, aes(x = !!col_name_sym, fill = fill_color)) +
     geom_histogram(binwidth = binwidth, color = "black", alpha = 0.7) +
     scale_fill_identity() +
@@ -645,7 +614,7 @@ coloured_histogram_shift <- function(df, col_name, binwidth = 1, range_highlight
          y = "Count") +
     theme_minimal()
 
-  # Conditionally add the average value line
+  # conditionally add the average value line
   if(show_avg_line) {
     p <- p + geom_vline(xintercept = avg_val, color = "red", linetype = "dashed", size = .75)
   }
@@ -656,42 +625,7 @@ coloured_histogram_shift <- function(df, col_name, binwidth = 1, range_highlight
 
 
 
-# Call the function with the correct parameters
-
-# requires individual wave
-# df_19 <- df_nz |>
-#   dplyr::filter(wave == 2019)
-#
-# # graph
-# graph_density_of_exposure <- coloured_histogram_shift(
-#   df = df_19,
-#   shift = "down",
-#   col_name = "forgiveness",
-#   show_avg_line = TRUE,
-#   binwidth = .5, # Set an appropriate binwidth for your data
-#   range_highlight = c(3.9,10)
-# )
-
-# # print the graph
-# graph_density_of_exposure
-
-
-# Example usage
-#standard_deviation_exposure <- coloured_histogram_shift(dt_19, col_name = "forgiveness", binwidth = .5, range_highlight = "below")
-
-
-
-# sample data
-#my_data <- data.frame(my_column = sample(1:7, 1000, replace = TRUE))
-
-# head(my_data)
-# test
-#coloured_histogram(my_data, col_name = "my_column", scale_min = 1, scale_max = 7)
-
-
-
-# function to remove variable from list
-# Function to remove a variable from a list
+# function to remove a variable from a list
 remove_var <- function(variable_list, remove_elements) {
   # Remove the specified elements
   updated_list <- setdiff(variable_list, remove_elements)
@@ -700,30 +634,7 @@ remove_var <- function(variable_list, remove_elements) {
   return(updated_list)
 }
 
-# # example
-# names_base_t2_hlth_fatigue_z <- c("t0_education_level_coarsen", "t0_eth_cat", "t0_sample_origin", "t0_total_siblings_factor",
-#                                   "t0_alert_level_combined_lead", "t0_male_z", "t0_age_z", "t0_nz_dep2018_z", "t0_nzsei13_z",
-#                                   "t0_born_nz_z", "t0_hlth_disability_z", "t0_kessler_latent_depression_z", "t0_kessler_latent_anxiety_z",
-#                                   "t0_support_z", "t0_belong_z", "t0_household_inc_log_z", "t0_partner_z", "t0_political_conservative_z",
-#                                   "t0_urban_z", "t0_children_num_z", "t0_hours_children_log_z", "t0_hours_work_log_z",
-#                                   "t0_hours_housework_log_z", "t0_hours_exercise_log_z", "t0_agreeableness_z", "t0_conscientiousness_z",
-#                                   "t0_extraversion_z", "t0_honesty_humility_z", "t0_openness_z", "t0_neuroticism_z",
-#                                   "t0_modesty_z", "t0_religion_identification_level_z", "t0_hlth_fatigue_z")
-#
-# # Elements to remove
-# elements_to_remove <- c("t0_alert_level_combined_lead", "t0_hlth_fatigue_z")
-#
-# # Remove the elements
-# updated_list_fatigue <- remove_var(names_base_t2_hlth_fatigue_z, elements_to_remove)
-#
-# # Display the updated list
-# print(updated_list)
-
-
-
-
 # functions for running OLS and LMER in place of causal models ------------
-
 run_ols <-
   function(dat,
            exposure,
@@ -785,9 +696,6 @@ run_ols <-
 
     return(return_list)
   }
-
-
-
 
 # ols with censoring ------------------------------------------------------
 un_ols <- function(dat,
@@ -851,15 +759,11 @@ un_ols <- function(dat,
 }
 
 
-# Required Libraries
+# libs
 library(ipw)
 library(dplyr)
 
-library(ipw)
-library(dplyr)
-
-
-
+# lmer
 run_lmer <-
   function(dat_long,
            time_var,
@@ -1136,8 +1040,6 @@ select_and_rename_cols <- function(names_base, baseline_vars, outcome, from_pref
 
 
 # format for lmtp table---------------------------------------------------
-
-
 margot_tab_lmtp <-
   function(tmtp_output,
            scale = c("RD", "RR"),
@@ -1308,8 +1210,6 @@ lmtp_evalue_tab <- function(x, delta = 1, sd = 1, scale = c("RD", "RR")) {
 
 
 # experimental version group tab for lmtp ---------------------------------
-
-
 # group tab ---------------------------------------------------------------
 
 # experimental version for LMTP # should work for all graphs
@@ -1803,73 +1703,6 @@ margot_wide_impute_baseline <-
 
 
 
-# # older
-# margot_wide <- function(dat_long, baseline_vars, exposure_var, outcome_vars, exclude_vars = c()) {
-#   require(tidyverse)
-#   # Add the 'time' column to the data
-#   data_with_time <- dat_long %>%
-#     mutate(time = as.numeric(wave) - 1) %>%
-#     arrange(id, time)
-#
-#   # Filter the data based on the time condition
-#   data_filtered <- data_with_time %>%
-#     filter(time >= 0)
-#
-#   # Create the wide data frame
-#   wide_data <- data_filtered %>%
-#     dplyr::select(-all_of(exclude_vars))  %>%  # Exclude specified variables
-#     pivot_wider(
-#       id_cols = id,
-#       names_from = time,
-#       values_from = -c(id, time),
-#       names_glue = "t{time}_{.value}",
-#       names_prefix = "t"
-#     )
-#
-#   # Define a custom function to filter columns based on conditions
-#   custom_col_filter <- function(col_name) {
-#     if (startsWith(col_name, "t0_")) {
-#       return(col_name %in% c(
-#         paste0("t0_", baseline_vars),
-#         paste0("t0_", exposure_var),
-#         paste0("t0_", outcome_vars)
-#       ))
-#     } else if (startsWith(col_name, "t1_")) {
-#       return(col_name %in% paste0("t1_", exposure_var))
-#     } else if (grepl("^t[2-9][0-9]*_", col_name)) {
-#       return(col_name %in% paste0("t2_", outcome_vars))
-#     } else {
-#       return(FALSE)
-#     }
-#   }
-#
-#   # Apply the custom function to select the desired columns
-#   wide_data_filtered <- wide_data %>%
-#     dplyr::select(id, which(sapply(colnames(wide_data), custom_col_filter))) %>%
-#     dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
-#     arrange(id)
-#
-#   # Extract unique time values from column names
-#   time_values <- gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
-#   time_values <- time_values[grepl("^[0-9]+$", time_values)]
-#   time_values <- unique(as.numeric(time_values))
-#   time_values <- time_values[order(time_values)]
-#
-#   # Relocate columns iteratively
-#   for (i in 2:(length(time_values) - 1)) {
-#     wide_data_filtered <- wide_data_filtered %>%
-#       dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
-#   }
-#
-#   # Reorder t0_ columns
-#   t0_column_order <- c(paste0("t0_", baseline_vars), paste0("t0_", exposure_var), paste0("t0_", outcome_vars))
-#   wide_data_ordered <- wide_data_filtered %>%
-#     select(id, t0_column_order, everything())
-#
-#   return(data.frame(wide_data_ordered)) # Ensure output is a data.frame
-# }
-
-
 
 # older versions
 create_wide_data <-
@@ -1950,16 +1783,15 @@ create_wide_data_general <-
            outcome_vars,
            exclude_vars = c()) {
     require(tidyverse)
-    # Add the 'time' column to the data
     data_with_time <- dat_long %>%
       mutate(time = as.numeric(wave) - 1) %>%
       arrange(id, time)
 
-    # Filter the data based on the time condition
+    # folter the data based on the time condition
     data_filtered <- data_with_time %>%
       filter(time >= 0)
 
-    # Create the wide data frame
+    # make the wide data frame
     wide_data <- data_filtered %>%
       dplyr::select(-exclude_vars)  %>%  # Exclude specified variables
       pivot_wider(
@@ -1970,7 +1802,7 @@ create_wide_data_general <-
         names_prefix = "t"
       )
 
-    # Define a custom function to filter columns based on conditions
+    # custom function to filter columns based on conditions
     custom_col_filter <- function(col_name) {
       if (startsWith(col_name, "t0_")) {
         return(col_name %in% c(
@@ -1987,7 +1819,7 @@ create_wide_data_general <-
       }
     }
 
-    # Apply the custom function to select the desired columns
+    # apply the custom function to select the desired columns
     wide_data_filtered <- wide_data %>%
       dplyr::select(id, which(sapply(
         colnames(wide_data), custom_col_filter
@@ -1995,20 +1827,20 @@ create_wide_data_general <-
       dplyr::relocate(starts_with("t0_"), .before = starts_with("t1_"))  %>%
       arrange(id)
 
-    # Extract unique time values from column names
+    # get unique time values from column names
     time_values <-
       gsub("^t([0-9]+)_.+$", "\\1", colnames(wide_data_filtered))
     time_values <- time_values[grepl("^[0-9]+$", time_values)]
     time_values <- unique(as.numeric(time_values))
     time_values <- time_values[order(time_values)]
 
-    # Relocate columns iteratively
+    # move columns iteratively
     for (i in 2:(length(time_values) - 1)) {
       wide_data_filtered <- wide_data_filtered %>%
         dplyr::relocate(starts_with(paste0("t", time_values[i + 1], "_")), .after = starts_with(paste0("t", time_values[i], "_")))
     }
 
-    # Reorder t0_ columns
+    # reorder t0_ columns
     t0_column_order <-
       c(
         paste0("t0_", baseline_vars),
@@ -2024,10 +1856,6 @@ create_wide_data_general <-
 
 
 # create_filter_wide_dataframes -------------------------------------------
-
-#Here is a function create_filtered_wide_dataframes that takes the output of create_wide_data_general and returns a list of dataframes filtered according to the levels of the factor variable provided in exposure_var.
-
-
 margot_filter <- function(dat_wide, exposure_vars) {
   # Check if exposure_vars are in dat_wide
   for (exposure_var in exposure_vars) {
@@ -2046,14 +1874,14 @@ margot_filter <- function(dat_wide, exposure_vars) {
     stop("More than one factor exposure variable is not allowed")
   }
 
-  # Create a list to store the filtered dataframes
+  # mak a list to store the filtered dataframes
   list_filtered_df <- list()
 
   if (length(factor_exposure_vars) == 1) {
     # Get levels of the factor
     factor_levels <- levels(dat_wide[[factor_exposure_vars]])
 
-    # Loop over each level and filter the dataframe
+    # love over each level and filter the dataframe
     for (level in factor_levels) {
       filtered_df <- dat_wide %>%
         filter((!!rlang::sym(factor_exposure_vars)) == level) %>%
@@ -2070,10 +1898,6 @@ margot_filter <- function(dat_wide, exposure_vars) {
   return(list_filtered_df)
 }
 
-
-
-
-
 create_filtered_wide_dataframes <-
   function(dat_wide, exposure_vars) {
     # Check if exposure_vars are in dat_wide
@@ -2083,7 +1907,7 @@ create_filtered_wide_dataframes <-
       }
     }
 
-    # Get factor and continuous exposure variables
+    # get factor and continuous exposure variables
     factor_exposure_vars <-
       exposure_vars[sapply(dat_wide[exposure_vars], is.factor)]
     continuous_exposure_vars <-
@@ -2093,14 +1917,14 @@ create_filtered_wide_dataframes <-
       stop("More than one factor exposure variable is not allowed")
     }
 
-    # Create a list to store the filtered dataframes
+    # make a list to store the filtered dataframes
     list_filtered_df <- list()
 
     if (length(factor_exposure_vars) == 1) {
-      # Get levels of the factor
+      # get levels of the factor
       factor_levels <- levels(dat_wide[[factor_exposure_vars]])
 
-      # Loop over each level and filter the dataframe
+      # loop over each level and filter the dataframe
       for (level in factor_levels) {
         filtered_df <- dat_wide %>%
           filter((!!rlang::sym(factor_exposure_vars)) == level) %>%
@@ -2109,7 +1933,7 @@ create_filtered_wide_dataframes <-
         list_filtered_df[[level]] <- filtered_df
       }
     } else {
-      # If there are no factor exposure variables, just arrange by id
+      # if there are no factor exposure variables, just arrange by id
       filtered_df <- dat_wide %>% arrange(id)
       list_filtered_df[["data"]] <- filtered_df
     }
@@ -2117,23 +1941,8 @@ create_filtered_wide_dataframes <-
     return(list_filtered_df)
   }
 
-# test
-# Assume dat_long, baseline_vars, exposure_var, outcome_vars, and exclude_vars are defined
-
-# # Create wide data
-# wide_data <- create_wide_data_general(dat_long, baseline_vars, exposure_var, outcome_vars, exclude_vars)
-#
-# # Create filtered dataframes
-# list_filtered_df <- create_filtered_wide_dataframes(wide_data, exposure_var)
-#
-# # Access individual filtered dataframe
-# q1_df <- list_filtered_df[["q1"]]
-# q2_df <- list_filtered_df[["q2"]]
-# # ...and so on for each level
-
 
 # impute data by exposure level of variable -------------------------------
-
 impute_and_combine <-
   function(list_df,
            m = 10,
@@ -2169,19 +1978,19 @@ impute_and_combine <-
       completed_df
     })
 
-    # Bind rows
+    # bind rows
     complete_df <- dplyr::bind_rows(list_completed_df)
 
-    # Assign new .imp and .id values
+    # assign new .imp and .id values
     complete_df <- complete_df %>%
       dplyr::group_by(.imp) %>%
       dplyr::mutate(.id = row_number()) %>%
       dplyr::ungroup()
 
-    # Convert to a list of data frames
+    #  a list of data frames
     data_list <- split(complete_df, complete_df$.imp)
 
-    # Convert to mids
+    # mids
     mids_df <- miceadds::datalist2mids(data_list, progress = FALSE)
 
     return(mids_df)
@@ -2711,11 +2520,11 @@ causal_contrast_engine <- function(df,
       rd_expression_str <- glue::glue("{treat_1_name} - {treat_0_name}")
       rd_expression <- rlang::parse_expr(rd_expression_str)
 
-      # Create a new column RD in the sim_estimand object
+      # make a new column RD in the sim_estimand object
       sim_estimand <-
         transform(sim_estimand, RD = eval(rd_expression))
 
-      # Create a summary of sim_estimand
+      # make a summary of sim_estimand
       sim_estimand_summary <- summary(sim_estimand)
 
       return(sim_estimand_summary)
@@ -2731,8 +2540,6 @@ causal_contrast_engine <- function(df,
 
 
 # Table is much better - we drop a redundant term
-
-
 tab_ate_engine <-
   function(x,
            new_name,
@@ -2895,7 +2702,6 @@ double_robust <-
 
 
 # margot_plot -------------------------------------------------------------
-
 margot_plot <- function(.data,
                         type = c("RD", "RR"),
                         title,
@@ -3021,11 +2827,8 @@ margot_plot <- function(.data,
 
 
 ##### OLDER VERSIONS HERE #####
-
-
-
 # causal_contrast_general <- function(df, Y, X, baseline_vars = "1", treat_0 = 0, treat_1 = 1, estimand = c("ATE", "ATT"), scale = c("RR","RD"), nsims = 200, cores = parallel::detectCores(), family = binomial(), weights = TRUE, continuous_X = FALSE, splines = FALSE) {
-#   # Load required packages
+#   #  required packages
 #   require("clarify")
 #   require("rlang") # for building dynamic expressions
 #   require("glue") # for easier string manipulation
@@ -3039,12 +2842,12 @@ margot_plot <- function(.data,
 #
 #   # Check if df is a mice object or a data.frame
 #   if ("wimids" %in% class(df)) {
-#     # Fit models using the complete datasets (all imputations)
+#     # fot models using the complete datasets (all imputations)
 #     fits <-  lapply(complete(df, "all"), function(d) {
 #       # Set weights variable based on the value of 'weights' argument
 #       weight_var <- if (weights) d$weights else NULL
 #
-#       # Check if continuous_X and splines are both TRUE
+#       # chek if continuous_X and splines are both TRUE
 #       if (continuous_X && splines) {
 #         require(splines) # splines package
 #         formula_str <- paste(Y, "~ bs(", X , ")", "*", "(", paste(baseline_vars, collapse = "+"), ")")
@@ -3086,7 +2889,7 @@ margot_plot <- function(.data,
 #
 #     sim.imp <- sim(fit, n = nsims, vcov = "HC")# robust covariance matrix see clarify package
 #   }
-#   # Compute the Average Marginal Effects
+#   # compute the Average Marginal Effects
 #
 #   if (!continuous_X && estimand == "ATT") {
 #     # Build dynamic expression for subsetting

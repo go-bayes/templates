@@ -144,21 +144,6 @@ packages <- c(
 
 ipak(packages)
 
-# next install rethinking
-# if (!require(rethinking)) {
-#   devtools::install_github("rmcelreath/rethinking")
-# }
-
-# if (!require(CMAverse)) {
-#   devtools::install_github("BS1125/CMAverse")
-# }
-
-# install.packages("remotes")
-
-# if (!require(cmdstanr)) {
-#   remotes::install_github("stan-dev/cmdstanr")
-#   install_cmdstan()
-# }
 
 
 # targeted max liklihood
