@@ -272,7 +272,7 @@ boilerplate_manage_measures(measures_path = measures_path)
 
 
 
-2
+22
 test_a <- readRDS(here::here("boilerplate", "data", "test_a.rds"))
 test_b <- readRDS(here::here("boilerplate", "data", "test_b.rds"))
 
