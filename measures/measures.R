@@ -201,6 +201,10 @@ here::here()
 measures_path <- here::here("measures", "data")
 # Example
 
+boilerplate_manage_measures(measures_path = measures_path)
+
+
+
 # baseline variables
 baseline_vars <- c("age", "male_binary", "parent_binary")
 
