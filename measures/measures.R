@@ -17,6 +17,15 @@ library(here)
 devtools::install_github("go-bayes/boilerplate")
 library("boilerplate")
 
+
+
+# modify library
+measures_path <- here::here("measures", "data")
+# Example
+
+boilerplate_manage_measures(measures_path = measures_path)
+
+
 # update
 # pak::pak(c(
 #   "clarify",
@@ -275,8 +284,6 @@ cat(appendix_text)
 boilerplate_manage_measures(measures_path = measures_path)
 
 
-
-222
 test_a <- readRDS(here::here("boilerplate", "data", "test_a.rds"))
 test_b <- readRDS(here::here("boilerplate", "data", "test_b.rds"))
 
