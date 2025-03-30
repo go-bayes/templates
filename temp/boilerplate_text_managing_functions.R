@@ -12,10 +12,7 @@
 #'   like "description", "reference", "waves", "keywords", and "items".
 #' @param db Optional existing measures database. If not supplied, the default db is loaded.
 #' @param measures_path Character. Path to the directory where measure database files are stored.
-#'   If NULL (default), the function will look in the following locations in order:
-#'   1. "boilerplate/data/" subdirectory of the current working directory (via here::here())
-#'   2. Package installation directory's "boilerplate/data/" folder
-#'   3. "boilerplate/data/" relative to the current working directory
+#'   If NULL (default), the function will use the current working directory or package data directory.
 #' @param file_name Character. Name of the file to save or load (without path).
 #'   If NULL (default), uses "measures_db.rds".
 #'
@@ -564,4 +561,3 @@ migrate_measures_db <- function(old_db, categorize = FALSE, categories = NULL) {
 
   return(new_db)
 }
-

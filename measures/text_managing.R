@@ -1,77 +1,89 @@
 # test
 # initialise measures
-boilerplate_manage_text(
-  category = "methods",
-  action = "save",
-  db = methods_db,
-  file_path = "/Users/joseph/GIT/templates/method/boilerplate-text/methods_db.rds"
-)
+library(glue)
+methods_path = here::here("/Users/joseph/GIT/templates/databases/methods")
+
+
+# read
+methods_db = margot::here_read("methods_db", methods_path)
+
+# boilerplate_manage_text(
+#   category = "methods",
+#   action = "save",
+#   db = methods_db,
+#   file_path = methods_path
+# )
 
 # list defaults
-methods_db <- boilerplate_manage_text(category = "methods", action = "list")
-
+boilerplate_manage_text(category = "methods", action = "list", db = methods_db)
 
 # remove current sample
-methods_db <- boilerplate_manage_text(
+temp_methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "remove",
-  key = "sample",
-  db = methods_db
+  name = "sample.nzavs",
+  db = methods_db,
 )
-
 
 # ------------------------------------------------------
 # sample section
 # ------------------------------------------------------
-sample_information_text <- "Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from `r n_total` participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB). Refer to [Appendix A](#appendix-timeline) for a histogram of daily responses for this cohort."
+sample_information_text <- "Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from {{n_total}} participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB). Refer to [Appendix A](#appendix-timeline) for a histogram of daily responses for this cohort."
 
 
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  key = "sample",
+  name = "sample.nzavs",
   value = list(
     default = sample_information_text  # keep the existing text as the default
   ),
   db = methods_db
 )
 
-cat(methods_db$sample$default)
+cat(methods_db$sample$nzavs$default)
 
-cat(methods_db$causal_assumptions$identification)
 
 
 # ------------------------------------------------------
 # identification assumptions section
 # ------------------------------------------------------
+
+# remove current identification assumptions
+methods_db <- boilerplate_manage_text(
+  category = "methods",
+  action = "remove",
+  name = "identification_assumptions",
+  db = methods_db
+)
+
+# add
 identification_text <- "This study relies on the following key identification assumptions for estimating the causal effect of {{exposure_var}}:
 
 1. **Consistency**: the observed outcome under the observed {{exposure_var}} is equal to the potential outcome under that exposure level. As part of consistency, we assume no interference: the potential outcomes for one individual are not affected by the {{exposure_var}} status of other individuals.
 
-2. **Positivity**: there is a non-zero probability of receiving each level of {{exposure_var}} for every combination of values of {{exposure_var}} and confounders in the population.
+2. **No unmeasured confounding**: all variables that affect both {{exposure_var}} and the outcome have been measured and accounted for in the analysis.
 
-3. **No unmeasured confounding**: all variables that affect both {{exposure_var}} and the outcome have been measured and accounted for in the analysis.
+3. **Positivity**: there is a non-zero probability of receiving each level of {{exposure_var}} for every combination of values of {{exposure_var}} and confounders in the population."
 
-Satisfaction of these assumptions is critical for the causal interpretability of our results and should be carefully considered in light of the study design and available data."
 
-# remove current sample
-# methods_db <- boilerplate_manage_text(
-#   category = "methods",
-#   action = "remove",
-#   key = "identification_assumptions",
-#   db = methods_db
-# )
+
+
+
 
 
 # add identification assumptions section
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "identification_assumptions.standard",
+  name = "identification_assumptions.standard",
   value = identification_text,
   db = methods_db
 )
 cat(methods_db$identification_assumptions$standard)
+
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
 
 # ------------------------------------------------------
 # confounding control section
@@ -82,18 +94,21 @@ confounding_text <- "To manage confounding in our analysis, we implement [@vande
 2. **Excluded instrumental variables** that affect the exposure but not the outcome. Instrumental variables do not contribute to controlling confounding and can reduce the efficiency of the estimates.
 3. **Included proxies for unmeasured confounders** affecting both exposure and outcome. According to the principles of d-separation @pearl2009a, using proxies allows us to control for their associated unmeasured confounders indirectly.
 4. **Controlled for baseline exposure** and **baseline outcome**. Both are used as proxies for unmeasured common causes, enhancing the robustness of our causal estimates, refer to @vanderweele2020."
+
 # These methods adhere to the guidelines provided in [@bulbulia2024PRACTICAL] and were pre-specified in our study protocol [{{protocol_url}}]({{protocol_url}}).
 
 # add confounding control section
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "confounding_control.vanderweele",
+  name = "confounding_control.vanderweele",
   value = confounding_text,
   db = methods_db
 )
 
 cat(methods_db$confounding_control$vanderweele)
+
+margot::here_save(methods_db, "methods_db", methods_path)
 
 # ------------------------------------------------------
 # eligibility criteria section
@@ -112,12 +127,15 @@ A total of {{n_participants}} individuals met these criteria and were included i
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "eligibility_criteria.standard",
+  name = "eligibility_criteria.standard",
   value = eligibility_text,
   db = methods_db
 )
 
 cat(methods_db$eligibility_criteria$standard)
+
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
 
 # ------------------------------------------------------
 # missing data handling section
@@ -140,20 +158,26 @@ missing_data_time_vary_lmtp_text <- "To mitigate bias from missing data, we impl
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "missing_data.lmtp",
+  name = "missing_data.lmtp",
   value = missing_data_lmtp_text,
   db = methods_db
 )
+
+margot::here_save(methods_db, "methods_db", methods_path)
 
 
 # add missing data handling for lmtp
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "missing_data.lmtp_time_vary",
+  name = "missing_data.lmtp_time_vary",
   value = missing_data_lmtp_text,
   db = methods_db
 )
+
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
+
 
 
 missing_data_grf_text <- "The GRF package accepts missing values at baseline. To obtain valid inference for missing responses we computed inverse probability of censoring weights. See Appendix {{grf_appendix}}."
@@ -162,10 +186,13 @@ missing_data_grf_text <- "The GRF package accepts missing values at baseline. To
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "missing_data.grf",
+  name = "missing_data.grf",
   value = missing_data_grf_text,
   db = methods_db
 )
+
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
 
 # ------------------------------------------------------
 # statistical estimator sections
@@ -178,10 +205,12 @@ lmtp_short_text <- "We estimate causal effects using the Longitudinal Modified T
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "statistical_estimator.lmtp.short",
+  name = "statistical_estimator.lmtp.short",
   value = lmtp_short_text,
   db = methods_db
 )
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
 
 # lmtp long
 lmtp_long_text <- "We perform statistical estimation using a Targeted Minimum Loss-based Estimation (TMLE) approach, specifically the Longitudinal Modified Treatment Policy (LMTP) estimator [@van2014targeted; @van2012targeted]. TMLE is a flexible framework for causal inference that provides valid uncertainty estimates. LMTP extends TMLE to handle time-varying treatments and confounders.
@@ -202,10 +231,12 @@ We use cross-validation to avoid overfitting and to improve predictive performan
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "statistical_estimator.lmtp.long",
+  name = "statistical_estimator.lmtp.long",
   value = lmtp_long_text,
   db = methods_db
 )
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
 
 # sdr short
 sdr_short_text <- "We estimate causal effects of time-varying treatment policies using a Sequential Doubly Robust (SDR) estimator with the `lmtp` package [@williams2021; @díaz2021; @hoffman2023]. SDR involves two main steps. First, flexible machine learning models capture complex relationships among treatments, covariates, and outcomes [@díaz2021]. Second, SDR targets these initial fits to refine causal effect estimates. This design is multiply robust if treatments repeat over multiple waves [@diaz2023lmtp; @hoffman2023], ensuring consistency when either the outcome or treatment model is correct. We use `SuperLearner` [@SuperLearner2023] with `SL.ranger`, `SL.glmnet`, and `SL.xgboost` [@polley2023; @xgboost2023; @Ranger2017]. We use cross-validation to reduce overfitting and improve finite-sample performance. We create graphs, tables, and output with the `margot` package [@margot2024]."
@@ -214,8 +245,36 @@ sdr_short_text <- "We estimate causal effects of time-varying treatment policies
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "statistical_estimator.sdr.short",
+  name = "statistical_estimator.sdr.short",
   value = sdr_short_text,
+  db = methods_db
+)
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
+
+
+sdr_long_text <- "
+#### Sequentially Doubly Robust (SDR) Estimator
+
+We employ a Sequentially Doubly Robust (SDR) estimator to assess the causal effects of time-varying treatment policies [@díaz2021]. SDR belongs to the broader class of doubly robust targeted learning estimators [@vanderlaan2011; @vanderlaan2018].
+
+**Process:**
+1. **Initial Modeling:** SDR uses machine learning to flexibly model relationships among treatments, covariates, and outcomes at each time point, capturing complex dependencies without strict parametric assumptions.
+2. **Sequential Updating:** SDR works backwards in time, combining outcome regression and propensity models to construct unbiased estimating equations for each time interval.
+
+**Advantages:**
+- **Sequential double robustness:** The estimator remains consistent at each time point if either the outcome or treatment mechanism model is correct (but not necessarily both).
+- **Time-varying confounders:** SDR naturally incorporates time-dependent structures.
+- **Flexible estimation:** It accommodates non-linearities and interactions through machine learning.
+- **Missingness:** The method handles attrition or loss-to-follow-up with inverse-probability weighting.
+
+We use cross-validation to reduce overfitting and improve finite-sample performance. We implement SDR through the `lmtp` package [@williams2021; @hoffman2023; @diaz2023lmtp], relying on `SuperLearner` with base learners such as `SL.ranger`, `SL.glmnet`, and `SL.xgboost` [@polley2023; @xgboost2023; @Ranger2017; @SuperLearner2023]. For more details, see [@hoffman2022; @hoffman2023; @díaz2021]. We use the `margot` package [@margot2024] for reporting and visualisation.
+"
+methods_db <- boilerplate_manage_text(
+  category = "methods",
+  action = "add",
+  name = "statistical_estimator.sdr.long",
+  value = sdr_long_text,
   db = methods_db
 )
 
@@ -226,10 +285,111 @@ grf_short_text <- "We estimate heterogeneous treatment effects with Generalized 
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "statistical_estimator.grf.short",
+  name = "statistical_estimator.grf.short",
   value = grf_short_text,
   db = methods_db
 )
+
+
+
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
+
+
+# approach text -----------------------------------------------------------
+general_approach_cate_long <- "Our primary goal was to move beyond average treatment effects (ATE) and explore whether the intervention's impact varied significantly across individuals based on their characteristics. To achieve this, we estimated individualised treatment effects, often termed conditional average treatment effects (CATEs), using causal forests [@grf2024]. Causal forests are a machine learning method adapted specifically for estimating how treatment effects differ across people defined by a set of covariates.
+
+For interpretability across different outcomes, we standardised the direction of effects. Some outcomes, like depression scores, are typically interpreted as 'lower is better'. We inverted the scales for such variables so that positive treatment effects consistently indicated improvement (e.g., a reduction in depression). This ensures that larger positive CATE estimates always signify greater benefit from the treatment. The following outcomes were inverted: {{flipped_list}}.
+
+A key challenge when modelling individual differences is ensuring the detected variations are genuine and not just noise or overfitting. Therefore, we rigorously evaluated the causal forest estimates using a 50/50 sample splitting approach. Half the data were used to train the causal forest model (i.e., to identify patterns of differing treatment effects), and the other half (the held-out data) were used exclusively for evaluation.
+
+On the held-out data, we first assessed the calibration of the predictions [@grf2024]. This involved checking if the average of the predicted CATEs accurately reflected the overall average treatment effect (ATE) found in the evaluation sample. More importantly, we tested whether the *predicted variation* in treatment effects (heterogeneous treatment effects, HTE) was reliable. A specific 'differential prediction' test acts as an omnibus indicator ($p$-value) of whether the model successfully captures statistically significant variability in how individuals respond to the treatment [@grf2024]. We also calculated the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018]. RATE quantifies the potential real-world value of using the model to target treatment – specifically, it measures the average outcome improvement we would expect if we prioritised treatment for the individuals predicted to benefit most, compared to a simpler strategy like treating everyone or no one based only on the ATE.
+
+To visualise the benefit of prioritisation, we used Qini curves [@grf2024]. These curves compare two scenarios evaluated on the held-out data:
+1.  **Uniform Allocation:** Treating (or not treating) individuals based solely on the overall ATE.
+2.  **Targeted Allocation:** Prioritising treatment for individuals ranked highest on their predicted CATE from the causal forest.
+
+The Qini curve plots the cumulative gain (or loss) achieved by the targeted approach as we increase the proportion of the sample receiving treatment (starting with those predicted to benefit most). Positive Qini values indicate that targeting treatment based on predicted CATEs yields better overall outcomes than the uniform approach for that proportion treated. This helps determine if a personalised strategy is advantageous, and potentially for what fraction of the population.
+
+Finally, if reliable heterogeneity was detected, we aimed to translate these complex CATE predictions into simpler, actionable rules using policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Policy trees learn simple decision rules (e.g., 'Treat individuals with baseline score > X and age < Y') that optimise treatment allocation based on the estimated CATEs. They identify key baseline characteristics that distinguish subgroups with markedly different responses, providing transparent, interpretable guidelines for potentially tailoring treatment in practice.
+
+All heterogeneity analyses, including calibration tests, RATE calculations, Qini curves, and policy trees, were conducted using R, primarily with the `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024] packages. The figures presented were generated using `margot`.
+
+Collectively, this multi-stage approach allows us to first estimate individualised effects, rigorously test whether these estimated variations are reliable, evaluate the potential gains from targeting treatment, and finally, derive simple rules to guide personalised intervention strategies if justified by the data.
+"
+general_approach_cate_short <- "Our primary aim was to look beyond average treatment effects (ATE) and explore whether the intervention’s impact varied systematically across individuals. To that end, we estimated individualised treatment effects, sometimes called conditional average treatment effects (CATEs), using causal forests [@grf2024], a machine learning approach tailored for detecting treatment-effect heterogeneity based on covariates.
+
+We standardised effect directions by inverting any outcomes where 'lower is better' (e.g., depression), so positive values consistently denote improvement. The following outcomes were inverted: {{flipped_list}}.
+
+A common concern when modelling individual differences is distinguishing real variation from noise. To address this, we used a 50/50 sample split. We trained the causal forest on half the data, then tested model predictions exclusively on the remaining half to prevent overfitting.
+
+In the held-out sample, we checked whether the predicted CATEs were well calibrated [@grf2024]. This involved comparing (i) the mean of the predicted effects to the overall ATE in the evaluation sample, and (ii) testing whether the predicted *variation* in effects was reliable. A differential prediction test provided an omnibus $p$-value for whether the model captured genuine heterogeneity in responses. We also calculated the Rank-Weighted Average Treatment Effect (RATE), which estimates how effectively a model-based targeting strategy would outperform a uniform treatment strategy [@grf2024; @wager2018].
+
+To visualise the added value of targeting, we used Qini curves [@grf2024]. These compare:
+
+1.  **Uniform Allocation**: treating or not treating everyone based on the overall ATE.
+2.  **Targeted Allocation**: treating individuals ranked highest by their predicted CATE first.
+
+The Qini curve shows the cumulative gain (or loss) of the targeted strategy as we treat larger proportions of the sample. Positive values suggest that prioritising high-CATE individuals outperforms uniform treatment, helping identify whether, and at what coverage level, personalisation is beneficial.
+
+Finally, for practical implementation, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to derive simple, rule-based recommendations. Policy trees split participants into subgroups defined by key moderators, providing clear 'treat' or 'do not treat' cut-points, evaluated for effectiveness on the held-out data. All heterogeneity analyses—including calibration tests, RATE, Qini curves, and policy trees—were done in R using `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024].
+
+Taken together, this multi-stage approach first identifies individualised treatment effects, then tests their reliability, estimates the added value of targeted intervention, and, if justified, provides simple rules for personalising treatment in practice."
+
+methods_db <- boilerplate_manage_text(
+  category = "methods",
+  action = "add",
+  name = "approach.grf_cate_long",
+  value = general_approach_cate_long,
+  db = methods_db
+)
+
+methods_db <- boilerplate_manage_text(
+  category = "methods",
+  action = "add",
+  name = "approach.grf_cate_short",
+  value = general_approach_cate_long,
+  db = methods_db
+)
+
+
+results_ominibus_test_conclusion <-  "The omnibus test did not provide statistically significant evidence for overall treatment effect heterogeneity based on the examined covariates [@grf2024]. This suggests that, across all individuals and covariates considered, the model did not reliably detect variation beyond chance according to this specific test. However, omnibus tests can lack power for detecting subtle or localised heterogeneity. Therefore, we examined more specific indicators of potential targeting benefits and subgroup differences."
+
+# results_rate_qini_intro <-  "To assess the potential practical value of tailoring treatment based on individual predictions, we examined the Rank-Weighted Average Treatment Effect (RATE) and Qini curves [@grf2024; @wager2018]. RATE estimates the average gain expected if we prioritise treatment for those predicted to benefit most, compared to treating uniformly. Qini curves visualise this potential gain across different proportions of the population treated."
+
+results_rate_qini_intro <- "To assess the potential practical value of tailoring treatment based on individual predictions, we examined the Rank-Weighted Average Treatment Effect (RATE) and Qini curves [@grf2024; @wager2018]. These predictions are estimates (denoted $\\hat{\\tau}(X_i)$) of the underlying conditional average treatment effect (CATE, $\\tau(X_i)$), which represents the average treatment effect for individuals with specific baseline covariates $X_i$. Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects ($\\hat{\\tau}(X_i)$) always indicate greater benefit from treatment. RATE and Qini curves evaluate how well a strategy of prioritising treatment using these CATE predictions $\\hat{\\tau}(X_i)$ performs compared to simpler approaches (e.g., uniform treatment based on the overall average effect, ATE). Specifically, RATE estimates the average gain achieved among the group prioritised by the model [@wager2018]. Qini curves dynamically visualise this potential gain: they plot the cumulative benefit realised as we hypothetically treat an increasing proportion of the population, starting with those individuals having the highest predicted effects $\\hat{\\tau}(X_i)$ [@grf2024]."
+
+results_policy_tree_intro <- "Finally, to identify potentially actionable insights and specific subgroups with distinct responses, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. This method seeks simple, interpretable rules (based on participant characteristics) that optimise treatment allocation based on estimated treatment effects ($\\hat{\\tau}(X_i)$). Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects always indicate greater benefit. Policy trees can be particularly informative for uncovering localised heterogeneity, such as identifying small but well-defined subgroups who might experience substantially different treatment effects, even when overall variation is modest."
+
+methods_db <- boilerplate_manage_text(
+  category = "results",
+  action = "add",
+  name = "results.ominibus_test.conclusion",
+  value = results_ominibus_test_conclusion,
+  db = methods_db
+)
+
+methods_db <- boilerplate_manage_text(
+  category = "results",
+  action = "add",
+  name = "results.rate_qini_intro",
+  value = results_rate_qini_intro,
+  db = methods_db
+)
+
+methods_db <- boilerplate_manage_text(
+  category = "results",
+  action = "add",
+  name = "results.policy_tree_intro",
+  value = results_policy_tree_intro,
+  db = methods_db
+)
+
+
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
+
+methods_db$results$policy_tree_intro
 
 # ------------------------------------------------------
 # target population section
@@ -240,11 +400,12 @@ target_population_text <- "The target population for this study comprises New Ze
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "target_population.nzavs",
+  name = "target_population.nzavs",
   value = target_population_text,
   db = methods_db
 )
-
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
 # ------------------------------------------------------
 # causal interventions section
 # ------------------------------------------------------
@@ -262,36 +423,40 @@ This approach to defining interventions and contrasts allows us to systematicall
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "causal_interventions.standard",
+  name = "causal_interventions.standard",
   value = causal_interventions_text,
   db = methods_db
 )
 
 cat(methods_db$identification_assumptions$standard)
 
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
+
 # ------------------------------------------------------
 # save the updated methods database
 # ------------------------------------------------------
-result <- boilerplate_manage_text(
-  category = "methods",
-  action = "save",
-  db = methods_db
-)
+# result <- boilerplate_manage_text(
+#   category = "methods",
+#   action = "save",
+#   db = methods_db
+# )
 
-boilerplate_manage_text()
-methods_db$sample$default
-# check if save was successful
-if (result) {
-  cat("Methods database saved successfully!")
-} else {
-  cat("Error saving methods database!")
-}
+#
+#
+# # check if save was successful
+# if (result) {
+#   cat("Methods database saved successfully!")
+# } else {
+#   cat("Error saving methods database!")
+# }
 
 
 
 # ------------------------------------------------------
 # now test generating text from the database
 # ------------------------------------------------------
+methods_db$sample
 
 # example usage of generate_text for methods section
 methods_text <- boilerplate_generate_text(
@@ -300,24 +465,41 @@ methods_text <- boilerplate_generate_text(
     "sample.default",
     "identification_assumptions.standard",
     "confounding_control.vanderweele",
-    "statistical_estimator.lmtp.short"
+    "statistical_estimator.lmtp.short",
+    "approach.grf_cate_short"
   ),
   global_vars = list(
     exposure_var = "political_conservative",
     n_total = 47000,
+    flipped_list = c("Anxiety", "Depression", "Fatigue", "Perfectionism"),
     appendices_sample = "A-C",
     baseline_wave = "NZAVS time 10, years 2018-2019",
     exposure_wave = "NZAVS time 11, years 2019-2020",
     outcome_wave = "NZAVS time 12, years 2020-2021",
     appendix_ref = "B",
     protocol_url = "https://osf.io/ce4t9/"
-  )
+  ),
+  db = methods_db
 )
 
 # print the generated text
 cat(methods_text)
 
 
+# results example ---------------------------------------------------------
+
+results_text <- boilerplate_generate_text(
+  category = "results",
+  sections = c(
+    "results.results.rate_qini_intro",
+    "results.results.rate_qini_intro",
+    "results.results.policy_tree_intro"
+  ),
+  global_vars = list(
+    exposure_var = "political_conservative",
+  ),
+  db = methods_db
+)
 
 
 # example of using the boilerplate text database in a research workflow
@@ -345,10 +527,12 @@ all_outcomes <- list(
 study_params <- list(
   exposure_var = exposure_var,
   n_total = 47000,
+  var_name = "political_conservativism",
   appendices_sample = "A-C",
   baseline_wave = "NZAVS time 10, years 2018-2019",
   exposure_wave = "NZAVS time 11, years 2019-2020",
   outcome_wave = "NZAVS time 12, years 2020-2021",
+  timeframe = "2018-2021",
   baseline_missing_data_proportion = 0.15,
   appendix_ref = "B",
   protocol_url = "https://osf.io/ce4t9/",
@@ -356,6 +540,7 @@ study_params <- list(
   contrasts = "null",
   null_intervention = "Do not change political_conservative",
   n_participants = 32451,
+  population = "New Zealand Population in 2018",
   grf_appendix = "C"
 )
 
@@ -364,44 +549,53 @@ study_params <- list(
 # ------------------------------------------------------
 sample_text <- boilerplate_generate_text(
   category = "methods",
-  sections = "sample.nzavs",
-  global_vars = study_params
+  sections = "sample.default",
+  global_vars = study_params,
+  db= methods_db
 )
-
-# ------------------------------------------------------
+cat(sample_text)
+------------------------------------------------------
 # 2. generate identification assumptions section
 # ------------------------------------------------------
 identification_text <- boilerplate_generate_text(
   category = "methods",
   sections = "identification_assumptions.standard",
-  global_vars = study_params
+  global_vars = study_params,
+  db = methods_db
 )
-
+cat(identification_text)
 # ------------------------------------------------------
 # 3. generate confounding control section
 # ------------------------------------------------------
 confounding_text <- boilerplate_generate_text(
   category = "methods",
   sections = "confounding_control.vanderweele",
-  global_vars = study_params
+  global_vars = study_params,
+  db = methods_db
 )
-
-# ------------------------------------------------------
+cat(confounding_text)
+# --confounding_text# ------------------------------------------------------
 # 4. generate missing data handling sections for multiple estimators
 # ------------------------------------------------------
 # for lmtp
 missing_data_lmtp <- boilerplate_generate_text(
   category = "methods",
   sections = "missing_data.lmtp",
-  global_vars = study_params
+  global_vars = study_params,
+  db = methods_db
 )
+
+cat(missing_data_lmtp)
 
 # for grf
 missing_data_grf <- boilerplate_generate_text(
   category = "methods",
   sections = "missing_data.grf",
-  global_vars = study_params
+  global_vars = study_params,
+  db = methods_db
 )
+
+cat(missing_data_grf)
 
 # ------------------------------------------------------
 # 5. generate statistical estimator sections for multiple estimators
@@ -410,15 +604,21 @@ missing_data_grf <- boilerplate_generate_text(
 lmtp_text <- boilerplate_generate_text(
   category = "methods",
   sections = "statistical_estimator.lmtp.short",
-  global_vars = study_params
+  global_vars = study_params,
+  db = methods_db
 )
+
+str(lmtp_text)
 
 # for grf (using the short version)
 grf_text <- boilerplate_generate_text(
   category = "methods",
   sections = "statistical_estimator.grf.short",
-  global_vars = study_params
+  global_vars = study_params,
+  db = methods_db
 )
+
+cat(grf_text)
 
 # ------------------------------------------------------
 # 6. combine all sections to create a complete methods section
@@ -447,7 +647,7 @@ methods_text <- paste(
 complete_methods <- boilerplate_generate_text(
   category = "methods",
   sections = c(
-    "sample.nzavs",
+    "sample.default",
     "identification_assumptions.standard",
     "confounding_control.vanderweele",
     "missing_data.lmtp",
@@ -455,8 +655,11 @@ complete_methods <- boilerplate_generate_text(
     "statistical_estimator.lmtp.short",
     "statistical_estimator.grf.short"
   ),
-  global_vars = study_params
+  global_vars = study_params,
+  db = methods_db
 )
+
+cat(complete_methods)
 
 # ------------------------------------------------------
 # 8. write the methods section to a Quarto markdown file
@@ -471,7 +674,6 @@ writeLines(complete_methods, "methods_section_complete.qmd")
 # 9. add new entries to the database for future use
 # ------------------------------------------------------
 # first, get the current database
-methods_db <- boilerplate_manage_text(category = "methods", action = "list")
 
 # add a new custom text entry
 new_text <- "In our analysis of {{exposure_var}}, we apply a novel sensitivity analysis approach based on the E-value framework developed by @vanderweele2017. This allows us to quantify the minimum strength of association that an unmeasured confounder would need to have with both the exposure and the outcome to explain away the observed effect. For our primary outcome of {{primary_outcome}}, we calculate E-values for both the point estimate and the lower bound of the {{confidence_level}}% confidence interval."
@@ -479,17 +681,21 @@ new_text <- "In our analysis of {{exposure_var}}, we apply a novel sensitivity a
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "sensitivity_analysis.evalue",
+  name = "sensitivity_analysis.evalue",
   value = new_text,
   db = methods_db
 )
 
+head(methods_db)
+
+margot::here_save(methods_db, "methods_db", methods_path)
+
 # save the updated database
-boilerplate_manage_text(
-  category = "methods",
-  action = "save",
-  db = methods_db
-)
+# boilerplate_manage_text(
+#   category = "methods",
+#   action = "save",
+#   db = methods_db
+# )
 
 # ------------------------------------------------------
 # 10. creating a complete methods document with the updated database
@@ -502,15 +708,18 @@ study_params$confidence_level <- 95
 complete_methods_updated <- boilerplate_generate_text(
   category = "methods",
   sections = c(
-    "sample.nzavs",
+    "sample.default",
     "identification_assumptions.standard",
     "confounding_control.vanderweele",
     "missing_data.lmtp",
     "statistical_estimator.lmtp.short",
     "sensitivity_analysis.evalue"  # new section added to the database
   ),
-  global_vars = study_params
+  global_vars = study_params,
+  db = methods_db
 )
+
+cat(complete_methods_updated)
 
 # write the updated methods section to a Quarto markdown file
 writeLines(complete_methods_updated, "methods_section_with_sensitivity.qmd")
@@ -527,7 +736,7 @@ writeLines(complete_methods_updated, "methods_section_with_sensitivity.qmd")
 library(tidyverse)
 
 # get the current methods database
-methods_db <- boilerplate_manage_text(category = "methods", action = "list")
+# methods_db <- boilerplate_manage_text(category = "methods", action = "list")
 
 # ------------------------------------------------------
 # 1. heterogeneous treatment effects section
@@ -550,7 +759,7 @@ This heterogeneity analysis provides critical insights for tailoring interventio
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "heterogeneous_effects.standard",
+  name = "heterogeneous_effects.standard",
   value = het_effects_text,
   db = methods_db
 )
@@ -576,7 +785,7 @@ We implement this analysis using the {{mediation_method}} approach [@{{mediation
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "mediation_analysis.standard",
+  name = "mediation_analysis.standard",
   value = mediation_text,
   db = methods_db
 )
@@ -606,7 +815,7 @@ Our analytical approach explicitly incorporates this temporal structure through 
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "longitudinal_structure.standard",
+  name = "longitudinal_structure.standard",
   value = longitudinal_text,
   db = methods_db
 )
@@ -637,7 +846,7 @@ All analyses are implemented using the {{multilevel_package}} package in R, with
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "multilevel_modeling.standard",
+  name = "multilevel_modeling.standard",
   value = multilevel_text,
   db = methods_db
 )
@@ -663,7 +872,7 @@ We implement our models using {{bayesian_software}}, with {{mcmc_description}} t
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "bayesian_approach.standard",
+  name = "bayesian_approach.standard",
   value = bayesian_text,
   db = methods_db
 )
@@ -676,7 +885,7 @@ result <- boilerplate_manage_text(
   action = "save",
   db = methods_db
 )
-
+result
 # check if save was successful
 if (result) {
   cat("Methods database with extensions saved successfully!")
@@ -699,6 +908,7 @@ advanced_params <- list(
   mediation_method = "interventional effects",
   mediation_citation = "vanderweele2014",
   n_waves = 4,
+  n_total = "47,940",
   time_period = "12 months",
   baseline_wave = "Month 0",
   intervention_waves = "Months 1-3",
@@ -709,7 +919,7 @@ advanced_params <- list(
   level2_units = "clinicians",
   level3_units = "clinics",
   level1_description = "Individual patients receiving treatment (n = 1240)",
-  level2_description = "Therapists providing treatment
+  level2_description = "Therapists providing treatment"
 }
 
 
@@ -736,7 +946,7 @@ general_lmtp_text <- "We used advanced statistical methods that account for mult
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "statistical_estimator.lmtp.technical_audience",
+  name = "statistical_estimator.lmtp.technical_audience",
   value = technical_lmtp_text,
   db = methods_db
 )
@@ -744,7 +954,7 @@ methods_db <- boilerplate_manage_text(
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "statistical_estimator.lmtp.applied_audience",
+  name = "statistical_estimator.lmtp.applied_audience",
   value = applied_lmtp_text,
   db = methods_db
 )
@@ -752,7 +962,7 @@ methods_db <- boilerplate_manage_text(
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "statistical_estimator.lmtp.general_audience",
+  name = "statistical_estimator.lmtp.general_audience",
   value = general_lmtp_text,
   db = methods_db
 )
@@ -875,7 +1085,7 @@ bibliography: references.bib
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "document_templates.journal_article",
+  name = "document_templates.journal_article",
   value = journal_article_template,
   db = methods_db
 )
@@ -916,7 +1126,7 @@ bibliography: references.bib
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "document_templates.conference_presentation",
+  name = "document_templates.conference_presentation",
   value = conference_template,
   db = methods_db
 )
@@ -964,7 +1174,7 @@ format: pdf
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
-  path = "document_templates.grant_proposal",
+  name = "document_templates.grant_proposal",
   value = grant_template,
   db = methods_db
 )
@@ -1274,7 +1484,7 @@ generate_document <- function(template_path, study_params, template_vars) {
 study_params <- list(
   exposure_var = "political_conservative",
   outcome_var = "social_wellbeing",
-  n_total = 47000,
+  n_total = "47000",
   appendices_sample = "A-C",
   baseline_wave = "NZAVS time 10, years 2018-2019",
   exposure_wave = "NZAVS time 11, years 2019-2020",

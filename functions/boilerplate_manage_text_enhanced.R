@@ -9,15 +9,17 @@
 #' @param category Character. Category of text to manage, e.g., "measures", "methods".
 #'   Default options are "measures", "methods", "results", and "discussion".
 #' @param action Character. Action to perform: "list", "add", "update", "remove", "get", or "save".
-#' @param key Character. Identifier for the text entry (required for add/update/remove/get).
-#'   For nested entries, use NULL and specify the full path in the path parameter.
-#' @param path Character. Dot-separated path to navigate nested structures (e.g., "methods.statistical.lmtp").
-#'   When specified, the key parameter can be NULL.
+#' @param name Character. Identifier for the text entry (required for add/update/remove/get).
+#'   For nested entries, use dot-separated paths (e.g., "methods.statistical.lmtp").
 #' @param value Text content for the entry (required for add/update).
 #' @param db Optional existing database. If not supplied, the default db is loaded.
-#' @param file_path Character. Path to save the database (for save action).
-#' @param subcategory Character. Optional subcategory for hierarchical organization.
-#'   Deprecated: use path parameter for nested structures.
+#' @param text_path Character. Path to the directory where text database files are stored.
+#'   If NULL (default), the function will look in the following locations in order:
+#'   1. "boilerplate/data/" subdirectory of the current working directory (via here::here())
+#'   2. Package installation directory's "boilerplate/data/" folder
+#'   3. "boilerplate/data/" relative to the current working directory
+#' @param file_name Character. Name of the file to save or load (without path).
+#'   If NULL (default), uses "[category]_db.rds".
 #' @param template_vars List. Optional variables for template substitution.
 #' @param warn_missing Logical. Whether to warn about missing template variables. Default is TRUE.
 #'
@@ -35,7 +37,7 @@
 #' methods_db <- boilerplate_manage_text(
 #'   category = "methods",
 #'   action = "add",
-#'   key = "causal_assumptions",
+#'   name = "causal_assumptions",
 #'   value = "We made the following assumptions: {{assumptions}}"
 #' )
 #'
@@ -43,7 +45,7 @@
 #' methods_db <- boilerplate_manage_text(
 #'   category = "methods",
 #'   action = "add",
-#'   path = "statistical.longitudinal.lmtp",
+#'   name = "statistical.longitudinal.lmtp",
 #'   value = "We used the LMTP estimator with {{software}}."
 #' )
 #'
@@ -51,7 +53,7 @@
 #' text <- boilerplate_manage_text(
 #'   category = "methods",
 #'   action = "get",
-#'   key = "causal_assumptions",
+#'   name = "causal_assumptions",
 #'   db = methods_db,
 #'   template_vars = list(assumptions = "no unmeasured confounding")
 #' )
@@ -60,7 +62,7 @@
 #' text <- boilerplate_manage_text(
 #'   category = "methods",
 #'   action = "get",
-#'   path = "statistical.longitudinal.lmtp",
+#'   name = "statistical.longitudinal.lmtp",
 #'   db = methods_db,
 #'   template_vars = list(software = "lmtp R package")
 #' )
@@ -69,17 +71,25 @@
 #' methods_db <- boilerplate_manage_text(
 #'   category = "methods",
 #'   action = "update",
-#'   key = "causal_assumptions",
+#'   name = "causal_assumptions",
 #'   value = "Updated assumptions: {{assumptions}}",
 #'   db = methods_db
 #' )
 #'
-#' # Save the database
+#' # Save the database to a specific location
 #' boilerplate_manage_text(
 #'   category = "methods",
 #'   action = "save",
 #'   db = methods_db,
-#'   file_path = "path/to/methods_db.rds"
+#'   text_path = "path/to/data",
+#'   file_name = "my_methods.rds"
+#' )
+#'
+#' # Working with a specific database location
+#' methods_db <- boilerplate_manage_text(
+#'   category = "methods",
+#'   action = "list",
+#'   text_path = "path/to/project/data"
 #' )
 #'
 #' @importFrom utils modifyList
@@ -87,12 +97,11 @@
 boilerplate_manage_text <- function(
     category = c("measures", "methods", "results", "discussion"),
     action = c("list", "add", "update", "remove", "get", "save"),
-    key = NULL,
-    path = NULL,
+    name = NULL,
     value = NULL,
     db = NULL,
-    file_path = NULL,
-    subcategory = NULL,
+    text_path = NULL,
+    file_name = NULL,
     template_vars = list(),
     warn_missing = TRUE
 ) {
@@ -100,23 +109,9 @@ boilerplate_manage_text <- function(
   category <- match.arg(category)
   action <- match.arg(action)
 
-  # check for deprecated subcategory parameter
-  if (!is.null(subcategory)) {
-    warning("The 'subcategory' parameter is deprecated. Please use the 'path' parameter instead.")
-    # If path is not specified, use subcategory for backward compatibility
-    if (is.null(path)) {
-      path <- subcategory
-      if (!is.null(key)) {
-        path <- paste(path, key, sep = ".")
-      }
-    }
-  }
-
-  # validate key or path for actions that require it
-  if (action %in% c("add", "update", "remove", "get")) {
-    if (is.null(key) && is.null(path)) {
-      stop(paste("The", action, "action requires either a key or path parameter."))
-    }
+  # validate name for actions that require it
+  if (action %in% c("add", "update", "remove", "get") && is.null(name)) {
+    stop(paste("The", action, "action requires a name parameter."))
   }
 
   # validate value for actions that require it
@@ -126,7 +121,7 @@ boilerplate_manage_text <- function(
 
   # load default database if not provided
   if (is.null(db)) {
-    db <- get_default_db(category)
+    db <- load_text_db(category, text_path, file_name)
   }
 
   # input validation: ensure db is a list
@@ -134,9 +129,10 @@ boilerplate_manage_text <- function(
     stop("Database must be a list.")
   }
 
-  # handle path-based navigation
-  if (!is.null(path)) {
-    path_parts <- strsplit(path, "\\.")[[1]]
+  # handle path-based navigation or simple name
+  if (!is.null(name) && grepl("\\.", name)) {
+    # We have a nested path
+    path_parts <- strsplit(name, "\\.")[[1]]
 
     if (action == "list") {
       # For list action, navigate to the requested folder
@@ -148,41 +144,174 @@ boilerplate_manage_text <- function(
       # For modification actions, update the nested structure
       return(modify_nested_entry(db, path_parts, action, value))
     }
-  }
-
-  # handle regular key-based operations
-  if (action == "list") {
-    return(db)
-  } else if (action == "add") {
-    if (key %in% names(db)) {
-      stop("key already exists")
+  } else {
+    # handle regular key-based operations
+    if (action == "list") {
+      if (!is.null(name)) {
+        # List a specific top-level entry
+        if (!(name %in% names(db))) {
+          stop(paste("Text entry", name, "not found."))
+        }
+        return(db[[name]])
+      }
+      return(db)
+    } else if (action == "add") {
+      if (name %in% names(db)) {
+        stop("text entry already exists")
+      }
+      db[[name]] <- value
+    } else if (action == "update") {
+      if (!(name %in% names(db))) {
+        stop("text entry does not exist")
+      }
+      db[[name]] <- value
+    } else if (action == "remove") {
+      if (!(name %in% names(db))) {
+        stop("text entry does not exist")
+      }
+      db[[name]] <- NULL
+    } else if (action == "get") {
+      if (!(name %in% names(db))) {
+        stop("text entry does not exist")
+      }
+      text <- db[[name]]
+      # Apply template substitution
+      return(apply_template_vars(text, template_vars, warn_missing))
+    } else if (action == "save") {
+      return(save_text_db(db, category, text_path, file_name))
     }
-    db[[key]] <- value
-  } else if (action == "update") {
-    if (!(key %in% names(db))) {
-      stop("key does not exist")
-    }
-    db[[key]] <- value
-  } else if (action == "remove") {
-    if (!(key %in% names(db))) {
-      stop("key does not exist")
-    }
-    db[[key]] <- NULL
-  } else if (action == "get") {
-    if (!(key %in% names(db))) {
-      stop("key does not exist")
-    }
-    text <- db[[key]]
-    # Apply template substitution
-    return(apply_template_vars(text, template_vars, warn_missing))
-  } else if (action == "save") {
-    if (is.null(file_path)) {
-      file_path <- get_default_file_path(category)
-    }
-    return(save_db(db, file_path))
   }
 
   return(db)
+}
+
+#' Load Text Database from File
+#'
+#' @param category Character. Category of text to load.
+#' @param text_path Character. Path to the directory where text database files are stored.
+#'   If NULL, uses default locations.
+#' @param file_name Character. Name of the file to load (without path).
+#'   If NULL, uses "[category]_db.rds".
+#'
+#' @return List. The loaded text database or default if not found.
+#'
+#' @noRd
+load_text_db <- function(category, text_path = NULL, file_name = NULL) {
+  # determine file path
+  file_path <- get_text_file_path(category, text_path, file_name)
+
+  # check if file exists
+  if (file.exists(file_path)) {
+    tryCatch({
+      db <- readRDS(file_path)
+      message(paste(category, "text database loaded from", file_path))
+      return(db)
+    }, error = function(e) {
+      warning(paste("Error loading database:", e$message))
+      # fall back to defaults if loading fails
+    })
+  }
+
+  # return built-in defaults if file doesn't exist or couldn't be loaded
+  return(get_default_db(category))
+}
+
+#' Save Text Database to File
+#'
+#' @param db List. The database to save.
+#' @param category Character. Category of text to save.
+#' @param text_path Character. Path to the directory where text database files are stored.
+#'   If NULL, uses default locations.
+#' @param file_name Character. Name of the file to save (without path).
+#'   If NULL, uses "[category]_db.rds".
+#'
+#' @return Logical. TRUE if successful, FALSE otherwise.
+#'
+#' @noRd
+save_text_db <- function(db, category, text_path = NULL, file_name = NULL) {
+  # determine file path
+  file_path <- get_text_file_path(category, text_path, file_name)
+
+  # ensure directory exists
+  dir_path <- dirname(file_path)
+  if (!dir.exists(dir_path)) {
+    dir.create(dir_path, recursive = TRUE)
+  }
+
+  # save database
+  tryCatch({
+    saveRDS(db, file = file_path)
+    message(paste(category, "text database saved to", file_path))
+    return(TRUE)
+  }, error = function(e) {
+    warning(paste("Error saving database:", e$message))
+    return(FALSE)
+  })
+}
+
+#' Get File Path for Text Database
+#'
+#' Constructs the file path for the text database based on the provided parameters.
+#'
+#' @param category Character. Category of text.
+#' @param text_path Character. Path to the directory where text database files are stored.
+#'   If NULL, uses default locations.
+#' @param file_name Character. Name of the file (without path).
+#'   If NULL, uses "[category]_db.rds".
+#'
+#' @return Character. The file path for the text database.
+#'
+#' @noRd
+get_text_file_path <- function(category, text_path = NULL, file_name = NULL) {
+  # default file name
+  if (is.null(file_name)) {
+    file_name <- paste0(category, "_db.rds")
+  }
+
+  # determine directory path
+  if (is.null(text_path)) {
+    # use appropriate package function for path resolution if available
+    if (requireNamespace("here", quietly = TRUE)) {
+      dir_path <- here::here("boilerplate", "data")
+    } else {
+      # fallback
+      data_dir <- system.file("boilerplate", "data", package = "boilerplate", mustWork = FALSE)
+      if (dir.exists(data_dir)) {
+        dir_path <- data_dir
+      } else {
+        dir_path <- file.path("boilerplate", "data")
+      }
+    }
+  } else {
+    dir_path <- text_path
+  }
+
+  # combine directory and file name
+  return(file.path(dir_path, file_name))
+}
+
+#' Get Default Database for a Category
+#'
+#' @param category Character. Category to get defaults for.
+#'
+#' @return List. The default database for the category.
+#'
+#' @noRd
+get_default_db <- function(category) {
+  # return built-in defaults based on category
+  if (category == "measures") {
+    return(get_default_measures_db())
+  } else if (category == "methods") {
+    return(get_default_methods_db())
+  } else if (category == "results") {
+    return(get_default_results_db())
+  } else if (category == "discussion") {
+    return(get_default_discussion_db())
+  }
+
+  # Default to empty database for unknown categories
+  warning(paste("Unknown category:", category))
+  return(list())
 }
 
 #' Retrieve a Nested Folder from the Database
@@ -308,7 +437,7 @@ modify_nested_entry <- function(db, path_parts, action, value = NULL) {
     # We've reached the leaf node
     if (action == "add") {
       if (current_part %in% names(db)) {
-        stop(paste("Path component", current_part, "already exists"))
+        stop(paste("Text entry", current_part, "already exists"))
       }
       db[[current_part]] <- value
     } else if (action == "update") {
@@ -334,6 +463,7 @@ modify_nested_entry <- function(db, path_parts, action, value = NULL) {
 #' Apply Template Variables to Text
 #'
 #' Substitutes template variables in text using the {{variable_name}} syntax.
+#' Uses glue package for robust variable replacement, with a fallback method.
 #' Can optionally warn about missing variables.
 #'
 #' @param text Character. The template text with placeholders.
@@ -342,6 +472,7 @@ modify_nested_entry <- function(db, path_parts, action, value = NULL) {
 #'
 #' @return Character. The text with variables substituted.
 #'
+#' @importFrom glue glue
 #' @noRd
 apply_template_vars <- function(text, template_vars = list(), warn_missing = TRUE) {
   # Return early for non-character text or empty variables
@@ -349,126 +480,66 @@ apply_template_vars <- function(text, template_vars = list(), warn_missing = TRU
     return(text)
   }
 
-  # Apply variable substitution
+  # For vector values, convert to comma-separated strings
+  template_vars_processed <- template_vars
   for (var_name in names(template_vars)) {
     var_value <- template_vars[[var_name]]
-    if (is.character(var_value) || is.numeric(var_value)) {
-      text <- gsub(
-        paste0("\\{\\{", var_name, "\\}\\}"),
-        as.character(var_value),
-        text,
-        fixed = FALSE
-      )
+    if (length(var_value) > 1) {
+      template_vars_processed[[var_name]] <- paste(as.character(var_value), collapse = ", ")
     }
   }
 
-  # Check for any remaining template variables
-  if (warn_missing) {
-    # Look for any remaining {{variable}} patterns
-    var_pattern <- "\\{\\{([^\\}]+)\\}\\}"
-    if (requireNamespace("stringr", quietly = TRUE)) {
-      # Use stringr if available
-      remaining_vars <- stringr::str_extract_all(text, var_pattern)
-      if (length(remaining_vars[[1]]) > 0) {
-        remaining_vars <- unique(gsub("\\{\\{|\\}\\}", "", remaining_vars[[1]]))
-        warning(paste("Unresolved template variables:", paste(remaining_vars, collapse = ", ")))
+  # Prepare the environment for glue
+  env <- list2env(template_vars_processed, parent = emptyenv())
+
+  # Try to use glue for substitution
+  tryCatch({
+    # Convert {{var}} syntax to glue's {var} syntax
+    glue_ready_text <- gsub("\\{\\{([^\\}]+)\\}\\}", "{\\1}", text)
+    result <- glue::glue(glue_ready_text, .envir = env)
+    return(as.character(result))
+  }, error = function(e) {
+    # Fallback to manual substitution if glue fails
+    for (var_name in names(template_vars_processed)) {
+      var_value <- template_vars_processed[[var_name]]
+      if (is.character(var_value) || is.numeric(var_value)) {
+        text <- gsub(
+          paste0("\\{\\{", var_name, "\\}\\}"),
+          as.character(var_value),
+          text,
+          fixed = FALSE
+        )
       }
-    } else {
-      # Fallback to base R
-      if (grepl(var_pattern, text)) {
-        matches <- gregexpr(var_pattern, text)
-        if (matches[[1]][1] != -1) {
-          warning("Unresolved template variables present. Consider installing the 'stringr' package for detailed information.")
+    }
+
+    # Issue a warning for unresolved variables if requested
+    if (warn_missing) {
+      # Look for any remaining {{variable}} patterns
+      var_pattern <- "\\{\\{([^\\}]+)\\}\\}"
+      if (requireNamespace("stringr", quietly = TRUE)) {
+        # Use stringr if available
+        remaining_vars <- stringr::str_extract_all(text, var_pattern)
+        if (length(remaining_vars[[1]]) > 0) {
+          remaining_vars <- unique(gsub("\\{\\{|\\}\\}", "", remaining_vars[[1]]))
+          warning(paste("Unresolved template variables:", paste(remaining_vars, collapse = ", ")))
+        }
+      } else {
+        # Fallback to base R
+        if (grepl(var_pattern, text)) {
+          matches <- gregexpr(var_pattern, text)
+          if (matches[[1]][1] != -1) {
+            warning("Unresolved template variables present. Consider installing the 'stringr' package for detailed information.")
+          }
         }
       }
     }
-  }
 
-  return(text)
-}
-
-#' Save Database to File
-#'
-#' @param db List. The database to save.
-#' @param file_path Character. Path to save the database.
-#'
-#' @return Logical. TRUE if successful, FALSE otherwise.
-#'
-#' @noRd
-save_db <- function(db, file_path) {
-  # Ensure directory exists
-  dir_path <- dirname(file_path)
-  if (!dir.exists(dir_path)) {
-    dir.create(dir_path, recursive = TRUE)
-  }
-
-  # Save database
-  tryCatch({
-    saveRDS(db, file = file_path)
-    message(paste("Database saved to", file_path))
-    return(TRUE)
-  }, error = function(e) {
-    warning(paste("Error saving database:", e$message))
-    return(FALSE)
+    return(text)
   })
 }
 
-#' Get Default Database for a Category
-#'
-#' @param category Character. Category to get defaults for.
-#'
-#' @return List. The default database for the category.
-#'
-#' @noRd
-get_default_db <- function(category) {
-  # check for existing saved database
-  file_path <- get_default_file_path(category)
-  if (file.exists(file_path)) {
-    tryCatch({
-      return(readRDS(file_path))
-    }, error = function(e) {
-      warning(paste("Error loading saved database:", e$message))
-      # Fall back to defaults if loading fails
-    })
-  }
-
-  # return built-in defaults
-  if (category == "measures") {
-    return(get_default_measures_db())
-  } else if (category == "methods") {
-    return(get_default_methods_db())
-  } else if (category == "results") {
-    return(get_default_results_db())
-  } else if (category == "discussion") {
-    return(get_default_discussion_db())
-  }
-
-  # Default to empty database for unknown categories
-  warning(paste("Unknown category:", category))
-  return(list())
-}
-
-#' get Default File Path for a Category
-#'
-#' @param category Character. Category to get file path for.
-#'
-#' @return Character. The default file path for the category.
-#'
-#' @noRd
-get_default_file_path <- function(category) {
-  # Use appropriate package function for path resolution if available
-  if (requireNamespace("here", quietly = TRUE)) {
-    return(here::here("boilerplate", "data", paste0(category, "_db.rds")))
-  } else {
-    # Fallback
-    data_dir <- system.file("boilerplate", "data", package = "boilerplate", mustWork = FALSE)
-    if (dir.exists(data_dir)) {
-      return(file.path(data_dir, paste0(category, "_db.rds")))
-    } else {
-      return(file.path("boilerplate", "data", paste0(category, "_db.rds")))
-    }
-  }
-}
+# Default database functions remain the same as in the original code
+# get_default_measures_db, get_default_methods_db, get_default_results_db, get_default_discussion_db
 
 #' Get Default Measures Database
 #'
@@ -589,6 +660,7 @@ get_default_discussion_db <- function() {
   )
 }
 
+
 #' Initialize Boilerplate Text Databases
 #'
 #' This function initializes or updates the boilerplate text databases with default values.
@@ -596,6 +668,11 @@ get_default_discussion_db <- function() {
 #'
 #' @param categories Character vector. Categories to initialize.
 #' @param merge_strategy Character. How to merge with existing databases: "keep_existing", "merge_recursive", or "overwrite_all".
+#' @param text_path Character. Path to the directory where text database files are stored.
+#'   If NULL (default), the function will look in the following locations in order:
+#'   1. "boilerplate/data/" subdirectory of the current working directory (via here::here())
+#'   2. Package installation directory's "boilerplate/data/" folder
+#'   3. "boilerplate/data/" relative to the current working directory
 #' @param overwrite Logical. Whether to overwrite existing entries (deprecated, use merge_strategy instead).
 #'
 #' @return No return value, called for side effects.
@@ -613,12 +690,16 @@ get_default_discussion_db <- function() {
 #'
 #' # Completely overwrite existing databases
 #' boilerplate_init_text(merge_strategy = "overwrite_all")
+#'
+#' # Initialize in a specific directory
+#' boilerplate_init_text(text_path = "path/to/project/data")
 #' }
 #'
 #' @export
 boilerplate_init_text <- function(
     categories = c("measures", "methods", "results", "discussion"),
     merge_strategy = c("keep_existing", "merge_recursive", "overwrite_all"),
+    text_path = NULL,
     overwrite = FALSE
 ) {
   # Handle input validation
@@ -636,7 +717,7 @@ boilerplate_init_text <- function(
     default_db <- get_default_db(category)
 
     # Get file path
-    file_path <- get_default_file_path(category)
+    file_path <- get_text_file_path(category, text_path)
 
     # Check if file exists
     if (file.exists(file_path) && merge_strategy != "overwrite_all") {
@@ -660,22 +741,13 @@ boilerplate_init_text <- function(
       }
 
       # Save merged database
-      saveRDS(merged_db, file = file_path)
+      save_text_db(merged_db, category, text_path)
     } else {
-      # Create directory if needed
-      dir_path <- dirname(file_path)
-      if (!dir.exists(dir_path)) {
-        dir.create(dir_path, recursive = TRUE)
-      }
-
       # Save default database
-      saveRDS(default_db, file = file_path)
-      if (file.exists(file_path)) {
-        action <- if (merge_strategy == "overwrite_all") "Overwrote" else "Created new"
-        message(paste(action, category, "database at", file_path))
-      } else {
-        warning(paste("Failed to create", category, "database at", file_path))
-      }
+      save_text_db(default_db, category, text_path)
+
+      action <- if (merge_strategy == "overwrite_all") "Overwrote" else "Created new"
+      message(paste(action, category, "database"))
     }
   }
 
@@ -714,6 +786,7 @@ merge_recursive_lists <- function(x, y) {
   return(y)
 }
 
+
 #' Generate Text from Boilerplate
 #'
 #' This function generates text by retrieving and combining text from
@@ -727,6 +800,15 @@ merge_recursive_lists <- function(x, y) {
 #' @param section_vars List. Section-specific variables.
 #' @param text_overrides List. Direct text overrides for specific sections.
 #' @param db List. Optional database to use.
+#' @param text_path Character. Path to the directory where text database files are stored.
+#'   If NULL (default), the function will look in the following locations in order:
+#'   1. "boilerplate/data/" subdirectory of the current working directory (via here::here())
+#'   2. Package installation directory's "boilerplate/data/" folder
+#'   3. "boilerplate/data/" relative to the current working directory
+#'   If NULL (default), the function will look in the following locations in order:
+#'   1. "boilerplate/data/" subdirectory of the current working directory (via here::here())
+#'   2. Package installation directory's "boilerplate/data/" folder
+#'   3. "boilerplate/data/" relative to the current working directory
 #' @param warn_missing Logical. Whether to warn about missing template variables.
 #'
 #' @return Character. The combined text.
@@ -751,7 +833,8 @@ merge_recursive_lists <- function(x, y) {
 #'     "statistical.longitudinal.lmtp",
 #'     "statistical.heterogeneity.grf.custom"
 #'   ),
-#'   global_vars = list(exposure_var = "treatment")
+#'   global_vars = list(exposure_var = "treatment"),
+#'   text_path = "path/to/project/data"
 #' )
 #' }
 #'
@@ -763,6 +846,7 @@ boilerplate_generate_text <- function(
     section_vars = list(),
     text_overrides = list(),
     db = NULL,
+    text_path = NULL,
     warn_missing = TRUE
 ) {
   # Input validation
@@ -770,7 +854,11 @@ boilerplate_generate_text <- function(
 
   # Load database if not provided
   if (is.null(db)) {
-    db <- boilerplate_manage_text(category = category, action = "list")
+    db <- boilerplate_manage_text(
+      category = category,
+      action = "list",
+      text_path = text_path
+    )
   }
 
   # Initialize result
@@ -784,18 +872,22 @@ boilerplate_generate_text <- function(
       next
     }
 
-    # Split the section into parts
-    key_parts <- strsplit(section, "\\.")[[1]]
-
     # Merge global and section-specific variables
     vars <- global_vars
     if (section %in% names(section_vars)) {
       vars <- c(vars, section_vars[[section]])
     }
 
-    # Attempt to retrieve text recursively
+    # Attempt to retrieve text
     section_text <- tryCatch({
-      get_nested_text(db, key_parts, vars, warn_missing)
+      boilerplate_manage_text(
+        category = category,
+        action = "get",
+        name = section,
+        db = db,
+        template_vars = vars,
+        warn_missing = warn_missing
+      )
     }, error = function(e) {
       warning(paste("Error retrieving section", section, ":", e$message))
       return(NULL)
@@ -822,6 +914,7 @@ boilerplate_generate_text <- function(
 #' @param section_vars List. Section-specific variables.
 #' @param text_overrides List. Direct text overrides for specific sections.
 #' @param db List. Optional methods database to use.
+#' @param text_path Character. Path to the directory where text database files are stored.
 #' @param warn_missing Logical. Whether to warn about missing template variables.
 #'
 #' @return Character. The combined methods text.
@@ -860,6 +953,7 @@ boilerplate_methods_text <- function(
     section_vars = list(),
     text_overrides = list(),
     db = NULL,
+    text_path = NULL,
     warn_missing = TRUE
 ) {
   boilerplate_generate_text(
@@ -869,6 +963,7 @@ boilerplate_methods_text <- function(
     section_vars = section_vars,
     text_overrides = text_overrides,
     db = db,
+    text_path = text_path,
     warn_missing = warn_missing
   )
 }
@@ -885,6 +980,7 @@ boilerplate_methods_text <- function(
 #' @param section_vars List. Section-specific variables if needed beyond results_data.
 #' @param text_overrides List. Direct text overrides for specific sections.
 #' @param db List. Optional results database to use.
+#' @param text_path Character. Path to the directory where text database files are stored.
 #' @param warn_missing Logical. Whether to warn about missing template variables.
 #'
 #' @return Character. The combined results text.
@@ -921,6 +1017,7 @@ boilerplate_results_text <- function(
     section_vars = list(),
     text_overrides = list(),
     db = NULL,
+    text_path = NULL,
     warn_missing = TRUE
 ) {
   boilerplate_generate_text(
@@ -930,323 +1027,8 @@ boilerplate_results_text <- function(
     section_vars = section_vars,
     text_overrides = text_overrides,
     db = db,
+    text_path = text_path,
     warn_missing = warn_missing
   )
 }
-
-#' Create an Interactive Text Editor for Boilerplate Text
-#'
-#' This function provides a hierarchical text editor interface for managing
-#' boilerplate text entries. It allows users to navigate, view, add, update, and
-#' remove text entries in various categories with support for nested structures.
-#'
-#' @param category Character. Category of text to manage.
-#'
-#' @return No return value, called for side effects.
-#'
-#' @examples
-#' \dontrun{
-#' # Launch the interactive editor for methods
-#' boilerplate_text_editor("methods")
-#' }
-#'
-#' @export
-boilerplate_text_editor <- function(category = c("measures", "methods", "results", "discussion")) {
-  category <- match.arg(category)
-
-  if (!requireNamespace("cli", quietly = TRUE)) {
-    stop("Package 'cli' is required for the text editor interface.")
-  }
-
-  # Load database
-  db <- boilerplate_manage_text(category = category, action = "list")
-
-  # Create UI helper functions
-  get_input <- function(prompt, allow_empty = FALSE) {
-    while (TRUE) {
-      input <- trimws(readline(cli::col_cyan(prompt)))
-      if (input != "" || allow_empty)
-        return(input)
-      cli::cli_alert_danger("Input cannot be empty. Please try again.")
-    }
-  }
-
-  get_multiline_input <- function(prompt) {
-    cli::cli_text(cli::col_cyan(prompt))
-    cli::cli_text(cli::col_cyan("Enter your text (press Enter twice on an empty line to finish):"))
-    lines <- character()
-    empty_line_count <- 0
-    repeat {
-      line <- readline()
-      if (line == "") {
-        empty_line_count <- empty_line_count + 1
-        if (empty_line_count == 2) {
-          break
-        }
-      } else {
-        empty_line_count <- 0
-      }
-      lines <- c(lines, line)
-    }
-    paste(lines, collapse = "\n")
-  }
-
-  display_menu <- function(title, options) {
-    cli::cli_h2(title)
-    cli::cli_ol(options)
-  }
-
-  get_choice <- function(prompt, max_choice, allow_zero = FALSE) {
-    while (TRUE) {
-      choice <- suppressWarnings(as.integer(get_input(prompt)))
-      if (!is.na(choice) &&
-          ((allow_zero && choice >= 0 && choice <= max_choice) ||
-           (!allow_zero && choice >= 1 && choice <= max_choice))) {
-        return(choice)
-      }
-      if (allow_zero) {
-        cli::cli_alert_danger(paste("Invalid choice. Please enter a number between 0 and", max_choice))
-      } else {
-        cli::cli_alert_danger(paste("Invalid choice. Please enter a number between 1 and", max_choice))
-      }
-    }
-  }
-
-  # Main editor loop
-  cli::cli_h1(paste("Boilerplate Text Editor -", toupper(substr(category, 1, 1)), substr(category, 2, nchar(category))))
-
-  # Initialize path stack for navigation
-  path_stack <- list(list(name = "root", db = db))
-  current_level <- 1
-
-  repeat {
-    current_location <- path_stack[[current_level]]
-    current_db <- current_location$db
-
-    # Display breadcrumb navigation
-    breadcrumb <- if (current_level == 1) {
-      "Root"
-    } else {
-      paste(sapply(path_stack[1:current_level], function(x) x$name), collapse = " > ")
-    }
-
-    # Display current entries
-    cli::cli_h2(paste("Location:", breadcrumb))
-    entries <- names(current_db)
-
-    if (length(entries) == 0) {
-      cli::cli_alert_info("No entries found at this location.")
-    } else {
-      for (i in seq_along(entries)) {
-        if (is.list(current_db[[entries[i]]])) {
-          # This is a subfolder
-          cli::cli_li("{i}. [FOLDER] {entries[i]}")
-        } else {
-          # This is a text entry
-          preview <- current_db[[entries[i]]]
-          if (nchar(preview) > 50) {
-            preview <- paste0(substr(preview, 1, 47), "...")
-          }
-          cli::cli_li("{i}. {entries[i]}: {preview}")
-        }
-      }
-    }
-
-    # Display options
-    options <- c(
-      "Navigate to folder/view entry",
-      "Add entry",
-      "Update entry",
-      "Remove entry",
-      "Go up one level",
-      "Save changes",
-      "Exit"
-    )
-
-    display_menu("Options", options)
-    choice <- get_choice("Enter your choice: ", length(options))
-
-    if (choice == 1) {
-      # Navigate or view
-      if (length(entries) == 0) {
-        cli::cli_alert_warning("No entries to navigate to or view.")
-      } else {
-        entry_choice <- get_choice("Enter the number of the entry: ", length(entries))
-        entry_name <- entries[entry_choice]
-        entry_value <- current_db[[entry_name]]
-
-        if (is.list(entry_value)) {
-          # Navigate into subfolder
-          path_stack[[current_level + 1]] <- list(name = entry_name, db = entry_value)
-          current_level <- current_level + 1
-        } else {
-          # View text entry
-          cli::cli_h2(paste("Entry:", entry_name))
-          cli::cli_code(entry_value)
-          readline(cli::col_cyan("Press Enter to continue..."))
-        }
-      }
-    } else if (choice == 2) {
-      # Add entry
-      entry_name <- get_input("Enter name for the new entry: ")
-
-      # Check if entry already exists
-      if (entry_name %in% entries) {
-        cli::cli_alert_danger("Entry already exists!")
-        next
-      }
-
-      # Ask if this should be a folder or text entry
-      entry_type <- tolower(get_input("Is this a folder (f) or text entry (t)? "))
-
-      if (entry_type == "f") {
-        # Create a new subfolder
-        current_db[[entry_name]] <- list()
-        cli::cli_alert_success("Created new folder: {entry_name}")
-      } else {
-        # Create a new text entry
-        entry_text <- get_multiline_input("Enter text for the new entry: ")
-        current_db[[entry_name]] <- entry_text
-        cli::cli_alert_success("Added new text entry: {entry_name}")
-      }
-
-      # Update the database in the path stack
-      path_stack[[current_level]]$db <- current_db
-
-      # If we're in a subfolder, update the parent folders
-      if (current_level > 1) {
-        for (i in (current_level - 1):1) {
-          parent_name <- path_stack[[i + 1]]$name
-          path_stack[[i]]$db[[parent_name]] <- path_stack[[i + 1]]$db
-        }
-      }
-
-      # Update the main database
-      db <- path_stack[[1]]$db
-    } else if (choice == 3) {
-      # Update entry
-      if (length(entries) == 0) {
-        cli::cli_alert_warning("No entries to update.")
-      } else {
-        entry_choice <- get_choice("Enter the number of the entry to update: ", length(entries))
-        entry_name <- entries[entry_choice]
-        entry_value <- current_db[[entry_name]]
-
-        if (is.list(entry_value)) {
-          cli::cli_alert_warning("Cannot update a folder directly. Navigate into it first.")
-        } else {
-          cli::cli_h2(paste("Current text for", entry_name))
-          cli::cli_code(entry_value)
-
-          entry_text <- get_multiline_input("Enter new text: ")
-          current_db[[entry_name]] <- entry_text
-
-          # Update the database in the path stack
-          path_stack[[current_level]]$db <- current_db
-
-          # If we're in a subfolder, update the parent folders
-          if (current_level > 1) {
-            for (i in (current_level - 1):1) {
-              parent_name <- path_stack[[i + 1]]$name
-              path_stack[[i]]$db[[parent_name]] <- path_stack[[i + 1]]$db
-            }
-          }
-
-          # Update the main database
-          db <- path_stack[[1]]$db
-
-          cli::cli_alert_success("Updated text entry: {entry_name}")
-        }
-      }
-    } else if (choice == 4) {
-      # Remove entry
-      if (length(entries) == 0) {
-        cli::cli_alert_warning("No entries to remove.")
-      } else {
-        entry_choice <- get_choice("Enter the number of the entry to remove: ", length(entries))
-        entry_name <- entries[entry_choice]
-
-        confirm <- tolower(get_input(paste("Are you sure you want to remove", entry_name, "? (y/n): ")))
-        if (confirm == "y") {
-          current_db[[entry_name]] <- NULL
-
-          # Update the database in the path stack
-          path_stack[[current_level]]$db <- current_db
-
-          # If we're in a subfolder, update the parent folders
-          if (current_level > 1) {
-            for (i in (current_level - 1):1) {
-              parent_name <- path_stack[[i + 1]]$name
-              path_stack[[i]]$db[[parent_name]] <- path_stack[[i + 1]]$db
-            }
-          }
-
-          # Update the main database
-          db <- path_stack[[1]]$db
-
-          cli::cli_alert_success("Removed entry: {entry_name}")
-        }
-      }
-    } else if (choice == 5) {
-      # Go up one level
-      if (current_level == 1) {
-        cli::cli_alert_warning("Already at the root level.")
-      } else {
-        current_level <- current_level - 1
-      }
-    } else if (choice == 6) {
-      # Save changes
-      file_path <- get_input("Enter file path to save (or press Enter for default): ", allow_empty = TRUE)
-      if (file_path == "") {
-        file_path <- get_default_file_path(category)
-      }
-
-      result <- boilerplate_manage_text(
-        category = category,
-        action = "save",
-        db = db,
-        file_path = file_path
-      )
-
-      if (result) {
-        cli::cli_alert_success("Database saved successfully.")
-      }
-    } else if (choice == 7) {
-      # Exit
-      confirm_exit <- tolower(get_input("Exit without saving? Changes may be lost. (y/n): "))
-      if (confirm_exit == "y") {
-        cli::cli_alert_success("Exiting editor.")
-        break
-      }
-    }
-  }
-}
-
-
-# # Working with deeply nested paths
-# methods_db <- boilerplate_manage_text(
-#   category = "methods",
-#   action = "add",
-#   path = "statistical.longitudinal.custom.version1",
-#   value = "Custom longitudinal estimation approach version 1."
-# )
-#
-# # Retrieving from deep nested structure
-# text <- boilerplate_manage_text(
-#   category = "methods",
-#   action = "get",
-#   path = "statistical.heterogeneity.grf.custom",
-#   template_vars = list(custom_param = "specialized splitting")
-# )
-#
-# # Generating methods text with arbitrarily nested sections
-# methods_text <- boilerplate_methods_text(
-#   sections = c(
-#     "sample",
-#     "causal_assumptions.identification",
-#     "statistical.longitudinal.lmtp",
-#     "statistical.heterogeneity.grf.custom"
-#   ),
-#   global_vars = list(exposure_var = "treatment")
-# )
 

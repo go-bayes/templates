@@ -14,44 +14,44 @@ devtools::install_github("go-bayes/biolerplate")
 
 # update
 # pak::pak(c(
-#   "clarify",      
-#   "cobalt",       
-#   "DiagrammeR",   
-#   "doParallel",   
-#   "fastDummies",  
-#   "fs",           
-#   "ggbeeswarm",   
-#   "ggplot2",      
-#   "glmnet",       
-#   "grf",          
-#   "gt",           
-#   "gtsummary",    
-#   "here",         
-#   "janitor",      
-#   "kableExtra",   
-#   "r-lib/lmtp",         
+#   "clarify",
+#   "cobalt",
+#   "DiagrammeR",
+#   "doParallel",
+#   "fastDummies",
+#   "fs",
+#   "ggbeeswarm",
+#   "ggplot2",
+#   "glmnet",
+#   "grf",
+#   "gt",
+#   "gtsummary",
+#   "here",
+#   "janitor",
+#   "kableExtra",
+#   "r-lib/lmtp",
 #   "go-bayes/margot",  # assuming 'margot' is available on GitHub under r-lib
-#   "MatchIt",      
-#   "MatchThem",    
-#   "naniar",       
-#   "parameters",   
-#   "policytree",   
-#   "progressr",    
-#   "ranger",       
-#   "skimr",        
-#   "SuperLearner", 
-#   "tidyverse",    
-#   "r-lib/WeightIt",     
-#   "xgboost",      
-#   "EValue",       
-#   "data.table",   
-#   "maq",          
-#   "purrr",        
-#   "patchwork",    
+#   "MatchIt",
+#   "MatchThem",
+#   "naniar",
+#   "parameters",
+#   "policytree",
+#   "progressr",
+#   "ranger",
+#   "skimr",
+#   "SuperLearner",
+#   "tidyverse",
+#   "r-lib/WeightIt",
+#   "xgboost",
+#   "EValue",
+#   "data.table",
+#   "maq",
+#   "purrr",
+#   "patchwork",
 #   "labelled",
 #   "tidyr"
 # ))
-# 
+#
 # library(WeightIt)
 
 # load necessary libraries
@@ -62,7 +62,7 @@ pacman::p_load(
   doParallel,   # parallel processing with foreach
   fastDummies,  # fast creation of dummy variables
   fs,           # cross-platform file system operations
-  ggbeeswarm,   # data visualisation   
+  ggbeeswarm,   # data visualisation
   ggplot2,      # data visualisation
   glmnet,       # lasso and elastic-net regularized models
   grf,          # generalized random forests
@@ -204,19 +204,19 @@ result <- boilerplate_methods(
 #     "statistical_estimator",
 #     "additional_sections"
 #   )
-#   
+#
 #   if (identical(sections_to_include, 'list')) {
 #     return(all_sections)
 #   }
-#   
+#
 #   cat("Starting boilerplate_methods function\n")
-#   
+#
 #   # initialise an empty list to store all sections
 #   methods_sections <- list()
-#   
+#
 #   # capture all additional arguments
 #   extra_args <- list(...)
-#   
+#
 #   # define the safe_get function inside boilerplate_methods
 #   safe_get <- function(name, default = NULL) {
 #     if (name %in% names(extra_args)) {
@@ -227,7 +227,7 @@ result <- boilerplate_methods(
 #       return(default)
 #     }
 #   }
-#   
+#
 #   # define a helper function for error-tolerant execution
 #   safe_execute <- function(func_name, args) {
 #     cat(paste("Executing", func_name, "\n"))
@@ -255,27 +255,27 @@ result <- boilerplate_methods(
 #       return(NULL)
 #     })
 #   }
-#   
+#
 #   # get eligibility criteria
 #   inclusion_criteria <- safe_get("inclusion_criteria", list("No inclusion criteria specified"))
 #   exclusion_criteria <- safe_get("exclusion_criteria", list("No exclusion criteria specified"))
 #   n_participants <- safe_get("n_participants", "UNDEFINED")
-#   
+#
 #   # get the statistical estimator
 #   statistical_estimator <- safe_get("statistical_estimator", list(estimators = "lmtp"))
 #   if (is.list(statistical_estimator) && "estimators" %in% names(statistical_estimator)) {
 #     statistical_estimator <- statistical_estimator$estimators  # Use all provided estimators
 #   }
-#   
+#
 #   sections <- if(identical(sections_to_include, 'all')) all_sections else sections_to_include
-#   
+#
 #   # call sub-functions for each section
 #   for (section in sections) {
 #     cat(paste("\nProcessing section:", section, "\n"))
 #     section_name <- section
 #     func_name <- paste0("boilerplate_methods_", section)
 #     args <- list()
-#     
+#
 #     # Add only necessary arguments for each section
 #     if (section_name == "variables") {
 #       args <- list(
@@ -331,7 +331,7 @@ result <- boilerplate_methods(
 #         outcome_wave = outcome_wave
 #       )
 #     }
-#     
+#
 #     result <- safe_execute(func_name, args)
 #     if (!is.null(result)) {
 #       methods_sections[[section_name]] <- result
@@ -340,46 +340,46 @@ result <- boilerplate_methods(
 #       cat(paste("No result added for", section_name, "\n"))
 #     }
 #   }
-#   
+#
 #   # combine all sections into a single markdown string
 #   cat("\nCombining all sections\n")
 #   cat("Contents of methods_sections:\n")
 #   print(methods_sections)
 #   markdown_output <- paste(unlist(methods_sections), collapse = "\n\n")
-#   
+#
 #   cat("Finished boilerplate_methods function\n")
 #   cat("Final markdown_output:\n")
 #   cat(markdown_output)
-#   
+#
 #   return(markdown_output)
 # }
-# 
-# 
-# 
+#
+#
+#
 # boilerplate_measures <- function(exposure_var,
 #                                  outcome_vars,
 #                                  measure_data,
 #                                  appendices_measures = NULL) {
-#   
+#
 #   # Helper function to format a single measure or scale item
 #   format_measure <- function(var_name, measure_info) {
 #     if (is.null(measure_info)) {
 #       warning(paste("No information available for variable:", var_name))
 #       return(paste0("##### ", janitor::make_clean_names(var_name, case = "title"), "\n\nNo information available for this variable.\n\n"))
 #     }
-#     
+#
 #     title <- janitor::make_clean_names(var_name, case = "title")
-#     
+#
 #     # Add variable type indicator
 #     if (endsWith(var_name, "_binary")) {
 #       title <- paste0(title, " (Binary)")
 #     } else if (endsWith(var_name, "_cat")) {
 #       title <- paste0(title, " (Categorical)")
 #     }
-#     
+#
 #     description <- trimws(measure_info$description)
 #     reference <- measure_info$reference
-#     
+#
 #     # Format the description with reference
 #     if (grepl("^string_is\\s+", reference)) {
 #       string_content <- sub("^string_is\\s+", "", reference)
@@ -388,9 +388,9 @@ result <- boilerplate_methods(
 #     } else {
 #       description_with_ref <- paste0(description, " [@", reference, "]")
 #     }
-#     
+#
 #     formatted_text <- paste0("##### ", title, "\n", description_with_ref, "\n")
-#     
+#
 #     # If the measure is a scale item, include its items
 #     if ("items" %in% names(measure_info)) {
 #       formatted_text <- paste0(formatted_text, "This dimension includes the following items:\n")
@@ -398,16 +398,16 @@ result <- boilerplate_methods(
 #         formatted_text <- paste0(formatted_text, "   ", letters[i], ". ", measure_info$items[i], "\n")
 #       }
 #     }
-#     
+#
 #     return(formatted_text)
 #   }
-#   
+#
 #   # Generate exposure section
 #   exposure_section <- paste0(
 #     "#### Exposure Indicators\n",
 #     format_measure(exposure_var, measure_data[[exposure_var]])
 #   )
-#   
+#
 #   # Generate outcome sections by domain
 #   outcome_sections <- lapply(names(outcome_vars), function(domain) {
 #     domain_vars <- outcome_vars[[domain]]
@@ -417,23 +417,23 @@ result <- boilerplate_methods(
 #     }
 #     return(domain_section)
 #   })
-#   
+#
 #   # Combine all sections
 #   full_appendix <- paste0(
 #     "### Indicators\n",
 #     exposure_section,
 #     paste(outcome_sections, collapse = "\n\n")
 #   )
-#   
+#
 #   # Add appendix reference if provided
 #   if (!is.null(appendices_measures)) {
 #     appendix_text <- paste0("\n\nDetailed descriptions of how these variables were measured and operationalized can be found in **Appendix ", appendices_measures, "**.")
 #     full_appendix <- paste0(full_appendix, appendix_text)
 #   }
-#   
+#
 #   return(full_appendix)
 # }
-# 
+#
 # boilerplate_methods_variables <- function(exposure_var,
 #                                           outcome_vars,
 #                                           measure_data,
@@ -441,7 +441,7 @@ result <- boilerplate_methods(
 #                                           ...) {
 #   # Ignore unused arguments
 #   unused_args <- list(...)
-#   
+#
 #   # Call boilerplate_measures with the correct parameters
 #   variables_text <- boilerplate_measures(
 #     exposure_var = exposure_var,
@@ -449,7 +449,6 @@ result <- boilerplate_methods(
 #     measure_data = measure_data,
 #     appendices_measures = appendices_measures
 #   )
-#   
+#
 #   return(variables_text)
 # }
-
