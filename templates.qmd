@@ -1,7 +1,58 @@
 ---
 title: "templates"
+format:
+  pdf:  
+    bibliography: /Users/joseph/GIT/templates/bib/references.bib
+    pdf-engine: lualatex
+    sanitise: true
+    keep-tex: true
+    link-citations: true
+    colorlinks: true
+    documentclass: article
+    classoption: [single column]
+    lof: false
+    lot: false
+    geometry:
+      - top=30mm
+      - left=25mm
+      - heightrounded
+      - headsep=22pt
+      - headheight=11pt
+      - footskip=33pt
+      - ignorehead
+      - ignorefoot
+    template-partials: 
+      - /Users/joseph/GIT/templates/quarto/title.tex
+      - /Users/joseph/GIT/templates/measures/data
+    header-includes:
+      - \input{/Users/joseph/GIT/latex/latex-for-quarto.tex}
+      - \let\oldtabular\tabular
+      - \renewcommand{\tabular}{\small\oldtabular}
+      - \setlength{\tabcolsep}{4pt}  % Adjust this value as needed
+  docx:
+    default: false
+date: last-modified
+execute:
+  echo: false
+  warning: false
+  include: true
+  eval: true
+fontfamily: libertinus
+bibliography: /Users/joseph/GIT/templates/bib/references.bib
+csl: /Users/joseph/GIT/templates/csl/camb-a.csl
+---
 ---
 
 ## Quarto
 
 Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+
+
+|       Domain        |                 Dimension                |
+|---------------------|------------------------------------------------|
+|       Health        | BMI, Hours of Sleep, Hours of Exercise, Short Form Health |
+| Psychological Well-Being | Anxiety, Depression, Fatigue, Rumination      |
+| Present-Reflective  | Body Satisfaction, Forgiveness, Perfectionism, Self-Control, Self-Esteem, Sexual Satisfaction |
+| Life-Reflective     | Gratitude, Life Satisfaction, Meaning (Sense & Purpose), Personal Wellbeing Index |
+|       Social        | Social Belonging, Social Support, Neighbourhood Community                   |

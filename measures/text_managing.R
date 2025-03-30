@@ -85,6 +85,25 @@ cat(methods_db$identification_assumptions$standard)
 # save
 margot::here_save(methods_db, "methods_db", methods_path)
 
+
+
+# outcome domains ---------------------------------------------------------
+
+
+method_outcomes_domains_health <- "We investigate well-being using an VanderWeele and colleague's 'outcome-wide' approach. We categorised outcomes into five domains—health, psychological well-being, present-reflective outcomes, life-reflective outcomes, and social outcomes—based on validated scales and measures. Outcomes were based on those modelled in an earlier outcome-wide paper @pedro_2024effects. @tbl-outcomes summarises each domain and its associated measures. For instance, health outcomes included BMI and hours of sleep, whereas psychological well-being included anxiety and depression. Outcomes were converted to z-scores (standardised), and the causal effect estimates may be therefore be interpreted as effect sizes.
+
+|       Domain        |                 Dimension                |
+  |---------------------|------------------------------------------------|
+  |       Health        | BMI, Hours of Sleep, Hours of Exercise, Short Form Health |
+  | Psychological Well-Being | Anxiety, Depression, Fatigue, Rumination      |
+  | Present-Reflective  | Body Satisfaction, Forgiveness, Perfectionism, Self-Control, Self-Esteem, Sexual Satisfaction |
+  | Life-Reflective     | Gratitude, Life Satisfaction, Meaning (Sense & Purpose), Personal Wellbeing Index |
+  |       Social        | Social Belonging, Social Support, Neighbourhood Community |
+
+: Outcome domains and example dimensions. Data summaries for all measures used in this study are provided in {{appendix_outcomes}}.
+
+"
+
 # ------------------------------------------------------
 # confounding control section
 # ------------------------------------------------------
@@ -163,21 +182,20 @@ methods_db <- boilerplate_manage_text(
   db = methods_db
 )
 
-margot::here_save(methods_db, "methods_db", methods_path)
-
-
-# add missing data handling for lmtp
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
   name = "missing_data.lmtp_time_vary",
-  value = missing_data_lmtp_text,
+  value = missing_data_time_vary_lmtp_text,
   db = methods_db
 )
 
-# save
+
 margot::here_save(methods_db, "methods_db", methods_path)
 
+
+# save
+margot::here_save(methods_db, "methods_db", methods_path)
 
 
 missing_data_grf_text <- "The GRF package accepts missing values at baseline. To obtain valid inference for missing responses we computed inverse probability of censoring weights. See Appendix {{grf_appendix}}."
@@ -297,11 +315,11 @@ margot::here_save(methods_db, "methods_db", methods_path)
 
 
 # approach text -----------------------------------------------------------
-general_approach_cate_long <- "Our primary goal was to move beyond average treatment effects (ATE) and explore whether the intervention's impact varied significantly across individuals based on their characteristics. To achieve this, we estimated individualised treatment effects, often termed conditional average treatment effects (CATEs), using causal forests [@grf2024]. Causal forests are a machine learning method adapted specifically for estimating how treatment effects differ across people defined by a set of covariates.
+general_approach_cate_long <- "Our primary goal was to move beyond average treatment effects (ATE) and investigate whether the intervention's impact varied significantly across individuals based on their characteristics. To achieve this, we estimated individualised treatment effects, often termed conditional average treatment effects (CATEs), using causal forests [@grf2024]. Causal forests are a machine learning method adapted specifically for estimating how treatment effects differ across people defined by a set of covariates.
 
 For interpretability across different outcomes, we standardised the direction of effects. Some outcomes, like depression scores, are typically interpreted as 'lower is better'. We inverted the scales for such variables so that positive treatment effects consistently indicated improvement (e.g., a reduction in depression). This ensures that larger positive CATE estimates always signify greater benefit from the treatment. The following outcomes were inverted: {{flipped_list}}.
 
-A key challenge when modelling individual differences is ensuring the detected variations are genuine and not just noise or overfitting. Therefore, we rigorously evaluated the causal forest estimates using a 50/50 sample splitting approach. Half the data were used to train the causal forest model (i.e., to identify patterns of differing treatment effects), and the other half (the held-out data) were used exclusively for evaluation.
+A central challenge when modelling individual differences is ensuring the detected variations are genuine and not just noise or overfitting. Therefore, we rigorously evaluated the causal forest estimates using a 50/50 sample splitting approach. Half the data were used to train the causal forest model (i.e., to identify patterns of differing treatment effects), and the other half (the held-out data) were used exclusively for evaluation.
 
 On the held-out data, we first assessed the calibration of the predictions [@grf2024]. This involved checking if the average of the predicted CATEs accurately reflected the overall average treatment effect (ATE) found in the evaluation sample. More importantly, we tested whether the *predicted variation* in treatment effects (heterogeneous treatment effects, HTE) was reliable. A specific 'differential prediction' test acts as an omnibus indicator ($p$-value) of whether the model successfully captures statistically significant variability in how individuals respond to the treatment [@grf2024]. We also calculated the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018]. RATE quantifies the potential real-world value of using the model to target treatment – specifically, it measures the average outcome improvement we would expect if we prioritised treatment for the individuals predicted to benefit most, compared to a simpler strategy like treating everyone or no one based only on the ATE.
 
@@ -317,9 +335,9 @@ All heterogeneity analyses, including calibration tests, RATE calculations, Qini
 
 Collectively, this multi-stage approach allows us to first estimate individualised effects, rigorously test whether these estimated variations are reliable, evaluate the potential gains from targeting treatment, and finally, derive simple rules to guide personalised intervention strategies if justified by the data.
 "
-general_approach_cate_short <- "Our primary aim was to look beyond average treatment effects (ATE) and explore whether the intervention’s impact varied systematically across individuals. To that end, we estimated individualised treatment effects, sometimes called conditional average treatment effects (CATEs), using causal forests [@grf2024], a machine learning approach tailored for detecting treatment-effect heterogeneity based on covariates.
+general_approach_cate_short <- "Our primary aim was to look beyond average treatment effects (ATE) and explore whether the intervention’s impact varied systematically across individuals. To that end, we estimated individualised treatment effects, also called conditional average treatment effects (CATEs), using causal forests [@grf2024], a machine learning approach tailored for detecting treatment-effect heterogeneity based on covariates.
 
-We standardised effect directions by inverting any outcomes where 'lower is better' (e.g., depression), so positive values consistently denote improvement. The following outcomes were inverted: {{flipped_list}}.
+We standardised effect directions by inverting any outcome where 'lower is better', so positive values consistently denote improvement. The following outcomes were inverted: {{flipped_list}}.
 
 A common concern when modelling individual differences is distinguishing real variation from noise. To address this, we used a 50/50 sample split. We trained the causal forest on half the data, then tested model predictions exclusively on the remaining half to prevent overfitting.
 
@@ -348,10 +366,11 @@ methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
   name = "approach.grf_cate_short",
-  value = general_approach_cate_long,
+  value = general_approach_cate_short,
   db = methods_db
 )
 
+cat(methods_db$approach$grf_cate_short)
 
 results_ominibus_test_conclusion <-  "The omnibus test did not provide statistically significant evidence for overall treatment effect heterogeneity based on the examined covariates [@grf2024]. This suggests that, across all individuals and covariates considered, the model did not reliably detect variation beyond chance according to this specific test. However, omnibus tests can lack power for detecting subtle or localised heterogeneity. Therefore, we examined more specific indicators of potential targeting benefits and subgroup differences."
 
@@ -389,7 +408,6 @@ methods_db <- boilerplate_manage_text(
 # save
 margot::here_save(methods_db, "methods_db", methods_path)
 
-methods_db$results$policy_tree_intro
 
 # ------------------------------------------------------
 # target population section
@@ -466,17 +484,19 @@ methods_text <- boilerplate_generate_text(
     "identification_assumptions.standard",
     "confounding_control.vanderweele",
     "statistical_estimator.lmtp.short",
+    "missing_data.lmtp_time_vary",
     "approach.grf_cate_short"
   ),
   global_vars = list(
-    exposure_var = "political_conservative",
+    exposure_var = "Political Conservativism",
     n_total = 47000,
     flipped_list = c("Anxiety", "Depression", "Fatigue", "Perfectionism"),
-    appendices_sample = "A-C",
+    appendices_sample = "A",
+    appendix_outcomes = "B",
     baseline_wave = "NZAVS time 10, years 2018-2019",
     exposure_wave = "NZAVS time 11, years 2019-2020",
     outcome_wave = "NZAVS time 12, years 2020-2021",
-    appendix_ref = "B",
+    appendix_ref = "C",
     protocol_url = "https://osf.io/ce4t9/"
   ),
   db = methods_db

@@ -22,6 +22,8 @@
 #'   If NULL (default), uses "[category]_db.rds".
 #' @param template_vars List. Optional variables for template substitution.
 #' @param warn_missing Logical. Whether to warn about missing template variables. Default is TRUE.
+#' @param auto_sort Logical. Whether to automatically sort the database alphabetically
+#'   after add/update operations. Default is TRUE.
 #'
 #' @return Depending on action:
 #'   - "list": Returns the database or part of it
@@ -103,7 +105,8 @@ boilerplate_manage_text <- function(
     text_path = NULL,
     file_name = NULL,
     template_vars = list(),
-    warn_missing = TRUE
+    warn_missing = TRUE,
+    auto_sort = TRUE  # Default set to TRUE
 ) {
   # Validate inputs
   category <- match.arg(category)
@@ -142,7 +145,14 @@ boilerplate_manage_text <- function(
       return(get_nested_text(db, path_parts, template_vars, warn_missing))
     } else if (action %in% c("add", "update", "remove")) {
       # For modification actions, update the nested structure
-      return(modify_nested_entry(db, path_parts, action, value))
+      db <- modify_nested_entry(db, path_parts, action, value, auto_sort)
+
+      # Sort the entire database if auto_sort is TRUE
+      if (auto_sort && action %in% c("add", "update")) {
+        db <- sort_text_db(db)
+      }
+
+      return(db)
     }
   } else {
     # handle regular key-based operations
@@ -160,11 +170,21 @@ boilerplate_manage_text <- function(
         stop("text entry already exists")
       }
       db[[name]] <- value
+
+      # Sort the database if auto_sort is TRUE
+      if (auto_sort) {
+        db <- db[order(names(db))]
+      }
     } else if (action == "update") {
       if (!(name %in% names(db))) {
         stop("text entry does not exist")
       }
       db[[name]] <- value
+
+      # Sort the database if auto_sort is TRUE
+      if (auto_sort) {
+        db <- db[order(names(db))]
+      }
     } else if (action == "remove") {
       if (!(name %in% names(db))) {
         stop("text entry does not exist")
@@ -185,6 +205,116 @@ boilerplate_manage_text <- function(
   return(db)
 }
 
+#' Sort Text Database
+#'
+#' This function recursively sorts a text database alphabetically at each level.
+#'
+#' @param db A text database (list).
+#' @return The same database with all levels sorted alphabetically.
+#'
+#' @noRd
+sort_text_db <- function(db) {
+  if (!is.list(db)) {
+    return(db)
+  }
+
+  # Sort the top level
+  sorted_names <- sort(names(db))
+  sorted_db <- db[sorted_names]
+
+  # Recursively sort any nested structures
+  for (name in sorted_names) {
+    if (is.list(sorted_db[[name]])) {
+      # This is a folder/category, sort it recursively
+      sorted_db[[name]] <- sort_text_db(sorted_db[[name]])
+    }
+  }
+
+  return(sorted_db)
+}
+
+#' Modify a Nested Entry in the Database
+#'
+#' Recursively navigates a nested list structure to add, update, or remove an entry.
+#'
+#' @param db List. The database to modify.
+#' @param path_parts Character vector. Path components.
+#' @param action Character. The action to perform ("add", "update", or "remove").
+#' @param value Any. The value to set (for add or update).
+#' @param auto_sort Logical. Whether to automatically sort at each level.
+#'
+#' @return The modified database.
+#'
+#' @noRd
+modify_nested_entry <- function(db, path_parts, action, value = NULL, auto_sort = TRUE) {
+  if (length(path_parts) == 0) {
+    stop("Empty path")
+  }
+
+  current_part <- path_parts[1]
+  remaining_parts <- path_parts[-1]
+
+  # When adding, create missing folders as needed
+  if (action == "add" && !(current_part %in% names(db))) {
+    if (length(remaining_parts) > 0) {
+      # Create folder for intermediate path
+      db[[current_part]] <- list()
+    } else {
+      # Add leaf value
+      db[[current_part]] <- value
+
+      # Sort after adding if auto_sort is TRUE
+      if (auto_sort) {
+        db <- db[order(names(db))]
+      }
+
+      return(db)
+    }
+  } else if (action != "add" && !(current_part %in% names(db))) {
+    stop(paste("Path component", current_part, "not found"))
+  }
+
+  if (length(remaining_parts) == 0) {
+    # We've reached the leaf node
+    if (action == "add") {
+      if (current_part %in% names(db)) {
+        stop(paste("Text entry", current_part, "already exists"))
+      }
+      db[[current_part]] <- value
+
+      # Sort after adding if auto_sort is TRUE
+      if (auto_sort) {
+        db <- db[order(names(db))]
+      }
+    } else if (action == "update") {
+      db[[current_part]] <- value
+
+      # Sort after updating if auto_sort is TRUE
+      if (auto_sort) {
+        db <- db[order(names(db))]
+      }
+    } else if (action == "remove") {
+      db[[current_part]] <- NULL
+    }
+  } else {
+    # Continue navigation
+    current_item <- db[[current_part]]
+
+    if (!is.list(current_item)) {
+      stop(paste("Path component", current_part, "is not a folder"))
+    }
+
+    # Recursively modify the nested structure
+    db[[current_part]] <- modify_nested_entry(current_item, remaining_parts, action, value, auto_sort)
+
+    # Sort the current level after modifying deeper levels if auto_sort is TRUE
+    if (auto_sort && action %in% c("add", "update")) {
+      db <- db[order(names(db))]
+    }
+  }
+
+  return(db)
+}
 #' Load Text Database from File
 #'
 #' @param category Character. Category of text to load.
@@ -1032,3 +1162,30 @@ boilerplate_results_text <- function(
   )
 }
 
+#' Sort Text Database
+#'
+#' This function recursively sorts a text database alphabetically at each level.
+#'
+#' @param db A text database (list).
+#' @return The same database with all levels sorted alphabetically.
+#'
+#' @noRd
+sort_text_db <- function(db) {
+  if (!is.list(db)) {
+    return(db)
+  }
+
+  # Sort the top level
+  sorted_names <- sort(names(db))
+  sorted_db <- db[sorted_names]
+
+  # Recursively sort any nested structures
+  for (name in sorted_names) {
+    if (is.list(sorted_db[[name]])) {
+      # This is a folder/category, sort it recursively
+      sorted_db[[name]] <- sort_text_db(sorted_db[[name]])
+    }
+  }
+
+  return(sorted_db)
+}

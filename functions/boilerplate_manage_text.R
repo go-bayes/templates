@@ -92,6 +92,10 @@
 #'   text_path = "path/to/project/data"
 #' )
 #'
+#' @importFrom glue glue
+#' @importFrom here here
+#' @importFrom stringr str_extract_all
+#' @importFrom tools toTitleCase
 #' @importFrom utils modifyList
 #' @export
 boilerplate_manage_text <- function(
@@ -902,70 +906,148 @@ boilerplate_generate_text <- function(
   return(paste(result, collapse = "\n\n"))
 }
 
-#' Generate Methods Text from Boilerplate
+#' Generate Text from Boilerplate
 #'
-#' This function generates methods text by retrieving and combining text from
-#' the methods database. It's a wrapper around boilerplate_generate_text with
-#' methods-specific defaults. Supports arbitrarily nested section paths
-#' using dot notation for flexible organization.
+#' This function generates text by retrieving and combining text from
+#' a boilerplate database. It allows for template variable substitution and
+#' customization through overrides. Supports arbitrarily nested section paths
+#' using dot notation.
 #'
-#' @param sections Character vector. The methods sections to include (can use dot notation for nesting).
+#' @param category Character. Category of text to generate.
+#' @param sections Character vector. The sections to include (can use dot notation for nesting).
 #' @param global_vars List. Variables available to all sections.
 #' @param section_vars List. Section-specific variables.
 #' @param text_overrides List. Direct text overrides for specific sections.
-#' @param db List. Optional methods database to use.
+#' @param db List. Optional database to use.
 #' @param text_path Character. Path to the directory where text database files are stored.
+#'   If NULL (default), the function will look in the following locations in order:
+#'   1. "boilerplate/data/" subdirectory of the current working directory (via here::here())
+#'   2. Package installation directory's "boilerplate/data/" folder
+#'   3. "boilerplate/data/" relative to the current working directory
 #' @param warn_missing Logical. Whether to warn about missing template variables.
+#' @param add_headings Logical. Whether to add markdown headings to sections. Default is FALSE.
+#' @param heading_level Character. The heading level to use (e.g., "###"). Default is "###".
+#' @param custom_headings List. Custom headings for specific sections. Names should match section names.
 #'
-#' @return Character. The combined methods text.
+#' @return Character. The combined text with optional headings.
 #'
 #' @examples
 #' \dontrun{
-#' # Basic usage with default sections
-#' methods_text <- boilerplate_methods_text(
+#' # Basic usage with methods sections
+#' methods_text <- boilerplate_generate_text(
+#'   category = "methods",
+#'   sections = c("sample", "causal_assumptions.identification"),
 #'   global_vars = list(
 #'     exposure_var = "political_conservative",
 #'     population = "university students"
 #'   )
 #' )
 #'
-#' # Using deeply nested organization
-#' methods_text <- boilerplate_methods_text(
+#' # Using deeply nested paths with headings
+#' methods_text <- boilerplate_generate_text(
+#'   category = "methods",
 #'   sections = c(
 #'     "sample",
-#'     "causal_assumptions.identification",
 #'     "statistical.longitudinal.lmtp",
 #'     "statistical.heterogeneity.grf.custom"
 #'   ),
-#'   global_vars = list(exposure_var = "treatment")
+#'   global_vars = list(exposure_var = "treatment"),
+#'   text_path = "path/to/project/data",
+#'   add_headings = TRUE,
+#'   heading_level = "###"
 #' )
 #' }
 #'
 #' @export
-boilerplate_methods_text <- function(
-    sections = c(
-      "sample",
-      "causal_assumptions.identification",
-      "causal_assumptions.confounding_control",
-      "statistical.longitudinal.lmtp"
-    ),
+boilerplate_generate_text <- function(
+    category = c("measures", "methods", "results", "discussion"),
+    sections,
     global_vars = list(),
     section_vars = list(),
     text_overrides = list(),
     db = NULL,
     text_path = NULL,
-    warn_missing = TRUE
+    warn_missing = TRUE,
+    add_headings = FALSE,
+    heading_level = "###",
+    custom_headings = list()
 ) {
-  boilerplate_generate_text(
-    category = "methods",
-    sections = sections,
-    global_vars = global_vars,
-    section_vars = section_vars,
-    text_overrides = text_overrides,
-    db = db,
-    text_path = text_path,
-    warn_missing = warn_missing
-  )
+  # Input validation
+  category <- match.arg(category)
+
+  # If category is "methods", use singular form for main heading
+  category_title <- ifelse(category == "methods", "Method", tools::toTitleCase(category))
+
+  # Load database if not provided
+  if (is.null(db)) {
+    db <- boilerplate_manage_text(
+      category = category,
+      action = "list",
+      text_path = text_path
+    )
+  }
+
+  # Initialize result
+  result <- character(0)
+
+  # Process each section for text generation with arbitrary nesting
+  for (section in sections) {
+    # Determine section title
+    section_parts <- strsplit(section, "\\.")[[1]]
+    section_name <- section_parts[length(section_parts)]
+
+    # Create heading text
+    if (add_headings) {
+      # Check if there's a custom heading for this section
+      if (section %in% names(custom_headings)) {
+        heading_text <- paste0(heading_level, " ", custom_headings[[section]])
+      } else {
+        # Use the last part of the section path and convert to title case
+        heading_text <- paste0(heading_level, " ", tools::toTitleCase(gsub("_", " ", section_name)))
+      }
+    }
+
+    # Check for text override
+    if (section %in% names(text_overrides)) {
+      section_text <- text_overrides[[section]]
+      if (add_headings) {
+        section_text <- paste(heading_text, section_text, sep = "\n\n")
+      }
+      result <- c(result, section_text)
+      next
+    }
+
+    # Merge global and section-specific variables
+    vars <- global_vars
+    if (section %in% names(section_vars)) {
+      vars <- c(vars, section_vars[[section]])
+    }
+
+    # Attempt to retrieve text
+    section_text <- tryCatch({
+      boilerplate_manage_text(
+        category = category,
+        action = "get",
+        name = section,
+        db = db,
+        template_vars = vars,
+        warn_missing = warn_missing
+      )
+    }, error = function(e) {
+      warning(paste("Error retrieving section", section, ":", e$message))
+      return(NULL)
+    })
+
+    if (!is.null(section_text) && is.character(section_text)) {
+      if (add_headings) {
+        section_text <- paste(heading_text, section_text, sep = "\n\n")
+      }
+      result <- c(result, section_text)
+    }
+  }
+
+  # Combine all sections
+  return(paste(result, collapse = "\n\n"))
 }
 
 #' Generate Results Text from Boilerplate
