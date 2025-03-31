@@ -1,0 +1,342 @@
+---
+title: "Basic Usage of the Boilerplate Package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basic Usage of the Boilerplate Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(boilerplate)
+```
+
+# Introduction
+
+The `boilerplate` package helps you manage and generate standardized text for scientific reports, particularly for methods and results sections. It supports template variable substitution, hierarchical organization of text, and provides tools for creating structured, reusable content.
+
+This vignette covers the basic usage of the package:
+
+1. Managing text databases
+2. Managing measures databases
+3. Generating text with variable substitution
+4. Creating complete methods and results sections
+
+## 1. Managing Text Databases
+
+First, let's initialize the default databases:
+
+```{r init}
+# Initialize default databases (do this once per project)
+boilerplate_init_text()
+```
+
+Now we can view the default methods database:
+
+```{r list_methods}
+# List the methods database
+init_methods_db <- boilerplate_manage_text(category = "methods", action = "list")
+
+# See what's available at the top level
+names(init_methods_db)
+```
+
+### Adding New Text
+
+Let's add a new method entry:
+
+```{r add_method}
+# Add a new method entry
+methods_db <- boilerplate_manage_text(
+  category = "methods",
+  action = "add",
+  name = "sample_selection",
+  value = "Participants were selected from {{population}} during {{timeframe}} using {{sampling_method}} sampling.",
+  db = init_methods_db
+)
+
+cat(methods_db$sample_selection)
+```
+
+### Nested Entries
+
+The package supports hierarchical organization using dot notation:
+
+```{r add_nested}
+# Add a nested entry
+methods_db <- boilerplate_manage_text(
+  category = "methods",
+  action = "add",
+  name = "statistical.machine_learning.random_forest",
+  value = "We used random forests with {{n_trees}} trees and {{max_depth}} maximum depth.",
+  db = methods_db
+)
+
+# View the nested structure
+statistical_methods <- boilerplate_manage_text(
+  category = "methods",
+  action = "list",
+  name = "statistical",
+  db = methods_db
+)
+str(statistical_methods, max.level = 2)
+```
+
+### Retrieving Text with Variables
+
+We can retrieve text with template variable substitution:
+
+```{r get_text}
+# Get text with variables substituted
+sample_text <- boilerplate_manage_text(
+  category = "methods",
+  action = "get",
+  name = "sample_selection",
+  template_vars = list(
+    population = "university students",
+    timeframe = "2020-2021",
+    sampling_method = "convenience"
+  ),
+  db = methods_db
+)
+
+cat(sample_text)
+```
+
+## 2. Managing Measures Databases
+
+The package provides special functions for managing measures. 
+
+First First, initialise the default databases:
+
+```{r init}
+# Initialize default databases (do this once per project)
+boilerplate_init_measures()
+```
+
+```{r measures}
+# List the measures database
+measures_db <- boilerplate_manage_measures(action = "list")
+
+# Add a new measure
+measures_db <- boilerplate_manage_measures(
+  action = "add",
+  name = "anxiety.gad7",
+  measure = list(
+    description = "Anxiety was measured using the GAD-7 scale.",
+    reference = "spitzer2006",
+    waves = "1-3",
+    keywords = c("anxiety", "mental health", "gad"),
+    items = list(
+      "Feeling nervous, anxious, or on edge",
+      "Not being able to stop or control worrying",
+      "Worrying too much about different things",
+      "Trouble relaxing"
+    )
+  ),
+  db = measures_db
+)
+
+# Retrieve the measure
+gad7 <- boilerplate_manage_measures(
+  action = "get",
+  name = "anxiety.gad7",
+  db = measures_db
+)
+
+str(gad7)
+
+
+
+```
+
+## 3. Generating Text with Variable Substitution
+
+The `boilerplate_generate_text()` function allows us to combine multiple text sections with variable substitution:
+
+```{r generate_text}
+# Generate text combining multiple sections
+methods_text <- boilerplate_generate_text(
+  category = "methods",
+  sections = c("sample_selection", "statistical.machine_learning.random_forest"),
+  global_vars = list(
+    population = "university students",
+    timeframe = "2020-2021",
+    sampling_method = "convenience",
+    n_trees = 500,
+    max_depth = 10
+  ),
+  db = methods_db,
+  add_headings = TRUE,
+  heading_level = "##"
+)
+
+cat(methods_text)
+
+# define variables 
+
+
+path_measures_test = '/Users/joseph/GIT/templates/databases/measures'
+
+test_measures_db <- margot::here_read("merged_db", path_measures_test)
+exposure_var = "perfectionism"
+outcome_vars = c("belong", "agreeableness")
+
+
+# Generate measures text
+measures_text <- boilerplate_measures_text(
+  exposure_var = exposure_var,
+  outcome_vars = outcome_vars,
+  measures_db = test_measures_db,  # For measure information
+  appendices_measures = "Appendix A",
+  print_waves = TRUE)
+
+cat(measures_text)
+
+  
+  str(test_measures_db)
+boilerplate_measures_text(
+  variable_heading = "Exposure Variable",
+  variables = exposure_var,
+  measures_db = test_measures_db,  # For measure information
+  appendices_measures = "Appendix A",
+  print_waves = TRUE)
+
+```
+
+## 4. Creating Complete Methods and Results Sections
+
+The package provides specialized functions for generating methods and results sections:
+
+```{r methods_results}
+# Define study parameters
+study_params <- list(
+  exposure_var = "treatment",
+  population = "university students",
+  timeframe = "2020-2021",
+  effect_size = "0.35",
+  confidence_interval = "95% CI: 0.21, 0.49",
+  interpretation = "a moderate positive effect"
+)
+
+# Generate methods text with appropriate defaults
+methods_text <- boilerplate_methods_text(
+  sections = c("sample", "causal_assumptions.identification"),
+  global_vars = study_params,
+  db = methods_db,
+  add_headings = TRUE
+)
+
+cat(methods_text)
+
+# Generate results text
+results_text <- boilerplate_results_text(
+  sections = c("main_effect"),
+  results_data = study_params,
+  add_headings = TRUE
+)
+
+cat(results_text)
+```
+
+### Generating Measures Text for Reporting
+
+For reporting measures used in a study:
+
+```{r measures_text}
+# Define measures used in the study
+measures_db <- boilerplate_add_measure(
+  name = "depression.phq9",
+  description = "Depression was measured using the PHQ-9 scale.",
+  reference = "kroenke2001",
+  waves = "1-3",
+  items = c("Little interest or pleasure in doing things", 
+            "Feeling down, depressed, or hopeless"),
+  keywords = c("depression", "mental health"),
+  db = measures_db
+)
+
+# Define the exposure and outcome variables
+exposure_var <- "treatment"
+outcome_vars <- list(
+  psychological = c("anxiety.gad7", "depression.phq9")
+)
+
+# Generate measures text
+measures_text <- boilerplate_measures_text(
+  exposure_var = exposure_var,
+  outcome_vars = outcome_vars,
+  measures_db = measures_db,
+  appendices_measures = "Appendix A",
+  print_waves = TRUE,
+  db = measures_db
+)
+
+cat(measures_text)
+```
+
+## 5. Saving Databases for Future Use
+
+To save your customized databases for future use:
+
+```{r save_db, eval=FALSE}
+# Save the methods database
+boilerplate_manage_text(
+  category = "methods",
+  action = "save",
+  db = methods_db
+)
+
+# Save the measures database
+boilerplate_manage_measures(
+  action = "save",
+  db = measures_db
+)
+```
+
+## 6. Simplified Wrapper Functions
+
+The package provides simplified wrapper functions for common operations:
+
+```{r wrappers}
+# Add text with a simplified function
+methods_db <- boilerplate_add_text(
+  category = "methods",
+  name = "data_analysis",
+  text = "Data were analyzed using {{software}} version {{version}}.",
+  db = methods_db
+)
+
+# Get text with a simplified function
+analysis_text <- boilerplate_get_text(
+  category = "methods",
+  name = "data_analysis",
+  vars = list(software = "R", version = "4.2.0"),
+  db = methods_db
+)
+
+cat(analysis_text)
+
+# Add a measure with a simplified function
+measures_db <- boilerplate_add_measure(
+  name = "wellbeing",
+  description = "Wellbeing was measured using a 5-item scale.",
+  reference = "smith2020",
+  items = c("I am satisfied with my life", "My life has meaning"),
+  keywords = c("wellbeing", "satisfaction"),
+  db = measures_db
+)
+```
+
+# Conclusion
+
+The `boilerplate` package provides a flexible framework for managing and generating standardized text for scientific reports. By creating reusable text templates and organizing them hierarchically, you can maintain consistency across reports while easily customizing content with template variables.
+
+For more advanced usage, see the "Research Workflow" vignette.

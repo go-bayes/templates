@@ -1,0 +1,81 @@
+# Integration Plan for Boilerplate Package
+
+## 1. File Structure
+Update the package file structure to include all necessary files:
+
+```
+boilerplate/
+  ├── R/
+  │   ├── boilerplate-package.R         # Package documentation
+│   ├── utilities.R                     # Shared utility functions
+│   ├── boilerplate_manage_text.R       # Text database management
+│   ├── boilerplate_manage_measures.R   # Measures database management
+│   ├── boilerplate_generate_text.R     # Text generation with templates
+│   ├── specialized_wrappers.R          # Methods, results, measures text wrappers
+│   ├── simplified_wrappers.R           # Simplified convenience functions
+│   ├── boilerplate_merge_databases.R   # Database merging function
+│   ├── boilerplate_init_text.R         # Database initialization function
+│   └── boilerplate_text_editor.R       # Interactive text editor function
+├── data/
+  │   ├── example_methods_db.rda          # Example methods database
+│   └── example_measures_db.rda         # Example measures database
+├── vignettes/
+  │   ├── basic_usage.Rmd                 # Basic usage
+│   └── research_workflow.Rmd           # Complete research workflow example
+├── DESCRIPTION                         # Package metadata
+├── NAMESPACE                           # Package exports
+└── README.md                           # Package README
+```
+
+## 2. Function Parameter Standardization
+
+### Key Parameter Naming
+For consistency, ensure these parameter names are standardized across all functions:
+
+  - In text management functions: Use `name` for identifiers (not `key`)
+- In file path handling: Use `text_path` for text databases and `measures_path` for measures databases
+- In file name handling: Use `file_name` parameter consistently
+
+### Function Signatures to Update
+Update these functions to use consistent parameters:
+
+  - `boilerplate_manage_text`: Use `name` (not `key`), and `text_path`/`file_name` (not `file_path`)
+- `boilerplate_init_text`: Use `text_path` consistently
+- `boilerplate_text_editor`: Update to use `text_path` and `file_name` when saving files
+
+## 3. Dependencies
+Make sure these dependencies are in the DESCRIPTION file:
+
+  ```
+Imports:
+  glue,
+here,
+stringr,
+tools,
+janitor,
+cli
+```
+
+## 4. Tests to Verify Integration
+
+Create these tests to verify the integration works:
+
+  1. Test that `boilerplate_manage_text` and `boilerplate_manage_measures` can add/get/update/remove entries
+2. Test that nested paths work correctly in both functions
+3. Test that `boilerplate_generate_text` and the specialized wrappers work with template substitution
+4. Test that `boilerplate_init_text` can create and merge databases
+5. Test that `boilerplate_merge_databases` merges hierarchical structures correctly
+6. Test that the simplified wrapper functions work as expected
+
+## 5. Update Documentation
+Ensure roxygen documentation is complete and accurate for all functions, particularly:
+
+  - Update parameter descriptions to reflect standardized naming
+- Ensure examples use the standardized parameter names
+- Update return value descriptions
+
+## 6. Update Vignettes
+Make sure vignettes reflect the integrated package:
+
+  - Basic usage vignette should cover all core functions
+- Research workflow vignette should demonstrate a realistic end-to-end usage

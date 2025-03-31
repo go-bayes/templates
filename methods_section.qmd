@@ -1,40 +1,38 @@
-# Methods
+## Methods
 
-Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from 47000 participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB). Refer to [Appendix A](#appendix-timeline) for a histogram of daily responses for this cohort.
+### Sample Selection
 
-This study relies on the following key identification assumptions for estimating the causal effect of political_conservative:
+Participants were selected from university students during 2020-2021.
 
-1. **Consistency**: the observed outcome under the observed political_conservative is equal to the potential outcome under that exposure level. As part of consistency, we assume no interference: the potential outcomes for one individual are not affected by the political_conservative status of other individuals.
+### Variables
 
-2. **Positivity**: there is a non-zero probability of receiving each level of political_conservative for every combination of values of political_conservative and confounders in the population.
+### Exposure Variable
 
-3. **No unmeasured confounding**: all variables that affect both political_conservative and the outcome have been measured and accounted for in the analysis.
+#### Perfectionism
 
-Satisfaction of these assumptions is critical for the causal interpretability of our results and should be carefully considered in light of the study design and available data.
+*Doing my best never seems to be enough.*
+*My performance rarely measures up to my standards.*
+*I am hardly ever satisfied with my performance.*
 
-To manage confounding in our analysis, we implement [@vanderweele2019]'s *modified disjunctive cause criterion* by following these steps:
+Perfectionism was measured using a 3-item scale assessing maladaptive perfectionism tendencies. [@rice_short_2014]
 
-1. **Identified all common causes** of both the treatment and outcomes.
-2. **Excluded instrumental variables** that affect the exposure but not the outcome. Instrumental variables do not contribute to controlling confounding and can reduce the efficiency of the estimates.
-3. **Included proxies for unmeasured confounders** affecting both exposure and outcome. According to the principles of d-separation @pearl2009a, using proxies allows us to control for their associated unmeasured confounders indirectly.
-4. **Controlled for baseline exposure** and **baseline outcome**. Both are used as proxies for unmeasured common causes, enhancing the robustness of our causal estimates, refer to @vanderweele2020.
+*Waves: 10-current*
 
-## Missing Data Handling
 
-### LMTP Estimator
-To mitigate bias from missing data, we used the following strategies:
+### Outcome Variables
 
-**Baseline missingness**: we employed the `ppm` algorithm from the `mice` package in R [@vanbuuren2018] to impute missing baseline data (wave NZAVS time 10, years 2018-2019). This method allowed us to reconstruct incomplete datasets by estimating a plausible value for missing observation. Because we could only pass one data set to the lmtp, we employed single imputation. Approximately 0.15% of covariate values were missing at NZAVS time 10, years 2018-2019. We only used baseline data to impute baseline wave missingness (refer to @zhang2023shouldMultipleImputation).
+### Psychological Outcomes
 
-**Outcome missingness**: to address confounding and selection bias arising from missing responses and panel attrition at the end of study NZAVS time 12, years 2020-2021, we applied censoring weights obtained using nonparametric machine learning ensembles afforded by the `lmtp` package (and its dependencies) in R [@williams2021].
+#### Anxiety Gad7
 
-### GRF Estimator
-The GRF package accepts missing values at baseline. To obtain valid inference for missing responses we computed inverse probability of censoring weights. See Appendix C.
+No information available for this variable.
 
-## Statistical Estimators
+#### Depression Phq9
+
+No information available for this variable.
+
+
 
 ### LMTP
-We estimate causal effects using the Longitudinal Modified Treatment Policy (LMTP) estimator within a Targeted Minimum Loss-based Estimation (TMLE) framework [@van2014targeted; @van2012targeted]. LMTP draws on machine learning for flexible outcome and treatment modeling and accounts for time-varying confounding [@van2014discussion; @vanderlaan2011; @vanderlaan2018]. This estimator is consistent if either the outcome model or the treatment mechanism is correct (double robustness). We use cross-validation to reduce overfitting [@bulbulia2024PRACTICAL]. We perform estimation with the `lmtp` package [@williams2021] and visualise outputs with the `margot` package [@margot2024].
 
-### GRF
-We estimate heterogeneous treatment effects with Generalized Random Forests (GRF) [@grf2024]. GRF extends random forests for causal inference by focusing on conditional average treatment effects (CATE). It handles complex interactions and non-linearities without explicit model specification, and it provides 'honest' estimates by splitting data between model-fitting and inference. GRF is doubly robust because it remains consistent if either the outcome model or the propensity model is correct. We evaluate policies with the `policytree` package [@policytree_package_2024; @athey_2021_policy_tree_econometrica] and visualise results with `margot` [@margot2024].
+e perform statistical estimation using a Targeted Minimum Loss-based Estimation (TMLE) approach, specifically the Longitudinal Modified Treatment Policy (LMTP) estimator [@van2014targeted; @van2012targeted]. TMLE is a flexible framework for causal inference that provides valid uncertainty estimates. LMTP extends TMLE to handle time-varying treatments and confounders.
