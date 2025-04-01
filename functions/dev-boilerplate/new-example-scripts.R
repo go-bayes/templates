@@ -1,12 +1,14 @@
+library(boilerplate)
+library(margot)
 # Example 1: Using the new simplified function
-# methods_path = here::here("/Users/joseph/GIT/templates/databases/methods")
-# measures_path = here::here("/Users/joseph/GIT/templates/databases/measures")
-#
+methods_path = here::here("/Users/joseph/GIT/templates/databases/methods")
+measures_path = here::here("/Users/joseph/GIT/templates/databases/measures")
+
 #
 #
 # # read
-# methods_db = margot::here_read("methods_db", methods_path)
-# measures_db = margot::here_read("merged_db", measures_path)
+methods_db = margot::here_read("methods_db", methods_path)
+measures_db = margot::here_read("merged_db", measures_path)
 #
 # Get measures database
 # measures_db <- boilerplate_manage_measures(action = "list")
@@ -48,7 +50,7 @@ cat(psychological_text)
 # boilerplate_init_measures()
 
 # 2. View the measures database
-boilerplate_manage_measures(action = "list", db= measures_db)
+# boilerplate_manage_measures(action = "list", db= measures_db)
 
 # 3. Define study parameters
 study_params <- list(
@@ -174,12 +176,12 @@ writeLines(methods_section, "methods_section.qmd")
 
 # test
 # initialise measures
-library(glue)
-methods_path = here::here("/Users/joseph/GIT/templates/databases/methods")
-
-
-# read
-methods_db = margot::here_read("methods_db", methods_path)
+# library(glue)
+# methods_path = here::here("/Users/joseph/GIT/templates/databases/methods")
+#
+#
+# # read
+# methods_db = margot::here_read("methods_db", methods_path)
 
 # boilerplate_manage_text(
 #   category = "methods",

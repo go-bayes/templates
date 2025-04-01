@@ -143,6 +143,8 @@ boilerplate_generate_text <- function(
   return(paste(result, collapse = "\n\n"))
 }
 
+
+
 #' Generate Methods Text from Boilerplate
 #'
 #' This function generates methods text by retrieving and combining text from
@@ -293,6 +295,27 @@ boilerplate_results_text <- function(
   )
 }
 
+#' Transform a label using provided mappings
+#'
+#' @param label Character. The original label to transform
+#' @param label_mapping Named character vector. Mappings to transform the label
+#'
+#' @return Character. The transformed label
+#' @noRd
+transform_label <- function(label, label_mapping = NULL) {
+  # Apply mapping with partial substitutions
+  if (!is.null(label_mapping)) {
+    for (pattern in names(label_mapping)) {
+      if (grepl(pattern, label, fixed = TRUE)) {
+        replacement <- label_mapping[[pattern]]
+        label <- gsub(pattern, replacement, label, fixed = TRUE)
+        cli::cli_alert_info("Mapped label: {pattern} -> {replacement}")
+      }
+    }
+  }
+  return(label)
+}
+
 #' Generate Formatted Text for Measures
 #'
 #' This function generates formatted markdown text describing measures in a study.
@@ -307,6 +330,9 @@ boilerplate_results_text <- function(
 #' @param print_waves Logical. Whether to include wave information in the output. Default is FALSE.
 #' @param print_keywords Logical. Whether to include keyword information in the output. Default is FALSE.
 #' @param appendices_measures Character. Optional reference to appendices containing measure details.
+#' @param label_mappings Named character vector. Mappings to transform variable names in the output.
+#'   For example, c("sdo" = "Social Dominance Orientation", "born_nz_binary" = "Born in NZ").
+#'   If a variable name contains any of the keys in this vector, that part will be replaced with the corresponding value.
 #'
 #' @return Character string with formatted text describing the measures.
 #'
@@ -315,12 +341,19 @@ boilerplate_results_text <- function(
 #' # Get measures database
 #' measures_db <- boilerplate_manage_measures(action = "list")
 #'
-#' # Generate exposure variable text
+#' # Define variable label mappings
+#' var_labels <- c(
+#'   "sdo" = "Social Dominance Orientation",
+#'   "born_nz_binary" = "Born in NZ"
+#' )
+#'
+#' # Generate exposure variable text with custom labels
 #' exposure_text <- boilerplate_measures_text(
 #'   variable_heading = "Exposure Variable",
 #'   variables = "political_conservative",
 #'   db = measures_db,
-#'   print_waves = TRUE
+#'   print_waves = TRUE,
+#'   label_mappings = var_labels
 #' )
 #'
 #' # Generate outcome variables text
@@ -337,6 +370,7 @@ boilerplate_results_text <- function(
 #' }
 #'
 #' @importFrom janitor make_clean_names
+#' @importFrom cli cli_alert_info
 #' @export
 boilerplate_measures_text <- function(
     variable_heading,
@@ -346,7 +380,8 @@ boilerplate_measures_text <- function(
     subheading_level = 4,
     print_waves = FALSE,
     print_keywords = FALSE,
-    appendices_measures = NULL
+    appendices_measures = NULL,
+    label_mappings = NULL
 ) {
   # input validation
   if (!is.character(variable_heading)) {
@@ -373,17 +408,30 @@ boilerplate_measures_text <- function(
     # get measure info
     measure_info <- db[[var]]
 
+    # transform variable name if mapping is provided
+    var_display <- if (!is.null(label_mappings)) {
+      transform_label(var, label_mappings)
+    } else {
+      var
+    }
+
     if (is.null(measure_info)) {
       # handle missing measures
-      title <- janitor::make_clean_names(var, case = "title")
+      title <- janitor::make_clean_names(var_display, case = "title")
       var_text <- paste0(subheading_marker, " ", title, "\n\n",
-                        "No information available for this variable.\n\n")
+                         "No information available for this variable.\n\n")
     } else {
-      # get variable title
+      # get variable title, applying mapping if provided
       title <- if (!is.null(measure_info$name)) {
-        janitor::make_clean_names(measure_info$name, case = "title")
+        # apply mapping to the name from measure_info
+        name_display <- if (!is.null(label_mappings)) {
+          transform_label(measure_info$name, label_mappings)
+        } else {
+          measure_info$name
+        }
+        janitor::make_clean_names(name_display, case = "title")
       } else {
-        janitor::make_clean_names(var, case = "title")
+        janitor::make_clean_names(var_display, case = "title")
       }
 
       # start with variable title
@@ -449,70 +497,6 @@ boilerplate_measures_text <- function(
   }
 
   return(output_text)
-}
-
-
-#' Format a Measure for Template Substitution
-#'
-#' @param measure_info List containing measure information
-#' @param name Character. Name of the measure if not in measure_info
-#' @param print_waves Logical. Whether to include wave information
-#' @param print_keywords Logical. Whether to include keyword information
-#'
-#' @return Character string with formatted measure information
-#' @noRd
-format_measure_for_template <- function(measure_info, name = NULL, print_waves = FALSE, print_keywords = FALSE) {
-  if (is.null(measure_info)) {
-    return(paste0("#### ", janitor::make_clean_names(name, case = "title"), "\n\n",
-                  "No information available for this variable.\n\n"))
-  }
-
-  # Get measure name
-  if (is.null(name)) {
-    name <- measure_info$name
-  }
-
-  # Format title
-  title <- janitor::make_clean_names(name, case = "title")
-  formatted_text <- paste0("#### ", title, "\n\n")
-
-  # Format items
-  items <- measure_info$items
-  if (length(items) > 1) {
-    items_text <- paste(sapply(items, function(item) {
-      paste0("*", item, "*")
-    }), collapse = "\n")
-    formatted_text <- paste0(formatted_text, items_text, "\n\n")
-  } else if (length(items) == 1) {
-    formatted_text <- paste0(formatted_text, "*", items[[1]], "*\n\n")
-  }
-
-  # Add description and reference
-  if (!is.null(measure_info$description)) {
-    formatted_text <- paste0(formatted_text, measure_info$description)
-
-    # Add reference if available
-    if (!is.null(measure_info$reference)) {
-      formatted_text <- paste0(formatted_text, " [@", measure_info$reference, "]")
-    }
-
-    formatted_text <- paste0(formatted_text, "\n\n")
-  }
-
-  # Add waves if requested
-  if (print_waves && !is.null(measure_info$waves)) {
-    formatted_text <- paste0(formatted_text, "*Waves: ", measure_info$waves, "*\n\n")
-  }
-
-  # Add keywords if requested
-  if (print_keywords && !is.null(measure_info$keywords)) {
-    if (is.character(measure_info$keywords)) {
-      keywords <- paste(measure_info$keywords, collapse = ", ")
-      formatted_text <- paste0(formatted_text, "*Keywords: ", keywords, "*\n\n")
-    }
-  }
-
-  return(formatted_text)
 }
 
 

@@ -126,3 +126,4 @@ test_that("boilerplate_measures_text handles edge cases", {
   expect_true(grepl("This variable has no items", result3))
   expect_false(grepl("\\*", result3)) # No italic text for items
 })
+

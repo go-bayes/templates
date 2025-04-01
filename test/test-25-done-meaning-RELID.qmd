@@ -1,0 +1,934 @@
+---
+title: "Life Loses A Little Meaning After Losing Religion"
+abstract: |
+  
+  **KEYWORDS**: *Causal Inference*; *Church*; *Cross-validation*; *Distress*; *Health*; *Longitudinal*; *Machine Learning*; *Religion*; *Semi-parametric*; *Targeted Learning*.
+author: 
+  - name: Daryl R. Van Tongeren
+    affiliation: Hope College
+    orcid: 0000-0002-1810-9448
+  - name: Chris G. Sibley
+    affiliation: School of Psychology, University of Auckland
+    orcid: 0000-0002-4064-8800
+  - name: Don E Davis
+    affiliation: Georgia State University, Matheny Center for the Study of Stress, Trauma, and Resilience
+    orcid: 0000-0003-3169-6576 
+  - name: Joseph A. Bulbulia
+    affiliation: Victoria University of Wellington, New Zealand
+    orcid: 0000-0002-5861-2056
+    email: joseph.bulbulia@vuw.ac.nz
+    corresponding: yes
+keywords: [Use, use]
+editor_options: 
+    chunk_output_type: console
+format:
+  docx:
+   default: false
+  pdf:  
+    bibliography: /Users/joseph/GIT/templates/bib/references.bib
+    pdf-engine: lualatex
+    sanitise: true
+    keep-tex: true
+    link-citations: true
+    colorlinks: true
+    documentclass: article
+    classoption: [single column]
+    lof: false
+    lot: false
+    geometry:
+      - top=30mm
+      - left=25mm
+      - heightrounded
+      - headsep=22pt
+      - headheight=11pt
+      - footskip=33pt
+      - ignorehead
+      - ignorefoot
+    template-partials: 
+      - /Users/joseph/GIT/templates/quarto/title.tex
+      - /Users/joseph/GIT/templates/measures/data
+    header-includes:
+      - \input{/Users/joseph/GIT/latex/latex-for-quarto.tex}
+      - \let\oldtabular\tabular
+      - \renewcommand{\tabular}{\small\oldtabular}
+      - \setlength{\tabcolsep}{4pt}  
+date: last-modified
+execute:
+  echo: false
+  warning: false
+  include: true
+  eval: true
+fontfamily: libertinus
+bibliography: /Users/joseph/GIT/templates/bib/references.bib
+csl: /Users/joseph/GIT/templates/csl/camb-a.csl
+---
+
+```{r}
+#| label: load-libraries
+#| echo: false
+#| include: false
+#| eval: true
+
+# detach("package:margot", unload = TRUE)
+#devtools::install_github("go-bayes/boilerplate")
+# for making graphs
+#   docx:
+#    default: false
+# reproducibility
+set.seed(123)
+source(here::here("functions", "dev-boilerplate", "boilerplate_init_measures.R"))
+source(here::here("functions", "dev-boilerplate", "boilerplate_generate_text.R"))
+source(here::here("functions", "dev-boilerplate", "utilities.R"))
+
+# for latex graphs
+# for making graphs
+library("tinytex")
+library("extrafont")
+library("tidyverse")
+library("kableExtra")
+library("gtsummary")
+
+
+# fonts
+loadfonts(device = "all")
+
+# rendering document
+library("margot")
+# library("boilerplate")
+library("glue")
+library("patchwork")
+library("kableExtra")
+library("stringr")
+library("ggplot2")
+library("ggeffects")
+library("parameters")
+library("table1")
+library("printr")
+packageVersion(pkg = 'margot')
+
+# measures path
+measures_path <- fs::path_expand("/Users/joseph/GIT/templates/measures/data/merged_db.rds")
+
+# read measures data
+measures_data <- read_rds(measures_path)
+#measures_data
+# # set data paths
+push_mods <- here::here("/Users/joseph/v-project\ Dropbox/data/25-daryl-religious-affiliation-done-meaning-relid")
+
+
+original_df <- margot::here_read_qs('df_wide_impute', push_mods)
+
+# missing at baseline
+percent_missing_baseline <- margot::here_read("percent_missing_baseline")
+
+# read variable names
+baseline_vars <- margot::here_read("baseline_vars")
+exposure_var <- margot::here_read("exposure_var")
+outcome_vars <- margot::here_read("outcome_vars")
+exposure_var
+# labels
+var_labels_baseline <- c(
+  "sdo" = "Social Dominance Orientation",
+  "born_nz_binary" = "Born in NZ",
+  "education_level_coarsen" = "Education Level",
+  "employed_binary" = "Employed (binary)",
+  "eth_cat" = "Ethnicity",
+  "household_inc" = "Household Income",
+  "log_household_inc" = "Log Household Income",
+  "male_binary" = "Male (binary)",
+  "nz_dep2018" = "NZ Deprevation Index 2018",
+  "nzsei_13_l" = "NZSEI (Occupational Prestige Index)",
+  "parent_binary" = "Parent (binary)",
+  "partner_binary" = "Partner (binary)",
+  "religion_bigger_denominations" = "Religious Denomination",
+  "rural_gch_2018_l" = "Rural Gch 2018 Levels",
+  "rwa" = "Right Wing Authoritarianism",
+  "sample_frame_opt_in_binary" = "Sample Frame Opt-In (binary)",
+  "sdo" = "Social Dominance Orientation",
+  "smoker_binary" = "Smoker (binary)",
+  "support" = "Social Support (perceived)"
+)
+
+
+# labels
+label_mapping_raw_exposure = c("religion_identification_level" = "Religious Identification Level")
+
+label_mappings_raw_outcomes <- list(
+  "meaning_purpose" = "Meaning: Purpose",
+  "meaning_sense" = "Meaning: Sense"
+)
+
+outcome_vars
+
+
+
+all_outcomes <- list(
+outcomes = outcome_vars
+)
+
+
+label_mappings_use<- list(
+  var_labels_baseline,
+  label_mapping_raw_exposure,
+label_mappings_raw_outcomes
+)
+
+
+# appendix_text_version_1 <- boilerplate_measures(
+#   baseline_vars = baseline_vars,
+#   exposure_var = exposure_var,
+#   outcome_vars = all_outcomes,
+#   measure_data = measures_data,
+#   label_mappings = label_mappings_use
+# )
+
+
+
+appendix_text_baseline_vars <- boilerplate_measures_text(
+  variable_heading = "Baseline Variables",
+  variables = baseline_vars ,
+  db = measures_data,
+  heading_level = 3,  # ###
+  subheading_level = 4,  # ####
+  print_waves = FALSE)
+
+appendix_text_exposure_vars <- boilerplate_measures_text(
+  variable_heading = "Exposure Variable",
+  variables = exposure_var ,
+  db = measures_data,
+  heading_level = 3,  # ###
+  subheading_level = 4,  # ####
+  print_waves = FALSE)
+
+appendix_text_outcome_vars <- boilerplate_measures_text(
+  variable_heading = "Outcome Variables",
+  variables = outcome_vars ,
+  db = measures_data,
+  heading_level = 3,  # ###
+  subheading_level = 4,  # ####
+  print_waves = FALSE)
+
+
+# reproducibility
+set.seed(123)
+
+# import untransformed data for graphs
+original_df <- margot::here_read_qs('df_wide_impute', push_mods)
+
+
+# read latex tables
+latex_table_baseline <- margot::here_read("latex_table_baseline")
+
+latex_table_exposures <- margot::here_read("latex_table_exposures")
+latex_table_outcomes<- margot::here_read("latex_table_outcomes")
+
+# read exposure vars names
+t0_name_exposure <- here_read('t0_name_exposure')
+t1_name_exposure <- here_read('t1_name_exposure')
+t2_name_exposure <- here_read('t2_name_exposure')
+t3_name_exposure <- here_read('t3_name_exposure')
+t4_name_exposure <- here_read('t4_name_exposure')
+
+# names of waves
+baseline_wave <- margot::here_read("baseline_wave")
+exposure_waves <- margot::here_read("exposure_waves")
+outcome_wave <- margot::here_read("outcome_wave")
+
+
+## Read in data from analysis 
+# imports
+n_total <-  margot::here_read("n_total")
+
+# total
+n_total
+
+# participants
+# n_participants <- here_read("n_participants")
+# here_save_qs(n_participants, "n_participants", push_mods)
+n_participants<- here_read_qs("n_participants", push_mods)
+
+# make pretty number
+n_participants<- prettyNum(n_participants,big.mark=",")
+n_total<- prettyNum(n_total,big.mark=",")
+
+
+
+# library
+library(margot)
+
+# verify positivity 
+#church
+#transition_table
+# binary
+transition_tables <- margot::here_read("transition_tables")
+
+label_mapping <- list(
+  "t5_meaning_purpose_z" = "Meaning: Purpose",
+  "t5_meaning_sense_z" = "Meaning: Sense"
+)
+
+
+
+
+# read models
+done_meaning_lmtp_output <- here_read_qs("done_meaning_lmtp_output", push_mods)
+
+# plot options ------------------------------------------------------------
+nice_exposure_name <- glue::glue("Monthly Religious Service Rates")
+title <- glue::glue("Causal Effects of {nice_exposure_name} on Multi-Dimensional Well-Being")
+
+options_base <- list(
+  type = "RD",
+  title = title,
+  order = "alphabetical",
+  colors = c(
+    "positive" = "#E69F00",
+    "not reliable" = "grey50",
+    "negative" = "#56B4E9"
+  ),
+  x_offset = -1,
+  # will be set based on type
+  x_lim_lo = -1,
+  # will be set based on type
+  x_lim_hi = 1,
+  text_size = 4,
+  linewidth = 0.5,
+  estimate_scale = 1,
+  base_size = 18,
+  point_size = 2,
+  title_size = 16,
+  subtitle_size = 16,
+  legend_text_size = 10,
+  legend_title_size = 10,
+  include_coefficients = FALSE 
+)
+
+
+# life options ------------------------------------------------------------
+options_meaning_done_vs_religious <- margot_plot_create_options(
+title = "Done vs Religious (control)",
+  base_defaults = options_base,
+  subtitle = "",
+  filename_prefix = "meaning_done_vs_religious"
+)
+
+
+options_meaning_done_vs_secular <- margot_plot_create_options(
+  title = "Done vs Secular (control)",
+  base_defaults = options_base,
+  subtitle = "",
+  filename_prefix = "meaning_done_vs_secular"
+)
+
+
+options_meaning_secular_vs_religious <- margot_plot_create_options(
+  title = "Secular vs Religious (control)",
+  base_defaults = options_base,
+  subtitle = "",
+  filename_prefix = "meaning_secular_vs_religious"
+)
+
+
+# wrong label
+# done_meaning_lmtp_output<- done_meaning_lmpt_output
+
+done_meaning_lmtp_output <- here_read_qs("done_meaning_lmtp_output", push_mods)
+
+
+plot_done_vs_secular <- margot_plot(
+  done_meaning_lmtp_output$combined_tables$combined_outcomes_done_vs_secular,
+  options = options_meaning_done_vs_secular,
+  save_output = FALSE,
+  save_path = here::here(push_mods),
+  base_filename = "plot_done_vs_religious",
+  original_df = original_df,
+  include_coefficients = FALSE
+)
+
+plot_done_vs_secular$plot
+plot_done_vs_secular$transformed_table
+cat(plot_done_vs_secular$interpretation)
+
+plot_done_vs_religious <- margot_plot(done_meaning_lmtp_output$combined_tables$combined_outcomes_done_vs_religious,
+                                      options = options_meaning_done_vs_religious,
+                                      save_output = FALSE,
+                                      save_path = here::here(push_mods),
+                                      original_df = original_df,
+                                      include_coefficients = FALSE
+)
+
+plot_done_vs_religious$plot
+plot_done_vs_religious$transformed_table
+cat(plot_done_vs_religious$interpretation)
+
+
+
+plot_secular_vs_religious <- margot_plot(done_meaning_lmtp_output$combined_tables$combined_outcomes_secular_vs_religious,
+                                         options = options_meaning_secular_vs_religious,
+                                         save_output = FALSE,
+                                         save_path = here::here(push_mods),
+                                         original_df = original_df,
+                                         include_coefficients = FALSE
+)
+
+
+
+
+# graphs
+
+plot_done_vs_secular <- margot_plot(
+  done_meaning_lmtp_output$combined_tables$combined_outcomes_done_vs_secular,
+  options = options_meaning_done_vs_secular,
+  save_output = TRUE,
+  save_path = here::here(push_mods),
+  base_filename = "plot_done_vs_religious",
+  original_df = original_df,
+  include_coefficients = FALSE
+)
+
+plot_done_vs_secular$plot
+plot_done_vs_secular$transformed_table
+cat(plot_done_vs_secular$interpretation)
+
+plot_done_vs_religious <- margot_plot(done_meaning_lmtp_output$combined_tables$combined_outcomes_done_vs_religious,
+                                      options = options_meaning_done_vs_religious,
+                                      save_output = TRUE,
+                                      save_path = here::here(push_mods),
+                                      original_df = original_df,
+                                      include_coefficients = FALSE
+)
+
+plot_done_vs_religious$plot
+plot_done_vs_religious$transformed_table
+cat(plot_done_vs_religious$interpretation)
+
+
+
+plot_secular_vs_religious <- margot_plot(done_meaning_lmtp_output$combined_tables$combined_outcomes_secular_vs_religious,
+                                         options = options_meaning_secular_vs_religious,
+                                         save_output = TRUE,
+                                         save_path = here::here(push_mods),
+                                         original_df = original_df,
+                                         include_coefficients = FALSE
+)
+
+plot_secular_vs_religious$plot
+plot_secular_vs_religious$transformed_table
+cat(plot_secular_vs_religious$interpretation)
+
+
+
+```
+
+
+## Introduction
+
+
+## Method
+
+### Sample
+Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from `r n_total` participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB). Refer to [Appendix A](#appendix-timeline) for a histogram of daily responses for this cohort.
+
+
+### Target Population
+
+The target population for this study comprises the cohort of New Zealand residents in New Zealand Attitudes and Values Study wave 10 (years 2018-2019) [@sibley2021].
+
+### Treatment Indicator
+
+
+The New Zealand Attitudes and Values Study assesses religious service attendance using the following question:
+
+
+- *How important is your religion to how you see yourself?*
+
+Ordinal response: (1 = Not Important, 7 = Very Important). This question was only given to those who identify with as religious. Those who did not identify as religious were imputed a value of "1" (Measured developed for the NZAVS.)
+
+
+For measures, refer to [Appendix B](#appendix-baseline)
+
+### Baseline Covariates
+
+We adjusted for a rich set of demographic, personality, and behavioural indicators measured at the baseline wave, NZAVS time 10 (Wave 2018, years 2018-2019) (see [Appendix B](#appendix-baseline) for full measures). These variables included age, gender, ethnicity, education level, personality traits (Agreeableness, Conscientiousness, Extraversion, Honesty-Humility, Neuroticism, and Openness), household income, employment status, parenting status, relationship status, religious belonging, and health-related behaviours (e.g. smoking, alcohol use, hours spent exercising). We selected only those outcome variables measured in the baseline wave and controlled for these variables. Moreover we controlled for religious identification at baseline (refer to [Appendix B](#appendix-baseline) and [Appendix C](#appendix-confounding)) This strategy of confounding control is powerful because for any confounder to affect subsequent treatments and the outcome, it would need to do so independently of the baseline outcome variables, the baseline exposure, and the rich set of demographic indicators measured at baseline [@vanderweele2020].
+
+
+### Outcomes
+
+
+#### Meaning Purpose
+
+*My life has a clear sense of purpose*
+
+Ordinal response (1 = Strongly Disagree to 7 = Strongly Agree). [@steger_meaning_2006]
+
+#### Meaning Sense
+
+*I have a good sense of what makes my life meaningful.*
+
+Ordinal response (1 = Strongly Disagree to 7 = Strongly Agree). [@steger_meaning_2006]
+
+
+### Statistical Estimator
+
+We estimate causal effects of time-varying treatment policies using a Sequential Doubly-Robust (SDR) estimator in the `lmtp` package [@williams2021]. SDR proceeds in two steps. First, we use machine learning to flexibly model relationships among treatments, covariates, and outcomes. This approach captures complex, high-dimensional structures without strict assumptions [@díaz2021]. Second, SDR "targets" these initial estimates by incorporating information from the observed data distribution. This step iteratively refines the accuracy of our causal estimates.
+
+The SDR estimator is multiply robust when treatments repeat over multiple waves [@diaz2023lmtp; @hoffman2023]. This design maintains consistency if either the outcome model or treatment model is correctly specified. The `lmtp` package relies on the `SuperLearner` library in R [@SuperLearner2023]. We used `SL.ranger`, `SL.glmnet`, and `SL.xgboost` [@polley2023; @xgboost2023; @Ranger2017] as our base learners. **`SL.ranger`**: implements a random forest algorithm, capturing non-linear relationships and complex interactions. **`SL.glmnet`**: provides regularised linear models for high-dimensional data. **`SL.xgboost`**: uses gradient boosting to capture intricate patterns without over-fitting.
+
+`SuperLearner` combines these learners adaptively to optimise predictive performance. We created graphs, tables, and output reports with the `margot` package [@margot2024]. For more details on targeted learning with `lmtp`, see [@hoffman2022; @hoffman2023; @díaz2021].
+
+### Handling of Missing Data
+
+#### Baseline Missingness
+
+We used predictive mean matching from the `mice` package [@vanbuuren2018] to impute missing baseline values (comprising `r percent_missing_baseline` of the baseline data). Following [@zhang2023shouldMultipleImputation], we performed single imputation using only baseline data. For each column with missing values, we created a binary indicator of missingness so that the machine learning algorithms we employed could condition on missingness information during estimation (see `lmtp` documentation [@williams2021]).
+
+#### Missingness in Time-Varying Variables
+
+When a time-varying value was missing in any wave but a future value was observed, we carried forward the previous response and included a missingness indicator. Again, this approach let the patterns of missingness inform nonparametric machine learning. If no future value was observed, we considered the participant censored and used inverse probability of treatment weights to address attrition.
+
+#### Outcome Missingness
+
+Finally, to handle confounding and selection bias arising from missing outcomes and panel attrition, we applied inverse probability of censoring weights, estimated via nonparametric machine learning ensembles in the `lmtp` package [@williams2021].
+
+
+### Sensitivity Analysis
+
+We perform sensitivity analyses using the E-value metric [@vanderweele2017; @linden2020EVALUE]. The E-value represents the minimum association strength (on the risk ratio scale) that an unmeasured confounder would need to have with both the exposure and outcome—after adjusting for measured covariates—to explain away the observed exposure-outcome association [@vanderweele2020; @linden2020EVALUE].
+
+
+## Results
+
+
+### Dones vs Religious
+
+```{r}
+#| label: fig-dones-vs-religious
+#| fig-cap: "Dones vs Religious"
+#| eval: true
+#| echo: false
+#| fig-height: 6
+#| fig-width: 6
+
+plot_done_vs_religious$plot
+```
+
+```{r}
+#| label: tbl-dones-vs-religious
+#| tbl-cap: "Health effects"
+#| eval: true
+#| echo: false
+
+plot_done_vs_religious$transformed_table|>
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  kbl(format = "markdown")
+```
+
+
+```{r, results = 'asis'}
+cat(plot_done_vs_religious$interpretation)
+```
+
+{{< pagebreak >}}
+
+### Dones vs Secular
+
+```{r}
+#| label: fig-dones-vs-secular
+#| fig-cap: "Dones vs Secular"
+#| eval: true
+#| echo: false
+#| fig-height: 6
+#| fig-width: 6
+
+plot_done_vs_secular$plot
+```
+
+```{r}
+#| label: tbl-dones-vs-secular
+#| tbl-cap: "Effects on Psychological Well-Being"
+#| eval: true
+#| echo: false
+
+plot_done_vs_secular$transformed_table|>
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  kbl(format = "markdown")
+```
+
+
+```{r, results = 'asis'}
+cat(plot_done_vs_secular$interpretation)
+```
+
+{{< pagebreak >}}
+
+
+{{< pagebreak >}}
+
+### Secular vs Religious
+
+```{r}
+#| label: fig-life
+#| fig-cap: "Secular vs Religious"
+#| eval: true
+#| echo: false
+#| fig-height: 6
+#| fig-width: 6
+
+plot_secular_vs_religious$plot
+```
+
+```{r}
+#| label: tbl-life
+#| tbl-cap: "Effects on Life-Focussed Well-Being"
+#| eval: true
+#| echo: false
+
+plot_secular_vs_religious$transformed_table|>
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  kbl(format = "markdown")
+```
+
+
+```{r, results = 'asis'}
+cat(plot_secular_vs_religious$interpretation)
+```
+
+
+{{< pagebreak >}}
+
+## Discussion
+
+TBA
+
+### Ethics
+
+The University of Auckland Human Participants Ethics Committee reviews the NZAVS every three years. Our most recent ethics approval statement is as follows: The New Zealand Attitudes and Values Study was approved by the University of Auckland Human Participants Ethics Committee on 26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576.
+
+
+### Data Availability
+
+The data described in the paper are part of the New Zealand Attitudes and Values Study. Members of the NZAVS management team and research group hold full copies of the NZAVS data. A de-identified dataset containing only the variables analysed in this manuscript is available upon request from the corresponding author or any member of the NZAVS advisory board for replication or checking of any published study using NZAVS data. The code for the analysis can be found at [OSF link](https://osf.io/ab7cx/). 
+
+
+### Acknowledgements
+
+The New Zealand Attitudes and Values Study is supported by a grant from the Templeton Religious Trust (TRT0196; TRT0418). JB received support from the Max Plank Institute for the Science of Human History. The funders had no role in preparing the manuscript or deciding to publish it.
+
+
+### Author Statement
+
+TBA
+
+
+{{< pagebreak >}}
+## Appendix A: Daily Data Collection  {#appendix-timeline}
+
+{{< pagebreak >}}
+
+@fig-timeline presents the New Zealand Attitudes and Values Study Data Collection (2018 retained cohort) from years 2018-2014 (NZAVS time 10--time 15).
+(not run)
+
+```{r}
+#| label: fig-timeline
+#| fig-cap: "Historgram of New Zealand Attitudes and Values Study Daily Data Collection for Time 10 cohort: years 2018-2024."
+#| eval: false
+#| include: false
+#| echo: false
+#| fig-width: 6
+#| fig-height: 12
+#| 
+timeline_histogram
+```
+
+
+{{< pagebreak >}}
+
+## Appendix B: Measures and Demographic Statistics {#appendix-baseline}
+
+
+### Measures 
+
+```{r, results='asis'}
+cat(appendix_text_baseline_vars)
+```
+
+```{r, results='asis'}
+cat(appendix_text_exposure_vars)
+```
+
+```{r, results='asis'}
+cat(appendix_text_outcome_vars)
+```
+
+### Sample Demographic Statistics
+
+@tbl-baseline presents sample demographic statistics.
+
+::: {#tbl-baseline}
+```{r, results = 'asis'}
+#| eval: true
+#| include: true
+#| echo: false
+
+library(gtsummary)
+library(kableExtra)
+
+# summary_tables$variables |> 
+#   kbl(
+#     format = "latex",
+#     booktabs = TRUE,
+#     digits = 2,
+#     row.names = FALSE                      # remove row names to eliminate any unintended columns
+#   ) 
+
+
+latex_table_baseline |> 
+  kable_styling(
+    font_size = 6,
+    latex_options = c("hold_position", "repeat_header", "striped", "longtable")
+   ) 
+
+```
+Demographic statistics for New Zealand Attitudes and Values Cohort waves 2018.
+:::
+
+
+### Exposure Variable: Religious Identification  {#appendix-exposure} 
+
+@tbl-sample-exposures presents sample statistics for the exposure variable, religious identification, during the baseline and exposure waves. This variable was not measured in part of NZAVS time 12 (years 2020-2021) and part of NZAVS time 13 (years 2021-2022). To address missingness, if a value was observed after NZAVS time 14, we carried the previous observation forward and created and NA indicator. If there was no future observation, the participant was treated as censored, and inverse probability of censoring weights were applied, following our standard method for handling missing observations (see mansucript **Method**/**Handling of Missing Data**). Here, our carry-forward imputation approach may result in conservative causal effect estimation because it introduces measurement error. However, this approach would not generally bias causal effect estimation away from the null because the measurement error is unsystematic and random and unrelated to the outcomes.  
+
+::: {#tbl-sample-exposures}
+```{r, results = 'asis'}
+#| eval: true
+#| include: true
+#| echo: false
+
+
+
+latex_table_exposures |> 
+  kable_styling(
+    font_size = 12,
+    latex_options = c("hold_position", "repeat_header", "striped", "longtable")
+   ) 
+
+```
+Exposure descriptive statistics by wave.
+:::
+
+{{< pagebreak >}}
+
+### Outcome Variables {#appendix-outcomes} 
+
+::: {#tbl-sample-outcomes}
+```{r, results = 'asis'}
+#| eval: true
+#| include: true
+#| echo: false
+
+# summary_tables$variables |> 
+#   kbl(
+#     format = "latex",
+#     booktabs = TRUE,
+#     digits = 2,
+#     row.names = FALSE                      # remove row names to eliminate any unintended columns
+#   ) 
+
+
+latex_table_outcomes |> 
+  kable_styling(
+    font_size = 12,
+    latex_options = c("hold_position", "repeat_header", "striped", "longtable")
+   ) 
+
+```
+Outcome Variables at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
+:::
+
+
+
+
+{{< pagebreak >}}
+
+## Appendix C: Confouding Control {#appendix-confounding}
+
+<!-- ::: {#tbl-C} -->
+<!-- ```{=latex} -->
+<!-- \tvtable -->
+<!-- ``` -->
+<!-- @tbl-C presents single-world intervention graphs showing time-fixed and time-varying sources of bias in our six waves (baseline, four exposure waves, followed by the outcome wave.) Time-fixed confounders are included in the baseline wave. Time-varying confounders are included in each of the four treatment waves (abbreviated here by '$\dots$' to declutter the graph). When there is more than one exposure wave, identifying causal effects requires adjustment for time-varying confounders [@robins2008estimation; @bulbulia2024swigstime; @richardson2013]. -->
+<!-- ::: -->
+
+For confounding control, we employ a modified disjunctive cause criterion [@vanderweele2019], which involves:
+
+
+1.	Identifying all common causes of both the treatment and outcomes.
+2.	Excluding instrumental variables that affect the exposure but not the outcome.
+3.	Including proxies for unmeasured confounders affecting both exposure and outcome.
+4.	Controlling for baseline exposure and baseline outcome, serving as proxies for unmeasured common causes [@vanderweele2020].
+
+Additionally, we control for time-varying confounders at each exposure wave [@robins2008estimation; @bulbulia2024swigstime; @richardson2013].
+
+The covariates included for confounding control are described in @pedro_2024effects.
+
+Where there are multiple exposures, causal inference may be threatened by time-varying confounding [@bulbulia2024swigstime]. 
+
+{{< pagebreak >}}
+
+## Appendix D: Causal Contrasts and Causal Assumptions {#appendix-assumptions}
+
+### Notation
+
+  - $A_k$: Observed religious identification at Wave $k$, for $k = 1, \dots, 4$.  
+  - $Y_\tau$: Outcome measured at the end of the study (Wave 5).  
+  - $W_0$: Confounders measured at baseline (Wave 0).  
+  - $L_k$: Time-varying confounders measured at Wave $k$ (for $k = 1, \dots, 4$).  
+
+### Shift Functions
+
+Let $\boldsymbol{\text{d}}(a_k)^+$ represent the **regular attendance** treatment sequence and $\boldsymbol{\text{d}}(a_k)^-$ the **no attendance** treatment sequence, where the interventions occure at each wave $k = 1\dots 4; k\in \{0\dots 5\}$. Formally:
+
+#### Steady Religious $\bigl(\boldsymbol{\text{d}}(a_k^+)\bigr)$
+
+$$
+\boldsymbol{\text{d}} (a_k^+) 
+\;=\; 
+\begin{cases}
+7, & \text{if } 7 < 4,\\[6pt]
+A_k, & \text{otherwise.}
+\end{cases}
+$$
+
+#### Steady Secular $\bigl(\boldsymbol{\text{d}}(a_k^-)\bigr)$
+
+$$
+\boldsymbol{\text{d}}(a_k^-) 
+\;=\; 
+\begin{cases}
+1, & \text{if } A_k > 1,\\[6pt]
+A_k, & \text{otherwise.}
+\end{cases}
+$$
+
+Here, $A_k$ is the observed attendance at Wave $k$. The shift function $\boldsymbol{\text{d}}$ "nudges" $A_k$ to a target level (four times per month or zero) only if the current value is below (for regular attendance) or above (for no attendance) that target. Across the four waves, these shifts form a sequence $\boldsymbol{\bar{\boldsymbol{\text{d}}}}$, which defines a complete intervention regime. 
+
+
+### Dones
+
+$$
+\boldsymbol{\text{d}}(a_k^{+/-})  \;=\; \begin{cases} 
+7, & \text{if } k \in \{1, 2\} \text{ and } A_k < 4,\\[6pt] 
+1, & \text{if } k \in \{3, 4\} \text{ and } A_k > 1,\\[6pt] 
+A_k, & \text{otherwise.} 
+\end{cases}
+$$
+
+This policy:
+
+1. Applies the steady religious (nudging up to 7) during waves 1 and 2.
+2. Applies the steady secular rule (nudging down to 1) during waves 3 and 4.
+
+
+### Causal Contrast
+
+We focus on primarily on two causal contrasts. The difference between de-identification and steady religion:
+
+$$
+\text{ATE}^{\text{done}} 
+\;=\; 
+\mathbb{E}
+\Bigl[
+  Y_\tau\!\bigl(\boldsymbol{\text{d}}(a^+)\bigr) 
+  \;-\; 
+  Y_\tau\!\bigl(\boldsymbol{\text{d}}(a^{+/-})\bigr)|W_0, L_k
+\Bigr].
+$$
+
+and the difference between de-identification and steady secular: 
+
+
+$$
+\text{ATE}^{\text{residue}} 
+\;=\; 
+\mathbb{E}
+\Bigl[
+  Y_\tau\!\bigl(\boldsymbol{\text{d}}(a^-)\bigr) 
+  \;-\; 
+  Y_\tau\!\bigl(\boldsymbol{\text{d}}(a^{+/-})\bigr)|W_0, L_k
+\Bigr].
+$$
+
+
+### Assumptions
+
+To estimate this effect from observational data, we assume:
+
+1. **Conditional Exchangeability:** Once we condition on $W_0$ and each $L_k$, the interventions $\boldsymbol{\bar{\boldsymbol{\text{d}}}}(a^+)$ or $\boldsymbol{\bar{\boldsymbol{\text{d}}}}(a^-)$ are effectively random with respect to potential outcomes.
+2. **Consistency:** The potential outcome under a given regime matches the observed outcome when that regime is followed.
+3. **Positivity:** Everyone has a non-zero probability of receiving each level of attendance (i.e., a chance to be "shifted" up or down) given their covariates. The positivity assumption is the only causal assumption that can be evaluated with data. We evaluate this assumption in [Appendix E](#appendix-transition)).
+
+Mathematically, for conditional exchangeability, we write:
+
+$$
+\Bigl\{
+  Y\bigl(\boldsymbol{\text{d}}(a^+)\bigr), 
+  \; 
+  Y\bigl(\boldsymbol{\text{d}}(a^-)\bigr), 
+  \; 
+  Y\bigl(\boldsymbol{\text{d}}(a^{+/-})\bigr)
+\Bigr\}
+\coprod
+A_k |
+W_0,
+L_k
+$$
+
+That is, we assume the potential outcomes under each treatment regime are independent of each treatment at every time point, conditional on baseline confounders and time-varying confounders.
+
+Under these assumptions, our statistical models permit us to estimate $\text{ATE}^{\text{done}}$ and e $\text{ATE}^{\text{residue}}$ from observational data. We define the target population as the New Zealand Population from 2019-2024, the years in which measurements were taken, had no one been censored/lost to follow up. 
+
+
+{{< pagebreak >}}
+
+## Appendix E: Transition Matrix to Check The Positivity Assumption {#appendix-transition}
+
+
+```{r}
+#| eval: true
+#| include: false
+#| echo: false
+transition_tables$quarto_code()
+```
+
+```{r, results='asis'}
+cat(transition_tables$explanation)
+```
+
+```{r}
+#| label: tbl-transition-wave2018-wave2019
+#| tbl-cap: "Transition Matrix From Wave 2018 to Wave 2019"
+transition_tables$tables[[1]]
+```
+
+```{r}
+#| label: tbl-transition-wave2019-wave2020
+#| tbl-cap: "Transition Matrix From Wave 2019 to Wave 2020"
+transition_tables$tables[[2]]
+```
+
+```{r}
+#| label: tbl-transition-wave2020-wave2021
+#| tbl-cap: "Transition Matrix From Wave 2020 to Wave 2021"
+transition_tables$tables[[3]]
+```
+
+```{r}
+#| label: tbl-transition-wave2021-wave2022
+#| tbl-cap: "Transition Matrix From Wave 2021 to Wave 2022"
+transition_tables$tables[[4]]
+```
+
+{{< pagebreak >}}
+
+## References {.appendix-refs}
+
+

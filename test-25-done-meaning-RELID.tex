@@ -1,0 +1,2013 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  single column]{article}
+\usepackage{xcolor}
+\usepackage[top=30mm,left=25mm,heightrounded,headsep=22pt,headheight=11pt,footskip=33pt,ignorehead,ignorefoot]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage[]{libertinus}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\input{/Users/joseph/GIT/latex/latex-for-quarto.tex}
+\let\oldtabular\tabular
+\renewcommand{\tabular}{\small\oldtabular}
+\setlength{\tabcolsep}{4pt}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Life Loses A Little Meaning After Losing Religion},
+  pdfauthor={Daryl R. Van Tongeren; Chris G. Sibley; Don E Davis; Joseph A. Bulbulia},
+  pdfkeywords={Use, use},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Life Loses A Little Meaning After Losing Religion}
+
+\usepackage{academicons}
+\usepackage{xcolor}
+
+  \author{Daryl R. Van Tongeren}
+            \affil{%
+             \small{     Hope College
+          ORCID \textcolor[HTML]{A6CE39}{\aiOrcid} ~0000-0002-1810-9448 }
+              }
+      \usepackage{academicons}
+\usepackage{xcolor}
+
+  \author{Chris G. Sibley}
+            \affil{%
+             \small{     School of Psychology, University of Auckland
+          ORCID \textcolor[HTML]{A6CE39}{\aiOrcid} ~0000-0002-4064-8800 }
+              }
+      \usepackage{academicons}
+\usepackage{xcolor}
+
+  \author{Don E Davis}
+            \affil{%
+             \small{     Georgia State University, Matheny Center for
+the Study of Stress, Trauma, and Resilience
+          ORCID \textcolor[HTML]{A6CE39}{\aiOrcid} ~0000-0003-3169-6576 }
+              }
+      \usepackage{academicons}
+\usepackage{xcolor}
+
+  \author{Joseph A. Bulbulia}
+            \affil{%
+             \small{     Victoria University of Wellington, New Zealand
+          ORCID \textcolor[HTML]{A6CE39}{\aiOrcid} ~0000-0002-5861-2056 }
+              }
+      
+
+
+\date{2025-04-01}
+\begin{document}
+\maketitle
+\begin{abstract}
+\textbf{KEYWORDS}: \emph{Causal Inference}; \emph{Church};
+\emph{Cross-validation}; \emph{Distress}; \emph{Health};
+\emph{Longitudinal}; \emph{Machine Learning}; \emph{Religion};
+\emph{Semi-parametric}; \emph{Targeted Learning}.
+\end{abstract}
+
+
+\subsection{Introduction}\label{introduction}
+
+\subsection{Method}\label{method}
+
+\subsubsection{Sample}\label{sample}
+
+Data were collected as part of the New Zealand Attitudes and Values
+Study (NZAVS), an annual longitudinal national probability panel
+assessing New Zealand residents' social attitudes, personality,
+ideology, and health outcomes. The panel began in 2009 and has since
+expanded to include over fifty researchers, with responses from 76,409
+participants to date. The study operates independently of political or
+corporate funding and is based at a university. It employs prize draws
+to incentivise participation. The NZAVS tends to slightly under-sample
+males and individuals of Asian descent and to over-sample females and
+Māori (the Indigenous people of New Zealand). To enhance the
+representativeness of our sample population estimates for the target
+population of New Zealand, we apply census-based survey weights that
+adjust for age, gender, and ethnicity (New Zealand European, Asian,
+Māori, Pacific) (\citeproc{ref-sibley2021}{Sibley 2021}). For more
+information about the NZAVS, visit:
+\href{https://doi.org/10.17605/OSF.IO/75SNB}{OSF.IO/75SNB}. Refer to
+\hyperref[appendix-timeline]{Appendix A} for a histogram of daily
+responses for this cohort.
+
+\subsubsection{Target Population}\label{target-population}
+
+The target population for this study comprises the cohort of New Zealand
+residents in New Zealand Attitudes and Values Study wave 10 (years
+2018-2019) (\citeproc{ref-sibley2021}{Sibley 2021}).
+
+\subsubsection{Treatment Indicator}\label{treatment-indicator}
+
+The New Zealand Attitudes and Values Study assesses religious service
+attendance using the following question:
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{How important is your religion to how you see yourself?}
+\end{itemize}
+
+Ordinal response: (1 = Not Important, 7 = Very Important). This question
+was only given to those who identify with as religious. Those who did
+not identify as religious were imputed a value of ``1'' (Measured
+developed for the NZAVS.)
+
+For measures, refer to \hyperref[appendix-baseline]{Appendix B}
+
+\subsubsection{Baseline Covariates}\label{baseline-covariates}
+
+We adjusted for a rich set of demographic, personality, and behavioural
+indicators measured at the baseline wave, NZAVS time 10 (Wave 2018,
+years 2018-2019) (see \hyperref[appendix-baseline]{Appendix B} for full
+measures). These variables included age, gender, ethnicity, education
+level, personality traits (Agreeableness, Conscientiousness,
+Extraversion, Honesty-Humility, Neuroticism, and Openness), household
+income, employment status, parenting status, relationship status,
+religious belonging, and health-related behaviours (e.g.~smoking,
+alcohol use, hours spent exercising). We selected only those outcome
+variables measured in the baseline wave and controlled for these
+variables. Moreover we controlled for religious identification at
+baseline (refer to \hyperref[appendix-baseline]{Appendix B} and
+\hyperref[appendix-confounding]{Appendix C}) This strategy of
+confounding control is powerful because for any confounder to affect
+subsequent treatments and the outcome, it would need to do so
+independently of the baseline outcome variables, the baseline exposure,
+and the rich set of demographic indicators measured at baseline
+(\citeproc{ref-vanderweele2020}{VanderWeele \emph{et al.} 2020}).
+
+\subsubsection{Outcomes}\label{outcomes}
+
+\paragraph{Meaning Purpose}\label{meaning-purpose}
+
+\emph{My life has a clear sense of purpose}
+
+Ordinal response (1 = Strongly Disagree to 7 = Strongly Agree).
+(\citeproc{ref-steger_meaning_2006}{Steger \emph{et al.} 2006})
+
+\paragraph{Meaning Sense}\label{meaning-sense}
+
+\emph{I have a good sense of what makes my life meaningful.}
+
+Ordinal response (1 = Strongly Disagree to 7 = Strongly Agree).
+(\citeproc{ref-steger_meaning_2006}{Steger \emph{et al.} 2006})
+
+\subsubsection{Statistical Estimator}\label{statistical-estimator}
+
+We estimate causal effects of time-varying treatment policies using a
+Sequential Doubly-Robust (SDR) estimator in the \texttt{lmtp} package
+(\citeproc{ref-williams2021}{Williams and Díaz 2021}). SDR proceeds in
+two steps. First, we use machine learning to flexibly model
+relationships among treatments, covariates, and outcomes. This approach
+captures complex, high-dimensional structures without strict assumptions
+(\citeproc{ref-duxedaz2021}{Díaz \emph{et al.} 2021}). Second, SDR
+``targets'' these initial estimates by incorporating information from
+the observed data distribution. This step iteratively refines the
+accuracy of our causal estimates.
+
+The SDR estimator is multiply robust when treatments repeat over
+multiple waves (\citeproc{ref-diaz2023lmtp}{Díaz \emph{et al.} 2023};
+\citeproc{ref-hoffman2023}{Hoffman \emph{et al.} 2023}). This design
+maintains consistency if either the outcome model or treatment model is
+correctly specified. The \texttt{lmtp} package relies on the
+\texttt{SuperLearner} library in R
+(\citeproc{ref-SuperLearner2023}{Polley \emph{et al.} 2023b}). We used
+\texttt{SL.ranger}, \texttt{SL.glmnet}, and \texttt{SL.xgboost}
+(\citeproc{ref-xgboost2023}{Chen \emph{et al.} 2023};
+\citeproc{ref-polley2023}{Polley \emph{et al.} 2023a};
+\citeproc{ref-Ranger2017}{Wright and Ziegler 2017}) as our base
+learners. \textbf{\texttt{SL.ranger}}: implements a random forest
+algorithm, capturing non-linear relationships and complex interactions.
+\textbf{\texttt{SL.glmnet}}: provides regularised linear models for
+high-dimensional data. \textbf{\texttt{SL.xgboost}}: uses gradient
+boosting to capture intricate patterns without over-fitting.
+
+\texttt{SuperLearner} combines these learners adaptively to optimise
+predictive performance. We created graphs, tables, and output reports
+with the \texttt{margot} package (\citeproc{ref-margot2024}{Bulbulia
+2024a}). For more details on targeted learning with \texttt{lmtp}, see
+(\citeproc{ref-duxedaz2021}{Díaz \emph{et al.} 2021};
+\citeproc{ref-hoffman2022}{Hoffman \emph{et al.} 2022},
+\citeproc{ref-hoffman2023}{2023}).
+
+\subsubsection{Handling of Missing Data}\label{handling-of-missing-data}
+
+\paragraph{Baseline Missingness}\label{baseline-missingness}
+
+We used predictive mean matching from the \texttt{mice} package
+(\citeproc{ref-vanbuuren2018}{Van Buuren 2018}) to impute missing
+baseline values (comprising 1.5929465 of the baseline data). Following
+(\citeproc{ref-zhang2023shouldMultipleImputation}{Zhang \emph{et al.}
+2023}), we performed single imputation using only baseline data. For
+each column with missing values, we created a binary indicator of
+missingness so that the machine learning algorithms we employed could
+condition on missingness information during estimation (see
+\texttt{lmtp} documentation (\citeproc{ref-williams2021}{Williams and
+Díaz 2021})).
+
+\paragraph{Missingness in Time-Varying
+Variables}\label{missingness-in-time-varying-variables}
+
+When a time-varying value was missing in any wave but a future value was
+observed, we carried forward the previous response and included a
+missingness indicator. Again, this approach let the patterns of
+missingness inform nonparametric machine learning. If no future value
+was observed, we considered the participant censored and used inverse
+probability of treatment weights to address attrition.
+
+\paragraph{Outcome Missingness}\label{outcome-missingness}
+
+Finally, to handle confounding and selection bias arising from missing
+outcomes and panel attrition, we applied inverse probability of
+censoring weights, estimated via nonparametric machine learning
+ensembles in the \texttt{lmtp} package
+(\citeproc{ref-williams2021}{Williams and Díaz 2021}).
+
+\subsubsection{Sensitivity Analysis}\label{sensitivity-analysis}
+
+We perform sensitivity analyses using the E-value metric
+(\citeproc{ref-linden2020EVALUE}{Linden \emph{et al.} 2020};
+\citeproc{ref-vanderweele2017}{VanderWeele and Ding 2017}). The E-value
+represents the minimum association strength (on the risk ratio scale)
+that an unmeasured confounder would need to have with both the exposure
+and outcome---after adjusting for measured covariates---to explain away
+the observed exposure-outcome association
+(\citeproc{ref-linden2020EVALUE}{Linden \emph{et al.} 2020};
+\citeproc{ref-vanderweele2020}{VanderWeele \emph{et al.} 2020}).
+
+\subsection{Results}\label{results}
+
+\subsubsection{Dones vs Religious}\label{dones-vs-religious}
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{test-25-done-meaning-RELID_files/figure-pdf/fig-dones-vs-religious-1.pdf}}
+
+}
+
+\caption{\label{fig-dones-vs-religious}Dones vs Religious}
+
+\end{figure}%
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+
+\caption{\label{tbl-dones-vs-religious}Health effects}
+
+\tabularnewline
+
+\toprule\noalign{}
+& E{[}Y(1){]}-E{[}Y(0){]} & 2.5 \% & 97.5 \% & E\_Value &
+E\_Val\_bound \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Meaning Purpose & -0.17 & -0.21 & -0.13 & 1.60 & 1.50 \\
+Meaning Sense & -0.22 & -0.28 & -0.15 & 1.74 & 1.56 \\
+
+\end{longtable}
+
+\paragraph{Meaning purpose}\label{meaning-purpose-1}
+
+The effect estimate (rd) is -0.168 (-0.208, -0.128). On the original
+scale, the estimated effect is -0.238 (-0.294, -0.181). E-value lower
+bound is 1.498, indicating evidence for causality.
+
+\paragraph{Meaning sense}\label{meaning-sense-1}
+
+The effect estimate (rd) is -0.219 (-0.285, -0.153). On the original
+scale, the estimated effect is -0.262 (-0.341, -0.183). E-value lower
+bound is 1.562, indicating evidence for causality.
+
+\newpage{}
+
+\subsubsection{Dones vs Secular}\label{dones-vs-secular}
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{test-25-done-meaning-RELID_files/figure-pdf/fig-dones-vs-secular-1.pdf}}
+
+}
+
+\caption{\label{fig-dones-vs-secular}Dones vs Secular}
+
+\end{figure}%
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+
+\caption{\label{tbl-dones-vs-secular}Effects on Psychological
+Well-Being}
+
+\tabularnewline
+
+\toprule\noalign{}
+& E{[}Y(1){]}-E{[}Y(0){]} & 2.5 \% & 97.5 \% & E\_Value &
+E\_Val\_bound \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Meaning Purpose & 0.20 & 0.16 & 0.24 & 1.69 & 1.59 \\
+Meaning Sense & 0.13 & 0.08 & 0.18 & 1.51 & 1.38 \\
+
+\end{longtable}
+
+\paragraph{Meaning purpose}\label{meaning-purpose-2}
+
+The effect estimate (rd) is 0.202 (0.164, 0.241). On the original scale,
+the estimated effect is 0.286 (0.231, 0.34). E-value lower bound is
+1.59, indicating evidence for causality.
+
+\paragraph{Meaning sense}\label{meaning-sense-2}
+
+The effect estimate (rd) is 0.134 (0.084, 0.184). On the original scale,
+the estimated effect is 0.16 (0.1, 0.22). E-value lower bound is 1.375,
+indicating evidence for causality.
+
+\newpage{}
+
+\newpage{}
+
+\subsubsection{Secular vs Religious}\label{secular-vs-religious}
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{test-25-done-meaning-RELID_files/figure-pdf/fig-life-1.pdf}}
+
+}
+
+\caption{\label{fig-life}Secular vs Religious}
+
+\end{figure}%
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+
+\caption{\label{tbl-life}Effects on Life-Focussed Well-Being}
+
+\tabularnewline
+
+\toprule\noalign{}
+& E{[}Y(1){]}-E{[}Y(0){]} & 2.5 \% & 97.5 \% & E\_Value &
+E\_Val\_bound \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Meaning Purpose & -0.37 & -0.43 & -0.32 & 2.15 & 2.00 \\
+Meaning Sense & -0.35 & -0.44 & -0.27 & 2.10 & 1.88 \\
+
+\end{longtable}
+
+\paragraph{Meaning purpose}\label{meaning-purpose-3}
+
+The effect estimate (rd) is -0.37 (-0.426, -0.315). On the original
+scale, the estimated effect is -0.524 (-0.602, -0.445). E-value lower
+bound is 1.998, indicating evidence for causality.
+
+\paragraph{Meaning sense}\label{meaning-sense-3}
+
+The effect estimate (rd) is -0.353 (-0.436, -0.27). On the original
+scale, the estimated effect is -0.422 (-0.522, -0.323). E-value lower
+bound is 1.878, indicating evidence for causality.
+
+\newpage{}
+
+\subsection{Discussion}\label{discussion}
+
+TBA
+
+\subsubsection{Ethics}\label{ethics}
+
+The University of Auckland Human Participants Ethics Committee reviews
+the NZAVS every three years. Our most recent ethics approval statement
+is as follows: The New Zealand Attitudes and Values Study was approved
+by the University of Auckland Human Participants Ethics Committee on
+26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576.
+
+\subsubsection{Data Availability}\label{data-availability}
+
+The data described in the paper are part of the New Zealand Attitudes
+and Values Study. Members of the NZAVS management team and research
+group hold full copies of the NZAVS data. A de-identified dataset
+containing only the variables analysed in this manuscript is available
+upon request from the corresponding author or any member of the NZAVS
+advisory board for replication or checking of any published study using
+NZAVS data. The code for the analysis can be found at
+\href{https://osf.io/ab7cx/}{OSF link}.
+
+\subsubsection{Acknowledgements}\label{acknowledgements}
+
+The New Zealand Attitudes and Values Study is supported by a grant from
+the Templeton Religious Trust (TRT0196; TRT0418). JB received support
+from the Max Plank Institute for the Science of Human History. The
+funders had no role in preparing the manuscript or deciding to publish
+it.
+
+\subsubsection{Author Statement}\label{author-statement}
+
+TBA
+
+\newpage{} \#\# Appendix A: Daily Data Collection
+\{\#appendix-timeline\}
+
+\newpage{}
+
+\textbf{?@fig-timeline} presents the New Zealand Attitudes and Values
+Study Data Collection (2018 retained cohort) from years 2018-2014 (NZAVS
+time 10--time 15). (not run)
+
+\newpage{}
+
+\subsection{Appendix B: Measures and Demographic
+Statistics}\label{appendix-baseline}
+
+\subsubsection{Measures}\label{measures}
+
+\subsubsection{Baseline Variables}\label{baseline-variables}
+
+\paragraph{Age}\label{age}
+
+\emph{What is your date of birth?}
+
+We asked participants' ages in an open-ended question (``What is your
+age?'' or ``What is your date of birth'').
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Developed for the
+NZAVS.)
+
+\paragraph{Agreeableness}\label{agreeableness}
+
+\emph{I sympathize with others' feelings.} \emph{I am not interested in
+other people's problems.} \emph{I feel others' emotions.} \emph{I am not
+really interested in others (reversed).}
+
+Mini-IPIP6 Agreeableness dimension: (i) I sympathize with others'
+feelings. (ii) I am not interested in other people's problems. (r) (iii)
+I feel others' emotions. (iv) I am not really interested in others. (r)
+(\citeproc{ref-sibley2011}{Sibley \emph{et al.} 2011})
+
+\paragraph{Alcohol Frequency}\label{alcohol-frequency}
+
+\emph{``How often do you have a drink containing alcohol?''}
+
+Participants could chose between the following responses: `(1 = Never -
+I don't drink, 2 = Monthly or less, 3 = Up to 4 times a month, 4 = Up to
+3 times a week, 5 = 4 or more times a week, 6 = Don't know)'
+(\citeproc{ref-Ministry_of_Health_2013}{Health 2013})
+
+\paragraph{Alcohol Intensity}\label{alcohol-intensity}
+
+\emph{``How many drinks containing alcohol do you have on a typical day
+when drinking alcohol? (number of drinks on a typical day when
+drinking)''}
+
+Participants responded using an open-ended box.
+(\citeproc{ref-Ministry_of_Health_2013}{Health 2013})
+
+\paragraph{Belong}\label{belong}
+
+\emph{Know that people in my life accept and value me.} \emph{Feel like
+an outsider (reversed).} \emph{Know that people around me share my
+attitudes and beliefs.}
+
+We assessed felt belongingness with three items adapted from the Sense
+of Belonging Instrument (Hagerty \& Patusky, 1995): (1) ``Know that
+people in my life accept and value me''; (2) ``Feel like an outsider'';
+(3) ``Know that people around me share my attitudes and beliefs''.
+Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very
+Accurate). The second item was reversely coded.
+(\citeproc{ref-hagerty1995}{Hagerty and Patusky 1995})
+
+\paragraph{Born Nz Binary}\label{born-nz-binary}
+
+\emph{Where were you born? (please be specific, e.g., which town/city?)}
+
+Coded binary (1 = New Zealand; 0 = elsewhere.)
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Developed for the
+NZAVS.)
+
+\paragraph{Conscientiousness}\label{conscientiousness}
+
+\emph{I get chores done right away.} \emph{I like order.} \emph{I make a
+mess of things.} \emph{I often forget to put things back in their proper
+place.}
+
+Mini-IPIP6 Conscientiousness dimension: (i) I get chores done right
+away. (ii) I like order. (iii) I make a mess of things. (r) (iv) I often
+forget to put things back in their proper place. (r)
+(\citeproc{ref-sibley2011}{Sibley \emph{et al.} 2011})
+
+\paragraph{Education Level Coarsen}\label{education-level-coarsen}
+
+\emph{What is your highest level of qualification?}
+
+We asked participants, ``What is your highest level of qualification?''.
+We coded participans highest finished degree according to the New
+Zealand Qualifications Authority. Ordinal-Rank 0-10 NZREG codes (with
+overseas school qualifications coded as Level 3, and all other ancillary
+categories coded as missing)
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Developed for the
+NZAVS.)
+
+\paragraph{Employed Binary}\label{employed-binary}
+
+\emph{Are you currently employed (This includes self-employed of casual
+work)?}
+
+Binary response: (0 = No, 1 = Yes)
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Stats NZ Census
+Question)
+
+\paragraph{Eth Cat}\label{eth-cat}
+
+\emph{Which ethnic group(s) do you belong to?}
+
+Coded string: (1 = New Zealand European; 2 = Māori; 3 = Pacific; 4 =
+Asian) (\citeproc{ref-string_is}{\textbf{string\_is?}} NZ Census
+coding.)
+
+\paragraph{Extraversion}\label{extraversion}
+
+\emph{I am the life of the party.} \emph{I don't talk a lot (reversed).}
+\emph{I keep in the background (reversed).} \emph{I talk to a lot of
+different people at parties.}
+
+Mini-IPIP6 Extraversion dimension: (i) I am the life of the party. (ii)
+I don't talk a lot. (r) (iii) I keep in the background. (r) (iv) I talk
+to a lot of different people at parties.
+(\citeproc{ref-sibley2011}{Sibley \emph{et al.} 2011})
+
+\paragraph{Hlth Disability Binary}\label{hlth-disability-binary}
+
+\emph{Do you have a health condition or disability that limits you and
+that has lasted for 6+ months?}
+
+We assessed disability with a one-item indicator adapted from Verbrugge
+(1997). It asks, ``Do you have a health condition or disability that
+limits you and that has lasted for 6+ months?'' (1 = Yes, 0 = No).
+(\citeproc{ref-verbrugge1997}{Verbrugge 1997})
+
+\paragraph{Hlth Fatigue}\label{hlth-fatigue}
+
+\emph{During the last 30 days, how often did \ldots{} you feel
+exhausted?}
+
+Ordinal response: (0 = None Of The Time; 1 = A Little Of The Time; 2=
+Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time)
+(\citeproc{ref-sibley2020}{Sibley \emph{et al.} 2020})
+
+\paragraph{Honesty Humility}\label{honesty-humility}
+
+\emph{I feel entitled to more of everything (reversed).} \emph{I deserve
+more things in life (reversed).} \emph{I deserve more things in life
+(reversed).} \emph{I would get a lot of pleasure from owning expensive
+luxury goods (reversed).}
+
+Mini-IPIP6 Honesty-Humility dimension: (i) I feel entitled to more of
+everything. (r) (ii) I deserve more things in life. (r) (iii) I would
+like to be seen driving around in a very expensive car. (r) (iv) I would
+get a lot of pleasure from owning expensive luxury goods. (r)
+(\citeproc{ref-sibley2011}{Sibley \emph{et al.} 2011})
+
+\paragraph{Hours Children}\label{hours-children}
+
+No information available for this variable.
+
+\paragraph{Hours Commute}\label{hours-commute}
+
+\emph{Hours spent\ldots travelling/commuting.}
+
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Developed for the
+NZAVS.)
+
+\paragraph{Hours Exercise}\label{hours-exercise}
+
+No information available for this variable.
+
+\paragraph{Hours Housework}\label{hours-housework}
+
+No information available for this variable.
+
+\paragraph{Household Inc}\label{household-inc}
+
+\emph{Please estimate your total household income (before tax) for the
+year XXXX.}
+
+\paragraph{Kessler Latent Anxiety}\label{kessler-latent-anxiety}
+
+\emph{During the past 30 days, how often did\ldots you feel restless or
+fidgety?} \emph{During the past 30 days, how often did\ldots you feel
+that everything was an effort?} \emph{During the past 30 days, how often
+did\ldots you feel nervous?}
+
+Ordinal response: (0 = None Of The Time; 1 = A Little Of The Time; 2=
+Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time)
+(\citeproc{ref-kessler2002}{Kessler \emph{et al.} 2002})
+
+\paragraph{Kessler Latent Depression}\label{kessler-latent-depression}
+
+\emph{During the past 30 days, how often did\ldots you feel hopeless?}
+\emph{During the past 30 days, how often did\ldots you feel so depressed
+that nothing could cheer you up?} \emph{During the past 30 days, how
+often did\ldots you feel you feel restless or fidgety?}
+
+Ordinal response: (0 = None Of The Time; 1 = A Little Of The Time; 2=
+Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time)
+(\citeproc{ref-kessler2002}{Kessler \emph{et al.} 2002})
+
+\paragraph{Log Hours Children}\label{log-hours-children}
+
+\emph{Hours spent\ldots looking after children.}
+
+We took the natural log of the response + 1.
+(\citeproc{ref-sibley2011}{Sibley \emph{et al.} 2011})
+
+\paragraph{Log Hours Commute}\label{log-hours-commute}
+
+\emph{Hours spent\ldots travelling/commuting.}
+
+We took the natural log of the response + 1.
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Developed for the
+NZAVS.)
+
+\paragraph{Log Hours Exercise}\label{log-hours-exercise}
+
+\emph{Hours spent\ldots exercising/physical activity.}
+
+We took the natural log of the response + 1.
+(\citeproc{ref-sibley2011}{Sibley \emph{et al.} 2011})
+
+\paragraph{Log Hours Housework}\label{log-hours-housework}
+
+\emph{Hours spent\ldots housework/cooking.}
+
+We took the natural log of the response + 1.
+(\citeproc{ref-sibley2011}{Sibley \emph{et al.} 2011})
+
+\paragraph{Log Household Inc}\label{log-household-inc}
+
+\emph{Please estimate your total household income (before tax) for the
+year XXXX.}
+
+We took the natural log of the response + 1.
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Developed for the
+NZAVS.)
+
+\paragraph{Male Binary}\label{male-binary}
+
+\emph{We asked participants' gender in an open-ended question: ``what is
+your gender?''}
+
+Here, we coded all those who responded as Male as 1, and those who did
+not as 0. (\citeproc{ref-fraser_coding_2020}{Fraser \emph{et al.} 2020})
+
+\paragraph{Neuroticism}\label{neuroticism}
+
+\emph{I have frequent mood swings.} \emph{I am relaxed most of the time
+(reversed).} \emph{I get upset easily.} \emph{I seldom feel blue
+(reversed).}
+
+Mini-IPIP6 Neuroticism dimension: (i) I have frequent mood swings. (ii)
+I am relaxed most of the time. (r) (iii) I get upset easily. (iv) I
+seldom feel blue. (r) (\citeproc{ref-sibley2011}{Sibley \emph{et al.}
+2011})
+
+\paragraph{Not Heterosexual Binary}\label{not-heterosexual-binary}
+
+\emph{How would you describe your sexual orientation? (e.g.,
+heterosexual, homosexual, straight, gay, lesbian, bisexual, etc.)}
+
+Open-ended question, coded as binary (not heterosexual = 1).
+(\citeproc{ref-greaves2017diversity}{Greaves \emph{et al.} 2017})
+
+\paragraph{Nz Dep2018}\label{nz-dep2018}
+
+\emph{New Zealand Deprivation - Decile Index - Using 2018 Census Data}
+
+Numerical: (1-10) (\citeproc{ref-atkinson2019}{Atkinson \emph{et al.}
+2019})
+
+\paragraph{Nzsei 13 l}\label{nzsei-13-l}
+
+\emph{We assessed occupational prestige and status using the New Zealand
+Socio-economic Index 13 (NZSEI-13).}
+
+This index uses the income, age, and education of a reference group, in
+this case, the 2013 New Zealand census, to calculate a score for each
+occupational group. Scores range from 10 (Lowest) to 90 (Highest). This
+list of index scores for occupational groups was used to assign each
+participant a NZSEI-13 score based on their occupation.
+(\citeproc{ref-fahy2017}{Fahy \emph{et al.} 2017})
+
+\paragraph{Openness}\label{openness}
+
+\emph{I have a vivid imagination.} \emph{I have difficulty understanding
+abstract ideas (reversed).} \emph{I do not have a good imagination
+(reversed).} \emph{I am not interested in abstract ideas (reversed).}
+
+Mini-IPIP6 Openness to Experience dimension: (i) I have a vivid
+imagination. (ii) I have difficulty understanding abstract ideas. (r)
+(iii) I do not have a good imagination. (r) (iv) I am not interested in
+abstract ideas. (r) (\citeproc{ref-sibley2011}{Sibley \emph{et al.}
+2011})
+
+\paragraph{Parent Binary}\label{parent-binary}
+
+\emph{If you are a parent, in which year was your eldest child born?}
+
+Parents were coded as 1, while the others were coded as 0.
+(\citeproc{ref-Developed}{\textbf{Developed?}} for the NZAVS.)
+
+\paragraph{Partner Binary}\label{partner-binary}
+
+\emph{What is your relationship status? (e.g., single, married,
+de-facto, civil union, widowed, living together, etc.)}
+
+Coded as binary (has partner = 1).
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Developed for the
+NZAVS.)
+
+\paragraph{Political Conservative}\label{political-conservative}
+
+\emph{Please rate how politically liberal versus conservative you see
+yourself as being.}
+
+Ordinal response: (1 = Extremely Liberal, 7 = Extremely Conservative)
+(\citeproc{ref-jost_end_2006-1}{Jost 2006})
+
+\paragraph{Rural Gch 2018 l}\label{rural-gch-2018-l}
+
+\emph{High Urban Accessibility = 1, Medium Urban Accessibility = 2, Low
+Urban Accessibility = 3, Remote = 4, Very Remote = 5.}
+
+``Participants residence locations were coded according to a five-level
+ordinal categorisation ranging from Urban to Rural.''
+(\citeproc{ref-whitehead2023unmasking}{Whitehead \emph{et al.} 2023})
+
+\paragraph{Rwa}\label{rwa}
+
+\emph{It is always better to trust the judgment of the proper
+authorities in government and religion than to listen to the noisy
+rabble-rousers in our society who are trying to create doubt in people's
+minds.} \emph{It would be best for everyone if the proper authorities
+censored magazines so that people could not get their hands on trashy
+and disgusting material.} \emph{Our country will be destroyed some day
+if we do not smash the perversions eating away at our moral fibre and
+traditional beliefs.} \emph{People should pay less attention to The
+Bible and other old traditional forms of religious guidance, and instead
+develop their own personal standards of what is moral and immoral.}
+\emph{Atheists and others who have rebelled against established
+religions are no doubt every bit as good and virtuous as those who
+attend church regularly.} \emph{Some of the best people in our country
+are those who are challenging our government, criticizing religion, and
+ignoring the ``normal way'' things are supposed to be done (reversed).}
+
+\paragraph{Sample Frame Opt in Binary}\label{sample-frame-opt-in-binary}
+
+\emph{Participant was not randomly sampled from the New Zealand
+Electoral Roll.}
+
+Code string (Binary): (0 = No, 1 = Yes)
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Developed for the
+NZAVS.)
+
+\paragraph{Sdo}\label{sdo}
+
+\emph{It is OK if some groups have more of a chance in life than
+others.} \emph{Inferior groups should stay in their place.} \emph{To get
+ahead in life, it is sometimes okay to step on other groups.} \emph{We
+should have increased social equality (reversed).} \emph{It would be
+good if groups could be equal (reversed).} \emph{We should do what we
+can to equalise conditions for different groups (reversed).}
+
+\paragraph{Short Form Health}\label{short-form-health}
+
+\emph{In general, would you say your health is\ldots{}}
+
+Ordinal response: (1 = Poor, 7 = Excellent)
+(\citeproc{ref-instrument1992mos}{Instrument Ware Jr and Sherbourne
+1992})
+
+\paragraph{Smoker Binary}\label{smoker-binary}
+
+\emph{Do you currently smoke tobacco cigarettes?}
+
+Binary smoking indicator (0 = No, 1 = Yes).
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Developed for NZAVS.)
+
+\paragraph{Support}\label{support}
+
+\emph{There are people I can depend on to help me if I really need it.}
+\emph{There is no one I can turn to for guidance in times of stress
+(reversed).} \emph{I know there are people I can turn to when I need
+help.}
+
+Ordinal response: (1 = Strongly Disagree, 7 = Strongly Agree)
+(\citeproc{ref-cutrona1987}{Cutrona and Russell 1987})
+
+\subsubsection{Exposure Variable}\label{exposure-variable}
+
+\paragraph{Religion Identification
+Level}\label{religion-identification-level}
+
+\emph{How important is your religion to how you see yourself?}
+
+Ordinal response: (1 = Not Important, 7 = Very Important)
+(\citeproc{ref-string_is}{\textbf{string\_is?}} Developed for the
+NZAVS.)
+
+\subsubsection{Outcome Variables}\label{outcome-variables}
+
+\paragraph{Meaning Purpose}\label{meaning-purpose-4}
+
+\emph{My life has a clear sense of purpose}
+
+Ordinal response (1 = Strongly Disagree to 7 = Strongly Agree).
+(\citeproc{ref-steger_meaning_2006}{Steger \emph{et al.} 2006})
+
+\paragraph{Meaning Sense}\label{meaning-sense-4}
+
+\emph{I have a good sense of what makes my life meaningful.}
+
+Ordinal response (1 = Strongly Disagree to 7 = Strongly Agree).
+(\citeproc{ref-steger_meaning_2006}{Steger \emph{et al.} 2006})
+
+\subsubsection{Sample Demographic
+Statistics}\label{sample-demographic-statistics}
+
+Table~\ref{tbl-baseline} presents sample demographic statistics.
+
+\begingroup\fontsize{6}{8}\selectfont
+\begingroup\fontsize{6}{8}\selectfont
+
+\begin{longtable}[t]{lllllll}
+
+\caption{\label{tbl-baseline}Demographic statistics for New Zealand
+Attitudes and Values Cohort waves 2018.}
+
+\tabularnewline
+
+\toprule
+  & 2018 & 2019 & 2020 & 2021 & 2022 & 2023\\
+\midrule
+\endfirsthead
+\multicolumn{7}{@{}l}{\textit{(continued)}}\\
+\toprule
+  & 2018 & 2019 & 2020 & 2021 & 2022 & 2023\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!10}{} & \cellcolor{gray!10}{(N=46672)} & \cellcolor{gray!10}{(N=46672)} & \cellcolor{gray!10}{(N=46672)} & \cellcolor{gray!10}{(N=46672)} & \cellcolor{gray!10}{(N=46672)} & \cellcolor{gray!10}{(N=46672)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Age}}\\
+\hspace{1em}Mean (SD) & 48.6 (13.9) & 51.2 (13.5) & 52.7 (13.4) & 54.0 (13.3) & 55.4 (13.2) & 56.4 (13.1)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{51.0 [18.0, 99.0]} & \cellcolor{gray!10}{54.0 [19.0, 96.0]} & \cellcolor{gray!10}{55.0 [20.0, 96.0]} & \cellcolor{gray!10}{57.0 [21.0, 97.0]} & \cellcolor{gray!10}{58.0 [22.0, 98.0]} & \cellcolor{gray!10}{59.0 [23.0, 99.0]}\\
+\hspace{1em}Missing & 0 (0\%) & 12351 (26.5\%) & 15095 (32.3\%) & 19544 (41.9\%) & 22782 (48.8\%) & 25157 (53.9\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Agreeableness}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{5.35 (0.988)} & \cellcolor{gray!10}{5.37 (0.973)} & \cellcolor{gray!10}{5.36 (0.978)} & \cellcolor{gray!10}{5.35 (1.00)} & \cellcolor{gray!10}{5.33 (0.993)} & \cellcolor{gray!10}{5.33 (0.998)}\\
+\hspace{1em}Median [Min, Max] & 5.50 [1.00, 7.00] & 5.50 [1.00, 7.00] & 5.50 [1.00, 7.00] & 5.50 [1.00, 7.00] & 5.50 [1.00, 7.00] & 5.50 [1.00, 7.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{423 (0.9\%)} & \cellcolor{gray!10}{12637 (27.1\%)} & \cellcolor{gray!10}{15311 (32.8\%)} & \cellcolor{gray!10}{19750 (42.3\%)} & \cellcolor{gray!10}{22880 (49.0\%)} & \cellcolor{gray!10}{25206 (54.0\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Alcohol Frequency}}\\
+\hspace{1em}Mean (SD) & 2.16 (1.34) & 2.17 (1.35) & 2.19 (1.35) & 2.14 (1.38) & 2.10 (1.37) & 2.04 (1.36)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{2.00 [0, 5.00]} & \cellcolor{gray!10}{2.00 [0, 5.00]} & \cellcolor{gray!10}{2.00 [0, 5.00]} & \cellcolor{gray!10}{2.00 [0, 5.00]} & \cellcolor{gray!10}{2.00 [0, 5.00]} & \cellcolor{gray!10}{2.00 [0, 5.00]}\\
+\hspace{1em}Missing & 1596 (3.4\%) & 13020 (27.9\%) & 15694 (33.6\%) & 19938 (42.7\%) & 22940 (49.2\%) & 25694 (55.1\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Alcohol Intensity}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{2.17 (2.17)} & \cellcolor{gray!10}{2.01 (1.99)} & \cellcolor{gray!10}{1.98 (1.98)} & \cellcolor{gray!10}{1.89 (1.86)} & \cellcolor{gray!10}{1.86 (1.86)} & \cellcolor{gray!10}{2.01 (1.88)}\\
+\hspace{1em}Median [Min, Max] & 2.00 [0, 30.0] & 2.00 [0, 36.0] & 2.00 [0, 36.0] & 2.00 [0, 32.0] & 1.50 [0, 40.0] & 2.00 [0, 48.0]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{2761 (5.9\%)} & \cellcolor{gray!10}{13771 (29.5\%)} & \cellcolor{gray!10}{16352 (35.0\%)} & \cellcolor{gray!10}{20534 (44.0\%)} & \cellcolor{gray!10}{23725 (50.8\%)} & \cellcolor{gray!10}{28102 (60.2\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Social Belonging}}\\
+\hspace{1em}Mean (SD) & 5.14 (1.08) & 5.13 (1.07) & 5.05 (1.09) & 5.16 (1.10) & 5.16 (1.10) & 5.22 (1.09)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{5.33 [1.00, 7.00]} & \cellcolor{gray!10}{5.33 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.33 [1.00, 7.00]} & \cellcolor{gray!10}{5.33 [1.00, 7.00]} & \cellcolor{gray!10}{5.33 [1.00, 7.00]}\\
+\hspace{1em}Missing & 419 (0.9\%) & 12636 (27.1\%) & 15319 (32.8\%) & 19795 (42.4\%) & 22916 (49.1\%) & 25252 (54.1\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Born in NZ}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{0.783 (0.412)} & \cellcolor{gray!10}{0.783 (0.412)} & \cellcolor{gray!10}{0.783 (0.412)} & \cellcolor{gray!10}{0.783 (0.412)} & \cellcolor{gray!10}{0.783 (0.412)} & \cellcolor{gray!10}{0.783 (0.412)}\\
+\hspace{1em}Median [Min, Max] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, \vphantom{3} 1.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{145 (0.3\%)} & \cellcolor{gray!10}{145 (0.3\%)} & \cellcolor{gray!10}{145 (0.3\%)} & \cellcolor{gray!10}{145 (0.3\%)} & \cellcolor{gray!10}{145 (0.3\%)} & \cellcolor{gray!10}{145 (0.3\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Conscientiousness}}\\
+\hspace{1em}Mean (SD) & 5.11 (1.06) & 5.13 (1.04) & 5.14 (1.03) & 5.15 (1.05) & 5.16 (1.04) & 5.16 (1.03)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{5.25 [1.00, 7.00]} & \cellcolor{gray!10}{5.25 [1.00, 7.00]} & \cellcolor{gray!10}{5.25 [1.00, 7.00]} & \cellcolor{gray!10}{5.25 [1.00, 7.00]} & \cellcolor{gray!10}{5.25 [1.00, 7.00]} & \cellcolor{gray!10}{5.25 [1.00, 7.00]}\\
+\hspace{1em}Missing & 415 (0.9\%) & 12634 (27.1\%) & 15310 (32.8\%) & 19748 (42.3\%) & 22877 (49.0\%) & 25231 (54.1\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Education Level}}\\
+\cellcolor{gray!10}{\hspace{1em}no\_qualification} & \cellcolor{gray!10}{1202 (2.6\%)} & \cellcolor{gray!10}{1067 (2.3\%)} & \cellcolor{gray!10}{978 (2.1\%)} & \cellcolor{gray!10}{936 (2.0\%)} & \cellcolor{gray!10}{920 (2.0\%)} & \cellcolor{gray!10}{899 (1.9\%)}\\
+\hspace{1em}cert\_1\_to\_4 & 16402 (35.1\%) & 15482 (33.2\%) & 14937 (32.0\%) & 14587 (31.3\%) & 14334 (30.7\%) & 14155 (30.3\%)\\
+\cellcolor{gray!10}{\hspace{1em}cert\_5\_to\_6} & \cellcolor{gray!10}{5861 (12.6\%)} & \cellcolor{gray!10}{6055 (13.0\%)} & \cellcolor{gray!10}{6149 (13.2\%)} & \cellcolor{gray!10}{6188 (13.3\%)} & \cellcolor{gray!10}{6245 (13.4\%)} & \cellcolor{gray!10}{6249 (13.4\%)}\\
+\hspace{1em}university & 12379 (26.5\%) & 12598 (27.0\%) & 12668 (27.1\%) & 12652 (27.1\%) & 12576 (26.9\%) & 12526 (26.8\%)\\
+\cellcolor{gray!10}{\hspace{1em}post\_grad} & \cellcolor{gray!10}{5050 (10.8\%)} & \cellcolor{gray!10}{5392 (11.6\%)} & \cellcolor{gray!10}{5673 (12.2\%)} & \cellcolor{gray!10}{5903 (12.6\%)} & \cellcolor{gray!10}{6065 (13.0\%)} & \cellcolor{gray!10}{6125 (13.1\%)}\\
+\hspace{1em}masters & 3865 (8.3\%) & 4094 (8.8\%) & 4266 (9.1\%) & 4391 (9.4\%) & 4509 (9.7\%) & 4607 (9.9\%)\\
+\cellcolor{gray!10}{\hspace{1em}doctorate} & \cellcolor{gray!10}{1109 (2.4\%)} & \cellcolor{gray!10}{1180 (2.5\%)} & \cellcolor{gray!10}{1225 (2.6\%)} & \cellcolor{gray!10}{1266 (2.7\%)} & \cellcolor{gray!10}{1313 (2.8\%)} & \cellcolor{gray!10}{1414 (3.0\%)}\\
+\hspace{1em}Missing & 804 (1.7\%) & 804 (1.7\%) & 776 (1.7\%) & 749 (1.6\%) & 710 (1.5\%) & 697 (1.5\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Employed (binary)}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{0.796 (0.403)} & \cellcolor{gray!10}{0.774 (0.418)} & \cellcolor{gray!10}{0.779 (0.415)} & \cellcolor{gray!10}{0.758 (0.428)} & \cellcolor{gray!10}{0.722 (0.448)} & \cellcolor{gray!10}{0.709 (0.454)}\\
+\hspace{1em}Median [Min, Max] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, \vphantom{2} 1.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{18 (0.0\%)} & \cellcolor{gray!10}{12626 (27.1\%)} & \cellcolor{gray!10}{15248 (32.7\%)} & \cellcolor{gray!10}{19676 (42.2\%)} & \cellcolor{gray!10}{22925 (49.1\%)} & \cellcolor{gray!10}{25707 (55.1\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Ethnicity}}\\
+\hspace{1em}euro & 37212 (79.7\%) & 37212 (79.7\%) & 37212 (79.7\%) & 37212 (79.7\%) & 37212 (79.7\%) & 37212 (79.7\%)\\
+\cellcolor{gray!10}{\hspace{1em}maori} & \cellcolor{gray!10}{5337 (11.4\%)} & \cellcolor{gray!10}{5337 (11.4\%)} & \cellcolor{gray!10}{5337 (11.4\%)} & \cellcolor{gray!10}{5337 (11.4\%)} & \cellcolor{gray!10}{5337 (11.4\%)} & \cellcolor{gray!10}{5337 (11.4\%)}\\
+\hspace{1em}pacific & 1104 (2.4\%) & 1104 (2.4\%) & 1104 (2.4\%) & 1104 (2.4\%) & 1104 (2.4\%) & 1104 (2.4\%)\\
+\cellcolor{gray!10}{\hspace{1em}asian} & \cellcolor{gray!10}{2432 (5.2\%)} & \cellcolor{gray!10}{2432 (5.2\%)} & \cellcolor{gray!10}{2432 (5.2\%)} & \cellcolor{gray!10}{2432 (5.2\%)} & \cellcolor{gray!10}{2432 (5.2\%)} & \cellcolor{gray!10}{2432 (5.2\%)}\\
+\hspace{1em}Missing & 587 (1.3\%) & 587 (1.3\%) & 587 (1.3\%) & 587 (1.3\%) & 587 (1.3\%) & 587 (1.3\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Extraversion}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{3.91 (1.20)} & \cellcolor{gray!10}{3.85 (1.19)} & \cellcolor{gray!10}{3.83 (1.19)} & \cellcolor{gray!10}{3.77 (1.23)} & \cellcolor{gray!10}{3.75 (1.23)} & \cellcolor{gray!10}{3.75 (1.23)}\\
+\hspace{1em}Median [Min, Max] & 4.00 [1.00, 7.00] & 3.75 [1.00, 7.00] & 3.75 [1.00, 7.00] & 3.75 [1.00, 7.00] & 3.75 [1.00, 7.00] & 3.75 [1.00, 7.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{415 (0.9\%)} & \cellcolor{gray!10}{12635 (27.1\%)} & \cellcolor{gray!10}{15308 (32.8\%)} & \cellcolor{gray!10}{19751 (42.3\%)} & \cellcolor{gray!10}{22885 (49.0\%)} & \cellcolor{gray!10}{25219 (54.0\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Disability (binary)}}\\
+\hspace{1em}Mean (SD) & 0.225 (0.417) & 0.234 (0.423) & 0.263 (0.440) & 0.276 (0.447) & 0.311 (0.463) & 0.321 (0.467)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{0 [0, 1.00]} & \cellcolor{gray!10}{0 [0, 1.00]} & \cellcolor{gray!10}{0 [0, 1.00]} & \cellcolor{gray!10}{0 [0, 1.00]} & \cellcolor{gray!10}{0 [0, 1.00]} & \cellcolor{gray!10}{0 [0, \vphantom{4} 1.00]}\\
+\hspace{1em}Missing & 889 (1.9\%) & 12857 (27.5\%) & 15573 (33.4\%) & 19944 (42.7\%) & 23249 (49.8\%) & 25421 (54.5\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Fatigue}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{1.63 (1.09)} & \cellcolor{gray!10}{1.63 (1.06)} & \cellcolor{gray!10}{1.64 (1.06)} & \cellcolor{gray!10}{1.64 (1.07)} & \cellcolor{gray!10}{1.64 (1.09)} & \cellcolor{gray!10}{1.62 (1.07)}\\
+\hspace{1em}Median [Min, Max] & 2.00 [0, 4.00] & 2.00 [0, 4.00] & 2.00 [0, 4.00] & 2.00 [0, 4.00] & 2.00 [0, 4.00] & 2.00 [0, 4.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{519 (1.1\%)} & \cellcolor{gray!10}{12714 (27.2\%)} & \cellcolor{gray!10}{15425 (33.0\%)} & \cellcolor{gray!10}{19816 (42.5\%)} & \cellcolor{gray!10}{22951 (49.2\%)} & \cellcolor{gray!10}{25271 (54.1\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Honesty Humility}}\\
+\hspace{1em}Mean (SD) & 5.41 (1.18) & 5.55 (1.14) & 5.59 (1.13) & 5.65 (1.13) & 5.69 (1.13) & 5.71 (1.13)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{5.50 [1.00, 7.00]} & \cellcolor{gray!10}{5.75 [1.00, 7.00]} & \cellcolor{gray!10}{5.75 [1.00, 7.00]} & \cellcolor{gray!10}{5.75 [1.00, 7.00]} & \cellcolor{gray!10}{6.00 [1.00, 7.00]} & \cellcolor{gray!10}{6.00 [1.00, 7.00]}\\
+\hspace{1em}Missing & 419 (0.9\%) & 12637 (27.1\%) & 15319 (32.8\%) & 19732 (42.3\%) & 22869 (49.0\%) & 25201 (54.0\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Anxiety (kessler 6)}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{1.21 (0.773)} & \cellcolor{gray!10}{1.19 (0.751)} & \cellcolor{gray!10}{1.18 (0.756)} & \cellcolor{gray!10}{1.19 (0.763)} & \cellcolor{gray!10}{1.17 (0.766)} & \cellcolor{gray!10}{1.16 (0.764)}\\
+\hspace{1em}Median [Min, Max] & 1.00 [0, 4.00] & 1.00 [0, 4.00] & 1.00 [0, 4.00] & 1.00 [0, 4.00] & 1.00 [0, 4.00] & 1.00 [0, 4.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{458 (1.0\%)} & \cellcolor{gray!10}{12661 (27.1\%)} & \cellcolor{gray!10}{15319 (32.8\%)} & \cellcolor{gray!10}{19734 (42.3\%)} & \cellcolor{gray!10}{22874 (49.0\%)} & \cellcolor{gray!10}{25201 (54.0\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Depression (kessler 6)}}\\
+\hspace{1em}Mean (SD) & 0.585 (0.753) & 0.570 (0.732) & 0.554 (0.725) & 0.569 (0.732) & 0.537 (0.724) & 0.527 (0.722)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{0.333 [0, 4.00]} & \cellcolor{gray!10}{0.333 [0, 4.00]} & \cellcolor{gray!10}{0.333 [0, 4.00]} & \cellcolor{gray!10}{0.333 [0, 4.00]} & \cellcolor{gray!10}{0.333 [0, 4.00]} & \cellcolor{gray!10}{0.333 [0, 4.00]}\\
+\hspace{1em}Missing & 460 (1.0\%) & 12658 (27.1\%) & 15317 (32.8\%) & 19735 (42.3\%) & 22875 (49.0\%) & 25201 (54.0\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Hours Children}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{14.0 (32.2)} & \cellcolor{gray!10}{12.9 (31.2)} & \cellcolor{gray!10}{11.8 (29.9)} & \cellcolor{gray!10}{10.4 (27.3)} & \cellcolor{gray!10}{10.1 (27.0)} & \cellcolor{gray!10}{10.0 (26.8)}\\
+\hspace{1em}Median [Min, Max] & 0 [0, 168] & 0 [0, 168] & 0 [0, 168] & 0 [0, 168] & 0 [0, 168] & 0 [0, 168]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{1438 (3.1\%)} & \cellcolor{gray!10}{13057 (28.0\%)} & \cellcolor{gray!10}{15906 (34.1\%)} & \cellcolor{gray!10}{20449 (43.8\%)} & \cellcolor{gray!10}{23666 (50.7\%)} & \cellcolor{gray!10}{26072 \vphantom{1} (55.9\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Hours Commute}}\\
+\hspace{1em}Mean (SD) & 5.29 (6.41) & 4.87 (7.10) & 4.48 (5.89) & 3.80 (5.52) & 4.52 (6.21) & 4.62 (6.36)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{4.00 [0, 80.0]} & \cellcolor{gray!10}{3.00 [0, 168]} & \cellcolor{gray!10}{3.00 [0, 100]} & \cellcolor{gray!10}{2.00 [0, 100]} & \cellcolor{gray!10}{3.00 [0, 100]} & \cellcolor{gray!10}{3.00 [0, 100]}\\
+\hspace{1em}Missing & 1438 (3.1\%) & 13056 (28.0\%) & 15906 (34.1\%) & 20438 (43.8\%) & 23660 (50.7\%) & 26065 \vphantom{1} (55.8\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Hours Exercise}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{5.79 (7.72)} & \cellcolor{gray!10}{6.21 (8.27)} & \cellcolor{gray!10}{6.19 (7.50)} & \cellcolor{gray!10}{6.21 (7.05)} & \cellcolor{gray!10}{6.20 (7.14)} & \cellcolor{gray!10}{6.44 (7.32)}\\
+\hspace{1em}Median [Min, Max] & 4.00 [0, 80.0] & 4.00 [0, 168] & 5.00 [0, 80.0] & 5.00 [0, 85.0] & 5.00 [0, 80.0] & 5.00 [0, 80.0]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{1438 (3.1\%)} & \cellcolor{gray!10}{13058 (28.0\%)} & \cellcolor{gray!10}{15906 (34.1\%)} & \cellcolor{gray!10}{20438 (43.8\%)} & \cellcolor{gray!10}{23663 (50.7\%)} & \cellcolor{gray!10}{26065 \vphantom{1} (55.8\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Hours Housework}}\\
+\hspace{1em}Mean (SD) & 10.3 (10.1) & 10.3 (9.27) & 10.8 (9.93) & 10.8 (9.32) & 10.9 (9.40) & 11.0 (9.00)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{8.00 [0, 168]} & \cellcolor{gray!10}{8.00 [0, 168]} & \cellcolor{gray!10}{10.0 [0, 168]} & \cellcolor{gray!10}{10.0 [0, 168]} & \cellcolor{gray!10}{10.0 [0, 168]} & \cellcolor{gray!10}{10.0 [0, 168]}\\
+\hspace{1em}Missing & 1438 (3.1\%) & 13056 (28.0\%) & 15906 (34.1\%) & 20438 (43.8\%) & 23659 (50.7\%) & 26065 \vphantom{1} (55.8\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Household Income}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{115000 (92300)} & \cellcolor{gray!10}{120000 (110000)} & \cellcolor{gray!10}{123000 (107000)} & \cellcolor{gray!10}{127000 (113000)} & \cellcolor{gray!10}{134000 (148000)} & \cellcolor{gray!10}{136000 (125000)}\\
+\hspace{1em}Median [Min, Max] & 100000 [1.00, 3010000] & 100000 [1.00, 4000000] & 100000 [1.00, 3000000] & 100000 [1.00, 3500000] & 100000 [1000, 7500000] & 110000 [0, 5000000]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{2969 (6.4\%)} & \cellcolor{gray!10}{13758 (29.5\%)} & \cellcolor{gray!10}{15921 (34.1\%)} & \cellcolor{gray!10}{20263 (43.4\%)} & \cellcolor{gray!10}{23221 (49.8\%)} & \cellcolor{gray!10}{25978 \vphantom{1} (55.7\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Log Hours Children}}\\
+\hspace{1em}Mean (SD) & 1.16 (1.61) & 1.08 (1.58) & 1.01 (1.54) & 0.951 (1.48) & 0.933 (1.47) & 0.938 (1.46)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{0 [0, 5.13]} & \cellcolor{gray!10}{0 [0, 5.13]} & \cellcolor{gray!10}{0 [0, 5.13]} & \cellcolor{gray!10}{0 [0, 5.13]} & \cellcolor{gray!10}{0 [0, 5.13]} & \cellcolor{gray!10}{0 [0, 5.13]}\\
+\hspace{1em}Missing & 1438 (3.1\%) & 13057 (28.0\%) & 15906 (34.1\%) & 20449 (43.8\%) & 23666 (50.7\%) & 26072 (55.9\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Log Hours Commute}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{1.50 (0.833)} & \cellcolor{gray!10}{1.40 (0.861)} & \cellcolor{gray!10}{1.34 (0.863)} & \cellcolor{gray!10}{1.19 (0.853)} & \cellcolor{gray!10}{1.34 (0.858)} & \cellcolor{gray!10}{1.36 (0.851)}\\
+\hspace{1em}Median [Min, Max] & 1.61 [0, 4.39] & 1.39 [0, 5.13] & 1.39 [0, 4.62] & 1.10 [0, 4.62] & 1.39 [0, 4.62] & 1.39 [0, 4.62]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{1438 (3.1\%)} & \cellcolor{gray!10}{13056 (28.0\%)} & \cellcolor{gray!10}{15906 (34.1\%)} & \cellcolor{gray!10}{20438 (43.8\%)} & \cellcolor{gray!10}{23660 (50.7\%)} & \cellcolor{gray!10}{26065 (55.8\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Log Hours Exercise}}\\
+\hspace{1em}Mean (SD) & 1.54 (0.849) & 1.63 (0.827) & 1.63 (0.840) & 1.64 (0.834) & 1.64 (0.838) & 1.68 (0.830)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{1.61 [0, 4.39]} & \cellcolor{gray!10}{1.61 [0, 5.13]} & \cellcolor{gray!10}{1.79 [0, 4.39]} & \cellcolor{gray!10}{1.79 [0, 4.45]} & \cellcolor{gray!10}{1.79 [0, 4.39]} & \cellcolor{gray!10}{1.79 [0, 4.39]}\\
+\hspace{1em}Missing & 1438 (3.1\%) & 13058 (28.0\%) & 15906 (34.1\%) & 20438 (43.8\%) & 23663 (50.7\%) & 26065 (55.8\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Log Hours Housework}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{2.14 (0.780)} & \cellcolor{gray!10}{2.16 (0.757)} & \cellcolor{gray!10}{2.21 (0.753)} & \cellcolor{gray!10}{2.22 (0.736)} & \cellcolor{gray!10}{2.23 (0.752)} & \cellcolor{gray!10}{2.24 (0.739)}\\
+\hspace{1em}Median [Min, Max] & 2.20 [0, 5.13] & 2.20 [0, 5.13] & 2.40 [0, 5.13] & 2.40 [0, 5.13] & 2.40 [0, 5.13] & 2.40 [0, 5.13]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{1438 (3.1\%)} & \cellcolor{gray!10}{13056 (28.0\%)} & \cellcolor{gray!10}{15906 (34.1\%)} & \cellcolor{gray!10}{20438 (43.8\%)} & \cellcolor{gray!10}{23659 (50.7\%)} & \cellcolor{gray!10}{26065 (55.8\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Log Household Income}}\\
+\hspace{1em}Mean (SD) & 11.4 (0.768) & 11.4 (0.850) & 11.4 (0.806) & 11.5 (0.826) & 11.5 (0.789) & 11.5 (0.974)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{11.5 [0.693, 14.9]} & \cellcolor{gray!10}{11.5 [0.693, 15.2]} & \cellcolor{gray!10}{11.5 [0.693, 14.9]} & \cellcolor{gray!10}{11.5 [0.693, 15.1]} & \cellcolor{gray!10}{11.5 [6.91, 15.8]} & \cellcolor{gray!10}{11.6 [0, 15.4]}\\
+\hspace{1em}Missing & 2969 (6.4\%) & 13758 (29.5\%) & 15921 (34.1\%) & 20263 (43.4\%) & 23221 (49.8\%) & 25978 (55.7\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Male (binary)}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{0.372 (0.483)} & \cellcolor{gray!10}{0.364 (0.481)} & \cellcolor{gray!10}{0.365 (0.481)} & \cellcolor{gray!10}{0.360 (0.480)} & \cellcolor{gray!10}{0.366 (0.482)} & \cellcolor{gray!10}{0.365 (0.481)}\\
+\hspace{1em}Median [Min, Max] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, \vphantom{3} 1.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{109 (0.2\%)} & \cellcolor{gray!10}{12463 (26.7\%)} & \cellcolor{gray!10}{15220 (32.6\%)} & \cellcolor{gray!10}{19675 (42.2\%)} & \cellcolor{gray!10}{22884 (49.0\%)} & \cellcolor{gray!10}{25274 (54.2\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Neuroticism}}\\
+\hspace{1em}Mean (SD) & 3.49 (1.15) & 3.48 (1.16) & 3.45 (1.15) & 3.41 (1.18) & 3.36 (1.17) & 3.34 (1.17)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{3.50 [1.00, 7.00]} & \cellcolor{gray!10}{3.50 [1.00, 7.00]} & \cellcolor{gray!10}{3.50 [1.00, 7.00]} & \cellcolor{gray!10}{3.25 [1.00, 7.00]} & \cellcolor{gray!10}{3.25 [1.00, 7.00]} & \cellcolor{gray!10}{3.25 [1.00, 7.00]}\\
+\hspace{1em}Missing & 424 (0.9\%) & 12636 (27.1\%) & 15312 (32.8\%) & 19742 (42.3\%) & 22881 (49.0\%) & 25209 (54.0\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Not Heterosexual Binary}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{0.0674 (0.251)} & \cellcolor{gray!10}{0.0716 (0.258)} & \cellcolor{gray!10}{0.0764 (0.266)} & \cellcolor{gray!10}{0.0789 (0.270)} & \cellcolor{gray!10}{0.0776 (0.267)} & \cellcolor{gray!10}{0.0799 (0.271)}\\
+\hspace{1em}Median [Min, Max] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, \vphantom{2} 1.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{1533 (3.3\%)} & \cellcolor{gray!10}{12718 (27.2\%)} & \cellcolor{gray!10}{15463 (33.1\%)} & \cellcolor{gray!10}{19675 (42.2\%)} & \cellcolor{gray!10}{23011 (49.3\%)} & \cellcolor{gray!10}{25328 (54.3\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{NZ Deprevation Index 2018}}\\
+\hspace{1em}Mean (SD) & 4.77 (2.73) & 4.76 (2.74) & 4.76 (2.75) & 4.77 (2.75) & 4.76 (2.75) & 4.76 (2.75)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{4.00 [1.00, 10.0]} & \cellcolor{gray!10}{4.00 [1.00, 10.0]} & \cellcolor{gray!10}{4.00 [1.00, 10.0]} & \cellcolor{gray!10}{4.00 [1.00, 10.0]} & \cellcolor{gray!10}{4.00 [1.00, 10.0]} & \cellcolor{gray!10}{4.00 [1.00, 10.0]}\\
+\hspace{1em}Missing & 307 (0.7\%) & 470 (1.0\%) & 597 (1.3\%) & 952 (2.0\%) & 887 (1.9\%) & 969 (2.1\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{NZSEI (Occupational Prestige Index)}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{54.1 (16.5)} & \cellcolor{gray!10}{55.1 (16.4)} & \cellcolor{gray!10}{55.2 (16.7)} & \cellcolor{gray!10}{55.7 (16.6)} & \cellcolor{gray!10}{56.0 (15.9)} & \cellcolor{gray!10}{55.9 (16.2)}\\
+\hspace{1em}Median [Min, Max] & 54.0 [10.0, 90.0] & 56.0 [10.0, 90.0] & 57.0 [10.0, 90.0] & 60.0 [10.0, 90.0] & 60.0 [10.0, 90.0] & 60.0 [10.0, 90.0]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{428 (0.9\%)} & \cellcolor{gray!10}{4203 (9.0\%)} & \cellcolor{gray!10}{5202 (11.1\%)} & \cellcolor{gray!10}{6253 (13.4\%)} & \cellcolor{gray!10}{7763 (16.6\%)} & \cellcolor{gray!10}{9113 (19.5\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Openness}}\\
+\hspace{1em}Mean (SD) & 4.96 (1.12) & 4.96 (1.11) & 4.96 (1.11) & 4.97 (1.14) & 4.95 (1.14) & 4.96 (1.16)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, \vphantom{1} 7.00]}\\
+\hspace{1em}Missing & 416 (0.9\%) & 12636 (27.1\%) & 15311 (32.8\%) & 19743 (42.3\%) & 22877 (49.0\%) & 25224 (54.0\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Parent (binary)}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{0.708 (0.455)} & \cellcolor{gray!10}{0.736 (0.441)} & \cellcolor{gray!10}{0.748 (0.434)} & \cellcolor{gray!10}{0.748 (0.434)} & \cellcolor{gray!10}{0.768 (0.422)} & \cellcolor{gray!10}{0.768 (0.422)}\\
+\hspace{1em}Median [Min, Max] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, 1.00] & 1.00 [0, \vphantom{1} 1.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{0 (0\%)} & \cellcolor{gray!10}{12351 (26.5\%)} & \cellcolor{gray!10}{15095 (32.3\%)} & \cellcolor{gray!10}{19582 (42.0\%)} & \cellcolor{gray!10}{22782 (48.8\%)} & \cellcolor{gray!10}{25157 (53.9\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Partner Binary}}\\
+\hspace{1em}Mean (SD) & 0.751 (0.433) & 0.761 (0.426) & 0.762 (0.426) & 0.761 (0.426) & 0.755 (0.430) & 0.750 (0.433)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{1.00 [0, 1.00]} & \cellcolor{gray!10}{1.00 [0, 1.00]} & \cellcolor{gray!10}{1.00 [0, 1.00]} & \cellcolor{gray!10}{1.00 [0, 1.00]} & \cellcolor{gray!10}{1.00 [0, 1.00]} & \cellcolor{gray!10}{1.00 [0, 1.00]}\\
+\hspace{1em}Missing & 888 (1.9\%) & 12951 (27.7\%) & 15523 (33.3\%) & 20105 (43.1\%) & 23433 (50.2\%) & 25819 (55.3\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Political Conservative}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{3.59 (1.38)} & \cellcolor{gray!10}{3.58 (1.39)} & \cellcolor{gray!10}{3.47 (1.34)} & \cellcolor{gray!10}{3.53 (1.33)} & \cellcolor{gray!10}{3.60 (1.37)} & \cellcolor{gray!10}{3.57 (1.40)}\\
+\hspace{1em}Median [Min, Max] & 4.00 [1.00, 7.00] & 4.00 [1.00, 7.00] & 4.00 [1.00, 7.00] & 4.00 [1.00, 7.00] & 4.00 [1.00, 7.00] & 4.00 [1.00, 7.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{2382 (5.1\%)} & \cellcolor{gray!10}{13449 (28.8\%)} & \cellcolor{gray!10}{16349 (35.0\%)} & \cellcolor{gray!10}{20734 (44.4\%)} & \cellcolor{gray!10}{23935 (51.3\%)} & \cellcolor{gray!10}{26252 (56.2\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Rural Gch 2018 Levels}}\\
+\hspace{1em}High Urban Accessibility & 28741 (61.6\%) & 28448 (61.0\%) & 28140 (60.3\%) & 27706 (59.4\%) & 27622 (59.2\%) & 27427 (58.8\%)\\
+\cellcolor{gray!10}{\hspace{1em}Medium Urban Accessibility} & \cellcolor{gray!10}{8757 (18.8\%)} & \cellcolor{gray!10}{8794 (18.8\%)} & \cellcolor{gray!10}{8852 (19.0\%)} & \cellcolor{gray!10}{8844 (18.9\%)} & \cellcolor{gray!10}{8881 (19.0\%)} & \cellcolor{gray!10}{8928 (19.1\%)}\\
+\hspace{1em}Low Urban Accessibility & 5701 (12.2\%) & 5769 (12.4\%) & 5866 (12.6\%) & 5913 (12.7\%) & 5951 (12.8\%) & 5974 (12.8\%)\\
+\cellcolor{gray!10}{\hspace{1em}Remote} & \cellcolor{gray!10}{2612 (5.6\%)} & \cellcolor{gray!10}{2638 (5.7\%)} & \cellcolor{gray!10}{2696 (5.8\%)} & \cellcolor{gray!10}{2718 (5.8\%)} & \cellcolor{gray!10}{2777 (6.0\%)} & \cellcolor{gray!10}{2815 (6.0\%)}\\
+\hspace{1em}Very Remote & 556 (1.2\%) & 555 (1.2\%) & 563 (1.2\%) & 543 (1.2\%) & 557 (1.2\%) & 562 (1.2\%)\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{305 (0.7\%)} & \cellcolor{gray!10}{468 (1.0\%)} & \cellcolor{gray!10}{555 (1.2\%)} & \cellcolor{gray!10}{948 (2.0\%)} & \cellcolor{gray!10}{884 (1.9\%)} & \cellcolor{gray!10}{966 (2.1\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Right Wing Authoritarianism}}\\
+\hspace{1em}Mean (SD) & 3.28 (1.15) & 3.20 (1.13) & 3.30 (1.10) & 3.36 (1.05) & 3.34 (1.06) & 3.27 (1.09)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{3.17 [1.00, 7.00]} & \cellcolor{gray!10}{3.17 [1.00, 7.00]} & \cellcolor{gray!10}{3.17 [1.00, 7.00]} & \cellcolor{gray!10}{3.33 [1.00, 7.00]} & \cellcolor{gray!10}{3.33 [1.00, 7.00]} & \cellcolor{gray!10}{3.17 [1.00, 7.00]}\\
+\hspace{1em}Missing & 6 (0.0\%) & 12386 (26.5\%) & 15148 (32.5\%) & 19695 (42.2\%) & 22833 (48.9\%) & 25237 (54.1\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Sample Frame Opt-In (binary)}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{0.0295 (0.169)} & \cellcolor{gray!10}{0.0295 (0.169)} & \cellcolor{gray!10}{0.0295 (0.169)} & \cellcolor{gray!10}{0.0295 (0.169)} & \cellcolor{gray!10}{0.0295 (0.169)} & \cellcolor{gray!10}{0.0295 (0.169)}\\
+\hspace{1em}Median [Min, Max] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, \vphantom{1} 1.00]\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Social Dominance Orientation}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{2.32 (0.962)} & \cellcolor{gray!10}{2.25 (0.951)} & \cellcolor{gray!10}{2.21 (0.944)} & \cellcolor{gray!10}{2.22 (0.943)} & \cellcolor{gray!10}{2.25 (0.956)} & \cellcolor{gray!10}{2.25 (0.961)}\\
+\hspace{1em}Median [Min, Max] & 2.17 [1.00, 7.00] & 2.17 [1.00, 7.00] & 2.00 [1.00, 7.00] & 2.17 [1.00, 7.00] & 2.17 [1.00, 7.00] & 2.17 [1.00, 7.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{1 (0.0\%)} & \cellcolor{gray!10}{12363 (26.5\%)} & \cellcolor{gray!10}{15115 (32.4\%)} & \cellcolor{gray!10}{19570 (41.9\%)} & \cellcolor{gray!10}{22787 (48.8\%)} & \cellcolor{gray!10}{25176 (53.9\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Short Form Health}}\\
+\hspace{1em}Mean (SD) & 5.04 (1.17) & 5.03 (1.16) & 5.04 (1.14) & 4.97 (1.18) & 4.87 (1.16) & 4.84 (1.17)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]}\\
+\hspace{1em}Missing & 9 (0.0\%) & 12359 (26.5\%) & 15101 (32.4\%) & 19577 (41.9\%) & 22845 (48.9\%) & 25230 (54.1\%)\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Smoker (binary)}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{0.0731 (0.260)} & \cellcolor{gray!10}{0.0577 (0.233)} & \cellcolor{gray!10}{0.0491 (0.216)} & \cellcolor{gray!10}{0.0417 (0.200)} & \cellcolor{gray!10}{0.0372 (0.189)} & \cellcolor{gray!10}{0.0341 (0.182)}\\
+\hspace{1em}Median [Min, Max] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00] & 0 [0, 1.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{1181 (2.5\%)} & \cellcolor{gray!10}{12677 (27.2\%)} & \cellcolor{gray!10}{15573 (33.4\%)} & \cellcolor{gray!10}{19729 (42.3\%)} & \cellcolor{gray!10}{22783 (48.8\%)} & \cellcolor{gray!10}{25710 (55.1\%)}\\
+\addlinespace[0.3em]
+\multicolumn{7}{l}{\textbf{Social Support (perceived)}}\\
+\hspace{1em}Mean (SD) & 5.95 (1.12) & 5.95 (1.13) & 5.94 (1.12) & 5.95 (1.15) & 5.97 (1.14) & 6.00 (1.13)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{6.33 [1.00, 7.00]} & \cellcolor{gray!10}{6.33 [1.00, 7.00]} & \cellcolor{gray!10}{6.33 [1.00, 7.00]} & \cellcolor{gray!10}{6.33 [1.00, 7.00]} & \cellcolor{gray!10}{6.33 [1.00, 7.00]} & \cellcolor{gray!10}{6.33 [1.00, 7.00]}\\
+\hspace{1em}Missing & 37 (0.1\%) & 12374 (26.5\%) & 15131 (32.4\%) & 19681 (42.2\%) & 22893 (49.1\%) & 25287 (54.2\%)\\*
+
+\end{longtable}
+
+\endgroup{}
+\endgroup{}
+
+\subsubsection{Exposure Variable: Religious
+Identification}\label{appendix-exposure}
+
+Table~\ref{tbl-sample-exposures} presents sample statistics for the
+exposure variable, religious identification, during the baseline and
+exposure waves. This variable was not measured in part of NZAVS time 12
+(years 2020-2021) and part of NZAVS time 13 (years 2021-2022). To
+address missingness, if a value was observed after NZAVS time 14, we
+carried the previous observation forward and created and NA indicator.
+If there was no future observation, the participant was treated as
+censored, and inverse probability of censoring weights were applied,
+following our standard method for handling missing observations (see
+mansucript \textbf{Method}/\textbf{Handling of Missing Data}). Here, our
+carry-forward imputation approach may result in conservative causal
+effect estimation because it introduces measurement error. However, this
+approach would not generally bias causal effect estimation away from the
+null because the measurement error is unsystematic and random and
+unrelated to the outcomes.
+
+\begingroup\fontsize{12}{14}\selectfont
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{llllll}
+
+\caption{\label{tbl-sample-exposures}Exposure descriptive statistics by
+wave.}
+
+\tabularnewline
+
+\toprule
+  & 2018 & 2019 & 2020 & 2021 & 2022\\
+\midrule
+\endfirsthead
+\multicolumn{6}{@{}l}{\textit{(continued)}}\\
+\toprule
+  & 2018 & 2019 & 2020 & 2021 & 2022\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!10}{} & \cellcolor{gray!10}{(N=46672)} & \cellcolor{gray!10}{(N=46672)} & \cellcolor{gray!10}{(N=46672)} & \cellcolor{gray!10}{(N=46672)} & \cellcolor{gray!10}{(N=46672)}\\
+\addlinespace[0.3em]
+\multicolumn{6}{l}{\textbf{Religious Identification (1-7)}}\\
+\hspace{1em}Mean (SD) & 2.37 (2.19) & 2.27 (2.15) & 2.29 (2.14) & 2.25 (2.12) & 2.28 (2.15)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{1.00 [1.00, 7.00]} & \cellcolor{gray!10}{1.00 [1.00, 7.00]} & \cellcolor{gray!10}{1.00 [1.00, 7.00]} & \cellcolor{gray!10}{1.00 [1.00, 7.00]} & \cellcolor{gray!10}{1.00 [1.00, 7.00]}\\
+\hspace{1em}Missing & 0 (0\%) & 12744 (27.3\%) & 15469 (33.1\%) & 19855 (42.5\%) & 23512 (50.4\%)\\*
+
+\end{longtable}
+
+\endgroup{}
+\endgroup{}
+
+\newpage{}
+
+\subsubsection{Outcome Variables}\label{appendix-outcomes}
+
+\begingroup\fontsize{12}{14}\selectfont
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{lll}
+
+\caption{\label{tbl-sample-outcomes}Outcome Variables at baseline (NZAVS
+time 10, years 2018-2019, and time 15, years 2023-2024).}
+
+\tabularnewline
+
+\toprule
+  & 2018 & 2023\\
+\midrule
+\endfirsthead
+\multicolumn{3}{@{}l}{\textit{(continued)}}\\
+\toprule
+  & 2018 & 2023\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+\cellcolor{gray!10}{} & \cellcolor{gray!10}{(N=46672)} & \cellcolor{gray!10}{(N=46672)}\\
+\addlinespace[0.3em]
+\multicolumn{3}{l}{\textbf{Meaning: Purpose}}\\
+\hspace{1em}Mean (SD) & 5.20 (1.42) & 5.16 (1.42)\\
+\cellcolor{gray!10}{\hspace{1em}Median [Min, Max]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]} & \cellcolor{gray!10}{5.00 [1.00, 7.00]}\\
+\hspace{1em}Missing & 1216 (2.6\%) & 26538 (56.9\%)\\
+\addlinespace[0.3em]
+\multicolumn{3}{l}{\textbf{Meaning: Sense}}\\
+\cellcolor{gray!10}{\hspace{1em}Mean (SD)} & \cellcolor{gray!10}{5.71 (1.22)} & \cellcolor{gray!10}{5.77 (1.20)}\\
+\hspace{1em}Median [Min, Max] & 6.00 [1.00, 7.00] & 6.00 [1.00, 7.00]\\
+\cellcolor{gray!10}{\hspace{1em}Missing} & \cellcolor{gray!10}{161 (0.3\%)} & \cellcolor{gray!10}{26193 (56.1\%)}\\*
+
+\end{longtable}
+
+\endgroup{}
+\endgroup{}
+
+\newpage{}
+
+\subsection{Appendix C: Confouding Control}\label{appendix-confounding}
+
+For confounding control, we employ a modified disjunctive cause
+criterion (\citeproc{ref-vanderweele2019}{VanderWeele 2019}), which
+involves:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Identifying all common causes of both the treatment and outcomes.
+\item
+  Excluding instrumental variables that affect the exposure but not the
+  outcome.
+\item
+  Including proxies for unmeasured confounders affecting both exposure
+  and outcome.
+\item
+  Controlling for baseline exposure and baseline outcome, serving as
+  proxies for unmeasured common causes
+  (\citeproc{ref-vanderweele2020}{VanderWeele \emph{et al.} 2020}).
+\end{enumerate}
+
+Additionally, we control for time-varying confounders at each exposure
+wave (\citeproc{ref-bulbulia2024swigstime}{Bulbulia 2024b};
+\citeproc{ref-richardson2013}{Richardson and Robins 2013};
+\citeproc{ref-robins2008estimation}{Robins and Hernan 2008}).
+
+The covariates included for confounding control are described in Rosa
+\emph{et al.} (\citeproc{ref-pedro_2024effects}{2024}).
+
+Where there are multiple exposures, causal inference may be threatened
+by time-varying confounding
+(\citeproc{ref-bulbulia2024swigstime}{Bulbulia 2024b}).
+
+\newpage{}
+
+\subsection{Appendix D: Causal Contrasts and Causal
+Assumptions}\label{appendix-assumptions}
+
+\subsubsection{Notation}\label{notation}
+
+\begin{itemize}
+\tightlist
+\item
+  \(A_k\): Observed religious identification at Wave \(k\), for
+  \(k = 1, \dots, 4\).\\
+\item
+  \(Y_\tau\): Outcome measured at the end of the study (Wave 5).\\
+\item
+  \(W_0\): Confounders measured at baseline (Wave 0).\\
+\item
+  \(L_k\): Time-varying confounders measured at Wave \(k\) (for
+  \(k = 1, \dots, 4\)).
+\end{itemize}
+
+\subsubsection{Shift Functions}\label{shift-functions}
+
+Let \(\boldsymbol{\text{d}}(a_k)^+\) represent the \textbf{regular
+attendance} treatment sequence and \(\boldsymbol{\text{d}}(a_k)^-\) the
+\textbf{no attendance} treatment sequence, where the interventions
+occure at each wave \(k = 1\dots 4; k\in \{0\dots 5\}\). Formally:
+
+\paragraph{\texorpdfstring{Steady Religious
+\(\bigl(\boldsymbol{\text{d}}(a_k^+)\bigr)\)}{Steady Religious \textbackslash bigl(\textbackslash boldsymbol\{\textbackslash text\{d\}\}(a\_k\^{}+)\textbackslash bigr)}}\label{steady-religious-biglboldsymboltextda_kbigr}
+
+\[
+\boldsymbol{\text{d}} (a_k^+) 
+\;=\; 
+\begin{cases}
+7, & \text{if } 7 < 4,\\[6pt]
+A_k, & \text{otherwise.}
+\end{cases}
+\]
+
+\paragraph{\texorpdfstring{Steady Secular
+\(\bigl(\boldsymbol{\text{d}}(a_k^-)\bigr)\)}{Steady Secular \textbackslash bigl(\textbackslash boldsymbol\{\textbackslash text\{d\}\}(a\_k\^{}-)\textbackslash bigr)}}\label{steady-secular-biglboldsymboltextda_k-bigr}
+
+\[
+\boldsymbol{\text{d}}(a_k^-) 
+\;=\; 
+\begin{cases}
+1, & \text{if } A_k > 1,\\[6pt]
+A_k, & \text{otherwise.}
+\end{cases}
+\]
+
+Here, \(A_k\) is the observed attendance at Wave \(k\). The shift
+function \(\boldsymbol{\text{d}}\) ``nudges'' \(A_k\) to a target level
+(four times per month or zero) only if the current value is below (for
+regular attendance) or above (for no attendance) that target. Across the
+four waves, these shifts form a sequence
+\(\boldsymbol{\bar{\boldsymbol{\text{d}}}}\), which defines a complete
+intervention regime.
+
+\subsubsection{Dones}\label{dones}
+
+\[
+\boldsymbol{\text{d}}(a_k^{+/-})  \;=\; \begin{cases} 
+7, & \text{if } k \in \{1, 2\} \text{ and } A_k < 4,\\[6pt] 
+1, & \text{if } k \in \{3, 4\} \text{ and } A_k > 1,\\[6pt] 
+A_k, & \text{otherwise.} 
+\end{cases}
+\]
+
+This policy:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Applies the steady religious (nudging up to 7) during waves 1 and 2.
+\item
+  Applies the steady secular rule (nudging down to 1) during waves 3 and
+  4.
+\end{enumerate}
+
+\subsubsection{Causal Contrast}\label{causal-contrast}
+
+We focus on primarily on two causal contrasts. The difference between
+de-identification and steady religion:
+
+\[
+\text{ATE}^{\text{done}} 
+\;=\; 
+\mathbb{E}
+\Bigl[
+  Y_\tau\!\bigl(\boldsymbol{\text{d}}(a^+)\bigr) 
+  \;-\; 
+  Y_\tau\!\bigl(\boldsymbol{\text{d}}(a^{+/-})\bigr)|W_0, L_k
+\Bigr].
+\]
+
+and the difference between de-identification and steady secular:
+
+\[
+\text{ATE}^{\text{residue}} 
+\;=\; 
+\mathbb{E}
+\Bigl[
+  Y_\tau\!\bigl(\boldsymbol{\text{d}}(a^-)\bigr) 
+  \;-\; 
+  Y_\tau\!\bigl(\boldsymbol{\text{d}}(a^{+/-})\bigr)|W_0, L_k
+\Bigr].
+\]
+
+\subsubsection{Assumptions}\label{assumptions}
+
+To estimate this effect from observational data, we assume:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Conditional Exchangeability:} Once we condition on \(W_0\) and
+  each \(L_k\), the interventions
+  \(\boldsymbol{\bar{\boldsymbol{\text{d}}}}(a^+)\) or
+  \(\boldsymbol{\bar{\boldsymbol{\text{d}}}}(a^-)\) are effectively
+  random with respect to potential outcomes.
+\item
+  \textbf{Consistency:} The potential outcome under a given regime
+  matches the observed outcome when that regime is followed.
+\item
+  \textbf{Positivity:} Everyone has a non-zero probability of receiving
+  each level of attendance (i.e., a chance to be ``shifted'' up or down)
+  given their covariates. The positivity assumption is the only causal
+  assumption that can be evaluated with data. We evaluate this
+  assumption in \hyperref[appendix-transition]{Appendix E}).
+\end{enumerate}
+
+Mathematically, for conditional exchangeability, we write:
+
+\[
+\Bigl\{
+  Y\bigl(\boldsymbol{\text{d}}(a^+)\bigr), 
+  \; 
+  Y\bigl(\boldsymbol{\text{d}}(a^-)\bigr), 
+  \; 
+  Y\bigl(\boldsymbol{\text{d}}(a^{+/-})\bigr)
+\Bigr\}
+\coprod
+A_k |
+W_0,
+L_k
+\]
+
+That is, we assume the potential outcomes under each treatment regime
+are independent of each treatment at every time point, conditional on
+baseline confounders and time-varying confounders.
+
+Under these assumptions, our statistical models permit us to estimate
+\(\text{ATE}^{\text{done}}\) and e \(\text{ATE}^{\text{residue}}\) from
+observational data. We define the target population as the New Zealand
+Population from 2019-2024, the years in which measurements were taken,
+had no one been censored/lost to follow up.
+
+\newpage{}
+
+\subsection{Appendix E: Transition Matrix to Check The Positivity
+Assumption}\label{appendix-transition}
+
+These transition matrices capture shifts in states between consecutive
+waves. Each cell represents the count of individuals transitioning from
+one state to another. The rows correspond to the initial state (From),
+and the columns correspond to the subsequent state (To).
+\textbf{Diagonal entries} (in \textbf{bold}) correspond to individuals
+who remained in the same state. \textbf{Off-diagonal entries} correspond
+to individuals who transitioned to a different state.
+
+A higher number on the diagonal relative to off-diagonal entries
+indicates greater stability in a state. Conversely, higher off-diagonal
+numbers suggest more frequent shifts between states.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1389}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.0833}}@{}}
+
+\caption{\label{tbl-transition-wave2018-wave2019}Transition Matrix From
+Wave 2018 to Wave 2019}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+From / To
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 6
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 7
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Total
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+State 1 & 21923 & 328 & 147 & 251 & 165 & 92 & 104 & 23010 \\
+State 2 & 632 & 372 & 112 & 167 & 62 & 13 & 5 & 1363 \\
+State 3 & 287 & 169 & 149 & 190 & 84 & 13 & 4 & 896 \\
+State 4 & 353 & 140 & 164 & 478 & 299 & 80 & 42 & 1556 \\
+State 5 & 250 & 71 & 104 & 360 & 727 & 322 & 113 & 1947 \\
+State 6 & 111 & 13 & 28 & 104 & 351 & 656 & 389 & 1652 \\
+State 7 & 111 & 5 & 4 & 38 & 114 & 460 & 2772 & 3504 \\
+
+\end{longtable}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1389}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.0833}}@{}}
+
+\caption{\label{tbl-transition-wave2019-wave2020}Transition Matrix From
+Wave 2019 to Wave 2020}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+From / To
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 6
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 7
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Total
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+State 1 & 17854 & 299 & 181 & 314 & 200 & 86 & 101 & 19035 \\
+State 2 & 375 & 223 & 132 & 125 & 40 & 5 & 5 & 905 \\
+State 3 & 156 & 91 & 100 & 120 & 74 & 17 & 6 & 564 \\
+State 4 & 248 & 124 & 134 & 366 & 276 & 78 & 21 & 1247 \\
+State 5 & 145 & 40 & 82 & 252 & 554 & 267 & 73 & 1413 \\
+State 6 & 84 & 11 & 25 & 60 & 271 & 543 & 297 & 1291 \\
+State 7 & 86 & 3 & 11 & 29 & 93 & 377 & 2099 & 2698 \\
+
+\end{longtable}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1389}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.0833}}@{}}
+
+\caption{\label{tbl-transition-wave2020-wave2021}Transition Matrix From
+Wave 2020 to Wave 2021}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+From / To
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 6
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 7
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Total
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+State 1 & 15718 & 236 & 99 & 182 & 124 & 47 & 52 & 16458 \\
+State 2 & 285 & 188 & 94 & 74 & 33 & 8 & 6 & 688 \\
+State 3 & 164 & 82 & 137 & 141 & 58 & 12 & 5 & 599 \\
+State 4 & 238 & 84 & 154 & 358 & 214 & 51 & 16 & 1115 \\
+State 5 & 139 & 34 & 72 & 246 & 564 & 195 & 59 & 1309 \\
+State 6 & 68 & 6 & 10 & 48 & 270 & 521 & 250 & 1173 \\
+State 7 & 80 & 2 & 4 & 24 & 65 & 298 & 1816 & 2289 \\
+
+\end{longtable}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1389}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.0833}}@{}}
+
+\caption{\label{tbl-transition-wave2021-wave2022}Transition Matrix From
+Wave 2021 to Wave 2022}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+From / To
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 4
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 6
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+State 7
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Total
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+State 1 & 12386 & 258 & 98 & 203 & 104 & 68 & 80 & 13197 \\
+State 2 & 206 & 152 & 65 & 62 & 37 & 11 & 3 & 536 \\
+State 3 & 115 & 98 & 70 & 96 & 50 & 11 & 0 & 440 \\
+State 4 & 177 & 87 & 107 & 245 & 171 & 46 & 25 & 858 \\
+State 5 & 119 & 35 & 67 & 217 & 372 & 217 & 80 & 1107 \\
+State 6 & 49 & 5 & 4 & 38 & 180 & 376 & 246 & 898 \\
+State 7 & 52 & 3 & 2 & 20 & 42 & 166 & 1497 & 1782 \\
+
+\end{longtable}
+
+\newpage{}
+
+\subsection*{References}\label{references}
+\addcontentsline{toc}{subsection}{References}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-atkinson2019}
+Atkinson, J, Salmond, C, and Crampton, P (2019) \emph{NZDep2018 index of
+deprivation, user{'}s manual.}, Wellington.
+
+\bibitem[\citeproctext]{ref-margot2024}
+Bulbulia, JA (2024a) \emph{Margot: MARGinal observational
+treatment-effects}.
+doi:\href{https://doi.org/10.5281/zenodo.10907724}{10.5281/zenodo.10907724}.
+
+\bibitem[\citeproctext]{ref-bulbulia2024swigstime}
+Bulbulia, JA (2024b) Methods in causal inference part 2: Interaction,
+mediation, and time-varying treatments. \emph{Evolutionary Human
+Sciences}, \textbf{6}, e41.
+doi:\href{https://doi.org/10.1017/ehs.2024.32}{10.1017/ehs.2024.32}.
+
+\bibitem[\citeproctext]{ref-xgboost2023}
+Chen, T, He, T, Benesty, M, \ldots{} Yuan, J (2023) \emph{Xgboost:
+Extreme gradient boosting}. Retrieved from
+\url{https://CRAN.R-project.org/package=xgboost}
+
+\bibitem[\citeproctext]{ref-cutrona1987}
+Cutrona, CE, and Russell, DW (1987) The provisions of social
+relationships and adaptation to stress. \emph{Advances in Personal
+Relationships}, \textbf{1}, 37--67.
+
+\bibitem[\citeproctext]{ref-duxedaz2021}
+Díaz, I, Williams, N, Hoffman, KL, and Schenck, EJ (2021) Non-parametric
+causal effects based on longitudinal modified treatment policies.
+\emph{Journal of the American Statistical Association}.
+doi:\href{https://doi.org/10.1080/01621459.2021.1955691}{10.1080/01621459.2021.1955691}.
+
+\bibitem[\citeproctext]{ref-diaz2023lmtp}
+Díaz, I, Williams, N, Hoffman, KL, and Schenck, EJ (2023) Nonparametric
+causal effects based on longitudinal modified treatment policies.
+\emph{Journal of the American Statistical Association},
+\textbf{118}(542), 846--857.
+doi:\href{https://doi.org/10.1080/01621459.2021.1955691}{10.1080/01621459.2021.1955691}.
+
+\bibitem[\citeproctext]{ref-fahy2017}
+Fahy, KM, Lee, A, and Milne, BJ (2017) \emph{{N}ew {Z}ealand
+socio-economic index 2013}, Wellington, New Zealand: Statistics New
+Zealand-Tatauranga Aotearoa.
+
+\bibitem[\citeproctext]{ref-fraser_coding_2020}
+Fraser, G, Bulbulia, J, Greaves, LM, Wilson, MS, and Sibley, CG (2020)
+Coding responses to an open-ended gender measure in a {N}ew {Z}ealand
+national sample. \emph{The Journal of Sex Research}, \textbf{57}(8),
+979--986.
+doi:\href{https://doi.org/10.1080/00224499.2019.1687640}{10.1080/00224499.2019.1687640}.
+
+\bibitem[\citeproctext]{ref-greaves2017diversity}
+Greaves, LM, Barlow, FK, Lee, CH, et al.others (2017) The diversity and
+prevalence of sexual orientation self-labels in a {N}ew {Z}ealand
+national sample. \emph{Archives of Sexual Behavior}, \textbf{46},
+1325--1336.
+
+\bibitem[\citeproctext]{ref-hagerty1995}
+Hagerty, BMK, and Patusky, K (1995) Developing a Measure Of Sense of
+Belonging: \emph{Nursing Research}, \textbf{44}(1), 9--13.
+doi:\href{https://doi.org/10.1097/00006199-199501000-00003}{10.1097/00006199-199501000-00003}.
+
+\bibitem[\citeproctext]{ref-Ministry_of_Health_2013}
+Health, Ministry of (2013) \emph{The {N}ew {Z}ealand {H}ealth {S}urvey:
+Content guide 2012-2013}, Princeton University Press.
+
+\bibitem[\citeproctext]{ref-hoffman2023}
+Hoffman, KL, Salazar-Barreto, D, Rudolph, KE, and Díaz, I (2023)
+Introducing longitudinal modified treatment policies: A unified
+framework for studying complex exposures.
+doi:\href{https://doi.org/10.48550/arXiv.2304.09460}{10.48550/arXiv.2304.09460}.
+
+\bibitem[\citeproctext]{ref-hoffman2022}
+Hoffman, KL, Schenck, EJ, Satlin, MJ, \ldots{} Díaz, I (2022) Comparison
+of a target trial emulation framework vs cox regression to estimate the
+association of corticosteroids with COVID-19 mortality. \emph{JAMA
+Network Open}, \textbf{5}(10), e2234425.
+doi:\href{https://doi.org/10.1001/jamanetworkopen.2022.34425}{10.1001/jamanetworkopen.2022.34425}.
+
+\bibitem[\citeproctext]{ref-instrument1992mos}
+Instrument Ware Jr, J, and Sherbourne, C (1992) The MOS 36-item
+short-form health survey (SF-36): I. Conceptual framework and item
+selection. \emph{Medical Care}, \textbf{30}(6), 473--483.
+
+\bibitem[\citeproctext]{ref-jost_end_2006-1}
+Jost, JT (2006) The end of the end of ideology. \emph{American
+Psychologist}, \textbf{61}(7), 651--670.
+doi:\href{https://doi.org/10.1037/0003-066X.61.7.651}{10.1037/0003-066X.61.7.651}.
+
+\bibitem[\citeproctext]{ref-kessler2002}
+Kessler, R~C, Andrews, G, Colpe, L~J, \ldots{} Zaslavsky, A~M (2002)
+Short screening scales to monitor population prevalences and trends in
+non-specific psychological distress. \emph{Psychological Medicine},
+\textbf{32}(6), 959--976.
+doi:\href{https://doi.org/10.1017/S0033291702006074}{10.1017/S0033291702006074}.
+
+\bibitem[\citeproctext]{ref-linden2020EVALUE}
+Linden, A, Mathur, MB, and VanderWeele, TJ (2020) Conducting sensitivity
+analysis for unmeasured confounding in observational studies using
+e-values: The evalue package. \emph{The Stata Journal}, \textbf{20}(1),
+162--175.
+
+\bibitem[\citeproctext]{ref-polley2023}
+Polley, E, LeDell, E, Kennedy, C, and Laan, M van der (2023a)
+\emph{SuperLearner: Super learner prediction}. Retrieved from
+\url{https://CRAN.R-project.org/package=SuperLearner}
+
+\bibitem[\citeproctext]{ref-SuperLearner2023}
+Polley, E, LeDell, E, Kennedy, C, and van der Laan, M (2023b)
+\emph{SuperLearner: Super learner prediction}. Retrieved from
+\url{https://github.com/ecpolley/SuperLearner}
+
+\bibitem[\citeproctext]{ref-richardson2013}
+Richardson, TS, and Robins, JM (2013) Single world intervention graphs:
+A primer. In, Citeseer. Retrieved from
+\url{https://core.ac.uk/display/102673558}
+
+\bibitem[\citeproctext]{ref-robins2008estimation}
+Robins, J, and Hernan, M (2008) Estimation of the causal effects of
+time-varying exposures. \emph{Chapman \& Hall/CRC Handbooks of Modern
+Statistical Methods}, 553--599.
+
+\bibitem[\citeproctext]{ref-pedro_2024effects}
+Rosa, PA de la, Cowden, RG, Bulbulia, JA, Sibley, CG, and VanderWeele,
+TJ (2024) Effects of screen-based leisure time on 24 subsequent health
+and wellbeing outcomes: A longitudinal outcome-wide analysis.
+\emph{International Journal of Behavioral Medicine}, 1--20.
+doi:\url{https://doi.org/10.1007/s12529-024-10307-0}.
+
+\bibitem[\citeproctext]{ref-sibley2021}
+Sibley, CG (2021)
+\emph{\href{https://doi.org/10.31234/osf.io/wgqvy}{Sampling procedure
+and sample details for the {N}ew {Z}ealand {A}ttitudes and {V}alues
+{S}tudy}}.
+
+\bibitem[\citeproctext]{ref-sibley2020}
+Sibley, CG, Afzali, MU, Satherley, N, \ldots{} others (2020) Prejudice
+toward muslims in {N}ew {Z}ealand: Insights from the {N}ew {Z}ealand
+{A}ttitudes and {V}alues {S}tudy. \emph{New Zealand Journal of
+Psychology}, \textbf{49}(1).
+
+\bibitem[\citeproctext]{ref-sibley2011}
+Sibley, CG, Luyten, N, Purnomo, M, \ldots{} Robertson, A (2011) The
+Mini-IPIP6: Validation and extension of a short measure of the Big-Six
+factors of personality in {N}ew {Z}ealand. \emph{New Zealand Journal of
+Psychology}, \textbf{40}(3), 142--159.
+
+\bibitem[\citeproctext]{ref-steger_meaning_2006}
+Steger, MF, Frazier, P, Oishi, S, and Kaler, M (2006) The meaning in
+life questionnaire: Assessing the presence of and search for meaning in
+life. \emph{Journal of Counseling Psychology}, \textbf{53}(1), 80--93.
+doi:\href{https://doi.org/10.1037/0022-0167.53.1.80}{10.1037/0022-0167.53.1.80}.
+
+\bibitem[\citeproctext]{ref-vanbuuren2018}
+Van Buuren, S (2018) \emph{Flexible imputation of missing data}, CRC
+press.
+
+\bibitem[\citeproctext]{ref-vanderweele2019}
+VanderWeele, TJ (2019) Principles of confounder selection.
+\emph{European Journal of Epidemiology}, \textbf{34}(3), 211--219.
+
+\bibitem[\citeproctext]{ref-vanderweele2017}
+VanderWeele, TJ, and Ding, P (2017) Sensitivity analysis in
+observational research: Introducing the {E}-value. \emph{Annals of
+Internal Medicine}, \textbf{167}(4), 268--274.
+doi:\href{https://doi.org/10.7326/M16-2607}{10.7326/M16-2607}.
+
+\bibitem[\citeproctext]{ref-vanderweele2020}
+VanderWeele, TJ, Mathur, MB, and Chen, Y (2020) Outcome-wide
+longitudinal designs for causal inference: A new template for empirical
+studies. \emph{Statistical Science}, \textbf{35}(3), 437--466.
+
+\bibitem[\citeproctext]{ref-verbrugge1997}
+Verbrugge, LM (1997) A global disability indicator. \emph{Journal of
+Aging Studies}, \textbf{11}(4), 337--362.
+doi:\href{https://doi.org/10.1016/S0890-4065(97)90026-8}{10.1016/S0890-4065(97)90026-8}.
+
+\bibitem[\citeproctext]{ref-whitehead2023unmasking}
+Whitehead, J, Davie, G, Graaf, B de, \ldots{} Nixon, G (2023) Unmasking
+hidden disparities: A comparative observational study examining the
+impact of different rurality classifications for health research in
+aotearoa new zealand. \emph{BMJ Open}, \textbf{13}(4), e067927.
+
+\bibitem[\citeproctext]{ref-williams2021}
+Williams, NT, and Díaz, I (2021) \emph{{l}mtp: Non-parametric causal
+effects of feasible interventions based on modified treatment policies}.
+doi:\href{https://doi.org/10.5281/zenodo.3874931}{10.5281/zenodo.3874931}.
+
+\bibitem[\citeproctext]{ref-Ranger2017}
+Wright, MN, and Ziegler, A (2017) {ranger}: A fast implementation of
+random forests for high dimensional data in {C++} and {R}. \emph{Journal
+of Statistical Software}, \textbf{77}(1), 1--17.
+doi:\href{https://doi.org/10.18637/jss.v077.i01}{10.18637/jss.v077.i01}.
+
+\bibitem[\citeproctext]{ref-zhang2023shouldMultipleImputation}
+Zhang, J, Dashti, SG, Carlin, JB, Lee, KJ, and Moreno-Betancur, M (2023)
+Should multiple imputation be stratified by exposure group when
+estimating causal effects via outcome regression in observational
+studies? \emph{BMC Medical Research Methodology}, \textbf{23}(1), 42.
+
+\end{CSLReferences}
+
+
+
+
+\end{document}

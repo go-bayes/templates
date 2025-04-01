@@ -366,7 +366,7 @@ Taken together, this multi-stage approach first identifies individualised treatm
 
 methods_db <- boilerplate_manage_text(
   category = "methods",
-  action = "add",
+  action = "update",
   name = "approach.grf_cate_long",
   value = general_approach_cate_long,
   db = methods_db
@@ -374,7 +374,7 @@ methods_db <- boilerplate_manage_text(
 
 methods_db <- boilerplate_manage_text(
   category = "methods",
-  action = "add",
+  action = "update",
   name = "approach.grf_cate_short",
   value = general_approach_cate_short,
   db = methods_db
@@ -384,9 +384,9 @@ cat(methods_db$approach$grf_cate_short)
 
 results_ominibus_test_conclusion <-  "The omnibus test did not provide statistically significant evidence for overall treatment effect heterogeneity based on the examined covariates [@grf2024]. This suggests that, across all individuals and covariates considered, the model did not reliably detect variation beyond chance according to this specific test. However, omnibus tests can lack power for detecting subtle or localised heterogeneity. Therefore, we examined more specific indicators of potential targeting benefits and subgroup differences."
 
-results_rate_qini_intro <- "To assess the potential practical value of tailoring treatment based on individual predictions, we examined the Rank-Weighted Average Treatment Effect (RATE) and Qini curves [@grf2024; @wager2018]. These predictions are estimates (denoted $\\hat{\\tau}(X_i)$) of the underlying conditional average treatment effect (CATE, $\\tau(X_i)$), which represents the average treatment effect for individuals with specific baseline covariates $X_i$. Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects ($\\hat{\\tau}(X_i)$) always indicate greater benefit from treatment. RATE and Qini curves evaluate how well a strategy of prioritising treatment using these CATE predictions $\\hat{\\tau}(X_i)$ performs compared to simpler approaches (e.g., uniform treatment based on the overall average effect, ATE). Specifically, RATE estimates the average gain achieved among the group prioritised by the model [@wager2018]. Qini curves dynamically visualise this potential gain: they plot the cumulative benefit realised as we hypothetically treat an increasing proportion of the population, starting with those individuals having the highest predicted effects $\\hat{\\tau}(X_i)$ [@grf2024]."
+results_rate_qini_intro <- "To assess the potential practical value of tailoring treatment based on individual predictions, we examined the Rank-Weighted Average Treatment Effect (RATE) and Qini curves [@grf2024; @wager2018]. These predictions are estimates (denoted $\hat{\tau}(X_i)$) of the underlying conditional average treatment effect (CATE, $\tau(X_i)$), which represents the average treatment effect for individuals with specific baseline covariates $X_i$. Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects ($\hat{\tau}(X_i)$) always indicate greater benefit from treatment. RATE and Qini curves evaluate how well a strategy of prioritising treatment using these CATE predictions $\hat{\tau}(X_i)$ performs compared to simpler approaches (e.g., uniform treatment based on the overall average effect, ATE). Specifically, RATE estimates the average gain achieved among the group prioritised by the model [@wager2018]. Qini curves dynamically visualise this potential gain: they plot the cumulative benefit realised as we hypothetically treat an increasing proportion of the population, starting with those individuals having the highest predicted effects $\hat{\tau}(X_i)$ [@grf2024]."
 
-results_policy_tree_intro <- "Finally, to identify potentially actionable insights and specific subgroups with distinct responses, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. This method seeks simple, interpretable rules (based on participant characteristics) that optimise treatment allocation based on estimated treatment effects ($\\hat{\\tau}(X_i)$). Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects always indicate greater benefit. Policy trees can be particularly informative for uncovering localised heterogeneity, such as identifying small but well-defined subgroups who might experience substantially different treatment effects, even when overall variation is modest."
+results_policy_tree_intro <- "Finally, to identify potentially actionable insights and specific subgroups with distinct responses, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. This method seeks simple, interpretable rules (based on participant characteristics) that optimise treatment allocation based on estimated treatment effects ($\hat{\tau}(X_i)$). Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects always indicate greater benefit. Policy trees can be particularly informative for uncovering localised heterogeneity, such as identifying small but well-defined subgroups who might experience substantially different treatment effects, even when overall variation is modest."
 
 methods_db <- boilerplate_manage_text(
   category = "results",
@@ -406,7 +406,7 @@ methods_db <- boilerplate_manage_text(
 
 methods_db <- boilerplate_manage_text(
   category = "results",
-  action = "add",
+  action = "update",
   name = "results.policy_tree_intro",
   value = results_policy_tree_intro,
   db = methods_db
@@ -415,6 +415,91 @@ methods_db <- boilerplate_manage_text(
 
 # save
 margot::here_save(methods_db, "methods_db", methods_path)
+
+
+
+# Discussion --------------------------------------------------------------
+
+# Draft text for Strengths and Limitations Discussion Protocol
+
+cate_strengths_limitations_text_long <- "
+Our approach to estimating Conditional Average Treatment Effects (CATEs, $\\tau(x)$) leverages several methodological strengths while also requiring careful consideration of underlying assumptions for interpretation.
+
+**Strengths:**
+
+
+**Flexible Non-parametric Estimation:** we utilise causal forests [@grf2024] for flexible, non-parametric estimation of CATEs ($\\tau(x)$). This avoids potentially restrictive linearity or additivity assumptions common in traditional regression models, can capture complex interactions among covariates ($X$) that modify treatment effects, and is well-suited to datasets with numerous potential moderators.
+
+**Robust Evaluation Framework:** we employ a rigorous evaluation protocol using 50/50 sample splitting. This provides an honest assessment of the model's performance on unseen data and guards against overfitting, where apparent heterogeneity in training data might not generalise.
+
+**Assessment of Heterogeneity Reliability and Value:** we directly test the reliability of *predicted* CATE variation ($\\hat{\tau}(x)$) using calibration checks and the differential prediction test [@grf2024]. Furthermore, we quantify the potential overall value of targeting using the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018], which measures the average gain expected from prioritising treatment based on $\\hat{\tau}(x)$ compared to uniform allocation.
+
+**Visualisation of Targeting Benefit (Qini Curves):** we generate Qini curves [@grf2024] to visualise the cumulative gain achieved by prioritising treatment based on predicted CATEs ($\\hat{\tau}(x)$). This analysis complements RATE by graphically illustrating *how* the benefit accrues as progressively larger proportions of the sample are treated according to the model's ranking. It helps identify the potential scale and efficiency of a targeted strategy, showing for which fraction of the population personalisation appears most advantageous compared to uniform allocation strategies.
+
+**Derivation of Actionable Rules (Policy Trees):**  we employ policy trees to derive action rules [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. These translate potentially complex, individual-level CATE estimates ($\\hat{\tau}(x)$) into simple, interpretable decision rules based on key baseline characteristics. This facilitates the identification of specific, well-defined subgroups predicted to have distinct treatment responses, thereby yielding potentially actionable and transparent guidelines for tailoring interventions in practice.
+
+**Limitations and Interpretive Considerations:**
+
+**Reliance on Unconfoundedness:** the primary limitation is that the causal validity of the estimated CATEs ($\\hat{\tau}(x)$) hinges critically on the assumption of unconfoundedness given the included baseline covariates ($X$). We must assume that $X$ adequately captures all common causes of treatment assignment and potential outcomes. While we conduct sensitivity analyses [See Section X.X on Sensitivity Analysis, e.g., using E-values @vanderweele2017] to assess robustness to potential *unmeasured* confounders, residual bias impacting CATE estimates remains possible.
+
+**Sensitivity to Covariate Selection:**  when interpreting policy trees, we assume that covariates $X$ do not introduce bias, for instance, through conditioning on colliders. Careful selection of pre-treatment covariates based on domain knowledge is essential (refer to {{appendix_effect_modification}}).
+
+**Interpretation of Qini Curves and RATE:** positive Qini curves and RATE values indicate that the model successfully ranks individuals based on *predicted* benefit ($\\hat{\tau}(x)$$) in the held-out sample, leading to better average outcomes for prioritised groups *under the model's assumptions*. However, the *magnitude* of the benefit shown by the Qini curve and the RATE estimate directly reflects the performance of potentially biased $\\hat{\tau}(x)$$ estimates if either causal assumptions are violated or statistical models introduce bias. We evaluate the utility of the *estimated* CATEs, not necessarily the utility achievable with the *true* CATEs.
+
+**Interpretation of Policy Trees:** Similarly, policy trees derive optimal allocation rules based on the *estimated* CATEs ($\\hat{\tau}(x)$). If $\\hat{\tau}(x)$$ is biased due to unmeasured confounding or collider bias, the derived subgroups and treatment rules may not be truly optimal for maximising population outcomes based on the true underlying effects. The policy tree evaluation reflects the performance of rules derived from potentially imperfect CATE estimates.
+
+**Conditionality of Estimates:** CATE estimates ($\\hat{\tau}(x)$$) are inherently conditional on the full vector of covariates $X=x$. When interpreting modification by a specific variable within $X$, remember this occurs while holding all other included covariates constant.
+
+In summary, our approach employs advanced methods for estimating and validating treatment effect heterogeneity. However, the translation of these statistical findings into causal claims about the benefits of personalised treatment relies fundamentally on the plausibility of the unconfoundedness assumption given the measured covariates and the careful exclusion of bias-inducing variables. In some cases, these twin objectives will be in tension; controlling for a variable necessary for unconfoundedness of the treatment will biase conditional effect estimates (refer to @vanderweele2007FOURTYPESOFEFFECT; @vanderweele2012, see {{appendix_effect_modification}})."
+
+# Example of adding to a hypothetical boilerplate database (using your function structure)
+# Assuming 'methods_db' exists and 'boilerplate_manage_text' is defined
+
+methods_db <- boilerplate_manage_text(
+  category = "discussion", #
+  action = "add",
+  name = "cate_estimation_strengths_limitations.long",
+  value = cate_strengths_limitations_text_long,
+  db = methods_db
+)
+
+# head(methods_db) #
+
+
+
+# Draft text for Strengths and Limitations Discussion Protocol
+
+cate_strengths_limitations_text_short <- "
+Our approach to estimating Conditional Average Treatment Effects (CATEs, $\\tau(x)$) leverages several methodological strengths while also requiring careful consideration of underlying assumptions for interpretation.
+
+**Strengths:**
+
+**Flexible Non-parametric Estimation:** we utilise causal forests [@grf2024] for flexible, non-parametric estimation of CATEs ($\\tau(x)$). This avoids potentially restrictive linearity or additivity assumptions common in traditional regression models, can capture complex interactions among covariates ($X$) that modify treatment effects, and is well-suited to datasets with numerous potential moderators.
+
+**Robust Evaluation Framework:** we employ a rigorous evaluation protocol using 50/50 sample splitting. This provides an honest assessment of the model's performance on unseen data and guards against overfitting, where apparent heterogeneity in training data might not generalise.
+
+**Assessment of Heterogeneity Reliability and Value:** we directly test the reliability of *predicted* CATE variation ($\\hat{\\tau}{(x)}$) using calibration checks and the differential prediction test [@grf2024]. Furthermore, we quantify the potential overall value of targeting using the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018], which measures the average gain expected from prioritising treatment based on $\\hat{\\tau}{(x)}$ compared to uniform allocation.
+"
+
+# Example of adding to a hypothetical boilerplate database (using your function structure)
+methods_db <- boilerplate_manage_text(
+  category = "discussion", # Or "methods_limitations"
+  action = "update",
+  name = "cate_estimation_strengths_limitations.long",
+  value = cate_strengths_limitations_text,
+  db = methods_db
+)
+
+methods_db <- boilerplate_manage_text(
+  category = "discussion", # Or "methods_limitations"
+  action = "update",
+  name = "cate_estimation_strengths_limitations.short",
+  value = cate_strengths_limitations_text_short,
+  db = methods_db
+)
+
+# head(methods_db) # To check
+# head(methods_db)
 
 
 # ------------------------------------------------------
@@ -704,13 +789,13 @@ writeLines(complete_methods, "methods_section_complete.qmd")
 # first, get the current database
 
 # add a new custom text entry
-new_text <- "In our analysis of {{exposure_var}}, we apply a novel sensitivity analysis approach based on the E-value framework developed by @vanderweele2017. This allows us to quantify the minimum strength of association that an unmeasured confounder would need to have with both the exposure and the outcome to explain away the observed effect. For our primary outcome of {{primary_outcome}}, we calculate E-values for both the point estimate and the lower bound of the {{confidence_level}}% confidence interval."
+sensitivity_text <- "In our analysis of {{exposure_var}}, we apply a novel sensitivity analysis approach based on the E-value framework developed by @vanderweele2017. This allows us to quantify the minimum strength of association that an unmeasured confounder would need to have with both the exposure and the outcome to explain away the observed effect. For our primary outcome of {{primary_outcome}}, we calculate E-values for both the point estimate and the lower bound of the {{confidence_level}}% confidence interval."
 
 methods_db <- boilerplate_manage_text(
   category = "methods",
   action = "add",
   name = "sensitivity_analysis.evalue",
-  value = new_text,
+  value = sensitivity_text,
   db = methods_db
 )
 
