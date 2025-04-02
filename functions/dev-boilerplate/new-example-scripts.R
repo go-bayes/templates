@@ -656,11 +656,160 @@ margot::here_save(methods_db, "methods_db", methods_path)
 # }
 
 
+# 3. Define study parameters
+study_params <- list(
+  exposure_var = "perfectionism",
+  population = "university students",
+  timeframe = "2020-2021",
+  sampling_method = "convenience",
+  effect_size = "0.35",
+  confidence_interval = "95% CI: 0.21, 0.49",
+  interpretation = "a moderate positive effect"
+)
+
+# 4. Generate methods text for participant selection
+methods_text <- boilerplate_generate_text(
+  category = "methods",
+  sections = c(
+    "sample.default",
+    "identification_assumptions.standard",
+    "confounding_control.vanderweele",
+    "statistical_estimator.lmtp.short",
+    "missing_data.lmtp_time_vary",
+    "approach.grf_cate_short"
+  ),
+  global_vars = list(
+    exposure_var = "Political Conservativism",
+    n_total = 47000,
+    flipped_list = c("Anxiety", "Depression", "Fatigue", "Perfectionism"),
+    appendices_sample = "A",
+    appendix_outcomes = "B",
+    baseline_wave = "NZAVS time 10, years 2018-2019",
+    exposure_wave = "NZAVS time 11, years 2019-2020",
+    outcome_wave = "NZAVS time 12, years 2020-2021",
+    appendix_ref = "C",
+    protocol_url = "https://osf.io/ce4t9/"
+  ),
+  db = methods_db
+)
+
+cat(methods_text)
+
+
+# 5. Generate measures text using the simplified function
+# 5.1 Exposure variable
+exposure_text <- boilerplate_measures_text(
+  variable_heading = "Exposure Variable",
+  variables = "perfectionism",
+  db = measures_db,
+  heading_level = 3,  # ###
+  subheading_level = 4,  # ####
+  print_waves = TRUE
+)
+
+cat(exposure_text)
+measures_db$kessler_latent_anxiety
+# 5.2 Outcome variables (psychological domain)
+psych_text <- boilerplate_measures_text(
+  variable_heading = "Psychological Outcomes",
+  variables = c("kessler_latent_anxiety", "kessler_latent_depression"),
+  db = measures_db,
+  heading_level = 3,
+  subheading_level = 4,
+  print_waves = TRUE
+)
+
+cat(psych_text)
+
+# 5.3 Outcome variables (health domain)
+health_text <- boilerplate_measures_text(
+  variable_heading = "Health Outcomes",
+  variables = c("smoker_binary", "alcohol_frequency"),
+  db = measures_db,
+  heading_level = 3,
+  subheading_level = 4,
+  print_waves = TRUE,
+  appendices_measures = "Appendix A"
+)
+
+# 6. Generate statistical methods text
+stats_text <- boilerplate_methods_text(
+  sections = c("statistical.longitudinal.lmtp"),
+  global_vars = list(software = "R version 4.2.0"),
+  add_headings = TRUE,
+  custom_headings = list("statistical.longitudinal.lmtp" = "LMTP"),
+  heading_level = "###",
+  db = methods_db
+)
+
+cat(stats_text)
+
+
+
+# 7. Combine all sections into a complete methods section
+methods_section <- paste(
+  "## Methods\n\n",
+  methods_text,
+  "\n\n",
+  "### Variables\n\n",
+  exposure_text,
+  "\n",
+  "### Outcome Variables\n\n",
+  psych_text,
+  "\n",
+  health_text,
+  "\n\n",
+  stats_text,
+  "\n\n"#,
+  # "## Results\n\n",
+  # results_text,
+  # sep = ""
+)
+cat(methods_section)
+
+# 9. Save the methods section to a file that can be included in a Quarto document
+writeLines(methods_section, "methods_section.qmd")
+
+# 10. Example of using with Quarto document
+# In your Quarto document, you can include this section with:
+# ```{r, echo=FALSE, results='asis'}
+# cat(readLines("methods_section.qmd"), sep = "\n")
+# ```
+
+
+
+# test
+# initialise measures
+# library(glue)
+# methods_path = here::here("/Users/joseph/GIT/templates/databases/methods")
+#
+#
+# # read
+# methods_db = margot::here_read("methods_db", methods_path)
+
+# boilerplate_manage_text(
+#   category = "methods",
+#   action = "save",
+#   db = methods_db,
+#   file_path = methods_path
+# )
+
+# list defaults
+boilerplate_manage_text(category = "methods", action = "list", db = methods_db)
+
+# remove current sample
+temp_methods_db <- boilerplate_manage_text(
+  category = "methods",
+  action = "remove",
+  name = "sample.nzavs",
+  db = methods_db,
+)
+
 
 # ------------------------------------------------------
 # now test generating text from the database
 # ------------------------------------------------------
-methods_db$sample
+
 
 # example usage of generate_text for methods section
 methods_text <- boilerplate_generate_text(
@@ -1725,16 +1874,10 @@ journal_article <- generate_document(
 # write to file
 writeLines(journal_article, "political_orientation_article.qmd")
 
-# write to file
-writeLines(journal_article, "political_orientation_article.qmd")
-
-
 
 
 # working with databases --------------------------------------------------
 # defaults
-l_measures_db <- boilerplate_manage_measures(action = "list")
-
 measuremeasures_db <- boilerplate_manage_measures(
   action = "add",
   name = "alcohol_frequency_2",

@@ -162,6 +162,7 @@ modify_nested_entry <- function(db, path_parts, action, value = NULL, auto_sort 
 #' Get File Path for Database
 #'
 #' Constructs the file path for a database based on the provided parameters.
+#' Directory creation is optional and can be controlled with parameters.
 #'
 #' @param category Character. Category of data (e.g., "methods", "measures").
 #' @param base_path Character. Path to the directory where database files are stored.
@@ -169,34 +170,59 @@ modify_nested_entry <- function(db, path_parts, action, value = NULL, auto_sort 
 #'   via the here::here() function.
 #' @param file_name Character. Name of the file (without path).
 #'   If NULL, uses "[category]_db.rds".
+#' @param create_dirs Logical. If TRUE, creates directories that don't exist. Default is FALSE.
+#' @param confirm Logical. If TRUE, asks for confirmation before creating directories. Default is TRUE.
+#' @param quiet Logical. If TRUE, suppresses all CLI alerts. Default is FALSE.
 #'
 #' @return Character. The file path for the database.
 #'
+#' @importFrom cli cli_alert_info cli_alert_success cli_alert_warning cli_alert_danger
 #' @noRd
-get_db_file_path <- function(category, base_path = NULL, file_name = NULL) {
+get_db_file_path <- function(category, base_path = NULL, file_name = NULL,
+                             create_dirs = FALSE, confirm = TRUE, quiet = FALSE) {
   # default file name
   if (is.null(file_name)) {
     file_name <- paste0(category, "_db.rds")
+    if (!quiet) cli_alert_info("using default file name: {file_name}")
   }
 
   # determine directory path
   if (is.null(base_path)) {
     if (!requireNamespace("here", quietly = TRUE)) {
-      stop("Package 'here' is required for default path resolution. Please install it or specify 'base_path' manually.")
+      if (!quiet) cli_alert_danger("package 'here' is required for default path resolution")
+      stop("package 'here' is required for default path resolution. please install it or specify 'base_path' manually.")
     }
-    dir_path <- here::here("boilerplate", "data")
+    base_path <- here::here("boilerplate", "data")
+    if (!quiet) cli_alert_info("using default path: {base_path}")
+  }
 
-    # Create directory if it doesn't exist
-    if (!dir.exists(dir_path)) {
-      dir.create(dir_path, recursive = TRUE)
-      message(paste("Created directory:", dir_path))
+  # check if directory exists
+  if (!dir.exists(base_path)) {
+    if (!create_dirs) {
+      if (!quiet) cli_alert_danger("directory does not exist: {base_path}")
+      stop("directory does not exist. set create_dirs=TRUE to create it or specify an existing directory.")
     }
-  } else {
-    dir_path <- base_path
+
+    # ask for confirmation if needed
+    proceed <- TRUE
+    if (confirm) {
+      proceed <- ask_yes_no(paste0("directory does not exist: ", base_path, ". create it?"))
+    }
+
+    if (proceed) {
+      dir.create(base_path, recursive = TRUE)
+      if (!quiet) cli_alert_success("created directory: {base_path}")
+    } else {
+      if (!quiet) cli_alert_danger("directory creation cancelled by user")
+      stop("directory creation cancelled by user.")
+    }
   }
 
   # combine directory and file name
-  return(file.path(dir_path, file_name))
+  file_path <- file.path(base_path, file_name)
+  if (!quiet) cli_alert_info("full file path: {file_path}")
+
+  return(file_path)
 }
 
 #' Recursively Merge Two Lists
@@ -244,12 +270,21 @@ merge_recursive_lists <- function(x, y) {
 #' @importFrom glue glue
 #' @noRd
 apply_template_vars <- function(text, template_vars = list(), warn_missing = TRUE) {
-  # Return early for non-character text or empty variables
-  if (length(template_vars) == 0 || !is.character(text)) {
+  # return early for non-character text or empty variables
+  if (!is.character(text)) {
     return(text)
   }
 
-  # For vector values, convert to comma-separated strings
+  if (length(template_vars) == 0) {
+    return(text)
+  }
+
+  # check for malformed template variables - empty names like {{}}
+  if (grepl("\\{\\{\\s*\\}\\}", text)) {
+    warning("template contains empty variable name(s) - {{}}. please check your template.")
+  }
+
+  # for vector values, convert to comma-separated strings
   template_vars_processed <- template_vars
   for (var_name in names(template_vars)) {
     var_value <- template_vars[[var_name]]
@@ -258,18 +293,32 @@ apply_template_vars <- function(text, template_vars = list(), warn_missing = TRU
     }
   }
 
-  # Prepare the environment for glue
+  # prepare the environment for glue
   env <- list2env(template_vars_processed, parent = emptyenv())
 
-  # Try to use glue for substitution
+  # try to use glue for substitution
   tryCatch({
-    # Convert {{var}} syntax to glue's {var} syntax
+    # convert {{var}} syntax to glue's {var} syntax
     glue_ready_text <- gsub("\\{\\{([^\\}]+)\\}\\}", "{\\1}", text)
+
+    # check for empty variable names after conversion
+    if (grepl("\\{\\s*\\}", glue_ready_text)) {
+      stop("attempt to use zero-length variable name, check for malformed template variables")
+    }
+
     result <- glue::glue(glue_ready_text, .envir = env)
     return(as.character(result))
   }, error = function(e) {
-    # Fallback to manual substitution if glue fails
+    # if error contains "zero-length variable", re-throw it
+    if (grepl("zero-length", e$message)) {
+      stop(e$message)
+    }
+
+    # fallback to manual substitution if glue fails with other errors
     for (var_name in names(template_vars_processed)) {
+      if (var_name == "") {
+        next  # skip empty variable names
+      }
       var_value <- template_vars_processed[[var_name]]
       if (is.character(var_value) || is.numeric(var_value)) {
         text <- gsub(
@@ -281,23 +330,23 @@ apply_template_vars <- function(text, template_vars = list(), warn_missing = TRU
       }
     }
 
-    # Issue a warning for unresolved variables if requested
+    # issue a warning for unresolved variables if requested
     if (warn_missing) {
-      # Look for any remaining {{variable}} patterns
+      # look for any remaining {{variable}} patterns
       var_pattern <- "\\{\\{([^\\}]+)\\}\\}"
       if (requireNamespace("stringr", quietly = TRUE)) {
-        # Use stringr if available
+        # use stringr if available
         remaining_vars <- stringr::str_extract_all(text, var_pattern)
         if (length(remaining_vars[[1]]) > 0) {
           remaining_vars <- unique(gsub("\\{\\{|\\}\\}", "", remaining_vars[[1]]))
-          warning(paste("Unresolved template variables:", paste(remaining_vars, collapse = ", ")))
+          warning(paste("unresolved template variables:", paste(remaining_vars, collapse = ", ")))
         }
       } else {
-        # Fallback to base R
+        # fallback to base R
         if (grepl(var_pattern, text)) {
           matches <- gregexpr(var_pattern, text)
           if (matches[[1]][1] != -1) {
-            warning("Unresolved template variables present. Consider installing the 'stringr' package for detailed information.")
+            warning("unresolved template variables present. consider installing the 'stringr' package for detailed information.")
           }
         }
       }
@@ -306,4 +355,3 @@ apply_template_vars <- function(text, template_vars = list(), warn_missing = TRU
     return(text)
   })
 }
-

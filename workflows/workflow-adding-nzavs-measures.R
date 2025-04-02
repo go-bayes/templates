@@ -1,11 +1,23 @@
 # test
 # initialise measures
-library(glue)
-methods_path = here::here("/Users/joseph/GIT/templates/databases/methods")
+# install from GitHub if not already installed
+if (!require(boilerplate, quietly = TRUE)) {
+  # install devtools if necessary
+  if (!require(devtools, quietly = TRUE)) {
+    install.packages("devtools")
+  }
+  devtools::install_github("go-bayes/boilerplate")
+}
+#devtools::install_github("go-bayes/boilerplate")
+
+
+master_text_path = here::here("/Users/joseph/GIT/templates/databases/methods")
+master_measures_path = here::here("/Users/joseph/GIT/templates/databases/measures")
 
 
 # read
-methods_db = margot::here_read("methods_db", methods_path)
+master_methods_db = margot::here_read("master_methods_db", master_text_path)
+master_methods_db
 
 # boilerplate_manage_text(
 #   category = "methods",
@@ -14,8 +26,24 @@ methods_db = margot::here_read("methods_db", methods_path)
 #   file_path = methods_path
 # )
 
-# list defaults
-boilerplate_manage_text(category = "methods", action = "list", db = methods_db)
+# list current master
+# boilerplate_manage_text(category = "methods", action = "list", db = methods_db_master)
+
+# initialise databases DO ONLY ONCE
+# boilerplate_init_measures(create_dirs = TRUE, confirm = TRUE)
+# boilerplate_init_text(create_dirs = TRUE, confirm = FALSE)
+
+
+# get objects
+measures_db <- boilerplate_manage_measures(action = "list")
+methods_db <- boilerplate_manage_text(action = "list", category = c(#"measures",
+                                                                 "methods"
+                                                                 #"results",
+                                                                 #"discussion",
+                                                                 #"appendix",
+                                                                 #"template"
+                                                                 ))
+
 
 # remove current sample
 temp_methods_db <- boilerplate_manage_text(
@@ -58,18 +86,13 @@ methods_db <- boilerplate_manage_text(
 )
 
 # add
-identification_text <- "This study relies on the following key identification assumptions for estimating the causal effect of {{exposure_var}}:
+identification_text <- "This study relies on the following identification assumptions for estimating the causal effect of {{exposure_var}}:
 
 1. **Consistency**: the observed outcome under the observed {{exposure_var}} is equal to the potential outcome under that exposure level. As part of consistency, we assume no interference: the potential outcomes for one individual are not affected by the {{exposure_var}} status of other individuals.
 
 2. **No unmeasured confounding**: all variables that affect both {{exposure_var}} and the outcome have been measured and accounted for in the analysis.
 
 3. **Positivity**: there is a non-zero probability of receiving each level of {{exposure_var}} for every combination of values of {{exposure_var}} and confounders in the population."
-
-
-
-
-
 
 
 # add identification assumptions section
@@ -80,6 +103,8 @@ methods_db <- boilerplate_manage_text(
   value = identification_text,
   db = methods_db
 )
+
+# view
 cat(methods_db$identification_assumptions$standard)
 
 # save
