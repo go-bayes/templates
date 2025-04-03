@@ -1,4 +1,8 @@
 # test
+if (!boilerplate_path_exists(unified_db$results, "grf")) {
+  unified_db$results$grf <- list()
+}
+
 # initialise measures
 # install from GitHub if not already installed
 if (!require(boilerplate, quietly = TRUE)) {
@@ -10,112 +14,315 @@ if (!require(boilerplate, quietly = TRUE)) {
 }
 #devtools::install_github("go-bayes/boilerplate")
 
-
-master_text_path = here::here("/Users/joseph/GIT/templates/databases/methods")
-master_measures_path = here::here("/Users/joseph/GIT/templates/databases/measures")
-
-
-# read
-master_methods_db = margot::here_read("master_methods_db", master_text_path)
-master_methods_db
-
-# boilerplate_manage_text(
-#   category = "methods",
-#   action = "save",
-#   db = methods_db,
-#   file_path = methods_path
+# initial wrangling -- INGNORE
+# master_text_path = here::here("/Users/joseph/GIT/templates/databases/methods")
+# master_measures_path = here::here("/Users/joseph/GIT/templates/databases/measures")
+# #
+# #
+# # # read
+# master_methods_db = margot::here_read("master_methods_db", master_text_path)
+# master_measures_db = margot::here_read("measures_db", master_measures_path)
+#
+# # methods_db = margot::here_read("master_methods_db", master_text_path)
+# # measures_db = margot::here_read("measures_db", master_measures_path)
+#
+# #
+# # # set library path
+# my_project_path <- "/Users/joseph/GIT/templates/boilerplate_data"
+# #
+# # # save the other data
+# boilerplate_save("methods_db", category = "methods", my_project_path)
+# boilerplate_save("measures_db", category = "measures", my_project_path)
+#
+# # Initialize databases in your custom location
+# boilerplate_init(
+#   categories = c("measures", "methods", "results", "discussion", "appendix", "template"),
+#   data_path = my_project_path,  # specify custom path here
+#   create_dirs = TRUE,
+#   confirm = FALSE
 # )
+#
+#
+# # import all
+# unified_db <- boilerplate_import( data_path = my_project_path)
+#
+# methods_db <- boilerplate_methods(unified_db)
+# measures_db <- boilerplate_measures(unified_db)
+# results_db <- boilerplate_results(unified_db)
+# methods_db
+# str(measures_db)
+# str(master_measures_db)
+#
+# merged_db <- boilerplate_merge_databases(master_measures_db, measures_db)
+#
+#
+# margot::here_save(merged_db, "measures_db", my_project_path)
+#
+#
 
-# list current master
-# boilerplate_manage_text(category = "methods", action = "list", db = methods_db_master)
-
-# initialise databases DO ONLY ONCE
-# boilerplate_init_measures(create_dirs = TRUE, confirm = TRUE)
-# boilerplate_init_text(create_dirs = TRUE, confirm = FALSE)
 
 
-# get objects
-measures_db <- boilerplate_manage_measures(action = "list")
-methods_db <- boilerplate_manage_text(action = "list", category = c(#"measures",
-                                                                 "methods"
-                                                                 #"results",
-                                                                 #"discussion",
-                                                                 #"appendix",
-                                                                 #"template"
-                                                                 ))
-
-
-# remove current sample
-temp_methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "remove",
-  name = "sample.nzavs",
-  db = methods_db,
-)
+# import data -------------------------------------------------------------
+rm(unified_db)
+unified_db <- boilerplate_import( data_path = my_project_path)
 
 # ------------------------------------------------------
 # sample section
 # ------------------------------------------------------
-sample_information_text <- "Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from {{n_total}} participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB). Refer to [Appendix A](#appendix-timeline) for a histogram of daily responses for this cohort."
+sample_information <- "
+### Sample
 
+Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from {{n_total}} participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB). Refer to [Appendix A](#appendix-timeline) for a histogram of daily responses for this cohort.
+"
 
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "sample.nzavs",
-  value = list(
-    default = sample_information_text  # keep the existing text as the default
-  ),
-  db = methods_db
+unified_db<- boilerplate_add_entry(
+  db = unified_db,
+  path = "methods.sample",
+  value = list()
 )
 
-cat(methods_db$sample$nzavs$default)
+
+# or
+unified_db<- boilerplate_add_entry(
+    db = unified_db,
+    path = "methods.sample.nzavs",
+    value = sample_information
+  )
 
 
+# save
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+
+
+
+# target population -------------------------------------------------------
+
+
+# ------------------------------------------------------
+# target population section
+# ------------------------------------------------------
+target_population <- "
+### Target Population
+
+The target population for this study comprises New Zealand residents as represented in the {{baseline_wave}} of the New Zealand Attitudes and Values Study (NZAVS) during the years {{baseline_wave}} weighted by New Zealand Census weights for age, gender, and ethnicity (refer to @sibley2021). The NZAVS is a national probability study designed to reflect the broader New Zealand population accurately. Despite its comprehensive scope, the NZAVS has some limitations in its demographic representation. Notably, it tends to under-sample males and individuals of Asian descent while over-sampling females and Māori (the indigenous peoples of New Zealand). To address these disparities and enhance the accuracy of our findings, we apply New Zealand Census survey weights to the sample data."
+
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.target_population",
+  value = target_population
+)
+
+# save
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+
+# consider
+# boilerplate_update_entry(
+#   db = unified_db,
+#   path = "methods.target_population",
+#   value = target_population
+# )
+# boilerplate_remove_entry(
+#   db = unified_db,
+#   path = "methods.some_outdated_path"
+# )
+
+
+# ------------------------------------------------------
+# causal interventions section
+# ------------------------------------------------------
+
+
+basic <- "#### Interventions
+This study considers the following causal interventions on the exposure variable '{{exposure_var}}':
+
+{{interventions_list}}
+
+#### Contrasts
+
+{{contrasts_text}}
+
+This approach to defining interventions and contrasts allows us to systematically evaluate the causal effects of interest in our study."
+
+
+
+unified_db<- boilerplate_add_entry(
+  db = unified_db,
+  path = "methods.causal_intervention",
+  value = list()
+)
+
+unified_db<- boilerplate_add_entry(
+  db = unified_db,
+  path = "methods.causal_intervention.basic",
+  value = basic
+)
+
+
+
+
+# complex causal interventions --------------------------------------------
+
+
+
+### Causal Interventions
+# We using the six most recent NZAVS waves (Times 10–15) because Wave 10 containes the largest cohort, enabling us to maximise power.
+lmtp_multi_wave <-
+"When psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
+
+Here, we ask:
+
+  > 'What if, at each wave, we intervened to set {{exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'
+
+To answer this, we compare two hypothetical interventions. Each intervention shifts {{exposure_variable}} across {{number_exposure_wave}} waves, with outcomes measured after the year following the final exposure wave.  A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained there after are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @@tbl-plan).
+
+Following a modified treatment policies approach, we define **shift functions** describing each intervention:
+
+1. **{{name_exposure_regime}}**
+
+{{value_exposure_regime}}
+
+2. **{{name_control_regime}}**
+
+{{value_control_regime}}
+
+::: {#tbl-plan}
+```{=latex}
+\\vizfive
+```
+We contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of religious service attendance and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is 'as good as random.' Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.
+:::
+
+ We then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies *{{name_exposure_regime}}* and *{{name_control_regime}}*. We define a 'confounder' as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline religious service attendance and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.
+
+
+### Causal Contrasts
+
+We compute the average expected outcome under and {{name_exposure_regime}} and {{name_control_regime}}, and then contrast these expected averages on the difference scale (i.e., subtracting the expected outcome under {{name_exposure_regime}} from that under {{name_control_regime}}. We obtain confidence intervals using the cross-fitted influence-function approach in the `lmtp` package [@williams2021]. This approach employs sequentially doubly robust (SDR) estimator, as developed by @diaz2021_non_parametric_lmtp, which remains valid if either the outcome model or the propensity model is correctly specified, thereby requiring weaker assumptions than standard approaches. By setting up our data as if it came from a hypothetical experiment, we gain clarity about which causal effects we are estimating and as well as confidence about our causal effect estimates (refer to @hernan2024WHATIF, @bulbulia2022; @bulbulia2023).
+
+Our estimation relies on standard causal assumptions:
+1.  **No unmeasured confounding**: all relevant common causes of the exposure and outcome are included in $X$.
+2.  **Consistency**: an individual's observed outcome corresponds to their potential outcome under the exposure they actually received.
+3.  **Positivity**: within strata defined by $X$, there is a non-zero probability of receiving either exposure level (`{{value_exposure}}` or `{{value_control}}`).
+
+(Refer to [{{appendix_assumptions}}](#appendix-assumptions) for further details). The target population is {{name_target_population}}."
+
+
+
+grf_causal <- "
+### Causal Analysis Framework
+
+When researchers analyse data, they often seek to understand causal relationships: what would happen if we could intervene on certain variables? To investigate such questions with observational data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
+
+Here, we ask:
+
+> 'What is the effect on an outcome if we set a binary exposure variable to a specific level for everyone, compared to setting it to an alternative level, considering individual characteristics?'
+
+To answer this, we compare two hypothetical exposures:
+
+1.  **{{name_exposure_threshold}}**: We hypothetically assign everyone to have the exposure set to `{{value_exposure}}`.
+2.  **{{name_control_threshold}}**: We hypothetically assign everyone to have the exposure set to `{{value_control}}`.
+
+Our goal is to estimate how the effect of the {{name_exposure_threshold}} exposure compared to the {{name_control_threshold}} exposure varies across individuals based on their baseline characteristics. We aim to compute the **Conditional Average Treatment Effect (CATE)**, defined as:
+
+$$ \\tau(x) = E[Y({{value_exposure}}) - Y({{value_control}})|X = x] $$
+
+Here, $Y({{value_exposure}})$ is the potential outcome if an individual received the {{name_exposure_threshold}} exposure, $Y({{value_control}})$ is the potential outcome if they received the {{name_control_threshold}} exposure, and $X$ represents the full set of baseline covariates measured before the exposure. The CATE, $\tau(x)$, estimates the average difference in outcomes between the two exposures for individuals with specific characteristics $x$.
+
+To estimate this effect using observational data, we must account for **confounding**. Confounders are variables associated with both the exposure and the outcome that can distort the estimated relationship. In this study, we adjust for a rich set of baseline covariates, $X$, including demographic factors, personality traits, and baseline measures relevant to the outcome. We assume there are no time-varying confounders relevant to this cross-sectional design. By including these baseline covariates in our statistical model, we aim to remove non-causal associations between the exposure and the outcome, assuming that, conditional on $X$, the exposure is 'as good as random.'
+
+Our estimation relies on standard causal assumptions:
+1.  **No unmeasured confounding**: all relevant common causes of the exposure and outcome are included in $X$.
+2.  **Consistency**: an individual's observed outcome corresponds to their potential outcome under the exposure they actually received.
+3.  **Positivity**: within strata defined by $X$, there is a non-zero probability of receiving either exposure level (`{{value_exposure}}` or `{{value_control}}`).
+
+(Refer to [{{appendix_assumptions}}](#appendix-assumptions) for further details). The target population is {{name_target_population}}.
+
+### General Approach to Estimating Heterogeneity
+
+Our main aim was to look beyond the average treatment effect (ATE) and explore whether the intervention’s impact varied by individual characteristics. We estimated conditional average treatment effects (CATEs) using causal forests [@grf2024], which are machine learning methods tailored for detecting treatment-effect heterogeneity.
+
+We standardised effect directions by inverting outcomes where 'lower is better', ensuring that positive values always signify improvement. The following outcomes were inverted: {{flipped_list}}.
+
+To reduce overfitting and distinguish real heterogeneity from noise, we split the sample 50/50. We trained the causal forest on the first half, then tested its predictions exclusively on the second half. In this held-out data, we checked calibration by comparing the mean of the predicted CATEs to the overall ATE, and we used a differential prediction test to assess whether the predicted variation was genuine [@grf2024]. We also computed the Rank-Weighted Average Treatment Effect (RATE), which estimates the benefit of targeting individuals predicted to benefit most [@grf2024; @wager2018].
+
+Qini curves [@grf2024] were used to illustrate how a targeted allocation might outperform a uniform approach. Specifically, we compared:
+1.  **Uniform Allocation**: treating or not treating everyone based on the ATE,
+2.  **Targeted Allocation**: treating those with the highest predicted CATEs first.
+
+Positive Qini values suggest that a targeted strategy is superior, helping to identify if personalisation is worthwhile and at what scale.
+
+Finally, if we found reliable heterogeneity, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to derive simple, rule-based recommendations (e.g., ‘Treat if baseline score > X’). All heterogeneity analyses, including calibration tests, RATE, Qini curves, and policy trees, were done in R using `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024]. This approach allowed us to identify individualised effects, confirm their robustness, estimate the potential value of targeting, and propose straightforward strategies for personalised treatment."
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.causal_intervention.lmtp_multi_wave",
+  value = lmtp_multi_wave
+)
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.causal_intervention.grf",
+  value = grf_causal)
+
+
+unified_db$methods$causal_intervention$lmtp_multi_wave
+
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+
+# test --------------------------------------------------------------------
+
+unified_db <- boilerplate_import( data_path = my_project_path)
+unified_db$methods$sample$sample_information
 
 # ------------------------------------------------------
 # identification assumptions section
 # ------------------------------------------------------
 
 # remove current identification assumptions
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "remove",
-  name = "identification_assumptions",
-  db = methods_db
-)
+# methods_db <- boilerplate_manage_text(
+#   category = "methods",
+#   action = "remove",
+#   name = "identification_assumptions",
+#   db = unified_db
+# )
 
 # add
-identification_text <- "This study relies on the following identification assumptions for estimating the causal effect of {{exposure_var}}:
+causal_identification_criteria <- "
+### Causal Identification Assumptions
 
-1. **Consistency**: the observed outcome under the observed {{exposure_var}} is equal to the potential outcome under that exposure level. As part of consistency, we assume no interference: the potential outcomes for one individual are not affected by the {{exposure_var}} status of other individuals.
+This study relies on the following identification assumptions for estimating the causal effect of {{exposure_variable}}:
 
-2. **No unmeasured confounding**: all variables that affect both {{exposure_var}} and the outcome have been measured and accounted for in the analysis.
+1. **Consistency**: the observed outcome under the observed {{exposure_variable}} is equal to the potential outcome under that exposure level. As part of consistency, we assume no interference: the potential outcomes for one individual are not affected by the {{exposure_variable}} status of other individuals.
 
-3. **Positivity**: there is a non-zero probability of receiving each level of {{exposure_var}} for every combination of values of {{exposure_var}} and confounders in the population."
+2. **No unmeasured confounding**: all variables that affect both {{exposure_variable}} and the outcome have been measured and accounted for in the analysis.
+
+3. **Positivity**: there is a non-zero probability of receiving each level of {{exposure_variable}} for every combination of values of {{exposure_variable}} and confounders in the population.
+"
 
 
-# add identification assumptions section
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "identification_assumptions.standard",
-  value = identification_text,
-  db = methods_db
+# add criteria
+cat(unified_db$methods$causal_identification_criteria)
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.causal_identification_criteria",
+  value = causal_identification_criteria
 )
 
-# view
-cat(methods_db$identification_assumptions$standard)
+cat(unified_db$methods$causal_identification_criteria)
 
-# save
-margot::here_save(methods_db, "methods_db", methods_path)
-
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 
 # outcome domains ---------------------------------------------------------
+outcomewide_flourishing <- "
+## Wellbeing Outcomes
 
-
-method_outcomes_domains_health <- "We investigate well-being using an VanderWeele and colleague's 'outcome-wide' approach. We categorised outcomes into five domains—health, psychological well-being, present-reflective outcomes, life-reflective outcomes, and social outcomes—based on validated scales and measures. Outcomes were based on those modelled in an earlier outcome-wide paper @pedro_2024effects. @tbl-outcomes summarises each domain and its associated measures. For instance, health outcomes included BMI and hours of sleep, whereas psychological well-being included anxiety and depression. Outcomes were converted to z-scores (standardised), and the causal effect estimates may be therefore be interpreted as effect sizes.
+We investigate well-being using an VanderWeele and colleague's 'outcome-wide' approach. We categorised outcomes into five domains—health, psychological well-being, present-reflective outcomes, life-reflective outcomes, and social outcomes—based on validated scales and measures. Outcomes were based on those modelled in an earlier outcome-wide paper @pedro_2024effects. @tbl-outcomes summarises each domain and its associated measures. For instance, health outcomes included BMI and hours of sleep, whereas psychological well-being included anxiety and depression. Outcomes were converted to z-scores (standardised), and the causal effect estimates may be therefore be interpreted as effect sizes.
 
 |       Domain        |                 Dimension                |
   |---------------------|------------------------------------------------|
@@ -129,78 +336,84 @@ method_outcomes_domains_health <- "We investigate well-being using an VanderWeel
 
 "
 
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "outcome_domains.flourishing_2025",
-  value = method_outcomes_domains_health,
-  db = methods_db
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.outcomes.outcomewide_flourishing",
+  value = outcomewide_flourishing
 )
+
+
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
 
 # ------------------------------------------------------
 # confounding control section
 # ------------------------------------------------------
-confounding_text <- "To manage confounding in our analysis, we implement [@vanderweele2019]'s *modified disjunctive cause criterion* by following these steps:
+vanderweele <- "
+### Sensitivity Analysis
+
+To manage confounding in our analysis, we implement @vanderweele2019's *modified disjunctive cause criterion* by following these steps:
 
 1. **Identified all common causes** of both the treatment and outcomes.
 2. **Excluded instrumental variables** that affect the exposure but not the outcome. Instrumental variables do not contribute to controlling confounding and can reduce the efficiency of the estimates.
 3. **Included proxies for unmeasured confounders** affecting both exposure and outcome. According to the principles of d-separation @pearl2009a, using proxies allows us to control for their associated unmeasured confounders indirectly.
-4. **Controlled for baseline exposure** and **baseline outcome**. Both are used as proxies for unmeasured common causes, enhancing the robustness of our causal estimates, refer to @vanderweele2020."
+4. **Controlled for baseline exposure** and **baseline outcome**. Both are used as proxies for unmeasured common causes, enhancing the robustness of our causal estimates, refer to @vanderweele2020.
+"
 
-# These methods adhere to the guidelines provided in [@bulbulia2024PRACTICAL] and were pre-specified in our study protocol [{{protocol_url}}]({{protocol_url}}).
 
-# add confounding control section
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "confounding_control.vanderweele",
-  value = confounding_text,
-  db = methods_db
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.sensitivity_analysis.evalue",
+  value = vanderweele
 )
 
-cat(methods_db$confounding_control$vanderweele)
 
-margot::here_save(methods_db, "methods_db_backup", methods_path)
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
-cat(methods_db$outcome_domains$flourishing_2025)
 
 # ------------------------------------------------------
 # eligibility criteria section
 # ------------------------------------------------------
-eligibility_text <- "To be included in the analysis of this study, participants needed to participate in the {{baseline_wave}} of the study and respond to {{exposure_var}}:
+standard <- "
+### Eligibility Criteria
 
-#### Inclusion Criteria
+To be included in the analysis of this study, participants needed to participate in the {{baseline_wave}} of the study and respond to the baseline measure of {{exposure_variable}}.
 
 Participants may have been lost to follow-up at the end of the study if they met eligibility criteria at {{baseline_wave}}. We adjusted for attrition and non-response using censoring weights, described below.
 
-#### Exclusion Criteria
+A total of {{n_participants}} individuals met these criteria and were included in the study.
+"
 
-A total of {{n_participants}} individuals met these criteria and were included in the study."
 
-# add eligibility criteria section
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "eligibility_criteria.standard",
-  value = eligibility_text,
-  db = methods_db
+# if (!boilerplate_path_exists(unified_db$methods, "eligibility")) {
+#   unified_db$eligibility <- list()
+# }
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.eligibility.standard",
+  value = standard
 )
 
-cat(methods_db$eligibility_criteria$standard)
 
-# save
-margot::here_save(methods_db, "methods_db", methods_path)
+
 
 # ------------------------------------------------------
 # missing data handling section
 # ------------------------------------------------------
-missing_data_lmtp_text <- "To mitigate bias from missing data, we used the following strategies:
+missing_lmtp_simple <- "
+### Missing Responses and Attrition
+
+To mitigate bias from missing data, we used the following strategies:
 
 **Baseline missingness**: we employed the `ppm` algorithm from the `mice` package in R [@vanbuuren2018] to impute missing baseline data (wave {{baseline_wave}}). This method allowed us to reconstruct incomplete datasets by estimating a plausible value for missing observation. Because we could only pass one data set to the lmtp, we employed single imputation. Approximately {{baseline_missing_data_proportion}}% of covariate values were missing at {{baseline_wave}}. We only used baseline data to impute baseline wave missingness (refer to @zhang2023shouldMultipleImputation).
 
 **Outcome missingness**: to address confounding and selection bias arising from missing responses and panel attrition at the end of study {{outcome_wave}}, we applied censoring weights obtained using nonparametric machine learning ensembles afforded by the `lmtp` package (and its dependencies) in R [@williams2021]."
 
-missing_data_time_vary_lmtp_text <- "To mitigate bias from missing data, we implement the following strategies:
+missing_lmtp_time_varying <- "
+### Missing Responses and Attrition
+
+To mitigate bias from missing data, we implement the following strategies:
 
 **Baseline missingness**: We used predictive mean matching from the `mice` package [@vanbuuren2018] to impute missing baseline values (comprising `r percent_missing_baseline` of the baseline data). Following [@zhang2023shouldMultipleImputation], we performed single imputation using only baseline data. For each column with missing values, we created a binary indicator of missingness so that the machine learning algorithms we employed could condition on missingness information during estimation (see `lmtp` documentation [@williams2021]).
 
@@ -208,65 +421,73 @@ missing_data_time_vary_lmtp_text <- "To mitigate bias from missing data, we impl
 
 **Outcome missingness**: to address confounding and selection bias arising from missing responses and panel attrition at the end of study {{outcome_wave}}, we applied censoring weights obtained using nonparametric machine learning ensembles afforded by the `lmtp` package (and its dependencies) in R [@williams2021]."
 
-# add missing data handling for lmtp
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "missing_data.lmtp",
-  value = missing_data_lmtp_text,
-  db = methods_db
+
+missing_grf_simple <- "
+### Missing Responses and Attrition
+
+The GRF package accepts missing values at baseline. To obtain valid inference for missing responses we computed inverse probability of censoring weights for censoring of the exposure, given that systematic censoring following the baseline wave may lead to selection bias that limit generalistion to the baseline target population [@bulbulia2024wierd]. See Appendix {{grf_appendix}}."
+
+
+# make category
+# unified_db$methods$missing_data <- list()
+
+# if (!boilerplate_path_exists(unified_db, "methods.statistical_models")) {
+#   boilerplate_add_entry(
+#     db = unified_db,
+#     path = "methods.statistical_models",
+#     value = list()
+#   )
+# }
+
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.missing_data.missing_lmtp_simple",
+  value = missing_lmtp_simple
 )
 
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "missing_data.lmtp_time_vary",
-  value = missing_data_time_vary_lmtp_text,
-  db = methods_db
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.missing_data.missing_lmtp_time_varying",
+  value = missing_lmtp_time_varying
 )
 
-
-margot::here_save(methods_db, "methods_db", methods_path)
-
-
-# save
-margot::here_save(methods_db, "methods_db", methods_path)
-
-
-missing_data_grf_text <- "The GRF package accepts missing values at baseline. To obtain valid inference for missing responses we computed inverse probability of censoring weights. See Appendix {{grf_appendix}}."
-
-# add missing data handling for grf
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "missing_data.grf",
-  value = missing_data_grf_text,
-  db = methods_db
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.missing_data.missing_grf_simple",
+  value = missing_grf_simple
 )
 
-# save
-margot::here_save(methods_db, "methods_db", methods_path)
+# checks
+cat(unified_db$methods$missing_data$missing_lmtp_simple)
+
+# checks
+cat(unified_db$methods$missing_data$missing_lmtp_time_varying)
+
+# checks
+cat(unified_db$methods$missing_data$missing_grf_simple)
+
+
+# save progress
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+
 
 # ------------------------------------------------------
 # statistical estimator sections
 # ------------------------------------------------------
 
 # lmtp short
-lmtp_short_text <- "We estimate causal effects using the Longitudinal Modified Treatment Policy (LMTP) estimator within a Targeted Minimum Loss-based Estimation (TMLE) framework [@van2014targeted; @van2012targeted]. LMTP draws on machine learning for flexible outcome and treatment modeling and accounts for time-varying confounding [@van2014discussion; @vanderlaan2011; @vanderlaan2018]. This estimator is consistent if either the outcome model or the treatment mechanism is correct (double robustness). We use cross-validation to reduce overfitting [@bulbulia2024PRACTICAL]. We perform estimation with the `lmtp` package [@williams2021] and visualise outputs with the `margot` package [@margot2024]."
+lmtp_short_explanation <- "
+### Statistical Estimator
 
-# add lmtp short
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "statistical_estimator.lmtp.short",
-  value = lmtp_short_text,
-  db = methods_db
-)
-# save
-margot::here_save(methods_db, "methods_db", methods_path)
+We estimate causal effects using the Longitudinal Modified Treatment Policy (LMTP) estimator within a Targeted Minimum Loss-based Estimation (TMLE) framework [@van2014targeted; @van2012targeted]. LMTP draws on machine learning for flexible outcome and treatment modeling and accounts for time-varying confounding [@van2014discussion; @vanderlaan2011; @vanderlaan2018]. This estimator is consistent if either the outcome model or the treatment mechanism is correct (double robustness). We use cross-validation to reduce overfitting [@bulbulia2024PRACTICAL]. We perform estimation with the `lmtp` package [@williams2021] and visualise outputs with the `margot` package [@margot2024]."
 
 # lmtp long
-lmtp_long_text <- "We perform statistical estimation using a Targeted Minimum Loss-based Estimation (TMLE) approach, specifically the Longitudinal Modified Treatment Policy (LMTP) estimator [@van2014targeted; @van2012targeted]. TMLE is a flexible framework for causal inference that provides valid uncertainty estimates. LMTP extends TMLE to handle time-varying treatments and confounders.
+lmtp_long_explanation <- "
+### Statistical Estimator
+
+We perform statistical estimation using a Targeted Minimum Loss-based Estimation (TMLE) approach, specifically the Longitudinal Modified Treatment Policy (LMTP) estimator [@van2014targeted; @van2012targeted]. TMLE is a flexible framework for causal inference that provides valid uncertainty estimates. LMTP extends TMLE to handle time-varying treatments and confounders.
 
 **Workflow:**
 1. **Initial Modeling:** We use machine learning algorithms to flexibly model relationships among treatments, covariates, and outcomes. This approach accommodates complex, high-dimensional datasets without imposing strict parametric assumptions [@van2014discussion; @vanderlaan2011; @vanderlaan2018].
@@ -280,34 +501,15 @@ lmtp_long_text <- "We perform statistical estimation using a Targeted Minimum Lo
 
 We use cross-validation to avoid overfitting and to improve predictive performance [@bulbulia2024PRACTICAL]. The `lmtp` package [@williams2021] implements LMTP. We rely on the `SuperLearner` framework (with base learners such as `SL.ranger`, `SL.glmnet`, and `SL.xgboost`) for initial model fitting [@polley2023; @xgboost2023; @Ranger2017; @SuperLearner2023]. We create graphs, tables, and output with the `margot` package [@margot2024]."
 
-# add lmtp long
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "statistical_estimator.lmtp.long",
-  value = lmtp_long_text,
-  db = methods_db
-)
-# save
-margot::here_save(methods_db, "methods_db", methods_path)
-
 # sdr short
-sdr_short_text <- "We estimate causal effects of time-varying treatment policies using a Sequential Doubly Robust (SDR) estimator with the `lmtp` package [@williams2021; @díaz2021; @hoffman2023]. SDR involves two main steps. First, flexible machine learning models capture complex relationships among treatments, covariates, and outcomes [@díaz2021]. Second, SDR targets these initial fits to refine causal effect estimates. This design is multiply robust if treatments repeat over multiple waves [@diaz2023lmtp; @hoffman2023], ensuring consistency when either the outcome or treatment model is correct. We use `SuperLearner` [@SuperLearner2023] with `SL.ranger`, `SL.glmnet`, and `SL.xgboost` [@polley2023; @xgboost2023; @Ranger2017]. We use cross-validation to reduce overfitting and improve finite-sample performance. We create graphs, tables, and output with the `margot` package [@margot2024]."
+sdr_short_explanation <- "
+### Sequentially Doubly Robust (SDR) Estimator
 
-# add sdr short
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "statistical_estimator.sdr.short",
-  value = sdr_short_text,
-  db = methods_db
-)
-# save
-margot::here_save(methods_db, "methods_db", methods_path)
+We estimate causal effects of time-varying treatment policies using a Sequential Doubly Robust (SDR) estimator with the `lmtp` package [@williams2021; @díaz2021; @hoffman2023]. SDR involves two main steps. First, flexible machine learning models capture complex relationships among treatments, covariates, and outcomes [@díaz2021]. Second, SDR targets these initial fits to refine causal effect estimates. This design is multiply robust if treatments repeat over multiple waves [@diaz2023lmtp; @hoffman2023], ensuring consistency when either the outcome or treatment model is correct. We use `SuperLearner` [@SuperLearner2023] with `SL.ranger`, `SL.glmnet`, and `SL.xgboost` [@polley2023; @xgboost2023; @Ranger2017]. We use cross-validation to reduce overfitting and improve finite-sample performance. We create graphs, tables, and output with the `margot` package [@margot2024]."
 
 
-sdr_long_text <- "
-#### Sequentially Doubly Robust (SDR) Estimator
+sdr_long_explanation <- "
+### Sequentially Doubly Robust (SDR) Estimator
 
 We employ a Sequentially Doubly Robust (SDR) estimator to assess the causal effects of time-varying treatment policies [@díaz2021]. SDR belongs to the broader class of doubly robust targeted learning estimators [@vanderlaan2011; @vanderlaan2018].
 
@@ -323,253 +525,592 @@ We employ a Sequentially Doubly Robust (SDR) estimator to assess the causal effe
 
 We use cross-validation to reduce overfitting and improve finite-sample performance. We implement SDR through the `lmtp` package [@williams2021; @hoffman2023; @diaz2023lmtp], relying on `SuperLearner` with base learners such as `SL.ranger`, `SL.glmnet`, and `SL.xgboost` [@polley2023; @xgboost2023; @Ranger2017; @SuperLearner2023]. For more details, see [@hoffman2022; @hoffman2023; @díaz2021]. We use the `margot` package [@margot2024] for reporting and visualisation.
 "
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "statistical_estimator.sdr.long",
-  value = sdr_long_text,
-  db = methods_db
+
+grf_short_explanation <- "
+### Statistical Estimation
+
+We estimate heterogeneous treatment effects with Generalized Random Forests (GRF) [@grf2024]. GRF extends random forests for causal inference by focusing on conditional average treatment effects (CATE). It handles complex interactions and non-linearities without explicit model specification, and it provides 'honest' estimates by splitting data between model-fitting and inference. GRF is doubly robust because it remains consistent if either the outcome model or the propensity model is correct. We evaluate policies with the `policytree` package [@policytree_package_2024; @athey_2021_policy_tree_econometrica] and visualise results with `margot` [@margot2024]."
+
+
+
+# make category
+# unified_db$methods$statistical_models <- list()
+
+# if (!boilerplate_path_exists(unified_db$methods, "eligibility")) {
+#   unified_db$eligibility <- list()
+# }
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.lmtp_short_explanation",
+  value = lmtp_short_explanation
 )
 
-# grf short
-grf_short_text <- "We estimate heterogeneous treatment effects with Generalized Random Forests (GRF) [@grf2024]. GRF extends random forests for causal inference by focusing on conditional average treatment effects (CATE). It handles complex interactions and non-linearities without explicit model specification, and it provides 'honest' estimates by splitting data between model-fitting and inference. GRF is doubly robust because it remains consistent if either the outcome model or the propensity model is correct. We evaluate policies with the `policytree` package [@policytree_package_2024; @athey_2021_policy_tree_econometrica] and visualise results with `margot` [@margot2024]."
-
-# add grf short
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "statistical_estimator.grf.short",
-  value = grf_short_text,
-  db = methods_db
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.lmtp_long_explanation",
+  value = lmtp_long_explanation
 )
 
 
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.sdr_short_explanation",
+  value = sdr_short_explanation
+)
 
-# save
-margot::here_save(methods_db, "methods_db", methods_path)
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.sdr_long_explanation",
+  value = sdr_long_explanation
+)
+
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.grf_short_explanation",
+  value = grf_short_explanation
+)
+
+
+# checks
+cat(unified_db$methods$statistical_models$lmtp_short_explanation)
+cat(unified_db$methods$statistical_models$lmtp_long_explanation)
+cat(unified_db$methods$statistical_models$sdr_short_explanation)
+cat(unified_db$methods$statistical_models$sdr_long_explanation)
+cat(unified_db$methods$statistical_models$grf_short_explanation)
+
+# save progress
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+
 
 
 # approach text -----------------------------------------------------------
-general_approach_cate_long <- "Our primary goal was to move beyond average treatment effects (ATE) and investigate whether the intervention's impact varied significantly across individuals based on their characteristics. To achieve this, we estimated individualised treatment effects, often termed conditional average treatment effects (CATEs), using causal forests [@grf2024]. Causal forests are a machine learning method adapted specifically for estimating how treatment effects differ across people defined by a set of covariates.
 
-For interpretability across different outcomes, we standardised the direction of effects. Some outcomes, like depression scores, are typically interpreted as 'lower is better'. We inverted the scales for such variables so that positive treatment effects consistently indicated improvement (e.g., a reduction in depression). This ensures that larger positive CATE estimates always signify greater benefit from the treatment. The following outcomes were inverted: {{flipped_list}}.
+general_approach_cate_long <- "
+### Individualised Treatment Policies
 
-A central challenge when modelling individual differences is ensuring the detected variations are genuine and not just noise or overfitting. Therefore, we rigorously evaluated the causal forest estimates using a 50/50 sample splitting approach. Half the data were used to train the causal forest model (i.e., to identify patterns of differing treatment effects), and the other half (the held-out data) were used exclusively for evaluation.
+Our primary goal was to move beyond average treatment effects (ATE) and assess whether the intervention's causal effects varied systematically across individuals. To do this, we estimated conditional average treatment effects (CATEs) using causal forests [@grf2024]. Causal forests are a machine learning method designed to detect heterogeneity in treatment effects across subgroups defined by covariates. Such effects help us understand for whom the treatment is most beneficial, for whom it may be less effective, and for whom it could be harmful.
 
-On the held-out data, we first assessed the calibration of the predictions [@grf2024]. This involved checking if the average of the predicted CATEs accurately reflected the overall average treatment effect (ATE) found in the evaluation sample. More importantly, we tested whether the *predicted variation* in treatment effects (heterogeneous treatment effects, HTE) was reliable. A specific 'differential prediction' test acts as an omnibus indicator ($p$-value) of whether the model successfully captures statistically significant variability in how individuals respond to the treatment [@grf2024]. We also calculated the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018]. RATE quantifies the potential real-world value of using the model to target treatment – specifically, it measures the average outcome improvement we would expect if we prioritised treatment for the individuals predicted to benefit most, compared to a simpler strategy like treating everyone or no one based only on the ATE.
+For consistency across outcomes, we inverted variables where 'lower is better' so that positive treatment effects uniformly denote improvement. The following outcomes were inverted: {{flipped_list}}. This ensures that larger positive CATE estimates always indicate greater benefit.
 
-To visualise the benefit of prioritisation, we used Qini curves [@grf2024]. These curves compare two scenarios evaluated on the held-out data:
-1.  **Uniform Allocation:** Treating (or not treating) individuals based solely on the overall ATE.
-2.  **Targeted Allocation:** Prioritising treatment for individuals ranked highest on their predicted CATE from the causal forest.
+A major concern when investigating individual differences is distinguishing genuine heterogeneity from noise. We addressed this by employing a 50/50 sample split: the first half trained the causal forest, while the second half (held-out data) was reserved for evaluation.
 
-The Qini curve plots the cumulative gain (or loss) achieved by the targeted approach as we increase the proportion of the sample receiving treatment (starting with those predicted to benefit most). Positive Qini values indicate that targeting treatment based on predicted CATEs yields better overall outcomes than the uniform approach for that proportion treated. This helps determine if a personalised strategy is advantageous, and potentially for what fraction of the population.
+On the held-out data, we checked calibration [@grf2024] by comparing (i) the mean predicted CATEs against the overall ATE in that evaluation sample, and (ii) the reliability of the predicted variation. A differential prediction test provided an omnibus $p$-value indicating whether the model captured statistically significant heterogeneity in outcomes. We also calculated the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018], which measures how effectively a model-based targeting strategy might outperform a simpler 'treat all or none' approach.
 
-Finally, if reliable heterogeneity was detected, we aimed to translate these complex CATE predictions into simpler, actionable rules using policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Policy trees learn simple decision rules (e.g., 'Treat individuals with baseline score > X and age < Y') that optimise treatment allocation based on the estimated CATEs. They identify key baseline characteristics that distinguish subgroups with markedly different responses, providing transparent, interpretable guidelines for potentially tailoring treatment in practice.
+We then used Qini curves [@grf2024] to visualise the potential gains of targeting individuals with higher predicted CATEs. These curves compare:
+1.  **Uniform Allocation**: treating everyone (or no one) based on the ATE alone,
+2.  **Targeted Allocation**: prioritising those with the highest predicted CATEs first.
 
-All heterogeneity analyses, including calibration tests, RATE calculations, Qini curves, and policy trees, were conducted using R, primarily with the `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024] packages. The figures presented were generated using `margot`.
+The Qini curve plots cumulative gains (or losses) as the proportion of treated individuals increases. Positive Qini values suggest a personalised strategy outperforms uniform treatment, helping identify whether (and how) a targeted approach is worthwhile.
 
-Collectively, this multi-stage approach allows us to first estimate individualised effects, rigorously test whether these estimated variations are reliable, evaluate the potential gains from targeting treatment, and finally, derive simple rules to guide personalised intervention strategies if justified by the data.
+Finally, if reliable heterogeneity was detected, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to derive simple, interpretable rules (e.g., ‘Treat individuals if baseline score > X and age < Y’). These rules aim to highlight subgroups with notably different treatment responses, offering pragmatic guidance for personalised interventions.
+
+All heterogeneity analyses—including calibration tests, RATE, Qini curves, and policy trees—were implemented in R using the `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024] packages, with figures generated by `margot`. This multi-step framework allows us to estimate individualised treatment effects, verify their reliability, evaluate the added benefit of targeting, and propose straightforward decision rules if a personalised approach is justified by the data.
 "
-general_approach_cate_short <- "Our primary aim was to look beyond average treatment effects (ATE) and explore whether the intervention’s impact varied systematically across individuals. To that end, we estimated individualised treatment effects, also called conditional average treatment effects (CATEs), using causal forests [@grf2024], a machine learning approach tailored for detecting treatment-effect heterogeneity based on covariates.
 
-We standardised effect directions by inverting any outcome where 'lower is better', so positive values consistently denote improvement. The following outcomes were inverted: {{flipped_list}}.
+general_approach_cate_short <- "
+### Individualised Treatment Policies
 
-A common concern when modelling individual differences is distinguishing real variation from noise. To address this, we used a 50/50 sample split. We trained the causal forest on half the data, then tested model predictions exclusively on the remaining half to prevent overfitting.
+Our main aim was to look beyond the average treatment effect (ATE) and explore whether the intervention’s impact varied by individual characteristics. We estimated conditional average treatment effects (CATEs) using causal forests [@grf2024], which are machine learning methods tailored for detecting treatment-effect heterogeneity.
 
-In the held-out sample, we checked whether the predicted CATEs were well calibrated [@grf2024]. This involved comparing (i) the mean of the predicted effects to the overall ATE in the evaluation sample, and (ii) testing whether the predicted *variation* in effects was reliable. A differential prediction test provided an omnibus $p$-value for whether the model captured genuine heterogeneity in responses. We also calculated the Rank-Weighted Average Treatment Effect (RATE), which estimates how effectively a model-based targeting strategy would outperform a uniform treatment strategy [@grf2024; @wager2018].
+We standardised effect directions by inverting outcomes where 'lower is better', ensuring that positive values always signify improvement. The following outcomes were inverted: {{flipped_list}}.
 
-To visualise the added value of targeting, we used Qini curves [@grf2024]. These compare:
+To reduce overfitting and distinguish real heterogeneity from noise, we split the sample 50/50. We trained the causal forest on the first half, then tested its predictions exclusively on the second half. In this held-out data, we checked calibration by comparing the mean of the predicted CATEs to the overall ATE, and we used a differential prediction test to assess whether the predicted variation was genuine [@grf2024]. We also computed the Rank-Weighted Average Treatment Effect (RATE), which estimates the benefit of targeting individuals predicted to benefit most [@grf2024; @wager2018].
 
-1.  **Uniform Allocation**: treating or not treating everyone based on the overall ATE.
-2.  **Targeted Allocation**: treating individuals ranked highest by their predicted CATE first.
+Qini curves [@grf2024] were used to illustrate how a targeted allocation might outperform a uniform approach. Specifically, we compared:
+1.  **Uniform Allocation**: treating or not treating everyone based on the ATE,
+2.  **Targeted Allocation**: treating those with the highest predicted CATEs first.
 
-The Qini curve shows the cumulative gain (or loss) of the targeted strategy as we treat larger proportions of the sample. Positive values suggest that prioritising high-CATE individuals outperforms uniform treatment, helping identify whether, and at what coverage level, personalisation is beneficial.
+Positive Qini values suggest that a targeted strategy is superior, helping to identify if personalisation is worthwhile and at what scale.
 
-Finally, for practical implementation, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to derive simple, rule-based recommendations. Policy trees split participants into subgroups defined by key moderators, providing clear 'treat' or 'do not treat' cut-points, evaluated for effectiveness on the held-out data. All heterogeneity analyses—including calibration tests, RATE, Qini curves, and policy trees—were done in R using `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024].
+Finally, if we found reliable heterogeneity, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to derive simple, rule-based recommendations (e.g., ‘Treat if baseline score > X’). All heterogeneity analyses, including calibration tests, RATE, Qini curves, and policy trees, were done in R using `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024]. This approach allowed us to identify individualised effects, confirm their robustness, estimate the potential value of targeting, and propose straightforward strategies for personalised treatment."
 
-Taken together, this multi-stage approach first identifies individualised treatment effects, then tests their reliability, estimates the added value of targeted intervention, and, if justified, provides simple rules for personalising treatment in practice."
 
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "update",
-  name = "approach.grf_cate_long",
-  value = general_approach_cate_long,
-  db = methods_db
+general_approach_cate_long_no_flip <- "
+### Individualised Treatment Policies
+
+Our primary goal was to move beyond average treatment effects (ATE) and assess whether the intervention's causal effects varied systematically across individuals. To do this, we estimated conditional average treatment effects (CATEs) using causal forests [@grf2024]. Causal forests are a machine learning method designed to detect heterogeneity in treatment effects across subgroups defined by covariates. Such effects help us understand for whom the treatment is most beneficial, for whom it may be less effective, and for whom it could be harmful.
+
+A major concern when investigating individual differences is distinguishing genuine heterogeneity from noise. We addressed this by employing a 50/50 sample split: the first half trained the causal forest, while the second half (held-out data) was reserved for evaluation.
+
+On the held-out data, we checked calibration [@grf2024] by comparing (i) the mean predicted CATEs against the overall ATE in that evaluation sample, and (ii) the reliability of the predicted variation. A differential prediction test provided an omnibus $p$-value indicating whether the model captured statistically significant heterogeneity in outcomes. We also calculated the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018], which measures how effectively a model-based targeting strategy might outperform a simpler 'treat all or none' approach.
+
+We then used Qini curves [@grf2024] to visualise the potential gains of targeting individuals with higher predicted CATEs. These curves compare:
+1.  **Uniform Allocation**: treating everyone (or no one) based on the ATE alone,
+2.  **Targeted Allocation**: prioritising those with the highest predicted CATEs first.
+
+The Qini curve plots cumulative gains (or losses) as the proportion of treated individuals increases. Positive Qini values suggest a personalised strategy outperforms uniform treatment, helping identify whether (and how) a targeted approach is worthwhile.
+
+Finally, if reliable heterogeneity was detected, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to derive simple, interpretable rules (e.g., ‘Treat individuals if baseline score > X and age < Y’). These rules aim to highlight subgroups with notably different treatment responses, offering pragmatic guidance for personalised interventions.
+
+All heterogeneity analyses—including calibration tests, RATE, Qini curves, and policy trees—were implemented in R using the `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024] packages, with figures generated by `margot`. This multi-step framework allows us to estimate individualised treatment effects, verify their reliability, evaluate the added benefit of targeting, and propose straightforward decision rules if a personalised approach is justified by the data.
+"
+
+general_approach_cate_short_no_flip <- "
+### Individualised Treatment Policies
+
+Our main aim was to look beyond the average treatment effect (ATE) and explore whether the intervention’s impact varied by individual characteristics. We estimated conditional average treatment effects (CATEs) using causal forests [@grf2024], which are machine learning methods tailored for detecting treatment-effect heterogeneity.
+
+To reduce overfitting and distinguish real heterogeneity from noise, we split the sample 50/50. We trained the causal forest on the first half, then tested its predictions exclusively on the second half. In this held-out data, we checked calibration by comparing the mean of the predicted CATEs to the overall ATE, and we used a differential prediction test to assess whether the predicted variation was genuine [@grf2024]. We also computed the Rank-Weighted Average Treatment Effect (RATE), which estimates the benefit of targeting individuals predicted to benefit most [@grf2024; @wager2018].
+
+Qini curves [@grf2024] were used to illustrate how a targeted allocation might outperform a uniform approach. Specifically, we compared:
+1.  **Uniform Allocation**: treating or not treating everyone based on the ATE,
+2.  **Targeted Allocation**: treating those with the highest predicted CATEs first.
+
+Positive Qini values suggest that a targeted strategy is superior, helping to identify if personalisation is worthwhile and at what scale.
+
+Finally, if we found reliable heterogeneity, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to derive simple, rule-based recommendations (e.g., ‘Treat if baseline score > X’). All heterogeneity analyses, including calibration tests, RATE, Qini curves, and policy trees, were done in R using `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024]. This approach allowed us to identify individualised effects, confirm their robustness, estimate the potential value of targeting, and propose straightforward strategies for personalised treatment."
+
+simple_general_approach_cate_long <- "
+### Individualised Treatment Policies
+
+In simple terms, we wanted to see if a treatment works differently for different people, rather than just figuring out one overall benefit for everyone. We used a method called 'causal forests' (think of it like a special type of decision tree) to find which groups of people might benefit the most, and which groups might benefit the least.
+
+Because some of our measures work in opposite directions ('lower is better', e.g. depression), we flipped those measures so that 'higher' always means 'better.' That way, if we talk about a 'positive effect,' it consistently means the person improved.
+
+To avoid fooling ourselves by spotting fake patterns in the data, we split our sample in half. We used the first half to teach our causal forest model what to look for, then tested it on the second half—so we only trust what shows up in that new data, where the model wasn’t allowed to 'peek.'
+
+We tested whether the model’s predictions were sensible in two ways:
+1.  **Do the average predictions match the overall effect?** This checks if the model's idea of an 'average effect' fits what we actually see in the second half of the data.
+2.  **Is there real variety in who benefits most?** The model estimates different effects for different people, but we need to confirm that these differences aren not just random noise.
+
+We also used two extra tools:
+- **Qini curves**: these plots show if focusing on the people who the model says would benefit most actually leads to better outcomes than just treating (or not treating) everyone.
+- **Policy trees**: these are straightforward 'if-then' rules (e.g., 'If a person’s baseline score is above X, recommend treatment'). Qini curves give more insight than 'black box' machine learning models, and can help guide decisions in real-world practice.
+
+Putting it all together, this step-by-step approach lets us investigate whether treatments should be applied the same way for everyone, or whether we can do better by matching treatments to the people who stand to benefit the most (refer to appendix {{appendix_analytic_approach}}."
+
+simple_general_approach_cate_short <- "
+### Individualised Treatment Policies
+
+We used a method called 'causal forests' to check if a treatment helped some people more than others. After flipping any scales so that ‘higher’ always means ‘better,’ we taught the model on half the data and tested it on the other half. This helped us see whether the differences we found were real rather than accidental. We then compared outcomes when we targeted treatment to those predicted to benefit the most (using Qini curves) against simply giving the treatment to everyone. Finally, we used policy trees to boil down these results into simple, if-then rules for deciding who’s likely to benefit most from the treatment (refer to appendix {{appendix_analytic_approach}}."
+
+
+simple_general_approach_cate_long_no_flip <- "
+### Individualised Treatment Policies
+
+In simple terms, we wanted to see if a treatment works differently for different people, rather than just figuring out one overall benefit for everyone. We used a method called 'causal forests' (think of it like a special type of decision tree) to find which groups of people might benefit the most, and which groups might benefit the least.
+
+To avoid fooling ourselves by spotting fake patterns in the data, we split our sample in half. We used the first half to teach our causal forest model what to look for, then tested it on the second half—so we only trust what shows up in that new data, where the model wasn’t allowed to 'peek.'
+
+We tested whether the model’s predictions were sensible in two ways:
+1.  **Do the average predictions match the overall effect?** This checks if the model's idea of an 'average effect' fits what we actually see in the second half of the data.
+2.  **Is there real variety in who benefits most?** The model estimates different effects for different people, but we need to confirm that these differences are not just random noise.
+
+We also used two extra tools:
+- **Qini curves**: these plots show if focusing on the people who the model says would benefit most actually leads to better outcomes than just treating (or not treating) everyone.
+- **Policy trees**: these are straightforward 'if-then' rules (e.g., 'If a person’s baseline score is above X, recommend treatment'). Qini curves give more insight than 'black box' machine learning models, and can help guide decisions in real-world practice.
+
+Putting it all together, this step-by-step approach lets us investigate whether treatments should be applied the same way for everyone, or whether we can do better by matching treatments to the people who stand to benefit the most (refer to appendix {{appendix_analytic_approach}}."
+
+simple_general_approach_cate_short_no_flip <- "
+### Individualised Treatment Policies
+
+We used a method called 'causal forests' to check if a treatment helped some people more than others. We trained the model on half the data and tested it on the other half. This helped us understand whether the differences we found were real rather than accidental. We then compared outcomes when we targeted treatment to those predicted to benefit the most (using Qini curves) against simply giving the treatment to everyone. Finally, we used policy trees to boil down these results into simple, if-then rules for deciding who's likely to benefit most from the treatment (refer to appendix {{appendix_analytic_approach}}."
+
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.general_approach_cate_long",
+  value = general_approach_cate_long
 )
 
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "update",
-  name = "approach.grf_cate_short",
-  value = general_approach_cate_short,
-  db = methods_db
-)
-
-cat(methods_db$approach$grf_cate_short)
-
-results_ominibus_test_conclusion <-  "The omnibus test did not provide statistically significant evidence for overall treatment effect heterogeneity based on the examined covariates [@grf2024]. This suggests that, across all individuals and covariates considered, the model did not reliably detect variation beyond chance according to this specific test. However, omnibus tests can lack power for detecting subtle or localised heterogeneity. Therefore, we examined more specific indicators of potential targeting benefits and subgroup differences."
-
-results_rate_qini_intro <- "To assess the potential practical value of tailoring treatment based on individual predictions, we examined the Rank-Weighted Average Treatment Effect (RATE) and Qini curves [@grf2024; @wager2018]. These predictions are estimates (denoted $\hat{\tau}(X_i)$) of the underlying conditional average treatment effect (CATE, $\tau(X_i)$), which represents the average treatment effect for individuals with specific baseline covariates $X_i$. Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects ($\hat{\tau}(X_i)$) always indicate greater benefit from treatment. RATE and Qini curves evaluate how well a strategy of prioritising treatment using these CATE predictions $\hat{\tau}(X_i)$ performs compared to simpler approaches (e.g., uniform treatment based on the overall average effect, ATE). Specifically, RATE estimates the average gain achieved among the group prioritised by the model [@wager2018]. Qini curves dynamically visualise this potential gain: they plot the cumulative benefit realised as we hypothetically treat an increasing proportion of the population, starting with those individuals having the highest predicted effects $\hat{\tau}(X_i)$ [@grf2024]."
-
-results_policy_tree_intro <- "Finally, to identify potentially actionable insights and specific subgroups with distinct responses, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. This method seeks simple, interpretable rules (based on participant characteristics) that optimise treatment allocation based on estimated treatment effects ($\hat{\tau}(X_i)$). Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects always indicate greater benefit. Policy trees can be particularly informative for uncovering localised heterogeneity, such as identifying small but well-defined subgroups who might experience substantially different treatment effects, even when overall variation is modest."
-
-methods_db <- boilerplate_manage_text(
-  category = "results",
-  action = "add",
-  name = "results.ominibus_test.conclusion",
-  value = results_ominibus_test_conclusion,
-  db = methods_db
-)
-
-methods_db <- boilerplate_manage_text(
-  category = "results",
-  action = "add",
-  name = "results.rate_qini_intro",
-  value = results_rate_qini_intro,
-  db = methods_db
-)
-
-methods_db <- boilerplate_manage_text(
-  category = "results",
-  action = "update",
-  name = "results.policy_tree_intro",
-  value = results_policy_tree_intro,
-  db = methods_db
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.general_approach_cate_short",
+  value = general_approach_cate_short
 )
 
 
-# save
-margot::here_save(methods_db, "methods_db", methods_path)
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.general_approach_cate_long_no_flip",
+  value = general_approach_cate_long_no_flip
+)
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.general_approach_cate_short_no_flip",
+  value = general_approach_cate_short_no_flip
+)
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.simple_general_approach_cate_long",
+  value = simple_general_approach_cate_long
+)
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.simple_general_approach_cate_short",
+  value = simple_general_approach_cate_short
+)
+
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.simple_general_approach_cate_long_no_flip",
+  value = simple_general_approach_cate_long_no_flip
+)
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.simple_general_approach_cate_short_no_flip",
+  value = simple_general_approach_cate_short_no_flip
+)
+
+# checks
+cat(unified_db$methods$analytic_approach$general_approach_cate_long)
+cat(unified_db$methods$analytic_approach$general_approach_cate_short)
+cat(unified_db$methods$analytic_approach$general_approach_cate_long_no_flip)
+cat(unified_db$methods$analytic_approach$general_approach_cate_short_no_flip)
+
+cat(unified_db$methods$analytic_approach$simple_general_approach_cate_long)
+cat(unified_db$methods$analytic_approach$simple_general_approach_cate_short)
+
+cat(unified_db$methods$analytic_approach$simple_general_approach_cate_long_no_flip)
+cat(unified_db$methods$analytic_approach$simple_general_approach_cate_short_no_flip)
+
+# # save progress
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+
+# sensitivity analysis ----------------------------------------------------
+unified_db$methods$sensitivity_analysis$evalue
+# add a new custom text entry
+short_evalue <- "
+### Sensitivity Analysis
+
+We perform sensitivity analyses using the E-value metric [@vanderweele2017; @linden2020EVALUE]. The E-value represents the minimum association strength (on the risk ratio scale) that an unmeasured confounder would need to have with both the exposure and outcome—after adjusting for measured covariates—to explain away the observed exposure-outcome association [@vanderweele2020; @linden2020EVALUE]."
+
+
+unified_db <- boilerplate_add_entry(
+  db = unified_db,
+  path = "methods.sensitivity_analysis.short_evalue",
+  value = short_evalue)
+
+
+# yes save
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+
+
+# cleaner protocol --------------------------------------------------------
+#
+#
+# # First, import the database
+# unified_db <- boilerplate_import(data_path = my_project_path)
+# unified_db$methods$causal_identification_criteria
+#
+# # Causal identification criteria
+# unified_db<- boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.causal_identification_criteria",
+#   value = causal_identification_criteria
+# )
+#
+# # Confounding control - create structure and add vanderweele
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.confounding_control",
+#   value = list()
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.confounding_control.vanderweele",
+#   value = vanderweele
+# )
+#
+# # Eligibility
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.eligibility",
+#   value = list()
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.eligibility.standard",
+#   value = standard
+# )
+#
+# # Missing data - first check if it exists already
+# if (!boilerplate_path_exists(unified_db, "methods.missing_data")) {
+#   boilerplate_add_entry(
+#     db = unified_db,
+#     path = "methods.missing_data",
+#     value = list()
+#   )
+# }
+# # Add the missing data entries
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.missing_data.missing_lmtp_simple",
+#   value = missing_lmtp_simple
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.missing_data.missing_lmtp_time_varying",
+#   value = missing_lmtp_time_varying
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.missing_data.missing_grf_simple",
+#   value = missing_grf_simple
+# )
+#
+# # Statistical models
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.statistical_models",
+#   value = list()
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.statistical_models.lmtp_short_explanation",
+#   value = lmtp_short_explanation
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.statistical_models.lmtp_long_explanation",
+#   value = lmtp_long_explanation
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.statistical_models.sdr_short_explanation",
+#   value = sdr_short_explanation
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.statistical_models.sdr_long_explanation",
+#   value = sdr_long_explanation
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.statistical_models.grf_short_explanation",
+#   value = grf_short_explanation
+# )
+#
+# # Analytic approach
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach",
+#   value = list()
+# )
+# # Add the analytic approach entries
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.general_approach_cate_long",
+#   value = general_approach_cate_long
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.general_approach_cate_short",
+#   value = general_approach_cate_short
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.general_approach_cate_long_no_flip",
+#   value = general_approach_cate_long_no_flip
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.general_approach_cate_short_no_flip",
+#   value = general_approach_cate_short_no_flip
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.simple_general_approach_cate_long",
+#   value = simple_general_approach_cate_long
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.simple_general_approach_cate_short",
+#   value = simple_general_approach_cate_short
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.simple_general_approach_cate_long_no_flip",
+#   value = simple_general_approach_cate_long_no_flip
+# )
+# boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.simple_general_approach_cate_short_no_flip",
+#   value = simple_general_approach_cate_short_no_flip
+# )
+#
+# # Finally, save the database
+# boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+#
+# # To verify the changes
+# unified_db <- boilerplate_import(data_path = my_project_path)
+# # Check one entry to verify it's been saved correctly
+# cat(boilerplate_get_entry(unified_db, "methods.missing_data.missing_lmtp_simple"))
+
+
+
+# results -----------------------------------------------------------------
+
+interpretation_ominibus_test_negative <-  "
+#### Omnibus Test
+
+The omnibus test indicates that the model found real differences in how individuals respond to the treatment. In other words, some people appear to benefit more than others, which justifies exploring targeted approaches or subgroups in more detail. (Note: for any outcomes we flipped, a 'higher' effect still means greater improvement.) Here, the omnibus test did not provide statistically reliable evidence for overall treatment effect heterogeneity based on the examined covariates [@grf2024]. This suggests that, across all individuals and covariates considered, the model did not reliably detect variation beyond chance according to this specific test. However, omnibus tests can lack power for detecting subtle or localised heterogeneity. Therefore, we examined more specific indicators of potential targeting benefits and subgroup differences."
+
+interpretation_ominibus_test_positive <- "
+#### Omnibus Test
+
+The omnibus test indicates that the model found real differences in how individuals respond to the treatment. In other words, some people appear to benefit more than others, which justifies exploring targeted approaches or subgroups in more detail. (Note: for any outcomes we flipped, a ‘higher’ effect still means greater improvement.)"
+
+
+interpretation_rate <- "
+#### Rate Test
+
+The RATE tells us how much better we could do by offering treatment first to those who are predicted to benefit most, rather than treating everyone the same. A higher RATE suggests that targeting people with higher predicted benefits (where ‘higher’ always means better, due to flipping some outcomes) can lead to better overall results."
+
+
+interpretation_rate_no_flip <- "
+#### Rate Test
+
+The RATE tells us how much better we could do by offering treatment first to those who are predicted to benefit most, rather than treating everyone the same. A higher RATE suggests that targeting people with higher predicted benefits can lead to better overall results."
+
+interpretation_qini <- "
+#### Qini Curves
+
+The Qini curve helps us understand whether focusing on the people predicted to benefit the most actually leads to better overall outcomes than treating everyone (or no one). We start with those who are forecast to benefit the most, then gradually include more people. If the Qini curve remains above the line for treating everyone equally, it implies a targeted approach is likely beneficial."
+
+
+interpretation_policy_tree <- "
+#### Policy Trees
+
+We used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to find straightforward ‘if-then’ rules for who benefits most from treatment, based on participant characteristics. Because we flipped some measures, a higher predicted effect always means greater improvement. Policy trees can uncover small but important subgroups whose treatment responses stand out, even when the overall differences might be modest."
+
+# boilerplate_remove_entry(
+#   db = unified_db,
+#   path = "results.results"
+# )
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "results.grf.interpretation_ominibus_test_negative",
+  value = interpretation_ominibus_test_negative
+)
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "results.grf.interpretation_ominibus_test_positive",
+  value = interpretation_ominibus_test_positive
+)
+unified_db$results$grf$interpretation_ominibus_test_positive
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "results.grf.interpretation_rate",
+  value = interpretation_rate
+)
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "results.grf.interpretation_qini",
+  value = interpretation_qini
+)
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "results.grf.interpretation_policy_tree",
+  value = interpretation_policy_tree
+)
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "results.grf.interpretation_rate_no_flip",
+  value = interpretation_rate_no_flip
+)
+
+
+# Finally, save the database
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+# To verify the changes
+unified_db <- boilerplate_import(data_path = my_project_path)
+# Check one entry to verify it's been saved correctly
+cat(boilerplate_get_entry(unified_db, "methods.missing_data.missing_lmtp_simple"))
+
 
 
 
 # Discussion --------------------------------------------------------------
 
-# Draft text for Strengths and Limitations Discussion Protocol
+strengths_grf_long <- "
+### Strengths and Limitations of Our Approach
 
-cate_strengths_limitations_text_long <- "
-Our approach to estimating Conditional Average Treatment Effects (CATEs, $\\tau(x)$) leverages several methodological strengths while also requiring careful consideration of underlying assumptions for interpretation.
+We used causal forests [@grf2024]—a statistical method designed to estimate Conditional Average Treatment Effects (CATEs)—to investigate how treatment effectiveness might vary across individuals with different characteristics. This strategy offers several advantages over simpler regression models, yet it also comes with important caveats.
 
-**Strengths:**
+#### Potential Limitations
 
+First, our results depend heavily on having measured all key variables that affect both who receives treatment and how strongly they respond. If important factors are missing, the estimated differences in treatment effects may be biased. Selecting which characteristics to include in the model is also critical: omitting relevant factors or including inappropriate ones can yield misleading conclusions. Any further analyses that rely on these estimates—such as deciding whom to treat first—will inherit the same potential biases.
 
-**Flexible Non-parametric Estimation:** we utilise causal forests [@grf2024] for flexible, non-parametric estimation of CATEs ($\\tau(x)$). This avoids potentially restrictive linearity or additivity assumptions common in traditional regression models, can capture complex interactions among covariates ($X$) that modify treatment effects, and is well-suited to datasets with numerous potential moderators.
+Second, interpreting subgroup effects can be challenging when many characteristics are considered simultaneously. Because these estimates are conditional on all factors in the model, a statistically significant finding for one subgroup may not necessarily hold when additional characteristics vary. Moreover, even if the model detects genuine differences, small or niche effects might not translate into meaningful real-world improvements.
 
-**Robust Evaluation Framework:** we employ a rigorous evaluation protocol using 50/50 sample splitting. This provides an honest assessment of the model's performance on unseen data and guards against overfitting, where apparent heterogeneity in training data might not generalise.
+#### Strengths
 
-**Assessment of Heterogeneity Reliability and Value:** we directly test the reliability of *predicted* CATE variation ($\\hat{\tau}(x)$) using calibration checks and the differential prediction test [@grf2024]. Furthermore, we quantify the potential overall value of targeting using the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018], which measures the average gain expected from prioritising treatment based on $\\hat{\tau}(x)$ compared to uniform allocation.
+Despite these considerations, our approach provides a powerful way to uncover and potentially leverage treatment effect heterogeneity. Causal forests [@grf2024] do not assume a simple linear or additive structure, enabling them to detect complex interactions among diverse covariates. To ensure the findings are not just statistical artifacts, we used a 50/50 sample split: one half of the data to build the model and the other to test its predictions on unseen data. This guards against overfitting and gives a more reliable indication of how well the model generalises.
 
-**Visualisation of Targeting Benefit (Qini Curves):** we generate Qini curves [@grf2024] to visualise the cumulative gain achieved by prioritising treatment based on predicted CATEs ($\\hat{\tau}(x)$). This analysis complements RATE by graphically illustrating *how* the benefit accrues as progressively larger proportions of the sample are treated according to the model's ranking. It helps identify the potential scale and efficiency of a targeted strategy, showing for which fraction of the population personalisation appears most advantageous compared to uniform allocation strategies.
+We also explicitly assess the reliability and practical value of the predicted differences in treatment effects. We perform statistical checks—such as calibration and differential prediction tests [@grf2024]—to determine whether these variations are genuine rather than noise. Additionally, the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018] estimates how much we might improve outcomes if we treat only the individuals predicted to benefit most, instead of treating everyone equally. To visualise this, Qini curves [@grf2024] show how much extra benefit accumulates as we expand treatment from the top-ranked individuals to a larger portion of the population. Finally, policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] translate these insights into straightforward ‘if-then’ rules based on key baseline characteristics, making the findings more accessible for real-world decision-making.
 
-**Derivation of Actionable Rules (Policy Trees):**  we employ policy trees to derive action rules [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. These translate potentially complex, individual-level CATE estimates ($\\hat{\tau}(x)$) into simple, interpretable decision rules based on key baseline characteristics. This facilitates the identification of specific, well-defined subgroups predicted to have distinct treatment responses, thereby yielding potentially actionable and transparent guidelines for tailoring interventions in practice.
-
-**Limitations and Interpretive Considerations:**
-
-**Reliance on Unconfoundedness:** the primary limitation is that the causal validity of the estimated CATEs ($\\hat{\tau}(x)$) hinges critically on the assumption of unconfoundedness given the included baseline covariates ($X$). We must assume that $X$ adequately captures all common causes of treatment assignment and potential outcomes. While we conduct sensitivity analyses [See Section X.X on Sensitivity Analysis, e.g., using E-values @vanderweele2017] to assess robustness to potential *unmeasured* confounders, residual bias impacting CATE estimates remains possible.
-
-**Sensitivity to Covariate Selection:**  when interpreting policy trees, we assume that covariates $X$ do not introduce bias, for instance, through conditioning on colliders. Careful selection of pre-treatment covariates based on domain knowledge is essential (refer to {{appendix_effect_modification}}).
-
-**Interpretation of Qini Curves and RATE:** positive Qini curves and RATE values indicate that the model successfully ranks individuals based on *predicted* benefit ($\\hat{\tau}(x)$$) in the held-out sample, leading to better average outcomes for prioritised groups *under the model's assumptions*. However, the *magnitude* of the benefit shown by the Qini curve and the RATE estimate directly reflects the performance of potentially biased $\\hat{\tau}(x)$$ estimates if either causal assumptions are violated or statistical models introduce bias. We evaluate the utility of the *estimated* CATEs, not necessarily the utility achievable with the *true* CATEs.
-
-**Interpretation of Policy Trees:** Similarly, policy trees derive optimal allocation rules based on the *estimated* CATEs ($\\hat{\tau}(x)$). If $\\hat{\tau}(x)$$ is biased due to unmeasured confounding or collider bias, the derived subgroups and treatment rules may not be truly optimal for maximising population outcomes based on the true underlying effects. The policy tree evaluation reflects the performance of rules derived from potentially imperfect CATE estimates.
-
-**Conditionality of Estimates:** CATE estimates ($\\hat{\tau}(x)$$) are inherently conditional on the full vector of covariates $X=x$. When interpreting modification by a specific variable within $X$, remember this occurs while holding all other included covariates constant.
-
-In summary, our approach employs advanced methods for estimating and validating treatment effect heterogeneity. However, the translation of these statistical findings into causal claims about the benefits of personalised treatment relies fundamentally on the plausibility of the unconfoundedness assumption given the measured covariates and the careful exclusion of bias-inducing variables. In some cases, these twin objectives will be in tension; controlling for a variable necessary for unconfoundedness of the treatment will biase conditional effect estimates (refer to @vanderweele2007FOURTYPESOFEFFECT; @vanderweele2012, see {{appendix_effect_modification}})."
-
-# Example of adding to a hypothetical boilerplate database (using your function structure)
-# Assuming 'methods_db' exists and 'boilerplate_manage_text' is defined
-
-methods_db <- boilerplate_manage_text(
-  category = "discussion", #
-  action = "add",
-  name = "cate_estimation_strengths_limitations.long",
-  value = cate_strengths_limitations_text_long,
-  db = methods_db
-)
-
-# head(methods_db) #
-
-
-
-# Draft text for Strengths and Limitations Discussion Protocol
-
-cate_strengths_limitations_text_short <- "
-Our approach to estimating Conditional Average Treatment Effects (CATEs, $\\tau(x)$) leverages several methodological strengths while also requiring careful consideration of underlying assumptions for interpretation.
-
-**Strengths:**
-
-**Flexible Non-parametric Estimation:** we utilise causal forests [@grf2024] for flexible, non-parametric estimation of CATEs ($\\tau(x)$). This avoids potentially restrictive linearity or additivity assumptions common in traditional regression models, can capture complex interactions among covariates ($X$) that modify treatment effects, and is well-suited to datasets with numerous potential moderators.
-
-**Robust Evaluation Framework:** we employ a rigorous evaluation protocol using 50/50 sample splitting. This provides an honest assessment of the model's performance on unseen data and guards against overfitting, where apparent heterogeneity in training data might not generalise.
-
-**Assessment of Heterogeneity Reliability and Value:** we directly test the reliability of *predicted* CATE variation ($\\hat{\\tau}{(x)}$) using calibration checks and the differential prediction test [@grf2024]. Furthermore, we quantify the potential overall value of targeting using the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018], which measures the average gain expected from prioritising treatment based on $\\hat{\\tau}{(x)}$ compared to uniform allocation.
+In sum, this combination of flexible modelling, rigorous testing, and practical tools for targeting treatment offers a robust framework for studying and applying treatment effect heterogeneity. Nonetheless, these benefits hinge on the completeness of our data and the accuracy of our assumptions.
 "
 
-# Example of adding to a hypothetical boilerplate database (using your function structure)
-methods_db <- boilerplate_manage_text(
-  category = "discussion", # Or "methods_limitations"
-  action = "update",
-  name = "cate_estimation_strengths_limitations.long",
-  value = cate_strengths_limitations_text,
-  db = methods_db
+# Short Version
+strengths_grf_short <- "
+**Strengths and Limitations of Our CATE Approach**
+
+We used causal forests [@grf2024] to estimate how treatment effects may differ for individuals with different characteristics. This method is powerful but depends on measuring all major factors influencing both treatment selection and outcomes. If key factors are missed or included incorrectly, the results can be biased. Additionally, interpreting subgroup effects can be tricky when many characteristics are involved, and statistically significant differences may not always translate into meaningful real-world gains.
+
+Despite these concerns, causal forests offer notable advantages. They allow for flexible, non-parametric modelling [@grf2024], avoiding strict assumptions that might miss complex interactions. We used a robust evaluation method—training our model on half the data and testing it on the remaining half—to avoid overfitting. We then checked whether the predicted differences were genuine and estimated how much benefit we might gain by targeting treatment to those likely to benefit most [@grf2024; @wager2018]. Qini curves [@grf2024] let us see the overall improvement from treating the top-ranked individuals first, and policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] turn these findings into simple ‘if-then’ rules. Together, this approach provides a practical means of identifying and acting on genuine treatment effect differences."
+
+
+
+# check entries
+boilerplate_get_entry(
+  db = unified_db,
+  path = "discussion"
 )
 
-methods_db <- boilerplate_manage_text(
-  category = "discussion", # Or "methods_limitations"
-  action = "update",
-  name = "cate_estimation_strengths_limitations.short",
-  value = cate_strengths_limitations_text_short,
-  db = methods_db
+
+# add path
+# if (!boilerplate_path_exists(unified_db$discussion, "strengths")) {
+#   unified_db$discussion$strengths <- list()
+# }
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.strengths.strengths_grf_short",
+  value = strengths_grf_short
 )
 
-# head(methods_db) # To check
-# head(methods_db)
 
-
-# ------------------------------------------------------
-# target population section
-# ------------------------------------------------------
-target_population_text <- "The target population for this study comprises New Zealand residents as represented in the {{baseline_wave}} of the New Zealand Attitudes and Values Study (NZAVS) during the years {{baseline_wave}} weighted by New Zealand Census weights for age, gender, and ethnicity (refer to @sibley2021). The NZAVS is a national probability study designed to reflect the broader New Zealand population accurately. Despite its comprehensive scope, the NZAVS has some limitations in its demographic representation. Notably, it tends to under-sample males and individuals of Asian descent while over-sampling females and Māori (the indigenous peoples of New Zealand). To address these disparities and enhance the accuracy of our findings, we apply New Zealand Census survey weights to the sample data."
-
-# add target population
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "target_population.nzavs",
-  value = target_population_text,
-  db = methods_db
-)
-# save
-margot::here_save(methods_db, "methods_db", methods_path)
-# ------------------------------------------------------
-# causal interventions section
-# ------------------------------------------------------
-causal_interventions_text <- "#### Interventions
-This study considers the following causal interventions on the exposure variable '{{exposure_var}}':
-
-{{interventions_list}}
-
-#### Contrasts
-{{contrasts_text}}
-
-This approach to defining interventions and contrasts allows us to systematically evaluate the causal effects of interest in our study."
-
-# add causal interventions
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "causal_interventions.standard",
-  value = causal_interventions_text,
-  db = methods_db
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.strengths.strengths_grf_long",
+  value = strengths_grf_long
 )
 
-cat(methods_db$identification_assumptions$standard)
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.strengths.simple_general_approach_cate_long",
+  value = simple_general_approach_cate_long
+)
+
 
 # save
-margot::here_save(methods_db, "methods_db", methods_path)
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
-# ------------------------------------------------------
+# import
+unified_db <- boilerplate_import(data_path = my_project_path)
+
+-----------------------------------
 # save the updated methods database
 # ------------------------------------------------------
 # result <- boilerplate_manage_text(
@@ -592,32 +1133,58 @@ margot::here_save(methods_db, "methods_db", methods_path)
 # ------------------------------------------------------
 # now test generating text from the database
 # ------------------------------------------------------
-methods_db$sample
+unified_db <- boilerplate_import(data_path = my_data_path)
 
+cat(unified_db$methods$analytic_approach$simple_general_approach_cate_short)
+unified_db$methods$sensitivity_analysis
+unified_db$methods$causal_intervention$lmtp_multi_wave
 # example usage of generate_text for methods section
 methods_text <- boilerplate_generate_text(
   category = "methods",
   sections = c(
-    "sample.default",
-    "identification_assumptions.standard",
+    "sample.sample_information",
+    "causal_intervention.lmtp_multi_wave",
+    "causal_intervention.grf",
+    "target_population",
+    "eligibility.standard",
+    "causal_identification_criteria",
     "confounding_control.vanderweele",
-    "statistical_estimator.lmtp.short",
-    "missing_data.lmtp_time_vary",
-    "approach.grf_cate_short"
+    "sensitivity_analysis.evalue",
+    "missing_data.missing_grf_simple",
+    "analytic_approach.general_approach_cate_long"
   ),
   global_vars = list(
-    exposure_var = "Political Conservativism",
-    n_total = 47000,
-    flipped_list = c("Anxiety", "Depression", "Fatigue", "Perfectionism"),
+    exposure_variable = "Religious Service Attendance",
+    n_total = 77000,
+    n_participants = 48900,
+    value_exposure_regime = "Regular Religious Service Attendance",
+    value_treatment_regime = "No Religious Service Attendance",
+    value_exposure_regime = " At each wave, if attendance is below four times per month, we shift it to four; otherwise, we leave it unchanged.",
+    value_control_regime = "At each wave, if attendance is above zero, we shift it to zero; otherwise, we leave it unchanged.",
+    name_exposure_regime = "Regular Religious Service Attendance.",
+    name_control_regime = "No Religious Service Attendance.",
+    name_exposure_threshold = "Attends Religious Service",
+    name_control_threshold = "No Religious Service Attendance.",
+    value_exposure = "Shift everyone in the target population to \\> 0 religious service attendance",
+    value_control = "Shift everyone in the target population to 0 religious service attendance",
+    name_target_population = "all adults in New Zealand from the years 2018-2024",
+    number_exposure_wave = "five",
+    time_varying_confounders = "(physical disability, employment status, partner status, and parenting status)",
+    flipped_list = c("Neuroticism"),
     appendices_sample = "A",
     appendix_outcomes = "B",
+    appendix_assumptions = "E",
     baseline_wave = "NZAVS time 10, years 2018-2019",
     exposure_wave = "NZAVS time 11, years 2019-2020",
     outcome_wave = "NZAVS time 12, years 2020-2021",
     appendix_ref = "C",
+    grf_appendix = "D",
+    confidence_level = "95",
+    flipped_example = "Neuroticism",
+    appendix_analytic_approach = "D",
     protocol_url = "https://osf.io/ce4t9/"
   ),
-  db = methods_db
+  db = unified_db
 )
 
 # print the generated text
@@ -625,21 +1192,23 @@ cat(methods_text)
 
 
 # results example ---------------------------------------------------------
+unified_db$results$grf$interpretation_policy_tree
 
 results_text <- boilerplate_generate_text(
   category = "results",
   sections = c(
-    "results.results.rate_qini_intro",
-    "results.results.rate_qini_intro",
-    "results.results.policy_tree_intro"
+    "grf.interpretation_ominibus_test_negative",
+    "grf.interpretation_rate",
+    "grf.interpretation_qini",
+    "grf.interpretation_policy_tree"
   ),
   global_vars = list(
-    exposure_var = "political_conservative",
+    exposure_var = "political_conservative"
   ),
-  db = methods_db
+  db = unified_db
 )
 
-
+cat(results_text
 # example of using the boilerplate text database in a research workflow
 # this demonstrates how to generate methods text for a specific study
 
@@ -685,9 +1254,10 @@ study_params <- list(
 # ------------------------------------------------------
 # 1. generate the sample section
 # ------------------------------------------------------
+
 sample_text <- boilerplate_generate_text(
   category = "methods",
-  sections = "sample.default",
+  sections = "sample",
   global_vars = study_params,
   db= methods_db
 )
@@ -814,19 +1384,6 @@ writeLines(complete_methods, "methods_section_complete.qmd")
 # first, get the current database
 
 # add a new custom text entry
-sensitivity_text <- "In our analysis of {{exposure_var}}, we apply a novel sensitivity analysis approach based on the E-value framework developed by @vanderweele2017. This allows us to quantify the minimum strength of association that an unmeasured confounder would need to have with both the exposure and the outcome to explain away the observed effect. For our primary outcome of {{primary_outcome}}, we calculate E-values for both the point estimate and the lower bound of the {{confidence_level}}% confidence interval."
-
-methods_db <- boilerplate_manage_text(
-  category = "methods",
-  action = "add",
-  name = "sensitivity_analysis.evalue",
-  value = sensitivity_text,
-  db = methods_db
-)
-
-head(methods_db)
-
-margot::here_save(methods_db, "methods_db", methods_path)
 
 # save the updated database
 # boilerplate_manage_text(
@@ -1681,3 +2238,53 @@ measuremeasures_db <- boilerplate_manage_measures(
   db = test_measures_db
 )
 measuremeasures_db$alcohol_frequency_2
+
+
+
+
+
+
+# old ---------------------------------------------------------------------
+
+
+
+general_approach_cate_long <- "Our primary goal was to move beyond average treatment effects (ATE) and investigate whether the intervention's causale effects reliably varied across individuals based on their characteristics. To achieve this, we estimated conditional average treatment effects (CATEs) using causal forests [@grf2024]. Causal forests are a machine learning method adapted specifically for estimating how treatment effects differ across people defined by a set of covariates. These effects are interesting because they help to clarify for whom treatment effects are likely to have their strongest effects, and for whom treatments effects may not work, or be harmful.
+
+For interpretability across different outcomes, we standardised the direction of effects. Some outcomes, like depression scores, are typically interpreted as 'lower is better'. We inverted the scales for such variables so that positive treatment effects consistently indicated improvement (e.g., a reduction in depression). This ensures that larger positive CATE estimates always signify greater benefit from the treatment. The following outcomes were inverted: {{flipped_list}}.
+
+A central challenge when invesitigating individual differences using CATE is ensuring the detected variations are genuine and not just noise or overfitting. Therefore, we rigorously evaluated the causal forest estimates using a 50/50 sample splitting approach. Half the data were used to train the causal forest model (i.e., to identify patterns of differing treatment effects), and the other half (the held-out data) were used exclusively for evaluation.
+
+On the held-out data, we first assessed the calibration of the predictions [@grf2024]. This involved checking if the average of the predicted CATEs accurately reflected the overall average treatment effect (ATE) found in the evaluation sample. More importantly, we tested whether the *predicted variation* in treatment effects (heterogeneous treatment effects, HTE) was reliable. A specific 'differential prediction' test acts as an omnibus indicator ($p$-value) of whether the model successfully captures statistically significant variability in how individuals respond to the treatment [@grf2024]. We also calculated the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018]. RATE quantifies the potential real-world value of using the model to target treatment – specifically, it measures the average outcome improvement we would expect if we prioritised treatment for the individuals predicted to benefit most, compared to a simpler strategy like treating everyone or no one based only on the ATE.
+
+To visualise the benefit of prioritisation, we used Qini curves [@grf2024]. These curves compare two scenarios evaluated on the held-out data:
+1.  **Uniform Allocation:** Treating (or not treating) individuals based solely on the overall ATE.
+2.  **Targeted Allocation:** Prioritising treatment for individuals ranked highest on their predicted CATE from the causal forest.
+
+The Qini curve plots the cumulative gain (or loss) achieved by the targeted approach as we increase the proportion of the sample receiving treatment (starting with those predicted to benefit most). Positive Qini values indicate that targeting treatment based on predicted CATEs yields better overall outcomes than the uniform approach for that proportion treated. This helps determine if a personalised strategy is advantageous, and potentially for what fraction of the population.
+
+Finally, if we detected reliable heterogeneity , we aimed to translate these complex CATE predictions into simpler, actionable rules using policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Policy trees learn simple decision rules (e.g., 'Treat individuals with baseline score > X and age < Y') that optimise treatment allocation based on the estimated CATEs. Policy tree estimation identify defining baseline characteristics that distinguish subgroups with markedly different responses, providing transparent, interpretable guidelines for potentially tailoring treatment in practice.
+
+All heterogeneity analyses, including calibration tests, RATE calculations, Qini curves, and policy trees, were conducted using R, primarily with the `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024] packages. The figures presented were generated using `margot`.
+
+Collectively, this multi-stage approach allows us to first estimate individualised effects, rigorously test whether these estimated variations are reliable, evaluate the potential gains from targeting treatment, and finally, derive simple rules to guide personalised intervention strategies if justified by the data.
+"
+general_approach_cate_short <- "Our primary aim was to look beyond average treatment effects (ATE) and explore whether the intervention’s impact varied systematically across individuals. To that end, we estimated individualised treatment effects, also called conditional average treatment effects (CATEs), using causal forests [@grf2024], a machine learning approach tailored for detecting treatment-effect heterogeneity based on covariates.
+
+We standardised effect directions by inverting any outcome where 'lower is better', so positive values consistently denote improvement. The following outcomes were inverted: {{flipped_list}}.
+
+A common concern when modelling individual differences using CATE is distinguishing real variation from noise. To address this, we used a 50/50 sample split. We trained the causal forest on half the data, then tested model predictions exclusively on the remaining half to prevent overfitting.
+
+In the held-out sample, we checked whether the predicted CATEs were well calibrated [@grf2024]. This involved comparing (i) the mean of the predicted effects to the overall ATE in the evaluation sample, and (ii) testing whether the predicted *variation* in effects was reliable. A differential prediction test provided an omnibus $p$-value for whether the model captured genuine heterogeneity in responses. We also calculated the Rank-Weighted Average Treatment Effect (RATE), which estimates how effectively a model-based targeting strategy would outperform a uniform treatment strategy [@grf2024; @wager2018].
+
+To visualise the added value of targeting, we used Qini curves [@grf2024]. These compare:
+
+1.  **Uniform Allocation**: treating or not treating everyone based on the overall ATE.
+2.  **Targeted Allocation**: treating individuals ranked highest by their predicted CATE first.
+
+The Qini curve shows the cumulative gain (or loss) of the targeted strategy as we treat larger proportions of the sample. Positive values suggest that prioritising high-CATE individuals outperforms uniform treatment, helping identify whether, and at what coverage level, personalisation is beneficial.
+
+Finally, for practical implementation, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to derive simple, rule-based recommendations. Policy trees split participants into subgroups defined by key moderators, providing clear 'treat' or 'do not treat' cut-points, evaluated for effectiveness on the held-out data. All heterogeneity analyses—including calibration tests, RATE, Qini curves, and policy trees—were done in R using `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024].
+
+Taken together, this multi-stage approach first identifies individualised treatment effects, then tests their reliability, estimates the added value of targeted intervention, and, if justified, provides simple rules for personalising treatment in practice."
+
+interpretation_rate_test <- "To assess the potential practical value of tailoring treatment based on individual predictions, we examined the Rank-Weighted Average Treatment Effect (RATE) and Qini curves [@grf2024; @wager2018]. These predictions are estimates (denoted $\\hat{\\tau}(X_i)$) of the underlying conditional average treatment effect (CATE, $\tau(X_i)$), which represents the average treatment effect for individuals with specific baseline covariates $X_i$. Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects ($\\hat{\\tau}(X_i)$) always indicate greater benefit from treatment. RATE and Qini curves evaluate how well a strategy of prioritising treatment using these CATE predictions $\\hat{\\tau}(X_i)$ performs compared to simpler approaches (e.g., uniform treatment based on the overall average effect, ATE). Specifically, RATE estimates the average gain achieved among the group prioritised by the model [@wager2018]. Qini curves dynamically visualise this potential gain: they plot the cumulative benefit realised as we hypothetically treat an increasing proportion of the population, starting with those individuals having the highest predicted effects $\\hat{\\tau}(X_i)$ [@grf2024]."

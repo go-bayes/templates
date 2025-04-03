@@ -1,31 +1,39 @@
 set.seed(123)
-library(cli)
-library(glue)
-library(here)
-library(cli)
-library(utils)
-library(stringr)
-library(janitor)
-
-
-source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_init.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_manage_measures_functions.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_manage_text_functions.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_text_generation_functions.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_merge_databases.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "default_databases.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "utilities.R"))
-
-
-
-source(here::here("/Users/joseph/GIT/boilerplate/R", "utility-operations.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "unified-init-functions.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "unified-text-generation-functions.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "unified-import-save-functions.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "unified-category-specific-helpers.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "unified-boilerplate-merge.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "backward-compatibility.R"))
-
+devtools::install_github("go-bayes/boilerplate")
+if (!require(boilerplate, quietly = TRUE)) {
+  # install devtools if necessary
+  if (!require(devtools, quietly = TRUE)) {
+    install.packages("devtools")
+  }
+  devtools::install_github("go-bayes/boilerplate")
+}
+# library(cli)
+# library(glue)
+# library(here)
+# library(cli)
+# library(utils)
+# library(stringr)
+# library(janitor)
+# # #
+# # #
+# #source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_text_generation_functions.R"))
+# #source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_init.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_manage_measures_functions.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_manage_text_functions.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_merge_databases.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "default_databases.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "utilities.R"))
+# #
+# #
+# #
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "utility-operations.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "unified-init-functions.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "unified-text-generation-functions.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "unified-import-save-functions.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "unified-category-specific-helpers.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "unified-boilerplate-merge.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "backward-compatibility.R"))
+#
 
 
 
@@ -35,10 +43,23 @@ source(here::here("/Users/joseph/GIT/boilerplate/R", "backward-compatibility.R")
 
 # First, initialise all databases with default values
 # This creates the directory structure and default databases
+
+my_project_path <- "path/to/your/project/data"
+
+# Initialize databases in your custom location
 boilerplate_init(
   categories = c("measures", "methods", "results", "discussion", "appendix", "template"),
-  create_dirs = TRUE
+  data_path = my_project_path,  # Specify custom path here
+  create_dirs = TRUE,
+  confirm = FALSE
 )
+
+
+boilerplate_init(
+  categories = c("measures", "methods", "results", "discussion", "appendix", "template"),
+  create_dirs = TRUE,
+  confirm = FALSE
+  )
 
 #' ## Working with the Unified Database
 # Import all databases at once into a unified structure
@@ -52,7 +73,7 @@ methods_db <- boilerplate_methods(unified_db)
 measures_db <- boilerplate_measures(unified_db)
 results_db <- boilerplate_results(unified_db)
 
-measures_db$psychological$anxiety
+measures_db$anxiety
 
 # Access specific items using dot notation
 lmtp_method <- boilerplate_methods(unified_db, "statistical.longitudinal.lmtp")
@@ -74,19 +95,50 @@ methods_text <- boilerplate_generate_text(
 
 # Print the result
 cat(methods_text)
+measures_db$psychological$depression
+head(measures_db)
+
 
 # Generate measures text
 measures_text <- boilerplate_generate_measures(
   variable_heading = "Outcome Variables",
-  variables = c("anxiety", "depression"),
+  variables = c("anxiety", "alcohol_frequency"),
   db = unified_db,  # Pass the unified database
   print_waves = TRUE,
   print_keywords = TRUE,
-  label_mappings = c("anxiety" = "Kessler 6 Anxiety")
+  label_mappings = c("anxiety" = "Kessler-6")
 )
 
 # Print the result
 cat(measures_text)
+
+
+
+# master_text_path = here::here("/Users/joseph/GIT/templates/databases/methods")
+master_measures_path = here::here("/Users/joseph/GIT/templates/databases/measures")
+
+
+# read
+# master_methods_db = margot::here_read("master_methods_db", master_text_path)
+# master_methods_db
+
+master_measures_db = margot::here_read("merged_db", master_measures_path)
+str(master_measures_db)
+
+
+measures_text_master <- boilerplate_generate_measures(
+  variable_heading = "Outcome Variables",
+  variables = c("age", "warm_refugees"),
+  db = master_measures_db,  # Pass the unified database
+  print_waves = TRUE,
+  print_keywords = TRUE,
+  label_mappings = c("age" = "Age Open Ended")
+)
+
+# Print the result
+cat(measures_text)
+
+
 
 #' ## Modifying and Saving the Unified Database
 # Add a new method
@@ -708,3 +760,246 @@ cat("\n\n")
 # write.table(journal_article, "journal_article.qmd", row.names = FALSE, col.names = FALSE, quote = FALSE)
 
 cat("Script execution complete.\n")
+
+
+
+
+
+
+
+# tests -------------------------------------------------------------------
+
+
+#' Generate Formatted Text for Measures
+#'
+#' This function generates formatted markdown text describing measures in a study.
+#' It creates a simple output with customisable heading levels, focusing on presenting
+#' measure information in a clean, consistent format.
+#'
+#' @param variable_heading Character. Heading for the variable section (e.g., "Exposure Variable", "Outcome Variables").
+#' @param variables Character vector. Names of the variables to include.
+#' @param db List. Measures database typically obtained from boilerplate_manage_measures().
+#' @param heading_level Integer. Heading level for the section header (e.g., 2 for ##, 3 for ###). Default is 3.
+#' @param subheading_level Integer. Heading level for individual variables (e.g., 3 for ###, 4 for ####). Default is 4.
+#' @param print_waves Logical. Whether to include wave information in the output. Default is FALSE.
+#' @param print_keywords Logical. Whether to include keyword information in the output. Default is FALSE.
+#' @param appendices_measures Character. Optional reference to appendices containing measure details.
+#' @param label_mappings Named character vector. Mappings to transform variable names in the output.
+#'   For example, c("sdo" = "Social Dominance Orientation", "born_nz_binary" = "Born in NZ").
+#'   If a variable name contains any of the keys in this vector, that part will be replaced with the corresponding value.
+#' @param quiet Logical. If TRUE, suppresses all CLI alerts. Default is FALSE.
+#'
+#' @return Character string with formatted text describing the measures.
+#'
+#' @examples
+#' \dontrun{
+#' # Load measures database with safety parameters
+#' measures_db <- boilerplate_manage_measures(
+#'   action = "list",
+#'   create_dirs = TRUE,
+#'   confirm = TRUE
+#' )
+#'
+#' # Define variable label mappings
+#' var_labels <- c(
+#'   "sdo" = "Social Dominance Orientation",
+#'   "born_nz_binary" = "Born in NZ"
+#' )
+#'
+#' # Generate exposure variable text with custom labels
+#' exposure_text <- boilerplate_generate_measures(
+#'   variable_heading = "Exposure Variable",
+#'   variables = "political_conservative",
+#'   db = measures_db,
+#'   print_waves = TRUE,
+#'   label_mappings = var_labels
+#' )
+#'
+#' # Generate outcome variables text
+#' outcome_text <- boilerplate_generate_measures(
+#'   variable_heading = "Outcome Variables",
+#'   variables = c("anxiety.gad7", "depression.phq9"),
+#'   db = measures_db,
+#'   appendices_measures = "Appendix A"
+#' )
+#'
+#' # Print the results
+#' cat(exposure_text)
+#' cat(outcome_text)
+#' }
+#'
+#' @importFrom janitor make_clean_names
+#' @importFrom cli cli_alert_info cli_alert_success cli_alert_warning cli_alert_danger
+#' @export
+boilerplate_generate_measures <- function(
+    variable_heading,
+    variables,
+    db,
+    heading_level = 3,
+    subheading_level = 4,
+    print_waves = FALSE,
+    print_keywords = FALSE,
+    appendices_measures = NULL,
+    label_mappings = NULL,
+    quiet = FALSE
+) {
+  # input validation
+  if (!is.character(variable_heading)) {
+    if (!quiet) cli_alert_danger("variable_heading must be a character string")
+    stop("variable_heading must be a character string")
+  }
+
+  if (!is.character(variables)) {
+    if (!quiet) cli_alert_danger("variables must be a character vector")
+    stop("variables must be a character vector")
+  }
+
+  if (!is.list(db)) {
+    if (!quiet) cli_alert_danger("db must be a list")
+    stop("db must be a list")
+  }
+
+  if (!quiet) cli_alert_info("generating formatted text for {length(variables)} {variable_heading}")
+
+  # create heading markers
+  heading_marker <- paste(rep("#", heading_level), collapse = "")
+  subheading_marker <- paste(rep("#", subheading_level), collapse = "")
+
+  if (!quiet) cli_alert_info("using heading level {heading_level} and subheading level {subheading_level}")
+
+  # initialise output text
+  output_text <- paste0(heading_marker, " ", variable_heading, "\n\n")
+
+  # process each variable
+  for (var in variables) {
+    if (!quiet) cli_alert_info("processing variable: {var}")
+
+    # get measure info
+    measure_info <- db[[var]]
+
+    # transform variable name if mapping is provided
+    var_display <- if (!is.null(label_mappings)) {
+      if (!quiet) cli_alert_info("applying label mappings to {var}")
+      transform_label(var, label_mappings, quiet)
+    } else {
+      var
+    }
+
+    if (is.null(measure_info)) {
+      # handle missing measures
+      if (!quiet) cli_alert_warning("no information available for variable: {var}")
+      title <- janitor::make_clean_names(var_display, case = "title")
+      var_text <- paste0(subheading_marker, " ", title, "\n\n",
+                         "no information available for this variable.\n\n")
+    } else {
+      # get variable title, applying mapping if provided
+      title <- if (!is.null(measure_info$name)) {
+        # apply mapping to the name from measure_info
+        name_display <- if (!is.null(label_mappings)) {
+          if (!quiet) cli_alert_info("applying label mappings to measure name: {measure_info$name}")
+          transform_label(measure_info$name, label_mappings, quiet)
+        } else {
+          measure_info$name
+        }
+        janitor::make_clean_names(name_display, case = "title")
+      } else {
+        janitor::make_clean_names(var_display, case = "title")
+      }
+
+      # start with variable title
+      var_text <- paste0(subheading_marker, " ", title, "\n\n")
+
+      # add items if available
+      items <- measure_info$items
+      if (!is.null(items) && length(items) > 0) {
+        if (!quiet) cli_alert_info("adding {length(items)} items for {var}")
+        if (is.list(items)) {
+          items_text <- paste(sapply(items, function(item) {
+            paste0("*", item, "*")
+          }), collapse = "\n")
+        } else if (is.character(items)) {
+          items_text <- paste(sapply(items, function(item) {
+            paste0("*", item, "*")
+          }), collapse = "\n")
+        }
+        var_text <- paste0(var_text, items_text, "\n\n")
+      }
+
+      # add description if available
+      if (!is.null(measure_info$description)) {
+        if (!quiet) cli_alert_info("adding description for {var}")
+        var_text <- paste0(var_text, measure_info$description)
+
+        # add reference if available
+        if (!is.null(measure_info$reference)) {
+          if (!quiet) cli_alert_info("adding reference: {measure_info$reference}")
+          var_text <- paste0(var_text, " [@", measure_info$reference, "]")
+        }
+
+        var_text <- paste0(var_text, "\n\n")
+      }
+
+      # add waves if requested and available
+      if (print_waves && !is.null(measure_info$waves)) {
+        if (!quiet) cli_alert_info("adding waves information: {measure_info$waves}")
+        var_text <- paste0(var_text, "*waves: ", measure_info$waves, "*\n\n")
+      }
+
+      # add keywords if requested and available
+      if (print_keywords && !is.null(measure_info$keywords)) {
+        if (is.character(measure_info$keywords)) {
+          if (length(measure_info$keywords) > 1) {
+            keywords <- paste(measure_info$keywords, collapse = ", ")
+          } else {
+            keywords <- measure_info$keywords
+          }
+          if (!quiet) cli_alert_info("adding keywords: {keywords}")
+          var_text <- paste0(var_text, "*keywords: ", keywords, "*\n\n")
+        }
+      }
+    }
+
+    # add to output
+    output_text <- paste0(output_text, var_text)
+  }
+
+  # add appendix reference if provided
+  if (!is.null(appendices_measures)) {
+    if (!quiet) cli_alert_info("adding appendix reference: {appendices_measures}")
+    output_text <- paste0(
+      output_text,
+      "detailed descriptions of how these variables were measured and operationalised can be found in **",
+      appendices_measures,
+      "**.\n\n"
+    )
+  }
+
+  if (!quiet) cli_alert_success("successfully generated formatted text for {variable_heading}")
+  return(output_text)
+}
+
+
+
+#' Transform a label using provided mappings
+#'
+#' @param label Character. The original label to transform
+#' @param label_mapping Named character vector. Mappings to transform the label
+#' @param quiet Logical. If TRUE, suppresses all CLI alerts. Default is FALSE.
+#'
+#' @return Character. The transformed label
+#' @noRd
+transform_label <- function(label, label_mapping = NULL, quiet = FALSE) {
+  # apply mapping with partial substitutions
+  if (!is.null(label_mapping)) {
+    for (pattern in names(label_mapping)) {
+      if (grepl(pattern, label, fixed = TRUE)) {
+        replacement <- label_mapping[[pattern]]
+        label <- gsub(pattern, replacement, label, fixed = TRUE)
+        if (!quiet) cli_alert_info("mapped label: {pattern} -> {replacement}")
+      }
+    }
+  }
+  return(label)
+}
+
+# Removed duplicated boilerplate_measures_text function

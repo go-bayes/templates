@@ -1,8 +1,9 @@
 library(boilerplate)
 library(margot)
+
 # Example 1: Using the new simplified function
-methods_path = here::here("/Users/joseph/GIT/templates/databases/methods")
-measures_path = here::here("/Users/joseph/GIT/templates/databases/measures")
+master_methods_path = here::here("/Users/joseph/GIT/templates/databases/methods")
+master_measures_path = here::here("/Users/joseph/GIT/templates/databases/measures")
 
 #
 #
