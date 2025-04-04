@@ -369,6 +369,23 @@ cat(unified_db$methods$causal_identification_criteria)
 boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 
+
+# exposure indicator ------------------------------------------------------
+
+methods_exposure_indicator_text <- "
+### Exposure Indicator
+
+
+The New Zealand Attitudes and Values Study assesses {{exposure_variable}} using the following question:
+
+
+{{measures_exposure}}
+
+
+(refer to [{{appendix_measures}}](#appendix-measures))."
+
+
+
 # outcome domains ---------------------------------------------------------
 outcomewide_flourishing_text <- "
 ## Wellbeing Outcomes
@@ -516,6 +533,21 @@ unified_db<- boilerplate_update_entry(
   value = missing_grf_simple_text
 )
 
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.missing_data.missing_lmtp_time_varying",
+  value = missing_lmtp_time_varying_text
+)
+
+
+unified_db<- boilerplate_add_entry(
+  db = unified_db,
+  path = "methods.exposure_indicator",
+  value = methods_exposure_indicator_text
+)
+
+
+methods_exposure_indicator_text
 # checks
 cat(unified_db$methods$missing_data$missing_lmtp_simple)
 
@@ -1449,7 +1481,7 @@ appendix_baseline_text <- "{{< pagebreak >}}
 ### Measures
 
 ```{r, results='asis'}
-cat(appendix_text_version_1)
+cat(appendix_baseline_text) # make this with boilerplate_measures_text
 ```
 
 ### Sample Demographic Statistics
@@ -2120,6 +2152,7 @@ lmtp_methods_text <- boilerplate_generate_text(
   category = "methods",
   sections = c(
     "sample.sample_information",
+    "methods.exposure_indicator",
     "causal_intervention.lmtp_multi_wave",
     "causal_intervention.grf",
     "target_population",
@@ -2134,6 +2167,7 @@ lmtp_methods_text <- boilerplate_generate_text(
     exposure_variable = "Religious Service Attendance",
     n_total = 77000,
     n_participants = 48900,
+    appendix_assumptions_grf = "Appendix E",
     value_exposure_regime = "Regular Religious Service Attendance",
     value_treatment_regime = "No Religious Service Attendance",
     value_exposure_regime = " At each wave, if attendance is below four times per month, we shift it to four; otherwise, we leave it unchanged.",
@@ -2165,7 +2199,7 @@ lmtp_methods_text <- boilerplate_generate_text(
 )
 
 # print the generated text
-cat(methods_text)
+cat(lmtp_methods_text)
 
 
 # results example ---------------------------------------------------------
