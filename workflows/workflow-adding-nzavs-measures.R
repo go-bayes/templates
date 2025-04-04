@@ -69,21 +69,22 @@ unified_db <- boilerplate_import( data_path = my_project_path)
 # ------------------------------------------------------
 # sample section
 # ------------------------------------------------------
+# n_total, appendix_timeline
 sample_information <- "
 ### Sample
 
-Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from {{n_total}} participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB). Refer to [Appendix A](#appendix-timeline) for a histogram of daily responses for this cohort.
+Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from {{n_total}} participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB). Refer to [{{appendix_timeline}}](#appendix-timeline) for a histogram of daily responses for this cohort.
 "
 
-unified_db<- boilerplate_add_entry(
-  db = unified_db,
-  path = "methods.sample",
-  value = list()
-)
+# unified_db<- boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.sample",
+#   value = list()
+# )
 
 
 # or
-unified_db<- boilerplate_add_entry(
+unified_db<- boilerplate_update_entry(
     db = unified_db,
     path = "methods.sample.nzavs",
     value = sample_information
@@ -134,7 +135,7 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 # causal interventions section
 # ------------------------------------------------------
 
-
+# contrasts_text, interventions_list
 basic <- "#### Interventions
 This study considers the following causal interventions on the exposure variable '{{exposure_var}}':
 
@@ -148,13 +149,13 @@ This approach to defining interventions and contrasts allows us to systematicall
 
 
 
-unified_db<- boilerplate_add_entry(
-  db = unified_db,
-  path = "methods.causal_intervention",
-  value = list()
-)
+# unified_db<- boilerplate_add_entry(
+#   db = unified_db,
+#   path = "methods.causal_intervention",
+#   value = list()
+# )
 
-unified_db<- boilerplate_add_entry(
+unified_db<- boilerplate_update_entry(
   db = unified_db,
   path = "methods.causal_intervention.basic",
   value = basic
@@ -167,16 +168,18 @@ unified_db<- boilerplate_add_entry(
 
 
 
-### Causal Interventions
+
 # We using the six most recent NZAVS waves (Times 10–15) because Wave 10 containes the largest cohort, enabling us to maximise power.
-lmtp_multi_wave <-
-"When psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
+lmtp_multi_wave <-"
+### Causal Inference
+
+When psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
 
 Here, we ask:
 
   > 'What if, at each wave, we intervened to set {{exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'
 
-To answer this, we compare two hypothetical interventions. Each intervention shifts {{exposure_variable}} across {{number_exposure_wave}} waves, with outcomes measured after the year following the final exposure wave.  A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained there after are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @@tbl-plan).
+To answer this, we compare two hypothetical interventions. Each intervention shifts {{exposure_variable}} across {{number_exposure_waves}} waves, with outcomes measured after the year following the final exposure wave.  A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained there after are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @tbl-plan).
 
 Following a modified treatment policies approach, we define **shift functions** describing each intervention:
 
@@ -192,11 +195,17 @@ Following a modified treatment policies approach, we define **shift functions** 
 ```{=latex}
 \\vizfive
 ```
-We contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of religious service attendance and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is 'as good as random.' Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.
+We contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of {{exposure_variable}} and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is 'as good as random.' Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.
 :::
 
- We then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies *{{name_exposure_regime}}* and *{{name_control_regime}}*. We define a 'confounder' as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline religious service attendance and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.
+We then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies *{{name_exposure_regime}}* and *{{name_control_regime}}*. We define a 'confounder' as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline {{exposure_variable}} and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.
 
+::: {#tbl-feedback}
+```{=latex}
+\\feedbackB
+```
+Common cause of Treatment 1 and downstream confounder of Treatment 2 is a collider.
+:::
 
 ### Causal Contrasts
 
@@ -210,9 +219,57 @@ Our estimation relies on standard causal assumptions:
 (Refer to [{{appendix_assumptions}}](#appendix-assumptions) for further details). The target population is {{name_target_population}}."
 
 
+lmtp_multi_wave_long <-"
+### Causal Inference
+
+When psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial, often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
+
+Here, we ask:
+
+  > 'What if, at each wave, we intervened to set {{exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'
+
+To answer this, we compare two hypothetical interventions. Each intervention shifts {{exposure_variable}} across {{number_exposure_waves}} waves, with outcomes measured after the year following the final exposure wave. A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained thereafter are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @tbl-plan, and see @tbl-feedback for a detailed explanation of time-varying confounding).
+
+Following a modified treatment policies approach, we define **shift functions** describing each intervention:
+
+1. **{{name_exposure_regime}}**
+
+   {{value_exposure_regime}}
+
+2. **{{name_control_regime}}**
+
+   {{value_control_regime}}
+
+::: {#tbl-plan}
+```{=latex}
+\\vizfive
+:::
+
+We contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of {{exposure_variable}} and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is ‘as good as random.’ Outcomes, here denoted $Y_\tau$, are measured in the wave following the final treatment.
+:::
+
+
+We then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies {{name_exposure_regime}} and {{name_control_regime}}. We define a ‘confounder’ as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline {{exposure_variable}} and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.
+
+::: {#tbl-feedback}
+```{=latex}
+\\feedbackB
+```
+Causal Diagram: Common cause of Treatment 1 and downstream confounder of Treatment 2 is a collider (biasing path is shown in red).
+:::
+
+#### Explanation of Time-Varying Confounding
+
+Time-varying confounding arises when certain variables that influence both the exposure and the outcome can themselves change over time—often because they are affected by prior exposures or outcomes. By the next wave, these evolving confounders may affect future exposures and outcomes, creating a feedback loop. If we fail to account for these changing factors at each wave, we risk attributing changes in the outcome to our exposure when they may instead be driven by shifts in these confounders. Therefore, properly including time-varying confounders at each exposure wave is crucial to avoid bias and correctly isolate the causal effect of the exposure.
+
+
+#### Causal Contrasts
+
+We compute the average expected outcome under {{name_exposure_regime}} and {{name_control_regime}}, and then contrast these expected averages on the difference scale (i.e., subtracting the expected outcome under {{name_exposure_regime}} from that under {{name_control_regime}}). We obtain confidence intervals using the cross-fitted influence-function approach in the lmtp package [@williams2021]. This approach employs a sequentially doubly robust (SDR) estimator, as developed by @diaz2021_non_parametric_lmtp, which remains valid if either the outcome model or the propensity model is correctly specified, thereby requiring weaker assumptions than standard approaches. By setting up our data as if it came from a hypothetical experiment, we gain clarity about which causal effects we are estimating, as well as confidence about our causal effect estimates (refer to @hernan2024WHATIF, @bulbulia2022; @bulbulia2023)."
+
 
 grf_causal <- "
-### Causal Analysis Framework
+### Causal Inference
 
 When researchers analyse data, they often seek to understand causal relationships: what would happen if we could intervene on certain variables? To investigate such questions with observational data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
 
@@ -238,23 +295,8 @@ Our estimation relies on standard causal assumptions:
 2.  **Consistency**: an individual's observed outcome corresponds to their potential outcome under the exposure they actually received.
 3.  **Positivity**: within strata defined by $X$, there is a non-zero probability of receiving either exposure level (`{{value_exposure}}` or `{{value_control}}`).
 
-(Refer to [{{appendix_assumptions}}](#appendix-assumptions) for further details). The target population is {{name_target_population}}.
+(Refer to [{{appendix_assumptions_grf}}](#appendix-assumptions_grf) for further details). The target population is {{name_target_population}}."
 
-### General Approach to Estimating Heterogeneity
-
-Our main aim was to look beyond the average treatment effect (ATE) and explore whether the intervention’s impact varied by individual characteristics. We estimated conditional average treatment effects (CATEs) using causal forests [@grf2024], which are machine learning methods tailored for detecting treatment-effect heterogeneity.
-
-We standardised effect directions by inverting outcomes where 'lower is better', ensuring that positive values always signify improvement. The following outcomes were inverted: {{flipped_list}}.
-
-To reduce overfitting and distinguish real heterogeneity from noise, we split the sample 50/50. We trained the causal forest on the first half, then tested its predictions exclusively on the second half. In this held-out data, we checked calibration by comparing the mean of the predicted CATEs to the overall ATE, and we used a differential prediction test to assess whether the predicted variation was genuine [@grf2024]. We also computed the Rank-Weighted Average Treatment Effect (RATE), which estimates the benefit of targeting individuals predicted to benefit most [@grf2024; @wager2018].
-
-Qini curves [@grf2024] were used to illustrate how a targeted allocation might outperform a uniform approach. Specifically, we compared:
-1.  **Uniform Allocation**: treating or not treating everyone based on the ATE,
-2.  **Targeted Allocation**: treating those with the highest predicted CATEs first.
-
-Positive Qini values suggest that a targeted strategy is superior, helping to identify if personalisation is worthwhile and at what scale.
-
-Finally, if we found reliable heterogeneity, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to derive simple, rule-based recommendations (e.g., ‘Treat if baseline score > X’). All heterogeneity analyses, including calibration tests, RATE, Qini curves, and policy trees, were done in R using `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024]. This approach allowed us to identify individualised effects, confirm their robustness, estimate the potential value of targeting, and propose straightforward strategies for personalised treatment."
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -264,11 +306,18 @@ unified_db<- boilerplate_update_entry(
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
+  path = "methods.causal_intervention.lmtp_multi_wave_long",
+  value = lmtp_multi_wave
+)
+
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
   path = "methods.causal_intervention.grf",
   value = grf_causal)
 
 
-unified_db$methods$causal_intervention$lmtp_multi_wave
+cat(unified_db$methods$causal_intervention$lmtp_multi_wave)
 
 boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
@@ -300,8 +349,7 @@ This study relies on the following identification assumptions for estimating the
 
 2. **No unmeasured confounding**: all variables that affect both {{exposure_variable}} and the outcome have been measured and accounted for in the analysis.
 
-3. **Positivity**: there is a non-zero probability of receiving each level of {{exposure_variable}} for every combination of values of {{exposure_variable}} and confounders in the population.
-"
+3. **Positivity**: there is a non-zero probability of receiving each level of {{exposure_variable}} for every combination of values of {{exposure_variable}} and confounders in the population."
 
 
 # add criteria
@@ -332,10 +380,7 @@ We investigate well-being using an VanderWeele and colleague's 'outcome-wide' ap
   | Life-Reflective     | Gratitude, Life Satisfaction, Meaning (Sense & Purpose), Personal Wellbeing Index |
   |       Social        | Social Belonging, Social Support, Neighbourhood Community |
 
-: Outcome domains and example dimensions. Data summaries for all measures used in this study are provided in {{appendix_outcomes}}.
-
-"
-
+: Outcome domains and example dimensions. Data summaries for all measures used in this study are provided in [{{appendix_outcomes}}](#appendix-outcomes)."
 unified_db<- boilerplate_update_entry(
   db = unified_db,
   path = "methods.outcomes.outcomewide_flourishing",
@@ -406,24 +451,34 @@ missing_lmtp_simple <- "
 
 To mitigate bias from missing data, we used the following strategies:
 
-**Baseline missingness**: we employed the `ppm` algorithm from the `mice` package in R [@vanbuuren2018] to impute missing baseline data (wave {{baseline_wave}}). This method allowed us to reconstruct incomplete datasets by estimating a plausible value for missing observation. Because we could only pass one data set to the lmtp, we employed single imputation. Approximately {{baseline_missing_data_proportion}}% of covariate values were missing at {{baseline_wave}}. We only used baseline data to impute baseline wave missingness (refer to @zhang2023shouldMultipleImputation).
+#### Baseline missingness**
 
-**Outcome missingness**: to address confounding and selection bias arising from missing responses and panel attrition at the end of study {{outcome_wave}}, we applied censoring weights obtained using nonparametric machine learning ensembles afforded by the `lmtp` package (and its dependencies) in R [@williams2021]."
+We employed the `ppm` algorithm from the `mice` package in R [@vanbuuren2018] to impute missing baseline data (wave {{baseline_wave}}). This method allowed us to reconstruct incomplete datasets by estimating a plausible value for missing observation. Because we could only pass one data set to the lmtp, we employed single imputation. Approximately {{baseline_missing_data_proportion}}% of covariate values were missing at {{baseline_wave}}. We only used baseline data to impute baseline wave missingness (refer to @zhang2023shouldMultipleImputation).
+
+#### Outcome missingness**
+
+To address confounding and selection bias arising from missing responses and panel attrition at the end of study {{outcome_wave}}, we applied censoring weights obtained using nonparametric machine learning ensembles afforded by the `lmtp` package (and its dependencies) in R [@williams2021]."
 
 missing_lmtp_time_varying <- "
-### Missing Responses and Attrition
+### Handling of Missing Data
 
 To mitigate bias from missing data, we implement the following strategies:
 
-**Baseline missingness**: We used predictive mean matching from the `mice` package [@vanbuuren2018] to impute missing baseline values (comprising `r percent_missing_baseline` of the baseline data). Following [@zhang2023shouldMultipleImputation], we performed single imputation using only baseline data. For each column with missing values, we created a binary indicator of missingness so that the machine learning algorithms we employed could condition on missingness information during estimation (see `lmtp` documentation [@williams2021]).
+#### Baseline missingness
 
-**Missingness in Time-Varying Variables**: When a time-varying value was missing in any wave but a future value was observed, we carried forward the previous response and included a missingness indicator. Again, this approach let the patterns of missingness inform nonparametric machine learning. If no future value was observed, we considered the participant censored and used inverse probability of treatment weights to address attrition.
+We used predictive mean matching from the `mice` package [@vanbuuren2018] to impute missing baseline values (comprising `r percent_missing_baseline` of the baseline data). Following [@zhang2023shouldMultipleImputation], we performed single imputation using only baseline data. For each column with missing values, we created a binary indicator of missingness so that the machine learning algorithms we employed could condition on missingness information during estimation (see `lmtp` documentation [@williams2021]).
 
-**Outcome missingness**: to address confounding and selection bias arising from missing responses and panel attrition at the end of study {{outcome_wave}}, we applied censoring weights obtained using nonparametric machine learning ensembles afforded by the `lmtp` package (and its dependencies) in R [@williams2021]."
+#### Missingness in Time-Varying Variables
+
+When a time-varying value was missing in any wave but a future value was observed, we carried forward the previous response and included a missingness indicator. Again, this approach let the patterns of missingness inform nonparametric machine learning. If no future value was observed, we considered the participant censored and used inverse probability of treatment weights to address attrition.
+
+#### Outcome missingness
+
+To address confounding and selection bias arising from missing responses and panel attrition at the end of study {{outcome_wave}}, we applied censoring weights obtained using nonparametric machine learning ensembles afforded by the `lmtp` package (and its dependencies) in R [@williams2021]."
 
 
 missing_grf_simple <- "
-### Missing Responses and Attrition
+### Handling of Missing Data
 
 The GRF package accepts missing values at baseline. To obtain valid inference for missing responses we computed inverse probability of censoring weights for censoring of the exposure, given that systematic censoring following the baseline wave may lead to selection bias that limit generalistion to the baseline target population [@bulbulia2024wierd]. See Appendix {{grf_appendix}}."
 
@@ -590,7 +645,7 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 # approach text -----------------------------------------------------------
 
 general_approach_cate_long <- "
-### Individualised Treatment Policies
+### Moderators and Treatment Policies
 
 Our primary goal was to move beyond average treatment effects (ATE) and assess whether the intervention's causal effects varied systematically across individuals. To do this, we estimated conditional average treatment effects (CATEs) using causal forests [@grf2024]. Causal forests are a machine learning method designed to detect heterogeneity in treatment effects across subgroups defined by covariates. Such effects help us understand for whom the treatment is most beneficial, for whom it may be less effective, and for whom it could be harmful.
 
@@ -612,7 +667,7 @@ All heterogeneity analyses—including calibration tests, RATE, Qini curves, and
 "
 
 general_approach_cate_short <- "
-### Individualised Treatment Policies
+### Moderators and Treatment Policies
 
 Our main aim was to look beyond the average treatment effect (ATE) and explore whether the intervention’s impact varied by individual characteristics. We estimated conditional average treatment effects (CATEs) using causal forests [@grf2024], which are machine learning methods tailored for detecting treatment-effect heterogeneity.
 
@@ -630,7 +685,7 @@ Finally, if we found reliable heterogeneity, we used policy trees [@policytree_p
 
 
 general_approach_cate_long_no_flip <- "
-### Individualised Treatment Policies
+### Moderators and Treatment Policies
 
 Our primary goal was to move beyond average treatment effects (ATE) and assess whether the intervention's causal effects varied systematically across individuals. To do this, we estimated conditional average treatment effects (CATEs) using causal forests [@grf2024]. Causal forests are a machine learning method designed to detect heterogeneity in treatment effects across subgroups defined by covariates. Such effects help us understand for whom the treatment is most beneficial, for whom it may be less effective, and for whom it could be harmful.
 
@@ -650,7 +705,7 @@ All heterogeneity analyses—including calibration tests, RATE, Qini curves, and
 "
 
 general_approach_cate_short_no_flip <- "
-### Individualised Treatment Policies
+### Moderators and Treatment Policies
 
 Our main aim was to look beyond the average treatment effect (ATE) and explore whether the intervention’s impact varied by individual characteristics. We estimated conditional average treatment effects (CATEs) using causal forests [@grf2024], which are machine learning methods tailored for detecting treatment-effect heterogeneity.
 
@@ -665,7 +720,7 @@ Positive Qini values suggest that a targeted strategy is superior, helping to id
 Finally, if we found reliable heterogeneity, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to derive simple, rule-based recommendations (e.g., ‘Treat if baseline score > X’). All heterogeneity analyses, including calibration tests, RATE, Qini curves, and policy trees, were done in R using `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024]. This approach allowed us to identify individualised effects, confirm their robustness, estimate the potential value of targeting, and propose straightforward strategies for personalised treatment."
 
 simple_general_approach_cate_long <- "
-### Individualised Treatment Policies
+### Moderators and Treatment Policies
 
 In simple terms, we wanted to see if a treatment works differently for different people, rather than just figuring out one overall benefit for everyone. We used a method called 'causal forests' (think of it like a special type of decision tree) to find which groups of people might benefit the most, and which groups might benefit the least.
 
@@ -684,13 +739,13 @@ We also used two extra tools:
 Putting it all together, this step-by-step approach lets us investigate whether treatments should be applied the same way for everyone, or whether we can do better by matching treatments to the people who stand to benefit the most (refer to appendix {{appendix_analytic_approach}}."
 
 simple_general_approach_cate_short <- "
-### Individualised Treatment Policies
+### Moderators and Treatment Policies
 
 We used a method called 'causal forests' to check if a treatment helped some people more than others. After flipping any scales so that ‘higher’ always means ‘better,’ we taught the model on half the data and tested it on the other half. This helped us see whether the differences we found were real rather than accidental. We then compared outcomes when we targeted treatment to those predicted to benefit the most (using Qini curves) against simply giving the treatment to everyone. Finally, we used policy trees to boil down these results into simple, if-then rules for deciding who’s likely to benefit most from the treatment (refer to appendix {{appendix_analytic_approach}}."
 
 
 simple_general_approach_cate_long_no_flip <- "
-### Individualised Treatment Policies
+### Moderators and Treatment Policies
 
 In simple terms, we wanted to see if a treatment works differently for different people, rather than just figuring out one overall benefit for everyone. We used a method called 'causal forests' (think of it like a special type of decision tree) to find which groups of people might benefit the most, and which groups might benefit the least.
 
@@ -707,7 +762,7 @@ We also used two extra tools:
 Putting it all together, this step-by-step approach lets us investigate whether treatments should be applied the same way for everyone, or whether we can do better by matching treatments to the people who stand to benefit the most (refer to appendix {{appendix_analytic_approach}}."
 
 simple_general_approach_cate_short_no_flip <- "
-### Individualised Treatment Policies
+### Moderators and Treatment Policies
 
 We used a method called 'causal forests' to check if a treatment helped some people more than others. We trained the model on half the data and tested it on the other half. This helped us understand whether the differences we found were real rather than accidental. We then compared outcomes when we targeted treatment to those predicted to benefit the most (using Qini curves) against simply giving the treatment to everyone. Finally, we used policy trees to boil down these results into simple, if-then rules for deciding who's likely to benefit most from the treatment (refer to appendix {{appendix_analytic_approach}}."
 
@@ -787,7 +842,7 @@ short_evalue <- "
 We perform sensitivity analyses using the E-value metric [@vanderweele2017; @linden2020EVALUE]. The E-value represents the minimum association strength (on the risk ratio scale) that an unmeasured confounder would need to have with both the exposure and outcome—after adjusting for measured covariates—to explain away the observed exposure-outcome association [@vanderweele2020; @linden2020EVALUE]."
 
 
-unified_db <- boilerplate_add_entry(
+unified_db <- boilerplate_update_entry(
   db = unified_db,
   path = "methods.sensitivity_analysis.short_evalue",
   value = short_evalue)
@@ -951,6 +1006,7 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 
 
+
 # results -----------------------------------------------------------------
 
 interpretation_ominibus_test_negative <-  "
@@ -986,10 +1042,6 @@ interpretation_policy_tree <- "
 
 We used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to find straightforward ‘if-then’ rules for who benefits most from treatment, based on participant characteristics. Because we flipped some measures, a higher predicted effect always means greater improvement. Policy trees can uncover small but important subgroups whose treatment responses stand out, even when the overall differences might be modest."
 
-# boilerplate_remove_entry(
-#   db = unified_db,
-#   path = "results.results"
-# )
 
 unified_db <- boilerplate_update_entry(
   db = unified_db,
@@ -1002,7 +1054,7 @@ unified_db <- boilerplate_update_entry(
   path = "results.grf.interpretation_ominibus_test_positive",
   value = interpretation_ominibus_test_positive
 )
-unified_db$results$grf$interpretation_ominibus_test_positive
+cat(unified_db$results$grf$interpretation_ominibus_test_positive)
 
 unified_db <- boilerplate_update_entry(
   db = unified_db,
@@ -1064,19 +1116,93 @@ In sum, this combination of flexible modelling, rigorous testing, and practical 
 
 # Short Version
 strengths_grf_short <- "
-**Strengths and Limitations of Our CATE Approach**
+### Strengths and Limitations of Our Approach
 
-We used causal forests [@grf2024] to estimate how treatment effects may differ for individuals with different characteristics. This method is powerful but depends on measuring all major factors influencing both treatment selection and outcomes. If key factors are missed or included incorrectly, the results can be biased. Additionally, interpreting subgroup effects can be tricky when many characteristics are involved, and statistically significant differences may not always translate into meaningful real-world gains.
+We used causal forests [@grf2024] to estimate how treatment effects may differ for individuals with different characteristics. This method is powerful, however it also depends on measuring all major variables influencing both treatment selection and outcomes. If such variables are missed or mismeasured, results can be biased. Additionally, interpreting subgroup effects can be tricky when many characteristics are involved (refer to [{{appendix_heterogeneity}}] and statistically significant differences may not always translate into meaningful real-world gains.
 
 Despite these concerns, causal forests offer notable advantages. They allow for flexible, non-parametric modelling [@grf2024], avoiding strict assumptions that might miss complex interactions. We used a robust evaluation method—training our model on half the data and testing it on the remaining half—to avoid overfitting. We then checked whether the predicted differences were genuine and estimated how much benefit we might gain by targeting treatment to those likely to benefit most [@grf2024; @wager2018]. Qini curves [@grf2024] let us see the overall improvement from treating the top-ranked individuals first, and policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] turn these findings into simple ‘if-then’ rules. Together, this approach provides a practical means of identifying and acting on genuine treatment effect differences."
 
 
 
+nzavs_ethics_2021_2027 <- "
+### Ethics
+
+The University of Auckland Human Participants Ethics Committee reviews the NZAVS every three years. Our most recent ethics approval statement is as follows: The New Zealand Attitudes and Values Study was approved by the University of Auckland Human Participants Ethics Committee on 26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576."
+
+
+nzavs_data_availabily <- "
+### Data Availability
+
+The data described in the paper are part of the New Zealand Attitudes and Values Study. Members of the NZAVS management team and research group hold full copies of the NZAVS data. A de-identified dataset containing only the variables analysed in this manuscript is available upon request from the corresponding author or any member of the NZAVS advisory board for replication or checking of any published study using NZAVS data. The code for the analysis can be found at [OSF link](https://osf.io/ab7cx/)."
+
+
+nzavs_acknowledgements_2025 <- "
+### Acknowledgements
+
+The New Zealand Attitudes and Values Study is supported by a grant from the Templeton Religious Trust (TRT0196; TRT0418). JB received support from the Max Plank Institute for the Science of Human History. The funders had no role in preparing the manuscript or deciding to publish it."
+
+
+authors_statment_empty <-"
+### Author Statement
+
+"
+
+
+
+
 # check entries
-boilerplate_get_entry(
+# unified_db <- boilerplate_add_entry(
+#   db = unified_db,
+#   path = "discussion.ethics",
+#   value = list()
+# )
+
+
+# unified_db <- boilerplate_add_entry(
+#   db = unified_db,
+#   path = "discussion.acknowlegements",
+#   value = list()
+# )
+
+# unified_db <- boilerplate_add_entry(
+#   db = unified_db,
+#   path = "discussion.authors_statement",
+#   value = list()
+# )
+
+unified_db <- boilerplate_update_entry(
   db = unified_db,
-  path = "discussion"
+  path = "discussion.acknowlegements.nzavs_acknowledgements_2025",
+  value = nzavs_acknowledgements_2025
 )
+
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.ethics.nzavs_2021_2027",
+  value = nzavs_ethics_2021_2027
+)
+
+unified_db <- boilerplate_add_entry(
+  db = unified_db,
+  path = "discussion.nzavs_acknowledgements_2025",
+  value = nzavs_acknowledgements_2025
+)
+
+unified_db <- boilerplate_add_entry(
+  db = unified_db,
+  path = "discussion.nzavs_acknowledgements_2025",
+  value = nzavs_acknowledgements_2025
+)
+
+
+
+unified_db <- boilerplate_add_entry(
+  db = unified_db,
+  path = "discussion.authors_statment_empty",
+  value = authors_statment_empty
+)
+
 
 
 # add path
@@ -1103,30 +1229,528 @@ unified_db <- boilerplate_update_entry(
   value = simple_general_approach_cate_long
 )
 
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.authors_statement.empty",
+  value = authors_statment_empty
+)
 
 # save
 boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
-# import
-unified_db <- boilerplate_import(data_path = my_project_path)
 
------------------------------------
-# save the updated methods database
-# ------------------------------------------------------
-# result <- boilerplate_manage_text(
-#   category = "methods",
-#   action = "save",
-#   db = methods_db
-# )
 
-#
-#
-# # check if save was successful
-# if (result) {
-#   cat("Methods database saved successfully!")
-# } else {
-#   cat("Error saving methods database!")
-# }
+# Appendix  ---------------------------------------------------------------
+
+appendix_timeline_text <- "{{< pagebreak >}}
+## Appendix A: Daily Data Collection  {#appendix-timeline}
+
+{{< pagebreak >}}
+
+@fig-timeline presents the New Zealand Attitudes and Values Study Data Collection {{baseline_wave}} retained cohort from {{study_years}}.
+
+```{r}
+#| label: fig-timeline
+#| fig-cap: \"Historgram of New Zealand Attitudes and Values Study Daily Data Collection for {{baseline_wave}} cohort: years 2018-2024.\"
+#| eval: true
+#| include: true
+#| echo: false
+#| fig-width: 12
+#| fig-height: 12
+#|
+timeline_histogram
+```
+{{< pagebreak >}}
+"
+#check
+cat(appendix_timeline_text)
+
+appendix_exposure_text <- "{{< pagebreak >}}
+### Exposure Variable: {{exposure_variable}}  {#appendix-exposure}
+
+@tbl-sample-exposures presents sample statistics for the {{exposure_variable}} during the {{baseline_wave}} and {{exposure_waves}}.
+
+::: {#tbl-sample-exposures}
+```{r, results = 'asis'}
+#| eval: true
+#| include: true
+#| echo: false
+
+latex_table_exposures |>
+    kable_styling(
+      font_size = 12,
+      latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
+    )
+
+```
+Demographic statistics for New Zealand Attitudes and Values Cohort {{baseline_wave}}.
+:::
+"
+cat(appendix_exposure_text)
+
+
+
+
+appendix_outcomes_health_text<-  "{{< pagebreak >}}
+## Outcome Variables {#appendix-outcomes}
+
+#### Health Outcome Variables
+
+::: {#tbl-sample-outcomes-health}
+```{r, results = 'asis'}
+#| eval: true
+#| include: true
+#| echo: false
+
+
+latex_table_outcomes_health |>
+  kable_styling(
+    font_size = 12,
+    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
+   )
+
+```
+Health variables measured at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
+:::
+
+
+
+### Psychological Well-Being Outcome Variables
+
+::: {#tbl-sample-outcomes-psych}
+```{r, results = 'asis'}
+#| eval: true
+#| include: true
+#| echo: false
+
+latex_table_outcomes_psych |>
+  kable_styling(
+    font_size = 12,
+    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
+   )
+
+```
+Psychological well-being variables measured at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
+:::
+
+
+
+### Present-Focussed Well-Being Indicators
+
+::: {#tbl-sample-outcomes-present}
+```{r, results = 'asis'}
+#| eval: true
+#| include: true
+#| echo: false
+
+latex_table_outcomes_present |>
+  kable_styling(
+    font_size = 12,
+    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
+   )
+
+```
+Present-focussed well-being variables measured at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
+:::
+
+
+
+### Life-Focussed Well-Being Indicators
+
+::: {#tbl-sample-outcomes-life}
+```{r, results = 'asis'}
+#| eval: true
+#| include: true
+#| echo: false
+
+latex_table_outcomes_life |>
+  kable_styling(
+    font_size = 12,
+    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
+   )
+
+```
+Life-reflective well-being variables measured at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
+:::
+
+
+### Social Well-Being Indicators
+
+::: {#tbl-sample-outcomes-social}
+```{r, results = 'asis'}
+#| eval: true
+#| include: true
+#| echo: false
+latex_table_outcomes_social |>
+  kable_styling(
+    font_size = 12,
+    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
+   )
+
+```
+Life-reflective well-being variables measured at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
+:::
+"
+
+
+# check entries
+boilerplate_get_entry(
+  db = unified_db,
+  path = "discussion"
+)
+
+
+appendix_confounding_lmtp_swig <- "{{< pagebreak >}}
+## Appendix C: Confouding Control {#appendix-confounding}
+
+::: {#tbl-C}
+```{=latex}
+\tvtable
+```
+@tbl-C presents single-world intervention graphs showing time-fixed and time-varying sources of bias in our six waves (baseline, four exposure waves, followed by the outcome wave.) Time-fixed confounders are included in the baseline wave. Time-varying confounders are included in each of the four treatment waves (abbreviated here by '$\\dots$' to declutter the graph). When there is more than one exposure wave, identifying causal effects requires adjustment for time-varying confounders [@robins2008estimation; @bulbulia2024swigstime; @richardson2013].
+:::
+
+For confounding control, we employ a modified disjunctive cause criterion [@vanderweele2019], which involves:
+
+
+1.	Identifying all common causes of both the treatment and outcomes.
+2.	Excluding instrumental variables that affect the exposure but not the outcome.
+3.	Including proxies for unmeasured confounders affecting both exposure and outcome.
+4.	Controlling for baseline exposure and baseline outcome, serving as proxies for unmeasured common causes [@vanderweele2020].
+
+Additionally, we control for time-varying confounders at each exposure wave [@robins2008estimation; @bulbulia2024swigstime; @richardson2013].
+
+The covariates included for confounding control are described in @pedro_2024effects.
+
+Where there are multiple exposures, causal inference may be threatened by time-varying confounding [@bulbulia2024swigstime]."
+
+cat(appendix_confounding_lmtp_swig)
+appendix_confounding_lmtp_dag <- "{{< pagebreak >}}
+## Appendix: Confouding Control {#appendix-confounding}
+
+::: {#tbl-C}
+```{=latex}
+\\feedbackB
+```
+@tbl-C Common cause of Treatment 1 and downstream confounder of Treatment 2 is a collider. To handle time-varying confounding we include time-fixed confounders in the baseline wave. Time-varying confounders are included in each of the successive treatment waves. When there is more than one exposure wave, identifying causal effects requires adjustment for time-varying confounders [@robins2008estimation; @bulbulia2024swigstime; @richardson2013].
+:::
+
+For confounding control, we employ a modified disjunctive cause criterion [@vanderweele2019], which involves:
+
+
+1.	Identifying all common causes of both the treatment and outcomes.
+2.	Excluding instrumental variables that affect the exposure but not the outcome.
+3.	Including proxies for unmeasured confounders affecting both exposure and outcome.
+4.	Controlling for baseline exposure and baseline outcome, serving as proxies for unmeasured common causes [@vanderweele2020].
+
+Additionally, we control for time-varying confounders at each exposure wave [@robins2008estimation; @bulbulia2024swigstime; @richardson2013].
+
+The covariates included for confounding control are described in @pedro_2024effects.
+
+{{< pagebreak >}}"
+
+appendix_confounding_threewave_x <- "{{< pagebreak >}}
+## Appendix: Confouding Control {#appendix-confounding}
+
+::: {#tbl-confounding}
+```{=latex}
+\\threewavepanelX
+```
+The Causal Directed Acyclic Graphs (DAGS) report the causal identification problems in our three-wave studyand and or methods for addressing them solution.
+:::
+
+@tbl-confounding describes our strategy for confounding control, in which we employ a modified disjunctive cause criterion [@vanderweele2019], which involves:
+
+
+1.	Identifying all common causes of both the treatment and outcomes.
+2.	Excluding instrumental variables that affect the exposure but not the outcome.
+3.	Including proxies for unmeasured confounders affecting both exposure and outcome.
+4.	Controlling for baseline exposure and baseline outcome (@tbl-confounding) addresses the strongest confounders, given any residual confounding would need to be orthogonal to these measures [@vanderweele2020].
+
+Nevertheless, confounding and selection biases owing to attrition remain a problem. Missing responses at baseline are estimated within our causal forests. To handle attrition from the baseline wave to the exposure wave, and from the exposure wave to the outcome wave, we employ inverse probability of censoring weighting. Because confounding may still remain a problem a problem we employ sensitivity analysis, as described in the main text."
+cat(appendix_confounding_threewave_x)
+
+
+appendix_confounding_threewave_l <- "{{< pagebreak >}}
+## Appendix: Confouding Control {#appendix-confounding}
+
+::: {#tbl-confounding}
+```{=latex}
+\\threewavepanel
+```
+The Causal Directed Acyclic Graphs (DAGS) report the causal identification problems in our three-wave studyand and or methods for addressing them solution.
+:::
+
+@tbl-confounding describes our strategy for confounding control, in which we employ a modified disjunctive cause criterion [@vanderweele2019], which involves:
+
+
+1.	Identifying all common causes of both the treatment and outcomes.
+2.	Excluding instrumental variables that affect the exposure but not the outcome.
+3.	Including proxies for unmeasured confounders affecting both exposure and outcome.
+4.	Controlling for baseline exposure and baseline outcome (@tbl-confounding) addresses the strongest confounders, given any residual confounding would need to be orthogonal to these measures [@vanderweele2020].
+
+Nevertheless, confounding and selection biases owing to attrition remain a problem. Missing responses at baseline are estimated within our causal forests. To handle attrition from the baseline wave to the exposure wave, and from the exposure wave to the outcome wave, we employ inverse probability of censoring weighting. Because confounding may still remain a problem a problem we employ sensitivity analysis, as described in the main text."
+cat(appendix_confounding_threewave_l)
+
+
+appendix_assumptions_grf_text <- "{{< pagebreak >}}
+## Appendix: How Statistical Models Influence Detecting Treatment Effect Differences
+
+This explanation draws on @bulbulia2024swigstime.
+
+Imagine a treatment or exposure ($A$) that might affect an outcome ($Y$). Sometimes, the effect of $A$ on $Y$ isn't the same for everyone; it might be stronger or weaker depending on other characteristics. This is called 'effect modification'. For effect modification to even be possible, the treatment must have some effect on at least some individuals [@bulbulia2024wierd].
+
+We cannot simply look at average differences within our sample to understand how effects vary. Instead, we need to use statistical models to investigate this potential heterogeneity [@grf2024; @vansteelandt2022a]. Alternatively, we might want to compare if the treatment effect differs between specific groups in the population, such as different cultural groups or genders.
+
+::: {#tbl-terminologyeffectmodification}
+```{=latex}
+\\terminologyeffectmodification
+Graphical conventions used to represent effect modification.
+:::
+
+@tbl-terminologyeffectmodification shows the symbols we use in diagrams to discuss effect modification clearly. To focus purely on effect modification, we assume the treatment ($A$) was assigned randomly (like flipping a coin, $\\mathcal{R} \\rightarrow A$). This means we assume the basic relationship is $A$ causes $Y$ ($A \\to Y$), without other factors confusing this link.
+
+Therefore, we don't need complex causal diagrams to adjust for confounding of the treatment effect itself. We also won't draw a causal arrow from the variable that modifies the effect ($F$) directly to the outcome ($Y$). This choice helps us focus solely on how $F$ changes the $A \to Y$ relationship. (For discussion on different arrow types, see @hernan2024WHATIF, pp. 126-127).
+
+::: {#tbl-terminologyeffectmodificationtypes}
+\\terminologyeffectmodificationtypes
+Examples of Effect Modification Scenarios
+:::
+
+The diagrams in @tbl-terminologyeffectmodificationtypes illustrate the central point: whether we find effect modification depends on which variables we include in our statistical analysis.
+
+In $\\mathcal{G}_1$, the variable $F$ directly influences how $A$ affects $Y$. The open arrow towards the $A \\to Y$ path indicates that $F$ is associated with differences in the effect, without necessarily claiming $F$ causes this difference.
+
+In $\\mathcal{G}_2$, $F$ is an unobserved factor that modifies the $A \to Y$ effect. If the distribution of $F$ differs between populations (e.g., a study population vs. a target population), the average treatment effect found in the study might not apply elsewhere. Generalising findings requires careful consideration [@hernan2024WHATIF; @bulbulia2024wierd]. Estimates can be misleading if the target population differs from the study population regarding effect-modifying characteristics [@greenland2009commentary; @lash2020; @bulbulia2024wierd].
+
+Now, consider the diagrams $\\mathcal{G}_3$ to $\\mathcal{G}_6$, which use the same underlying causal structure but different analysis choices. Let's use an example: $F$ is childhood deprivation, $G$ is educational achievement (influenced by $F$), $A$ is a government educational initiative, and $Y$ is recycling behaviour.
+
+In $\\mathcal{G}_3$, $F$ (deprivation) directly modifies the effect of the initiative ($A$) on recycling ($Y$). $G$ (education) is influenced by $F$. If our statistical analysis accounts for $F$, we essentially block the connection from $G$ to $Y$ that goes through $F$. In this analysis, we would not find that the initiative's effectiveness varies by education level ($G$).
+
+In $\\mathcal{G}_4$, we use the same scenario but analyse the data without accounting for $F$ (deprivation), only including $G$ (education). Because the link between education ($G$), deprivation ($F$), and recycling ($Y$) ($G \\leftarrow F \\rightarrow Y$) is not blocked in this analysis, we would find that the initiative's effect ($A \\to Y$) varies by education level ($G$). Here, $G$ appears to be an effect modifier simply because of our analysis choice.
+
+In $\\mathcal{G}_5$, let's add another variable: $B$, representing depression (measured before $G$). Suppose $B$ also influences education ($G$). If we analyse the data including education ($G$) and depression ($B$), but not deprivation ($F$), something interesting happens. Because $G$ is influenced by both $F$ and $B$, including $G$ in the model creates an artificial statistical link between $B$ and $F$ (via $G$). This makes it look like the initiative's effect ($A \\to Y$) varies by depression level ($B$), even though $B$ has no actual causal link to $Y$ in this structure. The apparent effect modification by $B$ is an artefact of the analysis, not a reflection of causation.
+
+In $\\mathcal{G}_6$, if we include the direct modifier $F$ (deprivation) in our analysis, it blocks the artificial pathways seen in $\\mathcal{G}_4$ and $\\mathcal{G}_5$. We would not find effect modification by education ($G$) or depression ($B$) in this case. This strongly highlights that our findings about effect modification depend on (1) the true underlying causal relationships and (2) which variables we choose to include in our statistical model.
+
+Using principles from causal diagrams [@vanderweele2012], it becomes clear that analysing effect modification requires thinking about the assumed causal structure and explicitly stating which variables are included in the statistical model. Policymakers and researchers might reach wrong conclusions if they misinterpret effect modification findings without considering how the analysis was done [@bulbulia2024swigstime]. Remember, when we assess effect modification, we are asking if the treatment effect differs across groups, not whether the characteristics defining those groups themselves cause the outcome. For further reading on effect modification, see [@vanderweele2012; @vanderweele2007; @suzuki2013counterfactual;bulbulia2024swigstime].
+"
+cat(appendix_assumptions_grf_text)
+
+
+
+# needs n_final_exposure_wave, n_outcome_wave, exposure_variable, name_control_regime, name_exposure_regime, value_exposure_set_high, value_exposure_set_low,appendix_positivity, number_exposure_waves, appendix_positivity
+
+appendix_causal_lmtp_time_vary <- "{{< pagebreak >}}
+## Appendix: Causal Contrasts and Causal Assumptions {#appendix-assumptions}
+### Notation
+  - $A_k$: Observed {{exposure_variable}} at Wave $k$, for $k = 1, \\dots, {{n_final_exposure_wave}}$.
+  - $Y_\\tau$: Outcomes measured at the end of the study (Wave {{n_outcome_wave}}).
+  - $W_0$: Confounders measured at baseline (Wave 0) (including A_0, Y_0).
+  - $L_k$: Time-varying confounders measured at Wave $k$ (for $k = 1, \\dots, {{n_final_exposure_wave}}$).
+### Shift Functions
+Let $\\boldsymbol{\\text{d}}(a_k)^+$ represent the {{name_exposure_regime}} treatment sequence and $\\boldsymbol{\\text{d}}(a_k)^\\emptyset$ the **{{name_control_regime}}** treatment sequence, where the interventions occur at each wave $k = 1\\dots {{n_final_exposure_wave}}; k\\in \\{0\\dots n_outcome_wave\\}$.
+Formally:
+#### {{name_exposure_regime}} $\\bigl(\\boldsymbol{\\text{d}}(a_k^+)\\bigr)$
+$$
+\\boldsymbol{\\text{d}} (a_k^+)
+\\;=\\;
+\\begin{cases}
+{{value_exposure_set_low}}, & \\text{if } A_k < {{value_exposure_set_high}},\\\\[6pt]
+A_k, & \\text{otherwise.}
+\\end{cases}
+$$
+#### {{name_control_regime}} $\\bigl(\\boldsymbol{\\text{d}}(a_k^\\null)\\bigr)$
+$$
+\\boldsymbol{\\text{d}}(a_k^\\emptyset)
+\\;=\\;
+\\begin{cases}
+{{value_exposure_set_low}}, & \\text{if } A_k > {{value_exposure_set_low}},\\\\[6pt]
+A_k, & \\text{otherwise.}
+\\end{cases}
+$$
+Here, $A_k$ is the observed {{exposure_var}} at Wave $k$. The shift function $\\boldsymbol{\\text{d}}$ 'nudges' $A_k$ to a target level (four times per month or zero) only if the current value is below (for {{name_exposure_regime}}) or above (for  {{name_control_regime}}) that target. Across the 1-{{n_final_exposure_wave}} waves, these shifts form a sequence $\\boldsymbol{\\bar{\\boldsymbol{\\text{d}}}}$, which defines a complete intervention regime.
+### Causal Contrast
+We compare the average well-being under the **{{name_exposure_regime}}** regime, $\\boldsymbol{\\bar{\\boldsymbol{\\text{d}}}}(a^+)$, to the average well-being under the **{{name_control_regime}}** regime, $\\boldsymbol{\\bar{\\boldsymbol{\\text{d}}}}(a^\\emptyset)$. Specifically, the average treatment effect (ATE) is given:
+$$
+\\text{ATE}^{\\text{outcomes}}
+\\;=\\;
+\\mathbb{E}
+\\Bigl[
+  Y_\\tau\\!\\bigl(\\boldsymbol{\\text{d}}(a^+)\\bigr)
+  \\;-\\;
+  Y_\\tau\\!\\bigl(\\boldsymbol{\\text{d}}(a^\\emptyset)\\bigr)
+\\Bigr].
+$$
+### Assumptions
+To estimate this effect from observational data, we assume:
+1. **Conditional Exchangeability:** Once we condition on $W_0$ and each $L_k$, the interventions $\\boldsymbol{\\bar{\\boldsymbol{\\text{d}}}}(a^+)$ or $\\boldsymbol{\\bar{\\boldsymbol{\\text{d}}}}(a^\\emptyset)$ are effectively random with respect to potential outcomes.
+2. **Consistency:** The potential outcome under a given treatment regime matches the observed outcome when that regime is followed.
+3. **Positivity:** Everyone has a non-zero probability of receiving each level of {{exposure_variable}} (i.e., a chance to be 'shifted' up or down) given their covariates. The positivity assumption is the only causal assumption that can be evaluated with data. We evaluate this assumption in [{{appendix_positivity}}](#appendix-positivity)).
+Mathematically, for conditional exchangeability, we write:
+$$
+\\Bigl\\{
+  Y\\bigl(\\boldsymbol{\\text{d}}(a^+)\\bigr),
+  \\;
+  Y\\bigl(\\boldsymbol{\\text{d}}(a^\\emptyset)\\bigr)
+\\Bigr\\}
+\\coprod
+A_k |
+W_0,
+L_k
+$$
+That is, we assume the potential outcomes under each treatment regime are independent of each treatment at every time point, conditional on baseline confounders and time-varying confounders (here: {{time_varying_confounders}}).
+Under these assumptions, our statistical models permit us to estimate $\\text{ATE}^{\\text{outcomes}}$ from observational data. That contrast is (1) *{{name_exposure_regime}}* versus (2) *{{name_control_regime}}* at least {{number_exposure_waves}} waves*.  We define the target population as {{name_target_population}}, the years in which measurements were taken."
+
+
+cat(appendix_causal_lmtp_time_vary)
+
+
+
+# {{name_exposure_threshold}}
+# {{name_control_threshold}}
+# {{name_target_population}}
+
+
+cat(appendix_causal_grf)
+
+appendix_positivity_exposures_5_text <- "{{< pagebreak >}}
+## Appendix E: Transition Matrix to Check The Positivity Assumption {#appendix-positivity}
+
+
+```{r}
+#| eval: true
+#| include: false
+#| echo: false
+transition_tables$quarto_code()
+```
+
+```{r, results='asis'}
+cat(transition_tables$explanation)
+```
+
+```{r}
+#| label: tbl-transition-waveb-wave1
+#| tbl-cap: \"Transition Matrix From Baseline Wave to First Exposure Wave\"
+transition_tables$tables[[1]]
+```
+
+```{r}
+#| label: tbl-transition-wave1-wave2
+#| tbl-cap: \"Transition Matrix From First Exposure Wave to Second Exposure Wave\"
+transition_tables$tables[[2]]
+```
+
+```{r}
+#| label: tbl-transition-wave2-wave3
+#| tbl-cap: \"Transition Matrix From Second Exposure Wave to Third Exposure Wave\"
+transition_tables$tables[[3]]
+```
+
+```{r}
+#| label: tbl-transition-wave3-wave4
+#| tbl-cap: \"Transition Matrix From Third Exposure Wave to Fourth Exposure Wave\"
+transition_tables$tables[[4]]
+```
+
+```{r}
+#| label: tbl-transition-wave4-wave5
+#| tbl-cap: \"Transition Matrix From Fourth Exposure Wave to Fifth Exposure Wave\"
+transition_tables$tables[[5]]
+```
+
+"
+
+
+
+appendix_positivity_exposures_1_text <- "{{< pagebreak >}}
+## Appendix E: Transition Matrix to Check The Positivity Assumption {#appendix-positivity}
+
+
+```{r}
+#| eval: true
+#| include: false
+#| echo: false
+transition_tables$quarto_code()
+```
+
+```{r, results='asis'}
+cat(transition_tables$explanation)
+```
+
+```{r}
+#| label: tbl-transition-waveb-wave1
+#| tbl-cap: \"Transition Matrix From Baseline Wave to Exposure Wave\"
+transition_tables$tables[[1]]
+```
+"
+
+appendix_references <- "{{< pagebreak >}}
+
+## References {.appendix-refs}
+
+"
+
+
+
+
+appendix_cross_lagged_model_deficiencies<-"{{< pagebreak >}}
+## Appendix: Inadequacy of Cross Lagged Models
+
+Aiken's regression textbook to assert that three conditions must generally be met to establish causality.
+
+
+Where $X$ represents the exposure or treatment and $Y$ the outcome, Aiken asserts:
+
+1. $X$ and $Y$ must be correlated.
+2. The correlation must not be spurious or due to a confounding factor.
+3. $X$ must precede $Y$ in time.
+
+
+The modern causal inference literature, which has advanced considerably over the past two decades in fields such as epidemiology, computer science, economics, and policy research, has shown that these assumptions are inadequate. Consider the following limitations of the traditional veiw.
+
+
+### Condition 1: It is not true that causation implies correlation
+
+
+Using Pearl’s graphical models, causality can be defined as $X \rightarrow Y$, where conditioning on a mediator is denoted by $\boxed{M}$. Pearl has shown that in the scenario $X \rightarrow \boxed{M} \rightarrow Y$, causality can exist without a direct association between $X$ and $Y$. This is crucial because, with only two waves of data, any variable measured at Wave 1 could act as a mediator, potentially obscuring the true association between $X$ at time 1 and $Y$ at time 2. To address mediator bias effectively, at least three waves of data are required to disentangle these causal pathways [@vanderweele2020].
+
+### Condition 2: The confounding criterion is insufficient to evaluate causality
+
+
+This condition essentially restates the idea that an association must be causal to be valid, which, although trivially true, adds no meaningful insight.
+
+The confounding criterion typically applies when treatment $X$ and outcome $Y$ share a common cause, $L$. By adjusting for $L$, we aim to remove the confounding effect. However, consider a scenario where $X$ precedes $Y$ and both $X$ and $Y$ cause $L$, without a direct relationship between $X$ and $Y$. In Pearl's graphical terms, this would be represented as $X \\rightarrow \boxed{L} \\leftarrow Y$. Conditioning on $L$ would induce a spurious association between $X$ and $Y$ that would not exist without conditioning. This demonstrates even when we account for confounding by commong cause, the association between $X$ and $Y$ may be biased.
+
+More fundamental, when including multiple varaibles in our models, we do not automatically obtain consistent causal effect estimates Take the simple case where $L \\rightarrow X \\rightarrow Y$, and suppose that $L \\rightarrow Y$.  To consistently estimate the a causal effect of $X \\rightarrow Y$ we must adjust for $\boxed{L}$.  If the causal relationships we have just described are correct, we may obtain valid causal inference for $X \\rightarrow Y$ by adjusting for $\\boxed{L}$. However the coefficient we obtain for $L$ in our stastical model will not consistently estimate the causal effect of $L \\to Y$ because $X$ is a mediator, such that  $L \\to \boxed{X} \to  Y$.
+
+Inference become even more delicate when we add variables to our model because spurious correlations may be induced. For example, suppose that $L$ is no casually related to $Y$, but causally related to $X$. Suppose further that and unmesaured variable $U$ is related to both $X$ and $Y$ as a common cause.  In this case, there is unmeasured confounding for $X \\to Y$. However, conditioning on $X$ introduces bias for the path for $L$ to $Y$ because $\boxed{X}$ is a collider of $U$ and $L$. In a model that includes $\boxed{X}$ and to will appear that $L$ is associated with $Y$, however were we to simply focus on the unconditional realtionship between $L$ and $Y$ no correlation would be observed. Pearl's proved these points in @pearl1995, yet the remain under-appreciated in many social sciences, including psychological science. However, a consensus in causal inference holds that we should first clarify the causal effect of interest, then assess its identification conditions, then develop an appropriate estimator before we attempt a statistical model.  Practically this means investigators typically require separate models for each causal effect estimate of interest [@mcelreath2020; @westreich2013].
+
+
+### Condition 3: Temporal precedence is necessary but does not clarify identification
+
+
+It is true that for $X$ to cause $Y$, $X$ must precede $Y$ in time. However in observational seetings, we must typically collect information on prior states of $Y$ and prior states of $X$ to ensure valid inferences for the causal effects of later states of $X$ on (still) later states of $Y$ . Consider a feedback loop such as $X_0 \rightarrow Y_1 \rightarrow X_2 \rightarrow Y_3$. Here, we imagine that $X$ and $Y$ affect each other over time, (as might occur when threat perceptions affect authoritarian attitudes, which then reshape future threat perceptions...). To correctly estimate the causal effect of $X_t$ on $Y_{t+1}$, we would need to control for both $Y_{t-1}$ and $X_{t-1}$. In regression form, this would appear as:
+
+
+$$ {\\tt model <- lm(Y_{t+1} \\sim A_t + Y_{t-1} + A_{t-1} + L_{t-1}, ...) }$$
+
+Control for prior exposure and prior outcome is necessary wherever there are unmeasured common causes of both[@vanderweele2020]. Importantly, this model cannot be estimated with only two waves of data; three waves are the minimum required to capture these dynamics. Therefore, the temporal precedence condition, while necessary, is insufficient for drawing reliable causal inferences when data are limited.
+
+
+### Time series data collected at a four month interval raise in a small student sample are unlikely to yield sufficiently many observations to obtain causal effect estimates
+
+
+Beyond these conceptual issues, there are practical limitations to causal modelling. For a causal model to be credible, sufficient variation in $X$ over time is necessary. For instance, if we are estimating the causal effect of threat perceptions ($X$) on authoritarianism ($Y$) over a four-month period, we need enough individuals whose threat perceptions have changed to observe any real effects. This variation must also occur across all levels of covariates (e.g., $L$). Without sufficient change, we would not expect to observed causal effects [@vanderweele2020]. However, we cannot rule out causality over longer intervals, which may be required to obtain valid instances of threat triggering.
+
+Notably, experiments are the gold standard for causal inference, and should be preferred when feasible and ethical. We are not given an explanation of why experiments were not used in this thesis. As indicated above, the decision to avoid experiments should be explained.
+
+
+### Cross-Lagged panel models typically do not afford valid causal effect estimates
+
+
+Lastly, Cross-Lagged Panel Models (CLPMs), such as those used in Study 4, do not typically offer valid causal contrasts needed to estimate causal effects. The probem is that Cross-Lagged Panel Models lack explicit counterfactual comparisons, which are essential for determining what $Y_{t+1}$ would have been if $X_t$ had taken a different value. Instead, Cross-Lagged Panel Models  only observe $Y_{t+1}$ given the actual value of $X_t$, making it impossible to model hypothetical scenarios. Furthermore, these models typically do not adequately adjust for confounding. As a result, the findings in Study 4 do not provide credible causal inferences.  Gerard notes these problems, but this reader is left in doubt about the scholarly value of the study if the coeffecients reported, because if Gerard's critical observations are right the coefficients are uninterpretable.
+"
 
 
 
@@ -1138,8 +1762,11 @@ unified_db <- boilerplate_import(data_path = my_data_path)
 cat(unified_db$methods$analytic_approach$simple_general_approach_cate_short)
 unified_db$methods$sensitivity_analysis
 unified_db$methods$causal_intervention$lmtp_multi_wave
+
+
+
 # example usage of generate_text for methods section
-methods_text <- boilerplate_generate_text(
+lmtp_methods_text <- boilerplate_generate_text(
   category = "methods",
   sections = c(
     "sample.sample_information",
@@ -1168,14 +1795,14 @@ methods_text <- boilerplate_generate_text(
     value_exposure = "Shift everyone in the target population to \\> 0 religious service attendance",
     value_control = "Shift everyone in the target population to 0 religious service attendance",
     name_target_population = "all adults in New Zealand from the years 2018-2024",
-    number_exposure_wave = "five",
+    number_exposure_waves = "five",
     time_varying_confounders = "(physical disability, employment status, partner status, and parenting status)",
     flipped_list = c("Neuroticism"),
     appendices_sample = "A",
     appendix_outcomes = "B",
     appendix_assumptions = "E",
     baseline_wave = "NZAVS time 10, years 2018-2019",
-    exposure_wave = "NZAVS time 11, years 2019-2020",
+    exposure_waves = "NZAVS time 11, years 2019-2020",
     outcome_wave = "NZAVS time 12, years 2020-2021",
     appendix_ref = "C",
     grf_appendix = "D",
@@ -1208,7 +1835,7 @@ results_text <- boilerplate_generate_text(
   db = unified_db
 )
 
-cat(results_text
+cat(results_text)
 # example of using the boilerplate text database in a research workflow
 # this demonstrates how to generate methods text for a specific study
 
@@ -1237,7 +1864,7 @@ study_params <- list(
   var_name = "political_conservativism",
   appendices_sample = "A-C",
   baseline_wave = "NZAVS time 10, years 2018-2019",
-  exposure_wave = "NZAVS time 11, years 2019-2020",
+  exposure_waves = "NZAVS time 11, years 2019-2020",
   outcome_wave = "NZAVS time 12, years 2020-2021",
   timeframe = "2018-2021",
   baseline_missing_data_proportion = 0.15,
@@ -1679,7 +2306,7 @@ study_params <- list(
   outcome_var = "social_wellbeing",
   n_total = 47000,
   baseline_wave = "NZAVS time 10, years 2018-2019",
-  exposure_wave = "NZAVS time 11, years 2019-2020",
+  exposure_waves = "NZAVS time 11, years 2019-2020",
   outcome_wave = "NZAVS time 12, years 2020-2021"
 )
 
@@ -1935,7 +2562,7 @@ study_params <- list(
   n_total = 47000,
   appendices_sample = "A-C",
   baseline_wave = "NZAVS time 10, years 2018-2019",
-  exposure_wave = "NZAVS time 11, years 2019-2020",
+  exposure_waves = "NZAVS time 11, years 2019-2020",
   outcome_wave = "NZAVS time 12, years 2020-2021",
   appendix_ref = "B",
   protocol_url = "https://osf.io/ce4t9/"
@@ -2182,7 +2809,7 @@ study_params <- list(
   n_total = "47000",
   appendices_sample = "A-C",
   baseline_wave = "NZAVS time 10, years 2018-2019",
-  exposure_wave = "NZAVS time 11, years 2019-2020",
+  exposure_waves = "NZAVS time 11, years 2019-2020",
   outcome_wave = "NZAVS time 12, years 2020-2021",
   appendix_ref = "B",
   protocol_url = "https://osf.io/ce4t9/"
@@ -2288,3 +2915,49 @@ Finally, for practical implementation, we used policy trees [@policytree_package
 Taken together, this multi-stage approach first identifies individualised treatment effects, then tests their reliability, estimates the added value of targeted intervention, and, if justified, provides simple rules for personalising treatment in practice."
 
 interpretation_rate_test <- "To assess the potential practical value of tailoring treatment based on individual predictions, we examined the Rank-Weighted Average Treatment Effect (RATE) and Qini curves [@grf2024; @wager2018]. These predictions are estimates (denoted $\\hat{\\tau}(X_i)$) of the underlying conditional average treatment effect (CATE, $\tau(X_i)$), which represents the average treatment effect for individuals with specific baseline covariates $X_i$. Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects ($\\hat{\\tau}(X_i)$) always indicate greater benefit from treatment. RATE and Qini curves evaluate how well a strategy of prioritising treatment using these CATE predictions $\\hat{\\tau}(X_i)$ performs compared to simpler approaches (e.g., uniform treatment based on the overall average effect, ATE). Specifically, RATE estimates the average gain achieved among the group prioritised by the model [@wager2018]. Qini curves dynamically visualise this potential gain: they plot the cumulative benefit realised as we hypothetically treat an increasing proportion of the population, starting with those individuals having the highest predicted effects $\\hat{\\tau}(X_i)$ [@grf2024]."
+
+appendix_causal_grf <- "
+### Exposure Definition
+
+The binary exposure variable, $A$, measured at Wave {{exposure_waves}}, is derived from an underlying measure $A'$ based on a pre-defined threshold, `{{binary_threshold}}`. Individuals are classified into two groups:
+
+1.  **Exposure Group ($A=1$)**: Individuals whose measure $A'$ is greater than the threshold ($A' > {{binary_threshold}}$). We refer to this condition as '{{name_exposure_threshold}}'.
+2.  **Control Group ($A=0$)**: Individuals whose measure $A'$ is less than or equal to the threshold ($A' \le {{binary_threshold}}$). We refer to this condition as '{{name_control_threshold}}'.
+
+### Causal Inference
+
+[...]
+
+We compare two hypothetical scenarios:
+
+1.  **{{name_exposure_threshold}}**: We hypothetically assign everyone the exposure level $A = 1$.
+2.  **{{name_control_threshold}}**: We hypothetically assign everyone the exposure level $A = 0$.
+
+Our objective is to estimate the **Conditional Average Treatment Effect (CATE)** [...]
+
+$$ \tau(x) = E[Y_{\text{end of study}}(1) - Y_{\text{end of study}}(0) | X = x] $$
+
+Here:
+-   $Y_{\text{end of study}}(1)$ represents the potential outcome if an individual received exposure level $A=1$.
+-   $Y_{\text{end of study}}(0)$ represents the potential outcome if they received exposure level $A=0$.
+
+
+### Assumptions
+
+Our estimation relies on standard causal assumptions for this setting:
+
+1.  **Conditional Exchangeability [...]**:
+    $$ \{ Y_{\text{end of study}}(1), Y_{\text{end of study}}(0) \} \coprod A \mid X $$
+
+This implies that, within strata defined by $X$, the exposure assignment is effectively random with respect to the outcome. We assume all relevant common causes of the exposure $A$ and the outcome $Y_{\text{end of study}}$ are included in $X$.
+
+2.  **Consistency:** An individual's observed outcome $Y_{\text{end of study}}$ corresponds to their potential outcome under the exposure level they actually received. If an individual received exposure $A=a$, then their observed outcome is $Y_{\text{end of study}} = Y_{\text{end of study}}(a)$.
+
+3.  **Positivity (Overlap)** For any combination of baseline characteristics $x$ present in the population, there is a non-zero probability of receiving either exposure level. Formally:
+    $$ 0 < P(A = {{value_exposure}} \mid X = x) < 1 $$
+    This ensures that for any group defined by $X$, we can observe individuals under both the {{name_exposure_threshold}} and {{name_control_threshold}} conditions, allowing for comparison.
+
+(Refer to [{{appendix_assumptions}}](#appendix-assumptions) for further details on these assumptions).
+
+The target population for this analysis is {{name_target_population}}."
+
