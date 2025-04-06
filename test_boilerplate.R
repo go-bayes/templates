@@ -16,8 +16,8 @@ if (!require(boilerplate, quietly = TRUE)) {
 # library(janitor)
 # # #
 # # #
-# #source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_text_generation_functions.R"))
-# #source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_init.R"))
+#source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_merege_databases.R"))
+#source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_init.R"))
 # source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_manage_measures_functions.R"))
 # source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_manage_text_functions.R"))
 # source(here::here("/Users/joseph/GIT/boilerplate/R", "boilerplate_merge_databases.R"))
