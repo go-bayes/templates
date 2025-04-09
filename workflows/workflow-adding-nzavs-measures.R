@@ -117,13 +117,12 @@ boilerplate_export(
 
 grf_introduction_text<- "## Introduction
 
-Understanding the factors that shape {{name_outcomes_lower}} is a fundamental goal in psychological science. Previous research has linked{{name_exposure_capfirst}} to {{name_outcomes_lower}}, yet establishing a reliable *causal* relationship remains challenging. Moving beyond mere correlation to identify causal effects is crucial for accurately predicting how interventions, such as encouraging {{name_exposure_lower}}, might influence individual development.
+Understanding the factors that shape {{name_outcomes_lower}} is a fundamental goal in psychological science. Previous research has linked {{name_exposure_capfirst}} to {{name_outcomes_lower}}, yet establishing a reliable *causal* relationship remains challenging. Moving beyond mere correlation to identify causal effects is crucial for accurately predicting how interventions, such as encouraging {{name_exposure_lower}}, might influence individual development.
 
 Furthermore, individuals are not uniform; they respond differently to the same experiences. Relying solely on average treatment effects can mask significant heterogeneity, where effects vary substantially across different subgroups. Identifying who benefits most, least, or even differently from an intervention is vital for developing targeted and effective strategies.
 
 Traditional parametric approaches, such as standard linear regression, often struggle to meet these needs. They typically impose restrictive assumptions about the functional form of relationships and the uniformity of effects, potentially leading to biased causal estimates and overlooking crucial individual differences [@HainmuellerMummoloXu2019].
 
-This study addresses these limitations by combining large-scale, longitudinal national panel data (the New Zealand Attitudes and Values Study) with robust methodological approaches. We aim to estimate the causal effect of {{name_exposure_lower}} on {{name_outcomes_lower}} while carefully investigating heterogeneity in these effects using non-parametric machine learning [@grf2024]. By employing methods designed to handle complex confounding and detect variations across individuals, we seek more subtle insights than conventional techniques typically provide, offering clarity into how targeted interventions affect individuals across the population over time."
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -3542,3 +3541,41 @@ The target population for this analysis is {{name_target_population}}."
 #
 # When no statistically significant evidence of treatment effect heterogeneity is detected (the confidence interval crosses zero), we cannot reliably conclude that personalisation would be better than a standard approach.
 
+
+# measures ----------------------------------------------------------------
+str(unified_db, max.level = 1)
+unified_db$measures$emp_job_sat <- list(
+  name = "Job Satisfaction",
+  description = "Job satisfaction was measured with a single item.",
+  reference = "[@eisenbarth2022aspects]",
+  waves = "1-present",
+  keywords = c("employment", "mental health"),
+  items = list(
+    "How satisfied are you with your current job?"
+  )
+)
+
+unified_db$measures$emp_job_valued <- list(
+  name = "Perceive Gratitude from Organisation",
+  description = "Perceved organizational gratitude was measured with a single item.",
+  reference = "Developed for the NZAVS",
+  waves = "10-present",
+  keywords = c("employment", "mental health"),
+  items = list(
+    "How valued do you feel by your current organization?"
+  )
+)
+
+unified_db$measures$emp_job_valued_binary <- list(
+  name = "Perceive Gratitude from Organisation (binary)",
+  description = "Perceved organizational gratitude was measured with a single item.",
+  reference = "Developed for the NZAVS",
+  waves = "10-present",
+  keywords = c("employment", "mental health"),
+  items = list(
+    "How valued do you feel by your current organization?"
+  )
+)
+unified_db$measures$emp_job_sat
+
+boilerplate::boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
