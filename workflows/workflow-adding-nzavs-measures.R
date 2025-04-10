@@ -121,7 +121,7 @@ Understanding the factors that shape {{name_outcomes_lower}} is a fundamental go
 
 Furthermore, individuals are not uniform; they respond differently to the same experiences. Relying solely on average treatment effects can mask significant heterogeneity, where effects vary substantially across different subgroups. Identifying who benefits most, least, or even differently from an intervention is vital for developing targeted and effective strategies.
 
-Traditional parametric approaches, such as standard linear regression, often struggle to meet these needs. They typically impose restrictive assumptions about the functional form of relationships and the uniformity of effects, potentially leading to biased causal estimates and overlooking crucial individual differences [@HainmuellerMummoloXu2019].
+Traditional parametric approaches, such as standard linear regression, often struggle to meet these needs. They typically impose restrictive assumptions about the functional form of relationships and the uniformity of effects, potentially leading to biased causal estimates and overlooking crucial individual differences [@HainmuellerMummoloXu2019]."
 
 
 unified_db<- boilerplate_update_entry(
