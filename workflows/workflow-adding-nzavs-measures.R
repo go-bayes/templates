@@ -59,32 +59,32 @@ if (!require(boilerplate, quietly = TRUE)) {
 #
 #
 
-str(unified_db, max.level = 1)
+# str(unified_db, max.level = 1)
 
 # set path ----------------------------------------------------------------
 
 my_project_path <- "/Users/joseph/GIT/templates/boilerplate_data"
 test_path <- "/Users/joseph/GIT/templates/test"
 
-# tests -------------------------------------------------------------------
-library(cli)
-library(glue)
-library(here)
-library(cli)
-library(utils)
-library(stringr)
+# # tests -------------------------------------------------------------------
+# library(cli)
+# library(glue)
+# library(here)
+# library(cli)
+# library(utils)
+# library(stringr)
 
-# library(janitor)
-source(here::here("/Users/joseph/GIT/boilerplate/R", "path-operations.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "category-helpers.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "default-databases.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "generate-measures.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "generate-text.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "import-export-functions.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "init-functions.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "manage-measures.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "merge-databases.R"))
-source(here::here("/Users/joseph/GIT/boilerplate/R", "utilities.R"))
+# # library(janitor)
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "path-operations.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "category-helpers.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "default-databases.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "generate-measures.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "generate-text.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "import-export-functions.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "init-functions.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "manage-measures.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "merge-databases.R"))
+# source(here::here("/Users/joseph/GIT/boilerplate/R", "utilities.R"))
 
 # import data -------------------------------------------------------------
 unified_db <- boilerplate_import( data_path = my_project_path)
@@ -206,7 +206,6 @@ unified_db<- boilerplate_update_entry(
 # save
 boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
-boilerplate_save()
 # ------------------------------------------------------
 # causal interventions section
 # ------------------------------------------------------
@@ -249,13 +248,13 @@ unified_db<- boilerplate_update_entry(
 lmtp_multi_wave_text <-"
 ### Causal Inference
 
-When psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
+When psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{name_exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
 
 Here, we ask:
 
-  > 'What if, at each wave, we intervened to set {{exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'
+  > 'What if, at each wave, we intervened to set {{name_exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'
 
-To answer this, we compare two hypothetical interventions. Each intervention shifts {{exposure_variable}} across {{number_exposure_waves}} waves, with outcomes measured after the year following the final exposure wave.  A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained there after are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @tbl-plan).
+To answer this, we compare two hypothetical interventions. Each intervention shifts {{name_exposure_variable}} across {{number_exposure_waves}} waves, with outcomes measured after the year following the final exposure wave.  A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained there after are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @tbl-plan).
 
 Following a modified treatment policies approach, we define **shift functions** describing each intervention:
 
@@ -271,10 +270,10 @@ Following a modified treatment policies approach, we define **shift functions** 
 ```{=latex}
 \\vizfive
 ```
-We contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of {{exposure_variable}} and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is 'as good as random.' Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.
+We contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of {{name_exposure_variable}} and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is 'as good as random.' Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.
 :::
 
-We then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies *{{name_exposure_regime}}* and *{{name_control_regime}}*. We define a 'confounder' as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline {{exposure_variable}} and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.
+We then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies *{{name_exposure_regime}}* and *{{name_control_regime}}*. We define a 'confounder' as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline {{name_exposure_variable}} and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{name_exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.
 
 ::: {#tbl-feedback}
 ```{=latex}
@@ -299,13 +298,13 @@ Our estimation relies on standard causal assumptions:
 lmtp_multi_wave_long_text <-"
 ### Causal Inference
 
-When psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial, often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
+When psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{name_exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial, often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
 
 Here, we ask:
 
-  > 'What if, at each wave, we intervened to set {{exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'
+  > 'What if, at each wave, we intervened to set {{name_exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'
 
-To answer this, we compare two hypothetical interventions. Each intervention shifts {{exposure_variable}} across {{number_exposure_waves}} waves, with outcomes measured after the year following the final exposure wave. A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained thereafter are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @tbl-plan, and see @tbl-feedback for a detailed explanation of time-varying confounding).
+To answer this, we compare two hypothetical interventions. Each intervention shifts {{name_exposure_variable}} across {{number_exposure_waves}} waves, with outcomes measured after the year following the final exposure wave. A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained thereafter are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @tbl-plan, and see @tbl-feedback for a detailed explanation of time-varying confounding).
 
 Following a modified treatment policies approach, we define **shift functions** describing each intervention:
 
@@ -322,11 +321,11 @@ Following a modified treatment policies approach, we define **shift functions** 
 \\vizfive
 :::
 
-We contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of {{exposure_variable}} and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is ‘as good as random.’ Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.
+We contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of {{name_exposure_variable}} and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is ‘as good as random.’ Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.
 :::
 
 
-We then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies {{name_exposure_regime}} and {{name_control_regime}}. We define a ‘confounder’ as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline {{exposure_variable}} and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.
+We then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies {{name_exposure_regime}} and {{name_control_regime}}. We define a ‘confounder’ as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline {{name_exposure_variable}} and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{name_exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.
 
 ::: {#tbl-feedback}
 ```{=latex}
@@ -451,13 +450,13 @@ unified_db$methods$sample$sample_information
 causal_identification_criteria_text <- "
 ### Causal Identification Assumptions
 
-This study relies on the following identification assumptions for estimating the causal effect of {{exposure_variable}}:
+This study relies on the following identification assumptions for estimating the causal effect of {{name_exposure_variable}}:
 
-1. **Consistency**: the observed outcome under the observed {{exposure_variable}} is equal to the potential outcome under that exposure level. As part of consistency, we assume no interference: the potential outcomes for one individual are not affected by the {{exposure_variable}} status of other individuals.
+1. **Consistency**: the observed outcome under the observed {{name_exposure_variable}} is equal to the potential outcome under that exposure level. As part of consistency, we assume no interference: the potential outcomes for one individual are not affected by the {{name_exposure_variable}} status of other individuals.
 
-2. **No unmeasured confounding**: all variables that affect both {{exposure_variable}} and the outcome have been measured and accounted for in the analysis.
+2. **No unmeasured confounding**: all variables that affect both {{name_exposure_variable}} and the outcome have been measured and accounted for in the analysis.
 
-3. **Positivity**: there is a non-zero probability of receiving each level of {{exposure_variable}} for every combination of values of {{exposure_variable}} and confounders in the population. Positivity is the only fundamental casual assumption that can be evaluated with data (refer to [{{appendix_positivity}}](#appendix-positivity))."
+3. **Positivity**: there is a non-zero probability of receiving each level of {{name_exposure_variable}} for every combination of values of {{name_exposure_variable}} and confounders in the population. Positivity is the only fundamental casual assumption that can be evaluated with data (refer to [{{appendix_positivity}}](#appendix-positivity))."
 
 
 # add criteria
@@ -481,7 +480,7 @@ methods_exposure_indicator_text <- "
 ### Exposure Indicator
 
 
-The New Zealand Attitudes and Values Study assesses {{exposure_variable}} using the following question:
+The New Zealand Attitudes and Values Study assesses {{name_exposure_variable}} using the following question:
 
 
 {{measures_exposure}}(Refer to [{{appendix_measures}}](#appendix-measures))."
@@ -589,7 +588,7 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 eligibility_standard_text <- "
 ### Eligibility Criteria
 
-To be included in the analysis of this study, participants needed to participate in the {{baseline_wave}} of the study and respond to the baseline measure of {{exposure_variable}}.
+To be included in the analysis of this study, participants needed to participate in the {{baseline_wave}} of the study and respond to the baseline measure of {{name_exposure_variable}}.
 
 Participants may have been lost to follow-up at the end of the study if they met eligibility criteria at {{baseline_wave}}. We adjusted for attrition and non-response using censoring weights, described below.
 
@@ -1572,7 +1571,7 @@ unified_db <- boilerplate_update_entry(
 # save
 boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
-boilerplate_import(unified_db, data_path = my_project_path, create_backup = FALSE)
+# boilerplate_import(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 
 # Appendix  ---------------------------------------------------------------
@@ -1595,7 +1594,6 @@ appendix_timeline_text <- "
 #|
 timeline_histogram
 ```
-{{< pagebreak >}}
 "
 #check
 cat(appendix_timeline_text)
@@ -1612,46 +1610,34 @@ cat(appendix_text_all_measures) # make this with boilerplate_measures_text
 
 ### Sample Demographic Statistics
 
-@tbl-baseline presents sample demographic statistics.
+@tbl-appendix-baseline presents sample demographic statistics.
 
-::: {#tbl-baseline}
+::: {#tbl-appendix-baseline}
 ```{r, results = 'asis'}
 #| eval: true
 #| include: true
 #| echo: false
 
-latex_table_baseline |>
-  kable_styling(
-    font_size = 6,
-    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
-   )
+cat(latex_table_baseline)
 
 ```
 Demographic statistics for New Zealand Attitudes and Values Cohort {{baseline_wave}}.
 :::
 "
-cat(appendix_baseline_text)
-
-
-
 
 
 appendix_exposure_text <- "
-### Exposure Variable: {{exposure_variable}}  {#appendix-exposure}
+### Exposure Variable: {{name_exposure_variable}}  {#appendix-exposure}
 
-@tbl-sample-exposures presents sample statistics for the {{exposure_variable}} during the {{baseline_wave}} and {{exposure_waves}}.
+@tbl-sample-appendix-exposures presents sample statistics for the {{name_exposure_variable}} during the {{baseline_wave}} and {{exposure_waves}}.
 
-::: {#tbl-sample-exposures}
+::: {#tbl-appendix-exposures}
 ```{r, results = 'asis'}
 #| eval: true
 #| include: true
 #| echo: false
 
-latex_table_exposures |>
-    kable_styling(
-      font_size = 12,
-      latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
-    )
+cat(latex_table_exposures)
 
 ```
 Demographic statistics for New Zealand Attitudes and Values Cohort {{baseline_wave}}.
@@ -1665,101 +1651,19 @@ cat(appendix_exposure_text)
 appendix_outcomes_flourishing_2025_text <-  "
 ## Outcome Variables {#appendix-outcomes}
 
-#### Health Outcome Variables
+@tbl-appendix-outcomes presents sample outcomes at baseline and the end of study.
 
-::: {#tbl-sample-outcomes-health}
+::: {#tbl-appendix-outcomes}
 ```{r, results = 'asis'}
 #| eval: true
 #| include: true
 #| echo: false
 
 
-latex_table_outcomes_health |>
-  kable_styling(
-    font_size = 12,
-    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
-   )
+cat(latex_table_outcomes_all)
 
 ```
-Health variables measured at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
-:::
-
-
-
-### Psychological Well-Being Outcome Variables
-
-::: {#tbl-sample-outcomes-psych}
-```{r, results = 'asis'}
-#| eval: true
-#| include: true
-#| echo: false
-
-latex_table_outcomes_psych |>
-  kable_styling(
-    font_size = 12,
-    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
-   )
-
-```
-Psychological well-being variables measured at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
-:::
-
-
-
-### Present-Focussed Well-Being Indicators
-
-::: {#tbl-sample-outcomes-present}
-```{r, results = 'asis'}
-#| eval: true
-#| include: true
-#| echo: false
-
-latex_table_outcomes_present |>
-  kable_styling(
-    font_size = 12,
-    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
-   )
-
-```
-Present-focussed well-being variables measured at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
-:::
-
-
-
-### Life-Focussed Well-Being Indicators
-
-::: {#tbl-sample-outcomes-life}
-```{r, results = 'asis'}
-#| eval: true
-#| include: true
-#| echo: false
-
-latex_table_outcomes_life |>
-  kable_styling(
-    font_size = 12,
-    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
-   )
-
-```
-Life-reflective well-being variables measured at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
-:::
-
-
-### Social Well-Being Indicators
-
-::: {#tbl-sample-outcomes-social}
-```{r, results = 'asis'}
-#| eval: true
-#| include: true
-#| echo: false
-latex_table_outcomes_social |>
-  kable_styling(
-    font_size = 12,
-    latex_options = c(\"hold_position\", \"repeat_header\", \"striped\", \"longtable\")
-   )
-
-```
-Life-reflective well-being variables measured at baseline (NZAVS time 10, years 2018-2019, and time 15, years 2023-2024).
+Outcome variables measured at baseline and end of study.
 :::
 "
 
@@ -1915,7 +1819,7 @@ cat(appendix_assumptions_grf_text)
 appendix_technical_lmtp_time_vary_text <- "
 ## Appendix: Causal Contrasts and Causal Assumptions {#appendix-assumptions}
 ### Notation
-  - $A_k$: Observed {{exposure_variable}} at Wave $k$, for $k = 1, \\dots, {{n_final_exposure_wave}}$.
+  - $A_k$: Observed {{name_exposure_variable}} at Wave $k$, for $k = 1, \\dots, {{n_final_exposure_wave}}$.
   - $Y_\\tau$: Outcomes measured at the end of the study (Wave {{n_outcome_wave}}).
   - $W_0$: Confounders measured at baseline (Wave 0) (including A_0, Y_0).
   - $L_k$: Time-varying confounders measured at Wave $k$ (for $k = 1, \\dots, {{n_final_exposure_wave}}$).
@@ -1957,7 +1861,7 @@ $$
 To estimate this effect from observational data, we assume:
 1. **Conditional Exchangeability:** Once we condition on $W_0$ and each $L_k$, the interventions $\\boldsymbol{\\bar{\\boldsymbol{\\text{d}}}}(a^+)$ or $\\boldsymbol{\\bar{\\boldsymbol{\\text{d}}}}(a^\\emptyset)$ are effectively random with respect to potential outcomes.
 2. **Consistency:** The potential outcome under a given treatment regime matches the observed outcome when that regime is followed.
-3. **Positivity:** Everyone has a non-zero probability of receiving each level of {{exposure_variable}} (i.e., a chance to be 'shifted' up or down) given their covariates. The positivity assumption is the only causal assumption that can be evaluated with data. We evaluate this assumption in [{{appendix_positivity}}](#appendix-positivity)).
+3. **Positivity:** Everyone has a non-zero probability of receiving each level of {{name_exposure_variable}} (i.e., a chance to be 'shifted' up or down) given their covariates. The positivity assumption is the only causal assumption that can be evaluated with data. We evaluate this assumption in [{{appendix_positivity}}](#appendix-positivity)).
 Mathematically, for conditional exchangeability, we write:
 $$
 \\Bigl\\{
@@ -2037,6 +1941,7 @@ transition_tables$tables[[5]]
 appendix_positivity_exposures_1_text <- "
 ## Appendix E: Transition Matrix to Check The Positivity Assumption {#appendix-positivity}
 
+@tbl-transition-waveb-wave1 presents the transition matrix indicating change in the exposure variable between the baseline and exposure waves.
 
 ```{r}
 #| eval: true
@@ -2336,7 +2241,7 @@ lmtp_methods_text <- boilerplate_generate_text(
     "analytic_approach.general_approach_cate_long"
   ),
   global_vars = list(
-    exposure_variable = "Religious Service Attendance",
+    name_exposure_variable = "Religious Service Attendance",
     n_total = 77000,
     n_participants = 48900,
     appendix_assumptions_grf = "Appendix E",
@@ -2356,6 +2261,7 @@ lmtp_methods_text <- boilerplate_generate_text(
     flipped_list = c("Neuroticism"),
     appendices_sample = "A",
     appendix_outcomes = "B",
+    appendix_positivity = "E",
     appendix_assumptions = "E",
     baseline_wave = "NZAVS time 10, years 2018-2019",
     exposure_waves = "NZAVS time 11, years 2019-2020",
