@@ -298,7 +298,7 @@ Our estimation relies on standard causal assumptions:
 lmtp_multi_wave_long_text <-"
 ### Causal Inference
 
-When psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{name_exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial, often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.
+When psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{name_exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial, often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this causal question, it can be unclear which causal effect we are actually estimating.
 
 Here, we ask:
 
@@ -715,27 +715,118 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 # lmtp short
 lmtp_short_explanation_text <- "
-### Statistical Estimator
+We estimated the causal effect of {{name_exposure_variable}} on {{name_outcome_variable}}, adjusting for covariates. We used a 'modified treatment policy' (MTP) estimand [@haneuse2013estimation; @diaz2012population; @young2014identification; @diaz2023lmtp].
 
-We estimate causal effects using the Longitudinal Modified Treatment Policy (LMTP) estimator within a Targeted Minimum Loss-based Estimation (TMLE) framework [@van2014targeted; @van2012targeted]. LMTP draws on machine learning for flexible outcome and treatment modeling and accounts for time-varying confounding [@van2014discussion; @vanderlaan2011; @vanderlaan2018]. This estimator is consistent if either the outcome model or the treatment mechanism is correct (double robustness). We use cross-validation to reduce overfitting [@bulbulia2024PRACTICAL]. We perform estimation with the `lmtp` package [@williams2021] and visualise outputs with the `margot` package [@margot2024]."
+This estimand captures the difference in the expected outcome under two scenarios, assuming no censoring ($C=1$):
+
+1.  **Observed exposure:** $\\E(Y^{C=1})$.
+2.  **Hypothetical exposure (intervention):** $\\E(Y^{\\dd, C=1})$, where $\\dd(A)$ is a function that specifies how {{name_exposure_variable}} ($A$) is modified.
+
+The MTP estimand is:
+
+$$
+\\E\bigl(Y^{\\dd, C=1}\bigr) \\;-\\; \\E\bigl(Y^{C=1}\bigr).
+$$
+
+We interpret this difference as the causal effect of changing {{name_exposure_variable}} according to $\\dd(\\cdot)$.
+
+We used three identifying assumptions:
+
+1.  **Conditional exchangeability:** Given observed covariates, there is no unmeasured confounding for the exposure–outcome and censoring–outcome relationships.
+
+2.  **Positivity:** Every individual has a non-zero probability of receiving their observed exposure level and remaining uncensored, within each covariate stratum.
+
+3.  **Consistency:** The observed outcome corresponds to the potential outcome for each individual's actual exposure history.
+
+We estimated this parameter using a cross-fitted ($k = {{n_folds}}$), doubly robust, non-parametric targeted minimum loss-based estimator (TMLE) for MTPs [@diaz2023lmtp; @williams2023lmtp]. This procedure involves estimating:
+- The outcome mechanism,
+- The exposure mechanism, and
+- The censoring mechanism.
+
+We used the Super Learner ensemble algorithm [@polley2023; @vanderlaan2007super] with `SL.glmnet`, `SL.ranger`, and `SL.xgboost` as base learners [@friedman2010regularization; @wright2017ranger; @chen2016xgboost].
+
+We produced all results, tables, and figures with the `margot` R package [@margot2024]. See [Appendix {{appendix_technical_lmtp}}](#appendix-technical-lmtp) for technical details."
+
+
+
+
+
+lmtp_short_explanation_text_2 <-  "We used a 'modified treatment policy' (MTP) estimand [@haneuse2013estimation; @diaz2012population; @young2014identification; @diaz2023lmtp] to quantify the effect of {{name_exposure_variable}} on {{name_outcome_variable}}.
+
+This estimand captures the difference in the expected outcome under two scenarios, assuming no censoring ($C=1$):
+
+1.  **Observed exposure:** The expected outcome ($Y$) given the observed exposure distribution, $\\E(Y^{C=1})$.
+2.  **Hypothetical exposure (intervention):** The expected outcome under a modified exposure distribution, $\\E(Y^{\\dd, C=1})$, where $\\dd(A)$ is a function specifying how {{name_exposure_variable}} ($A$) is hypothetically changed (i.e., {{shift_intervention}}).
+
+The MTP estimand is the difference between these two expectations:
+
+$$
+\\E\bigl(Y^{\\dd, C=1}\bigr) \\;-\\; \\E\bigl(Y^{C=1}\bigr).
+$$
+
+We interpret this difference causally under three standard identifying assumptions:
+
+1.  **Conditional Exchangeability:** Given the measured covariates ($L$), exposure assignment and censoring are independent of potential outcomes (i.e., no unmeasured confounding).
+2.  **Positivity:** Within strata defined by covariates, every individual has a non-zero probability of receiving their observed exposure level and remaining uncensored.
+3.  **Consistency:** An individual's observed outcome is the potential outcome corresponding to their actual exposure history.
+
+We estimated this target parameter using a cross-fitted ($k = {{n_folds}}$), doubly robust, non-parametric targeted minimum loss-based estimator (TMLE) specifically designed for MTPs [@diaz2023lmtp; @williams2023lmtp]. This TMLE procedure requires estimating several components of the data-generating process, often called nuisance parameters:
+
+- **Outcome mechanism:** The expected outcome given exposure and covariates, $\\E(Y | A, L)$.
+- **Exposure mechanism:** The probability (or density) of receiving a specific exposure level given covariates, $P(A | L)$ (also related to the propensity score).
+- **Censoring mechanism:** The probability of remaining uncensored ($C=1$) given exposure and covariates, $P(C=1 | A, L)$.
+
+We estimated these mechanisms using the Super Learner ensemble algorithm [@polley2023; @vanderlaan2007super]. Super Learner combines predictions from multiple algorithms (base learners) to improve estimation accuracy. Our base learners included regularised regression (`SL.glmnet`), random forests (`SL.ranger`), and gradient boosting (`SL.xgboost`) [@friedman2010regularization; @wright2017ranger; @chen2016xgboost].
+
+We produced all results, tables, and figures with the `margot` R package [@margot2024]. Please see [Appendix {{appendix_technical_lmtp}}](#appendix-technical-lmtp) for complete technical details."
 
 # lmtp long
 lmtp_long_explanation_text <- "
-### Statistical Estimator
+We aimed to estimate the effect of {{name_exposure_variable}} on {{name_outcome_variable}} using observational data. Because simple comparisons or standard regression may not fully capture the impact of real-world scenarios or adequately handle confounding and participant dropout (censoring), we used advanced causal inference methods.
 
-We perform statistical estimation using a Targeted Minimum Loss-based Estimation (TMLE) approach, specifically the Longitudinal Modified Treatment Policy (LMTP) estimator [@van2014targeted; @van2012targeted]. TMLE is a flexible framework for causal inference that provides valid uncertainty estimates. LMTP extends TMLE to handle time-varying treatments and confounders.
+Our specific goal was to answer a 'what if?' question: How would the average {{name_outcome_variable}} change if we could implement a specific modification to {{name_exposure_variable}} in the population, compared to leaving things as they are? We define this modification using a rule, denoted $\\dd(A)$, which specifies how an individual's exposure ($A$) would hypothetically be changed (e.g., {{shift_intervention}}). This type of 'what if?' question simulates the potential effect of a realistic policy or intervention and is known as a 'modified treatment policy' (MTP) estimand [@haneuse2013estimation; @diaz2012population; @young2014identification; @diaz2023lmtp].
 
-**Workflow:**
-1. **Initial Modeling:** We use machine learning algorithms to flexibly model relationships among treatments, covariates, and outcomes. This approach accommodates complex, high-dimensional datasets without imposing strict parametric assumptions [@van2014discussion; @vanderlaan2011; @vanderlaan2018].
-2. **Targeting:** TMLE then iteratively refines (or 'targets') these initial estimates, guided by the efficient influence function to align estimates more closely with the true causal effect.
+Formally, we estimate the difference between the expected outcome ($Y$) under the hypothetical intervention ($\\dd$) and the expected outcome under the observed exposure distribution, assuming no one dropped out (censoring indicator $C=1$): $\\E(Y^{\\dd, C=1}) - \\E(Y^{C=1})$.
 
-**Advantages:**
-- **Double robustness:** The estimator remains consistent if either the outcome model or the treatment mechanism model is correct.
-- **Time-varying structure:** LMTP handles complex longitudinal data and repeated treatments.
-- **Integration with machine learning:** TMLE benefits from flexible initial fits.
-- **Censoring and attrition:** LMTP accommodates missing data through inverse-probability weighting.
+To ensure our estimate reflects a causal effect, rather than just correlation, we rely on three standard assumptions:
 
-We use cross-validation to avoid overfitting and to improve predictive performance [@bulbulia2024PRACTICAL]. The `lmtp` package [@williams2021] implements LMTP. We rely on the `SuperLearner` framework (with base learners such as `SL.ranger`, `SL.glmnet`, and `SL.xgboost`) for initial model fitting [@polley2023; @xgboost2023; @Ranger2017; @SuperLearner2023]. We create graphs, tables, and output with the `margot` package [@margot2024]."
+1.  **No Unmeasured Confounding (Conditional Exchangeability):** We assume that by accounting for the measured covariates, we have effectively controlled for all factors that influence both the exposure and the outcome, similar to how randomisation works in experiments. We also assume this holds for factors influencing dropout.
+
+2.  **Sufficient Overlap (Positivity):** We assume that within groups of individuals with similar characteristics (based on covariates), there are people who experience the different relevant levels of exposure and non-dropout. This overlap is necessary to fairly compare the effects of the exposure.
+
+3.  **Consistency:** We assume that the outcome we observed for an individual is precisely the outcome they would have experienced given their actual exposure history. This links the observed data to the hypothetical scenarios.
+
+To calculate the effect estimate under these assumptions, we used a state-of-the-art statistical method called Targeted Minimum Loss-based Estimation (TMLE) using the `lmtp` package in R [@diaz2023lmtp; @williams2023lmtp]. TMLE is designed specifically for estimating causal effects like MTPs. Advantages include:
+
+- **Double Robustness:** We obtain reliable estimate if *either* our statistical model for the outcome *or* our models for exposure and dropout are correctly specified, offering some protection against modelling errors.
+- **Machine Learning Integration:** We can use of flexible machine learning algorithms to model the complex relationships between covariates, exposure, dropout, and the outcome, without specifying the functional form of these relationships, potentially biasing the final effect estimate.
+
+We used an ensemble method called Super Learner to implement the machine learning component [@polley2023; @vanderlaan2007super]. Instead of relying on a single algorithm, Super Learner combines predictions from several (here: regularised regression via `SL.glmnet`, random forests via `SL.ranger`, and gradient boosting via `SL.xgboost` to improve prediction accuracy for the different parts of the TMLE calculation [@polley2023; @xgboost2023; @Ranger2017; @SuperLearner2023]. We also used {{n_folds}}-fold cross-fitting, a resampling technique that helps prevent overfitting and ensures the statistical validity of our results.
+
+We generated results, tables, and figures using the `margot` R package [@margot2024]. For readers interested in the mathematical and computational specifics, please see [Appendix {{appendix_technical_lmtp}}](#appendix-technical-lmtp)."
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.lmtp_short_explanation",
+  value = lmtp_short_explanation_text
+)
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.lmtp_short_explanation_2",
+  value = lmtp_short_explanation_text_2
+)
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.lmtp_long_explanation",
+  value = lmtp_long_explanation_text
+)
+
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+
+
 
 # sdr short
 sdr_short_explanation_text <- "
@@ -3681,3 +3772,10 @@ unified_db$measures$emp_job_valued_binary <- list(
 unified_db$measures$emp_job_sat
 
 boilerplate::boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
+
+
+
+
+# SHIFT INTERVENTION ------------------------------------------------------
+
+# We defined $\\dd(A)$ as a hypothetical intervention that increased the value of the {{name_exposure_variable}} by 20% (i.e., multiplied each person's value by 1.2).
