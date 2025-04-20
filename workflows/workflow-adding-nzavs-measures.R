@@ -832,7 +832,7 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 sdr_short_explanation_text <- "
 ### Sequentially Doubly Robust (SDR) Estimator
 
-We estimate causal effects of time-varying treatment policies using a Sequential Doubly Robust (SDR) estimator with the `lmtp` package [@williams2021; @díaz2021; @hoffman2023]. SDR involves two main steps. First, flexible machine learning models capture complex relationships among treatments, covariates, and outcomes [@díaz2021]. Second, SDR targets these initial fits to refine causal effect estimates. This design is multiply robust if treatments repeat over multiple waves [@diaz2023lmtp; @hoffman2023], ensuring consistency when either the outcome or treatment model is correct. We use `SuperLearner` [@SuperLearner2023] with `SL.ranger`, `SL.glmnet`, and `SL.xgboost` [@polley2023; @xgboost2023; @Ranger2017]. We use cross-validation to reduce overfitting and improve finite-sample performance. We create graphs, tables, and output with the `margot` package [@margot2024]."
+We estimate causal effects of time-varying treatment policies using a Sequential Doubly Robust (SDR) estimator with the `lmtp` package [@williams2021; @díaz2021; @hoffman2024studying]. SDR involves two main steps. First, flexible machine learning models capture complex relationships among treatments, covariates, and outcomes [@díaz2021]. Second, SDR targets these initial fits to refine causal effect estimates. This design is multiply robust if treatments repeat over multiple waves [@diaz2023lmtp; @hoffman2024studying], ensuring consistency when either the outcome or treatment model is correct. We use `SuperLearner` [@SuperLearner2023] with `SL.ranger`, `SL.glmnet`, and `SL.xgboost` [@polley2023; @xgboost2023; @Ranger2017]. We use cross-validation to reduce overfitting and improve finite-sample performance. We create graphs, tables, and output with the `margot` package [@margot2024]."
 
 
 sdr_long_explanation_text <- "
@@ -850,7 +850,7 @@ We employ a Sequentially Doubly Robust (SDR) estimator to assess the causal effe
 - **Flexible estimation:** It accommodates non-linearities and interactions through machine learning.
 - **Missingness:** The method handles attrition or loss-to-follow-up with inverse-probability weighting.
 
-We use cross-validation to reduce overfitting and improve finite-sample performance. We implement SDR through the `lmtp` package [@williams2021; @hoffman2023; @diaz2023lmtp], relying on `SuperLearner` with base learners such as `SL.ranger`, `SL.glmnet`, and `SL.xgboost` [@polley2023; @xgboost2023; @Ranger2017; @SuperLearner2023]. For more details, see [@hoffman2022; @hoffman2023; @díaz2021]. We use the `margot` package [@margot2024] for reporting and visualisation.
+We use cross-validation to reduce overfitting and improve finite-sample performance. We implement SDR through the `lmtp` package [@williams2021; @hoffman2024studying; @diaz2023lmtp], relying on `SuperLearner` with base learners such as `SL.ranger`, `SL.glmnet`, and `SL.xgboost` [@polley2023; @xgboost2023; @Ranger2017; @SuperLearner2023]. For more details, see [@hoffman2022; @hoffman2024studying; @díaz2021]. We use the `margot` package [@margot2024] for reporting and visualisation.
 "
 
 grf_short_explanation_text <- "
@@ -2153,9 +2153,9 @@ In this appendix, we explain how the `grf` R package (Generalized Random Forests
 
 ### Step 1: Estimating the Average Treatment Effect (ATE)
 
-The Average Treatment Effect (ATE) is the overall effect of the treatment in the population. It answers the question: on average, how much does the treatment change the outcome compared to not treating? In a randomised trial (or a well-controlled observational study), the ATE can be estimated simply by the difference in mean outcomes between the treated and control groups. For example, if an intervention is designed to improve a psychological outcome such as well-being, the ATE would be the difference in the average outcome for those who received the intervention versus those who did not.
+The Average Treatment Effect (ATE) is the overall effect of the treatment in the population. It answers the question: on average, how much does the treatment change the outcome compared to not treating? In a randomised trial, the ATE can be estimated simply by the difference in mean outcomes between the treated and control groups. For example, if a randomised intervention is designed to improve a psychological outcome such as well-being, the ATE would be the difference in the average outcome for those who received the intervention versus those who did not.
 
-Formally, we can define the ATE as $E[Y(1) - Y(0)]$, where $Y(1)$ is the outcome if an individual receives the treatment and $Y(0)$ is the outcome if they receive the control. In practice, `grf` provides functions like `average_treatment_effect()` that can compute the ATE (often using techniques like doubly robust estimation to improve precision). This initial step gives us a baseline: for instance, we might find that a new therapy improves an outcome by, say, .25 points (1-7 scale) on average.
+Formally, we can define the ATE as $E[Y(1) - Y(0)]$, where $Y(1)$ is the outcome if an individual receives the treatment and $Y(0)$ is the outcome if they receive the control. In practice, the `grf` package provides functions like `average_treatment_effect()` that can compute the ATE (often using techniques like doubly robust estimation to improve precision). This initial step gives us a baseline: for instance, we might find that a new therapy improves an outcome by, say, .25 points (1-7 scale) on average.
 
 Why start with the ATE? The ATE tells us if the treatment works on average if everyone were randomised to treatment as compared with everyone not receiving the treatment. Note however that even if the ATE is essentially zero (or unreliable), there may neverthless be value in pursuing heterogeneity if some portion of the population is benefited or -- equally improtant -- if some portion is harmed. Moreover, even if the ATE is non-zero (e.g. the treatment has a positive overall effect), the next question is whether this effect is homogeneous (similar for everyone) or heterogeneous (different for different individuals). Thus, whether or not we detect reliable Average Treatment Effects we are led to investigate heterogeneous treatment effects.
 
@@ -2175,9 +2175,9 @@ Because of these challenges, we turn to a more flexible, data-driven approach: c
 
 ### Step 3: Estimating Individualised Effects with Causal Forests
 
-A causal forest (as implemented in grf) is a machine learning method that extends the idea of random forests to estimate $\\tau(x)$ (the CATE) for each individual. It’s an ensemble of many decision trees that are grown specifically to capture differences in treatment effect across individuals [@grf2024]. In essence, each tree in a causal forest partitions the data based on covariates, aiming to group together individuals with similar treatment responses. By averaging over many such trees (each built on a random subset of data and covariates), the forest produces a robust estimate of the individual treatment effect for each person’s feature profile.
+A causal forest (as implemented in grf) is a machine learning method that extends the idea of random forests to estimate $\\tau(x)$ (the CATE) for each individual. A causal forest is an ensemble of many decision trees that are grown specifically to capture differences in treatment effect across individuals [@grf2024]. In essence, each tree in a causal forest partitions the data based on covariates, aiming to group together individuals with similar treatment responses. By averaging over many such trees (each built on a random subset of data and covariates), the forest produces a robust estimate of the individual treatment effect for each person’s feature profile.
 
-How causal forests avoid strong assumptions: Unlike a parametric model, the causal forest does not assume the treatment effect is constant or linear in the covariates. It can discover non-linear relationships and interactions automatically. For example, a causal forest might find that for younger participants the therapy is very effective, whereas for older participants with high baseline depression the effect is smaller – even if we didn’t explicitly program an 'age $\times$ baseline' interaction. The forest algorithm will try splitting the data on different covariates to maximize differences in outcomes between treated and control within each split, effectively letting the data determine where the treatment effect differs. This means we are not forcing a single form of heterogeneity; the model can capture complex patterns (such as a treatment working only at certain combinations of characteristics) that a linear model might miss.
+**How causal forests avoid strong assumptions**: Unlike a parametric model, a causal forest model does not assume the treatment effect is constant or linear in the covariates. It can discover non-linear relationships and interactions automatically. For example, a causal forest might find that for younger participants the therapy is very effective, whereas for older participants with high baseline depression the effect is smaller – even if we didn't explicitly program an 'age $\times$ baseline' interaction. The forest algorithm will try splitting the data on different covariates to maximize differences in outcomes between treated and control within each split, effectively letting the data determine where the treatment effect differs. This means we are not forcing a single form of heterogeneity; the model can capture complex patterns (such as a treatment working only at certain combinations of characteristics) that a linear model might miss.
 
 **Causal forest mechanics:** Each tree in a causal forest is constructed in a way that is similar to a standard random forest, but the splitting criterion is tailored to treatment effect estimation. At each split, the algorithm looks for a covariate and a cut-point that best separate the data into two groups with different treatment effects. In other words, it tries to maximize the contrast in outcomes between treated and control in the two child nodes [@grf2024]. This is different from a standard regression tree that would split based on differences in outcome levels; the causal tree splits based on differences in **treatment effects. Once the tree is grown, the treatment effect within each final leaf can be estimated by comparing the average outcomes of treated vs. control units in that leaf. To get a prediction for a new individual with features $x$, we drop that individual down each tree (finding which leaf they land in), and take the leaf's estimated treatment effect. The causal forest averages those estimates across many trees, yielding $\\hat{\tau}(x)$, an estimate of that individual's treatment effect.
 
@@ -2191,13 +2191,13 @@ One concern with flexible models (like forests) is overfitting – they might pi
 
 **Honest trees:** an honest causal tree is built so that the data used to decide where to split the tree is separate from the data used to estimate the treatment effect in each leaf [@wager2018]. In practice, this can be done by randomly splitting the sample into two halves: one half is used to grow the structure of the tree (find the splits based on covariates), and the other half is used to compute the treatment effect estimates within the leaves. Because an observation is either used for splitting or for estimation (but not both) in any given tree, the estimates in each leaf are unbiased by the selection of that leaf. This honest approach guards against a tree that carves the data too finely to chase noisy differences that will not hold up in new data [@wager2018]. Causal forests in `grf` implement honesty by default, meaning each tree in the forest is grown in a way that ensures the treatment effect estimate at the end is an 'out-of-sample' estimate relative to the splits that created the leaf [@grf2024].
 
-Out-of-bag predictions: in a random forest, each tree is typically built on a bootstrap sample (random sampling with replacement) of the data. This means about one-third of the observations are left out (not used) in that tree – these are called 'out-of-bag' observations for that tree. Since they were not used to train that tree, we can use them to get an unbiased prediction for those observations. grf uses this idea to produce OOB estimates of $\\tau(x)$ for every training point: each observation’s OOB estimate is the average of predictions from all trees where that observation was not in the training sample. This is like a built-in cross-validation. The OOB estimates are honest in the sense that for each individual, we're predicting their treatment effect using only trees that did not observe that individual's outcome during training [@grf2024]. These OOB estimates can be used to assess model fit and to perform certain tests (with caution, as we discuss later).
+Out-of-bag predictions: in a random forest, each tree is typically built on a bootstrap sample (random sampling with replacement) of the data. This means about one-third of the observations are left out (not used) in that tree – these are called 'out-of-bag' observations for that tree. Since they were not used to train that tree, we can use them to get an unbiased prediction for those observations. `grf` uses this idea to produce OOB estimates of $\\tau(x)$ for every training point: each observation’s OOB estimate is the average of predictions from all trees where that observation was not in the training sample. This is like a built-in cross-validation. The OOB estimates are honest in the sense that for each individual, we're predicting their treatment effect using only trees that did not observe that individual's outcome during training [@grf2024]. These OOB estimates can be used to assess model fit and to perform certain tests (with caution, as we discuss later).
 
 By combining honesty and OOB estimation, causal forests avoid the worst of overfitting while still using all the data. In fact, these measures enable the forest to provide valid confidence intervals and variance estimates for the treatment effects. For example, grf can calculate standard errors for $\\hat{\\tau}(x)$ using the variability across trees (with a method that groups trees and compares their predictions) [@grf2024]. The bottom line is that the forest's individual effect estimates are 'honest' (out-of-sample) estimates, increasing our trust that these effects are not just reflecting noise.
 
 ### Step 5: Handling Missing Data and Model Validation
 
-Empirical data often have missing values in some covariates. Unlike many traditional methods that might require dropping observations or imputing values, `grf` can handle missing covariate values directly. It uses a strategy called the Missing Incorporated in Attributes (MIA) splitting rule [@grf2024]. In simple terms, when considering a split on a variable that has some missing values, the algorithm treats 'missing' as its own category: it finds splits that can send missing values one way and non-missing another way. For example, suppose we have a covariate like income where some values are missing. A causal tree could have a split that says 'if Income > 50K go left, if Income <= 50K go right, and if Income is missing, also go right (or go left)' -- essentially handling the missingness within the tree structure. This way, we do not have to drop people with missing income; the forest can still use partial information from other covariates and also possibly learn if 'missingness' itself is informative (perhaps not reporting income correlates with some outcome). By using MIA, the causal forest implicitly handles missing data without a separate imputation step, preserving information and avoiding bias that might come from improper imputation [@grf2024].
+Empirical data often have missing values in some covariates. Unlike many traditional methods that might require dropping observations or imputing values, `grf` can handle missing covariate values directly. `grf` uses a strategy called the Missing Incorporated in Attributes (MIA) splitting rule [@grf2024]. In simple terms, when considering a split on a variable that has some missing values, the algorithm treats 'missing' as its own category: it finds splits that can send missing values one way and non-missing another way. For example, suppose we have a covariate like income where some values are missing. A causal tree could have a split that says 'if Income > 50K go left, if Income <= 50K go right, and if Income is missing, also go right (or go left)' -- essentially handling the missingness within the tree structure. This way, we do not have to drop people with missing income; the forest can still use partial information from other covariates and also possibly learn if 'missingness' itself is informative (perhaps not reporting income correlates with some outcome). By using MIA, the causal forest implicitly handles missing data without a separate imputation step, preserving information and avoiding bias that might come from improper imputation [@grf2024].
 
 Beyond missing data, another core aspect of model validation is ensuring our findings are not artifacts of particular sample splits or tuning choices. Although random forests typically have a few hyperparameters (number of trees, depth, etc.), the defaults in `grf` are often reasonable, and we employ them here. Users can use cross-validation to fine-tune parameters such as minimum leaf size or complexity if needed. For example, one might try different minimum leaf sizes and check which yields the best out-of-sample predictive performance for treatment effects. However, because causal forests average over many trees and use honesty, they are relatively robust and often do not require extensive tuning.
 
@@ -2206,13 +2206,13 @@ Beyond missing data, another core aspect of model validation is ensuring our fin
 
 After fitting a causal forest and obtaining individualised effect estimates $\\hat{\tau}(x)$, a crucial question is: do these estimates provide evidence that treatment effects truly vary, or could the apparent heterogeneity be just noise? In other words, we want to test the hypothesis that the treatment effect is actually the same for everyone.
 
-We begin with an approach implemented in the `grf` framework that uses the Rank-Weighted Average Treatment Effect (RATE) metrics as a basis for a hypothesis test [@grf2024]. The idea is to ask: if we use our estimated $\\hat{\\tau}(x)$ to prioritise who gets treated, do outcomes improve compared to treating people at random? If there is no heterogeneity, then any rule based on $X$ (including our $\\hat{\\tau}(x)$ estimates) should do no better than random assignment. If there is heterogeneity and we have identified it correctly, then targeting those with higher $\\hat{\\tau}(x)$ should yield better outcomes on average.
+We begin with an approach implemented in the `grf` framework that uses the Rank-Weighted Average Treatment Effect (RATE) metrics as a basis for a hypothesis test [@grf2024]. The idea is to ask: if we were to use our estimated $\\hat{\\tau}(x)$ to prioritise who gets treated, would outcomes improve compared to treating people at random? If there were no heterogeneity, then any rule based on $X$ (including our $\\hat{\\tau}(x)$ estimates) should do no better than random assignment. If there is heterogeneity and we have identified it correctly, then targeting those with higher $\\hat{\\tau}(x)$ should yield better outcomes on average.
 
-Concretely, we can sort individuals by their estimated benefit $\\hat{\tau}(x)$ (from highest to lowest). Suppose we progressively treat people in that order – first the top 10% most likely to benefit, then 20%, and so on. If heterogeneity is meaningful, the people with higher $\\hat{\\tau}(x)$ should indeed have larger actual treatment effects on average, so treating them first gives us a bigger gain than treating a random 10% or 20%. We can summarise this with a Targeting Operator Characteristic (TOC) curve – analogous to an ROC curve in classification – which for each fraction $q$ of the population treated (x-axis) shows the excess treatment effect achieved by targeting based on $\\hat{\tau}$ (y-axis) compared to random treatment [@grf2024]. If there is no heterogeneity, this curve will be flat (no gain from targeting). If there is heterogeneity, the curve will rise – especially at low $q$, where we are focusing on the top predicted responders [refer to @yadlowsky2021evaluating].
+Concretely, we can sort individuals by their estimated benefit $\\hat{\tau}(x)$ (from highest to lowest). Suppose we progressively treat people in that order – first the top 10% most likely to benefit, then 20%, and so on. If heterogeneity is meaningful, the people with higher $\\hat{\\tau}(x)$ should indeed have larger actual treatment effects on average, so treating them first gives us a bigger gain than treating a random 10% or 20%. We can summarise this with a Targeting Operator Characteristic (TOC) curve – analogous to an ROC curve in classification – which for each fraction $q$ of the population treated (x-axis) shows the excess treatment effect achieved by targeting based on $\\hat{\tau}$ (y-axis) compared to random treatment [@grf2024]. If there were no heterogeneity, this curve would be flat (no gain from targeting). If there were heterogeneity, the curve would rise – especially at low $q$, where we are focusing on the top predicted responders [refer to @yadlowsky2021evaluating].
 
 The test for heterogeneity can then be based on the area under this TOC curve or other summaries of it. Specifically, grf defines:
 
-- **AUTOC:** the Area Under the TOC Curve. This essentially integrates the benefit of targeting across all possible fractions treated [@grf2024]. If there’s no heterogeneity, AUTOC should be zero (no area under the curve, since the curve is flat at zero gain).
+- **AUTOC:** the Area Under the TOC Curve. This essentially integrates the benefit of targeting across all possible fractions treated [@grf2024]. If there's no heterogeneity, AUTOC should be zero (no area under the curve, since the curve is flat at zero gain).
 
 - **Qini:** a related metric (named after a concept by Radcliffe, 2007) which is a weighted area under the TOC [@radcliffe2007using]. The Qini index weights larger fractions more heavily (technically, Qini = $\\int_0^1 q \\cdot \\mathrm{TOC}(q),dq$) [@radcliffe2007using]. Intuitively, AUTOC tends to emphasise the extremes (are there a small group of people with very large effects?) whereas Qini gives more weight to broader improvements (moderate effects spread across more people) [@yadlowsky2021evaluating].
 
@@ -2278,7 +2278,7 @@ An important statistical caution: when we use the same data to both train a mode
 
 To ensure valid inference, the best practice is to use explicit sample splitting or cross-fitting for the evaluation stage. This means, for example, after training the causal forest on the whole dataset (or a portion of it), we assess the RATE or Qini metrics on a fresh hold-out set that was not used in training. Here we use a separate hold-out set in which we train {{traning_proportion}} of the data, and use the 'unseen' remainder as the validation set.
 
-Why do we do this? Even though the forest’s OOB predictions are not directly from a model that saw that observation's outcome, there remains correlation – each observation’s prediction is an average from many trees, and while any given tree didn't see that observation, it saw many others including some that are also used in evaluating the policy. There is also the fact that OOB predictions are a form of cross-validation but not a true independent test, especially since the forest structure was influenced by all data. To be rigorous, researchers often do a double sample split: one split to train the forest, and a second split (completely independent) to compute the policy metrics like Qini or evaluate a specific targeting rule. This double-splitting ensures that when we say “targeting the top 20% yields X improvement,” that claim is verified on data that played no part in determining who was top 20%. Thus, our inference (confidence intervals, p-values for heterogeneity) remains valid and not overly optimistic.
+Why do we do this? Even though the forest’s OOB predictions are not directly from a model that saw that observation's outcome, there remains correlation – each observation’s prediction is an average from many trees, and while any given tree didn't see that observation, it saw many others including some that are also used in evaluating the policy. There is also the fact that OOB predictions are a form of cross-validation but not a true independent test, especially since the forest structure was influenced by all data. To be rigorous, researchers often do a double sample split: one split to train the forest, and a second split (completely independent) to compute the policy metrics like Qini or evaluate a specific targeting rule. This double-splitting ensures that when we say 'targeting the top 20% yields X improvement,' that claim is verified on data that played no part in determining who was top 20%. Thus, our inference (confidence intervals, p-values for heterogeneity) remains valid and not overly optimistic.
 
 In plain terms, our workflow is as follows:
 
@@ -2288,7 +2288,7 @@ In plain terms, our workflow is as follows:
 
 By doing this, when we report 'p = 0.01 for heterogeneity' or 'Qini = 0.10 at 20% spending', we know these numbers are honest assessments of how the model would perform on new data, not just the data we fit it to.
 
-In short, even with OOB estimates, further sample splitting is used for final evaluation to ensure our conclusions about heterogeneous effects and the benefits of targeting are reliable. This extra step is crucial for rigor: it prevents us from convincing ourselves that a complicated model is useful when in fact it might be explaining noise.
+In short, even with OOB estimates, further sample splitting is used for final evaluation to ensure our conclusions about heterogeneous effects and the benefits of targeting are reliable. This extra step is crucial for rigour: it prevents us from convincing ourselves that a complicated model is useful when in fact it might be explaining noise.
 
 ### Step 10: Interpretable Treatment Rules with Policy Trees
 
@@ -2300,7 +2300,7 @@ A policy tree is essentially a simple decision tree that assigns treatment or co
 
 **Why use policy trees?** Apart from interpretability, policy trees can enforce fairness or simplicity constraints and avoid overfitting by limiting complexity. A shallow tree might capture the broad strokes of heterogeneity (e.g., young vs old, or high risk vs low risk) in a way that practitioners can double-check with domain knowledge. As an example from `grf` documentation: “Deciding who to assign the program based on a complicated black-box CATE function may be undesirable if policymakers want transparent criteria. Likewise, it may be problematic for participants to learn they were denied a beneficial program solely because a black-box algorithm predicted low benefit. In such settings, we want an interpretable policy, for example, a shallow decision tree that says ‘Alice is assigned treatment because she is under 25 and lives in a disadvantaged neighborhood' see: [https://grf-labs.github.io/grf/articles/policy_learning.html](https://grf-labs.github.io/grf/articles/policy_learning.html). This nicely illustrates how a policy tree can provide a rationale in human terms.
 
-**Training and validation for policy trees:** Just like with the forest, we must be careful to avoid overfitting when creating policy trees. It’s tempting to use the same data that suggested heterogeneity to also choose the best splits for the policy tree, but that can lead to optimistic results. The optimal tree is chosen to fit the training data well – if we do not validate it, we might pick a tree that works by chance quirks of the data. Therefore, we use cross-validation to select the tree's complexity (depth) and sample splitting to evaluate its performance, using {{train_proportion_decision_tree}} to train the tree and the remainder to valid it.
+**Training and validation for policy trees:** As when construsting causal forests and evaluating heterogeneity in them using RATE AUTOC or Qini curves, when creating policy trees we must be careful to avoid overfitting. It's tempting to use the same data that suggested heterogeneity to also choose the best splits for the policy tree, but that can lead to optimistic results. The optimal tree is chosen to fit the training data well – if we do not validate it, we might pick a tree that works by chance quirks of the data. Therefore, we use cross-validation to select the tree's complexity (depth) and sample splitting to evaluate its performance, using {{train_proportion_decision_tree}} to train the tree and the remainder to valid it.
 
 
 ```{r, results='asis'}
@@ -2342,6 +2342,80 @@ unified_db <- boilerplate_update_entry(
   value = explain_grf
 )
 boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+
+explain_grf <- "
+In this appendix we show how to estimate causal effects with the `grf` R package (Generalised Random Forests), following a standard workflow. We begin with the overall average treatment effect (ATE), investigate whether effects vary (heterogeneity), and --where useful -- estimate individualised effects and derive simple, actionable treatment rules.
+
+### Step 1 Estimating the Average Treatment Effect (ATE)
+
+The ATE answers a simple question: on average, how much does treatment change the outcome? In a well‑randomised trial (or an observational study with adequate control), we estimate it with the difference in mean outcomes between treated and control units. Formally,
+
+$${\\rm ATE}=E\\,[Y(1)-Y(0)],$$
+
+where $Y(1)$ and $Y(0)$ denote potential outcomes under treatment and control.
+`grf::average_treatment_effect()` computes the ATE, using doubly‑robust estimation for precision. This step gives us a baseline—say, the new therapy lifts well‑being by 0.25 points (1–7 scale).
+
+We start here because the ATE tells us whether the treatment works **on average** if everyone were treated versus no‑one. Yet a zero (or noisy) ATE does not rule out helpful or harmful effects for sub‑groups, and a non‑zero ATE does not guarantee benefits for all. Either way, we proceed to heterogeneity.
+
+### Step 2 Assessing Heterogeneous Treatment Effects (HTE)
+
+Treatments seldom work equally for everyone. We define the conditional average treatment effect (CATE) for covariate profile $x$ as
+$$\\tau(x)=E\\,[Y(1)-Y(0)\\mid X=x].$$
+If $\\tau(x)$ is constant, effects are homogeneous; if it varies, we have heterogeneity.
+
+Classical regression tackles heterogeneity via interaction terms, but that approach demands strong functional‐form assumptions. Real‑world heterogeneity can be non‑linear and high‑dimensional; guessing the correct model risks misspecification or over‑fitting [@Sadique2022]. Thus we turn to causal forests, which let the data speak.
+
+
+### Step 3 Estimating Individualised Effects with Causal Forests
+
+A causal forest is an ensemble of "honest" causal trees grown to capture **differences** in treatment effects rather than outcome levels [@grf2024]. Each tree splits the data to maximise treated‑versus‑control contrasts within leaves, and the forest averages those leaf‑level estimates to give
+$$\\hat\\tau(x)$$
+for every individual.
+
+ Advantages:
+
+- **Flexibility** – no need to pre‑specify interactions or non‑linearities.
+- **Orthogonalisation** – residualising outcomes and treatment probabilities focuses the forest on causal signal [@wager2018].
+- **Per‑person estimates** – we obtain $\\hat\\tau(x_i)$ for every $i$.
+
+### Step 4 Honest Estimation and Out‑of‑Bag Validation
+
+Over‑fitting lurks in flexible models. `grf` combats this with "honest" trees: one half‑sample picks splits, the other half estimates effects, ensuring each leaf estimate is out‑of‑sample. Out‑of‑bag (OOB) predictions—averaging over trees that did **not** train on an observation—provide further unbiased validation and standard errors [@grf2024].
+
+### Step 5 Handling Missing Data and Basic Validation
+
+Missing covariate values? No drama. `grf` uses the MIA (Missing Incorporated in Attributes) rule: it treats "missing" as a legitimate split category, so we keep cases rather than impute or drop them [@grf2024]. Hyper‑parameters rarely need fine‑tuning, though cross‑validation can refine minimum leaf size, tree depth, and the like.
+
+### Step 6 Testing for Treatment‑Effect Heterogeneity
+
+Do the estimated $\\hat\\tau(x)$ really differ, or is it just noise? The RATE framework answers this. We rank individuals by $\\hat\\tau$ and ask whether treating the top scorers improves outcomes relative to random assignment. The Targeting Operator Characteristic (TOC) curve plots this gain over treatment fractions $q$. Two scalar summaries are
+
+* **AUTOC** – area under the TOC; accentuates extreme responders.
+* **Qini** – a weighted area (weights grow with $q$); favours broader gains [@yadlowsky2021evaluating].
+
+Under $H_0$ (no heterogeneity) both metrics equal zero; `grf::rank_average_treatment_effect()` supplies estimates, standard errors, and $t$‑tests. Rejecting $H_0$ signals actionable heterogeneity.
+
+### Step 7 Quantifying Policy Value with RATE Metrics
+
+Beyond significance, AUTOC and Qini quantify the **magnitude** of improvement from targeting. A large AUTOC means a prioritisation rule sharply distinguishes high‑benefit individuals; a large Qini means gains persist over wider coverage. Policymakers can weigh these gains against costs—because budgets rarely stretch to treating everyone (as any Kiwi running a lab grant knows too well).
+
+### Step 8 Plotting Qini Curves for Policy Insight
+
+A single number is handy, but a Qini curve reveals where returns plateau. `grf` can plot cumulative gain versus spend; @fig‑example‑qini below shows an analysis of religious‑service attendance and agreeableness. The dashed curve (model‑based targeting) lies above the solid ATE line until roughly 50% coverage—beyond that, extra treatment yields little extra benefit.
+
+```{r, results='asis'}
+#| label: fig-example-qini
+#| fig-cap: \"Example Qini Curve.\"
+#| eval: true
+#| echo: false
+#| fig-width: 12
+#| fig-height: 12
+models_binary_batch_example$model_t2_agreeableness_z$policy_tree
+
+
+
+
 
 
 #
