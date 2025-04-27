@@ -1011,30 +1011,30 @@ unified_db<- boilerplate_update_entry(
   value = general_approach_cate_long_text
 )
 
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.analytic_approach.general_approach_cate_short",
-  value = general_approach_cate_short_text
-)
+# unified_db<- boilerplate_update_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.general_approach_cate_short",
+#   value = general_approach_cate_short_text
+# )
+#
+#
+# unified_db<- boilerplate_update_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.general_approach_cate_long_no_flip",
+#   value = general_approach_cate_long_no_flip_text
+# )
 
+# unified_db<- boilerplate_update_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.general_approach_cate_short_no_flip",
+#   value = general_approach_cate_short_no_flip_text
+# )
 
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.analytic_approach.general_approach_cate_long_no_flip",
-  value = general_approach_cate_long_no_flip_text
-)
-
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.analytic_approach.general_approach_cate_short_no_flip",
-  value = general_approach_cate_short_no_flip_text
-)
-
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.analytic_approach.simple_general_approach_cate_long",
-  value = simple_general_approach_cate_long_text
-)
+# unified_db<- boilerplate_update_entry(
+#   db = unified_db,
+#   path = "methods.analytic_approach.simple_general_approach_cate_long",
+#   value = simple_general_approach_cate_long_text
+# )
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -1072,7 +1072,6 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 unified_db$methods$analytic_approach$general_approach_cate_short
 # sensitivity analysis ----------------------------------------------------
-unified_db$methods$sensitivity_analysis$evalue
 # add a new custom text entry
 short_evalue_text <- "
 ### Sensitivity Analysis
@@ -1649,11 +1648,11 @@ unified_db <- boilerplate_update_entry(
   value = strengths_grf_long_text
 )
 
-unified_db <- boilerplate_update_entry(
-  db = unified_db,
-  path = "discussion.strengths.simple_general_approach_cate_long",
-  value = simple_general_approach_cate_long_text
-)
+# unified_db <- boilerplate_update_entry(
+#   db = unified_db,
+#   path = "discussion.strengths.simple_general_approach_cate_long",
+#   value = simple_general_approach_cate_long_text
+# )
 
 unified_db <- boilerplate_update_entry(
   db = unified_db,
@@ -2337,12 +2336,6 @@ Second, decisions about prioritising treatment rules are often ethical and polit
 #   value = list()
 # )
 
-unified_db <- boilerplate_update_entry(
-  db = unified_db,
-  path = "appendix.explain.grf",
-  value = explain_grf
-)
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 
 explain_grf <- "
@@ -2483,6 +2476,13 @@ First, the factors highlighted in policy trees are predictors of treatment-effec
 
 Second, decisions about prioritising treatment rules are often ethical and political. Even if we set aside uncertainties in the modelling process, few would argue that fairness and justice should be determined by optimisation rules alone. Such questions are typically resolved through democratic processes that involve stakeholder consultations, reflection on social values, a reckoning with historical inequities, and considerations beyond the scope of statistical analyses.
 "
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "appendix.explain.grf",
+  value = explain_grf
+)
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 
 
@@ -2644,6 +2644,122 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 
 
+
+appendix_explain_grf_short <- "## Appendix X. Estimating and Interpreting Heterogeneous Treatment Effects with **grf**
+
+Here we explain a heterogeneous‐treatment‐effect (HTE) analysis using causal forests [@grf2024]. In our workflow, we move from the average treatment effect (ATE) to individualised effects, quantify the practical value of targeting, and finish with interpretable decision rules.
+
+
+### 1 Average Treatment Effect (ATE)
+
+The ATE answers: *'What would happen, on average, if everyone received treatment versus no one?'*
+
+$$
+    \\text{ATE}=E[Y(1)-Y(0)].
+$$
+
+Using the `grf` package, we estimate the ATE doubly-robustly. This means that if either our treatment or outcome model are correctly specified, we obtain consistent causal inferences.
+
+
+### 2 Do Effects Vary?  Formal Test of Heterogeneity
+
+Define the conditional average treatment effect (CATE)
+
+$$
+  \\tau(x)=E[Y(1)-Y(0)\\mid X=x].
+$$
+
+If $\\tau(x)$ is constant, effects are homogeneous; otherwise they vary. Classical interaction models impose strong forms; **grf** uses *causal forests* to let the data discover complex, nonlinear heterogeneity [@wager2018].
+
+
+### 3Causal Forests for Individualised Estimates
+
+A causal forest is an ensemble of 'honest' causal trees that split on covariates to maximise treated–control contrasts. For each unit $i$ we obtain
+
+$$
+  \\widehat{\\tau}(x_i)
+$$
+
+Strengths are flexibility, orthogonalisation, and per-person estimates.
+
+
+### 4 Built-in Protection Against Over-fitting
+
+  Honesty (split half/estimate half) plus out-of-bag (OOB) predictions yield unbiased $\\widehat{\\tau}(x)$ and standard errors without manual hyper-tuning.
+
+
+### 5 Missing Data Handling
+
+**grf** deploys 'Missing Incorporated in Attributes' (MIA): missingness is a valid split, so cases stay in the analysis -- no ad-hoc imputation required.
+
+
+### 6 Testing for **Actionable** Heterogeneity: the TOC & RATE Metrics
+
+  anking units by $\\widehat{\\tau}$ defines a **Targeting Operator Characteristic** (TOC) curve: the cumulative gain from treating the top fraction $q$ of predicted responders. Two scalar summaries:
+
+- **RATE AUTOC** – area under the entire TOC; emphasises the very highest responders.
+- **RATE Qini** – weighted area with weight $q$; rewards sustained gains across larger coverage [@yadlowsky2021evaluating].
+
+Under $H_0{:}\\tau(x)$ constant, both equal 0.
+`grf::rank_average_treatment_effect()` supplies point estimates, standard errors, and $t$-tests.
+
+> **Interpretation tip**
+  > AUTOC answers *'How sharply can we prioritise?'*
+  > Qini answers *'How valuable is targeting when budgets are modest but not tiny?'*
+
+### 7 Visualising Policy Value: the Qini Curve
+
+Plotting the Qini curve (cumulative gain vs $q$) reveals where returns plateau. Investigators (and policy audiences) can see at a glance whether benefits concentrate in, say, the top 20 % or persist up to 50 %.
+
+
+### 8 Valid Inference for RATE / Qini
+
+Although OOB predictions are out-of-sample per tree, they inherit forest-level dependence. We use an explicit **sample split**:
+
+1. **Train set**: fit the causal forest and compute $\\widehat{\\tau}(x)$.
+2. **Test set**: compute RATE AUTOC/Qini and run $H_0$ tests.
+
+This second split yields honest policy evaluation and guards against optimistic bias [@grf2024].
+
+
+### 9From Black Box to Simple Rules: Policy Trees
+
+Stakeholders prefer transparent criteria. The **policytree** algorithm takes $\\widehat{\\tau}(x)$ or doubly-robust scores and learns a shallow decision tree that maximises expected welfare [@policytree_package_2024].
+
+*Advantages*: interpretability, the possibility of fairness constraints, and easy communication (e.g., *“treat if age < 25 and baseline severity high”*).
+
+Training mirrors the split above: learn the tree on one fold, evaluate welfare on another.
+
+> **Caveat**  Splits identify predictors of *effect variation*, not causal levers. Changing a covariate in the tree does **not** guarantee an effect on $\\tau(x)$.
+
+
+### 10 Ethical and Practical Considerations
+
+Statistical optimisation rarely aligns perfectly with equity or political feasibility. Decisions about who *should* receive treatment belong to democratic processes that weigh fairness, cost, and broader social values.
+
+
+### Summary Checklist
+
+  | Stage | Tool | Key Output | Guard-rail |
+  |-------|------|------------|------------|
+  | 1 ATE | `average_treatment_effect` | $\\widehat{\\text{ATE}}$ | Doubly-robust |
+  | 2 – 3 CATE | `causal_forest` | $\\widehat{\\tau}(x)$ | Honest trees |
+  | 6 Heterogeneity test | `rank_average_treatment_effect` | AUTOC, Qini + $p$ | Sample split |
+  | 7 Visualise | Qini curve | Gain vs $q$ | Same test fold |
+  | 9 Policy tree | `policy_tree` | Decision rule | Cross-validation + test fold |
+
+  : This workflow delivers both rigorous inference and clear guidance for applied researchers: *How large is heterogeneity? When does targeting pay off? And can we express a good policy in a few, defensible rules?*"
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "appendix.explain.grf_short",
+  value = appendix_explain_grf_short
+)
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+
+
+
 # ------------------------------------------------------
 # now test generating text from the database
 # ------------------------------------------------------
@@ -2715,6 +2831,8 @@ unified_db$methods$missing_data$missing_lmtp_time_varying
 # results example ---------------------------------------------------------
 unified_db$results$grf$interpretation_policy_tree
 
+flipped_list = "fatigue"
+
 results_text <- boilerplate_generate_text(
   category = "results",
   sections = c(
@@ -2724,7 +2842,9 @@ results_text <- boilerplate_generate_text(
     "grf.interpretation_policy_tree"
   ),
   global_vars = list(
-    exposure_var = "political_conservative"
+    exposure_var = "political_conservative",
+    flipped_list = flipped_list,
+    appendix_cate_validation_grf = "G"
   ),
   db = unified_db
 )
@@ -2775,12 +2895,11 @@ study_params <- list(
 # ------------------------------------------------------
 # 1. generate the sample section
 # ------------------------------------------------------
-
 sample_text <- boilerplate_generate_text(
   category = "methods",
   sections = "sample",
   global_vars = study_params,
-  db= methods_db
+  db= unified_db
 )
 cat(sample_text)
 ------------------------------------------------------
