@@ -2,6 +2,7 @@
 # if (!boilerplate_path_exists(unified_db$results, "grf")) {
 #   unified_db$results$grf <- list()
 # }
+devtools::load_all("/Users/joseph/GIT/boilerplate/")
 
 # initialise measures
 # install from GitHub if not already installed
@@ -69,7 +70,6 @@ library(boilerplate)
 
 my_project_path <- "/Users/joseph/GIT/templates/boilerplate_data"
 test_path <- "/Users/joseph/GIT/templates/test"
-student_path <- here::here("data")
 
 # # tests -------------------------------------------------------------------
 # library(cli)
@@ -92,39 +92,25 @@ student_path <- here::here("data")
 # source(here::here("/Users/joseph/GIT/boilerplate/R", "utilities.R"))
 
 # import data -------------------------------------------------------------
-unified_db <- boilerplate_import( data_path = my_project_path)
+proto_unified_db <- boilerplate_import( data_path = my_project_path)
 
-
-cat(unified_db$appendix$outcomes$flourishing_2025)
+str(proto_unified_db$measures, max.level = 1)
 # student example
 # set path ----------------------------------------------------------------
-# student_path <- here::here("student_boilerplate_data")
-#
-# # check
-# my_project_path
-#
-# # read data into R ---------------------------------------------
-# # no extra packages needed beyond base R
-# student_unified_db_est <-
-#   readRDS(
-#     url(
-#       "https://raw.githubusercontent.com/go-bayes/templates/main/student_boilerplate_data/student_unified_db"
-#     ),
-#     refhook = NULL
-#   )
-#
-#
-#
-#
-#
-# #unified_db <- boilerplate_import( data_path = my_project_path)
-# boilerplate_save(
-#   unified_db,
-#   select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.sensitivity_analysis.short_evalue", "methods.causal_assumptions.*", "methods.statistical_models.grf_short_explanation", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods$confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline", "appendix$.eferences", "discussion.*"),
-#   data_path = student_path,
-#   output_file = "student_unified_db"
-# )
+student_path <- here::here("student_boilerplate_data")
 
+str(proto_unified_db, max.level = 1)
+
+boilerplate_export(
+  proto_unified_db,
+  select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.sensitivity_analysis.short_evalue", "methods.causal_assumptions.*", "methods.statistical_models.grf_short_explanation", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline", "appendix.references", "discussion.*"),
+  data_path = student_path,
+  output_file = "student_unified_db"
+)
+
+
+test_db <- boilerplate_import( data_path = student_path)
+str(test_db, max.level = 1)
 
 # Using the new boilerplate_export() function
 # boilerplate_export(
@@ -135,7 +121,19 @@ cat(unified_db$appendix$outcomes$flourishing_2025)
 # )
 
 
-
+# # # read data into R ---------------------------------------------
+# # # no extra packages needed beyond base R
+# student_unified_db_est <-
+#   readRDS(
+#     url(
+#       "https://raw.githubusercontent.com/go-bayes/templates/main/student_boilerplate_data/student_unified_db"
+#     ),
+#     refhook = NULL
+#   )
+#
+# #
+# #
+# #
 
 
 # Introduction ------------------------------------------------------------
