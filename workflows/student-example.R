@@ -17,8 +17,8 @@ if (!require(boilerplate, quietly = TRUE)) {
 
 library(boilerplate)
 
-if (packageVersion("boilerplate") < "1.0.41") {
-  stop("please install boilerplate >= 1.0.41 for this workflow\n
+if (packageVersion("boilerplate") < "1.0.42") {
+  stop("please install boilerplate >= 1.0.42 for this workflow\n
        run: devtools::install_github(\"go-bayes/boilerplate\")
 ")
 }

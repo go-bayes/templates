@@ -2,7 +2,7 @@
 # if (!boilerplate_path_exists(unified_db$results, "grf")) {
 #   unified_db$results$grf <- list()
 # }
-devtools::load_all("/Users/joseph/GIT/boilerplate/")
+# devtools::load_all("/Users/joseph/GIT/boilerplate/")
 
 # initialise measures
 # install from GitHub if not already installed
@@ -111,7 +111,7 @@ boilerplate_export(
 
 test_db <- boilerplate_import( data_path = student_path)
 str(test_db, max.level = 1)
-
+test_db$measures$age
 # Using the new boilerplate_export() function
 # boilerplate_export(
 #   unified_db,
@@ -137,6 +137,8 @@ str(test_db, max.level = 1)
 
 
 # Introduction ------------------------------------------------------------
+# import data
+unified_db <- boilerplate_import( data_path = my_project_path)
 
 grf_introduction_text<- "## Introduction
 
