@@ -3,7 +3,7 @@
 # if (!boilerplate_path_exists(unified_db$results, "grf")) {
 #   unified_db$results$grf <- list()
 # }
-devtools::load_all("/Users/joseph/GIT/boilerplate/")
+# devtools::load_all("/Users/joseph/GIT/boilerplate/")
 
 # initialise measures
 # install from GitHub if not already installed
@@ -16,6 +16,13 @@ if (!require(boilerplate, quietly = TRUE)) {
 }
 
 library(boilerplate)
+
+if (packageVersion("margot") < "1.0.41") {
+  stop("please install boilerplate >= 1.0.41 for this workflow\n
+       run: devtools::install_github(\"go-bayes/boilerplate\")
+")
+}
+
 
 cli::cli_h1("installed/loaded boilerplate ✔")
 
