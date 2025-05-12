@@ -1,7 +1,9 @@
+# student workflow example
 # test
 # if (!boilerplate_path_exists(unified_db$results, "grf")) {
 #   unified_db$results$grf <- list()
 # }
+devtools::load_all("/Users/joseph/GIT/boilerplate/")
 
 # initialise measures
 # install from GitHub if not already installed
@@ -14,91 +16,46 @@ if (!require(boilerplate, quietly = TRUE)) {
 }
 
 library(boilerplate)
-# devtools::install_github("go-bayes/boilerplate")
 
-# initial wrangling -- INGNORE
-# master_text_path = here::here("/Users/joseph/GIT/templates/databases/methods")
-# master_measures_path = here::here("/Users/joseph/GIT/templates/databases/measures")
-# #
-# #
-# # # read
-# master_methods_db = margot::here_read("master_methods_db", master_text_path)
-# master_measures_db = margot::here_read("measures_db", master_measures_path)
-#
-# # methods_db = margot::here_read("master_methods_db", master_text_path)
-# # measures_db = margot::here_read("measures_db", master_measures_path)
-#
-# #
-# # # set library path
-# #my_project_path <- "/Users/joseph/GIT/templates/boilerplate_data"
-# # # save the other data
-# boilerplate_save("methods_db", category = "methods", my_project_path)
-# boilerplate_save("measures_db", category = "measures", my_project_path)
-#
-# # Initialize databases in your custom location
-# boilerplate_init(
-#   categories = c("measures", "methods", "results", "discussion", "appendix", "template"),
-#   data_path = my_project_path,  # specify custom path here
-#   create_dirs = TRUE,
-#   confirm = FALSE
-# )
-#
-# # import all
-# unified_db <- boilerplate_import( data_path = my_project_path)
-#
-# methods_db <- boilerplate_methods(unified_db)
-# measures_db <- boilerplate_measures(unified_db)
-# results_db <- boilerplate_results(unified_db)
-# methods_db
-# str(measures_db)
-# str(master_measures_db)
-#
-# merged_db <- boilerplate_merge_databases(master_measures_db, measures_db)
-#
-#
-# margot::here_save(merged_db, "measures_db", my_project_path)
-#
-#
+cli::cli_h1("installed/loaded boilerplate ✔")
 
-# str(unified_db, max.level = 1)
+
+# required libraries ------------------------------------------------------
+library("here")
+
+cli::cli_h1("loaded required libraries ✔")
+
+
+
+# create data directory if it doesn't exist -----------------------------
+if (!dir.exists("data")) {
+  dir.create("data")  # first time only: make a folder named 'data'
+}
+
+cli::cli_h1("created data folder ✔")
+
 
 # set path ----------------------------------------------------------------
+my_project_path <- here::here("data")
+my_project_path
 
-my_project_path <- "/Users/joseph/GIT/templates/boilerplate_data"
-test_path <- "/Users/joseph/GIT/templates/test"
-student_path <- here::here("data")
+student_unified_db <- boilerplate_import( data_path = my_project_path)
 
-# # tests -------------------------------------------------------------------
-# library(cli)
-# library(glue)
-# library(here)
-# library(cli)
-# library(utils)
-# library(stringr)
+unified_db$discussion$
 
-# # library(janitor)
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "path-operations.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "category-helpers.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "default-databases.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "generate-measures.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "generate-text.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "import-export-functions.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "init-functions.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "manage-measures.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "merge-databases.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "utilities.R"))
-
-# import data -------------------------------------------------------------
-unified_db <- boilerplate_import( data_path = my_project_path)
+#unified_db <- boilerplate_import( data_path = my_project_path)
+unified_db$appendix$references
+boilerplate_save()
+boilerplate_save(
+  unified_db,
+  select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.sensitivity_analysis.short_evalue", "methods.causal_assumptions.*", "methods.statistical_models.grf_short_explanation", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods$confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline", "appendix$.eferences", "discussion.*"),
+  data_path = student_path,
+  output_file = "student_unified_db"
+)
 
 
-cat(unified_db$appendix$outcomes$flourishing_2025)
-#
-# boilerplate_save(
-#   unified_db,
-#   select_elements = c("measures.*", "methods.causal_assumptions.*", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods$confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline"),
-#   data_path = student_path,
-# )
+student_unified_db <- boilerplate_import( data_path = student_path)
+student_unified_db$results$
 
 # Using the new boilerplate_export() function
 # boilerplate_export(
@@ -107,6 +64,7 @@ cat(unified_db$appendix$outcomes$flourishing_2025)
 #   output_file = "selected_elements.rds",
 #   data_path = test_path,
 # )
+
 
 
 
@@ -175,10 +133,10 @@ Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS
 
 # or
 unified_db<- boilerplate_update_entry(
-    db = unified_db,
-    path = "methods.sample.nzavs",
-    value = sample_information_text
-  )
+  db = unified_db,
+  path = "methods.sample.nzavs",
+  value = sample_information_text
+)
 
 boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
@@ -408,7 +366,7 @@ unified_db<- boilerplate_update_entry(
   db = unified_db,
   path = "methods.causal_intervention.grf",
   value = grf_causal_text
-  )
+)
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -1750,34 +1708,7 @@ appendix_outcomes_flourishing_2025_text <-  "
 #| echo: false
 
 
-print(markdown_table_outcomes_all)
-
-```
-Outcome variables measured at baseline and end of study.
-:::
-"
-
-
-# check entries
-boilerplate_get_entry(
-  db = unified_db,
-  path = "discussion"
-)
-
-
-appendix_outcomes_text <-  "
-## Outcome Variables {#appendix-outcomes}
-
-@tbl-appendix-outcomes presents sample outcomes at baseline and the end of study.
-
-::: {#tbl-appendix-outcomes}
-```{r, results = 'asis'}
-#| eval: true
-#| include: true
-#| echo: false
-
-
-print(markdown_table_outcomes_all)
+cat(latex_table_outcomes_all)
 
 ```
 Outcome variables measured at baseline and end of study.
@@ -2662,12 +2593,6 @@ unified_db <- boilerplate_update_entry(
   path = "appendix.references",
   value = appendix_references_text
 )
-unified_db <- boilerplate_update_entry(
-  db = unified_db,
-  path = "appendix.outcomes.general",
-  value = appendix_outcomes_text
-)
-
 
 
 # save
@@ -2810,7 +2735,7 @@ lmtp_methods_text <- boilerplate_generate_text(
     "methods.exposure_indicator",
     "causal_intervention.lmtp_multi_wave",
     "sdr_long_explanation",
-  #  "causal_intervention.grf",
+    #  "causal_intervention.grf",
     "target_population",
     "eligibility.standard",
     "causal_identification_criteria",
