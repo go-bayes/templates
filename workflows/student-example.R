@@ -41,14 +41,20 @@ if (!dir.exists("data")) {
 
 cli::cli_h1("created data folder ✔")
 
+# option 2: if it’s an RDS ---------------------------------------------
+# no extra packages needed beyond base R
+student_unified_db_est <-
+  readRDS(
+    url("https://raw.githubusercontent.com/go-bayes/templates/main/data/student_unified_db.rds"),
+    refhook = NULL
+  )
 
 # set path ----------------------------------------------------------------
 student_path <- here::here("data")
 my_project_path
 
-student_unified_db <- boilerplate_import( data_path = my_project_path)
+unified_db <- boilerplate_import( data_path = my_project_path)
 
-unified_db$discussion$
 
 #unified_db <- boilerplate_import( data_path = my_project_path)
 boilerplate_save(
