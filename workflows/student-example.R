@@ -51,8 +51,6 @@ student_unified_db <- boilerplate_import( data_path = my_project_path)
 unified_db$discussion$
 
 #unified_db <- boilerplate_import( data_path = my_project_path)
-unified_db$appendix$references
-boilerplate_save()
 boilerplate_save(
   unified_db,
   select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.sensitivity_analysis.short_evalue", "methods.causal_assumptions.*", "methods.statistical_models.grf_short_explanation", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods$confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline", "appendix$.eferences", "discussion.*"),
