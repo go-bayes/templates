@@ -49,15 +49,15 @@ my_boilerplate_data_path <- here::here("example_boilerplate_data")
 student_path
 
 # read data into R ---------------------------------------------
-# no extra packages needed beyond base R
-student_unified_db_initial <-
-  readRDS(
-    url(
-      "https://raw.githubusercontent.com/go-bayes/templates/main/student_boilerplate_data/student_unified_db"
-    ),
-    refhook = NULL
-  )
-student_unified_db_initial
+# # no extra packages needed beyond base R
+# student_unified_db_initial <-
+#   readRDS(
+#     url(
+#       "https://raw.githubusercontent.com/go-bayes/templates/main/student_boilerplate_data/student_unified_db"
+#     ),
+#     refhook = NULL
+#   )
+# student_unified_db_initial
 
 # save
 boilerplate_save(

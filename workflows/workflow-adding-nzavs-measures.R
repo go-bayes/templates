@@ -2,7 +2,7 @@
 # if (!boilerplate_path_exists(unified_db$results, "grf")) {
 #   unified_db$results$grf <- list()
 # }
-# devtools::load_all("/Users/joseph/GIT/boilerplate/")
+devtools::load_all("/Users/joseph/GIT/boilerplate/")
 
 # initialise measures
 # install from GitHub if not already installed
@@ -100,12 +100,12 @@ str(proto_unified_db$measures, max.level = 1)
 student_path <- here::here("student_boilerplate_data")
 
 str(proto_unified_db, max.level = 1)
-
-boilerplate_export(
+statistical_models.grf_short_explanation
+boilerplate::boilerplate_export(
   proto_unified_db,
-  select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.sensitivity_analysis.short_evalue", "methods.causal_assumptions.*", "methods.statistical_models.grf_short_explanation", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline", "appendix.references", "discussion.*"),
+  select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.statistical_models.grf_short_explanation","methods.sensitivity_analysis.short_evalue", "methods.causal_assumptions.*", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline", "appendix.references", "discussion.*"),
   data_path = student_path,
-  output_file = "student_unified_db"
+  output_file = "student_unified_test_db"
 )
 
 
