@@ -17,7 +17,7 @@ if (!require(boilerplate, quietly = TRUE)) {
 
 library(boilerplate)
 
-if (packageVersion("margot") < "1.0.41") {
+if (packageVersion("boilerplate") < "1.0.41") {
   stop("please install boilerplate >= 1.0.41 for this workflow\n
        run: devtools::install_github(\"go-bayes/boilerplate\")
 ")
@@ -43,7 +43,7 @@ cli::cli_h1("created data folder ✔")
 
 
 # set path ----------------------------------------------------------------
-my_project_path <- here::here("data")
+student_path <- here::here("data")
 my_project_path
 
 student_unified_db <- boilerplate_import( data_path = my_project_path)
