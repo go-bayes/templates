@@ -1,5 +1,5 @@
 # student workflow example
-# test
+# 00-read-initial-boileplate-data
 # if (!boilerplate_path_exists(unified_db$results, "grf")) {
 #   unified_db$results$grf <- list()
 # }
@@ -35,46 +35,37 @@ cli::cli_h1("loaded required libraries ✔")
 
 
 # create data directory if it doesn't exist -----------------------------
-if (!dir.exists("data")) {
-  dir.create("data")  # first time only: make a folder named 'data'
+if (!dir.exists("example_boilerplate_data")) {
+  dir.create("example_boilerplate_data")  # first time only: make a folder named 'data'
 }
 
 cli::cli_h1("created data folder ✔")
 
-# option 2: if it’s an RDS ---------------------------------------------
-# no extra packages needed beyond base R
-student_unified_db_est <-
-  readRDS(
-    url("https://raw.githubusercontent.com/go-bayes/templates/main/data/student_unified_db.rds"),
-    refhook = NULL
-  )
 
 # set path ----------------------------------------------------------------
-student_path <- here::here("data")
-my_project_path
+my_boilerplate_data_path <- here::here("example_boilerplate_data")
 
-unified_db <- boilerplate_import( data_path = my_project_path)
+# check
+student_path
 
+# read data into R ---------------------------------------------
+# no extra packages needed beyond base R
+student_unified_db_initial <-
+  readRDS(
+    url(
+      "https://raw.githubusercontent.com/go-bayes/templates/main/student_boilerplate_data/student_unified_db"
+    ),
+    refhook = NULL
+  )
+student_unified_db_initial
 
-#unified_db <- boilerplate_import( data_path = my_project_path)
+# save
 boilerplate_save(
-  unified_db,
-  select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.sensitivity_analysis.short_evalue", "methods.causal_assumptions.*", "methods.statistical_models.grf_short_explanation", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods$confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline", "appendix$.eferences", "discussion.*"),
-  data_path = student_path,
-  output_file = "student_unified_db"
+  student_unified_db_initial,
+  # you can use a different name, but just update your workflow
+  output_file = "my_student_unified_db",
+  data_path = my_boilerplate_data_path
 )
-
-
-student_unified_db <- boilerplate_import( data_path = student_path)
-student_unified_db$results$
-
-# Using the new boilerplate_export() function
-# boilerplate_export(
-#   unified_db,
-#   select_elements = c("methods.statistical.*", "results.main_effect"),
-#   output_file = "selected_elements.rds",
-#   data_path = test_path,
-# )
 
 
 

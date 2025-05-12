@@ -14,6 +14,9 @@ if (!require(boilerplate, quietly = TRUE)) {
 }
 
 library(boilerplate)
+
+
+
 # devtools::install_github("go-bayes/boilerplate")
 
 # initial wrangling -- INGNORE
@@ -93,12 +96,35 @@ unified_db <- boilerplate_import( data_path = my_project_path)
 
 
 cat(unified_db$appendix$outcomes$flourishing_2025)
+# student example
+# set path ----------------------------------------------------------------
+# student_path <- here::here("student_boilerplate_data")
 #
+# # check
+# my_project_path
+#
+# # read data into R ---------------------------------------------
+# # no extra packages needed beyond base R
+# student_unified_db_est <-
+#   readRDS(
+#     url(
+#       "https://raw.githubusercontent.com/go-bayes/templates/main/student_boilerplate_data/student_unified_db"
+#     ),
+#     refhook = NULL
+#   )
+#
+#
+#
+#
+#
+# #unified_db <- boilerplate_import( data_path = my_project_path)
 # boilerplate_save(
 #   unified_db,
-#   select_elements = c("measures.*", "methods.causal_assumptions.*", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods$confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline"),
+#   select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.sensitivity_analysis.short_evalue", "methods.causal_assumptions.*", "methods.statistical_models.grf_short_explanation", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods$confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline", "appendix$.eferences", "discussion.*"),
 #   data_path = student_path,
+#   output_file = "student_unified_db"
 # )
+
 
 # Using the new boilerplate_export() function
 # boilerplate_export(
