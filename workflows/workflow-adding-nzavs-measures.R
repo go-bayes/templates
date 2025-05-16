@@ -100,7 +100,6 @@ str(proto_unified_db$measures, max.level = 1)
 student_path <- here::here("student_boilerplate_data")
 
 str(proto_unified_db, max.level = 1)
-statistical_models.grf_short_explanation
 boilerplate::boilerplate_export(
   proto_unified_db,
   select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.statistical_models.grf_short_explanation","methods.sensitivity_analysis.short_evalue", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline", "appendix.references", "discussion.*"),
