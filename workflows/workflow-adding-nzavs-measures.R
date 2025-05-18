@@ -100,10 +100,11 @@ str(proto_unified_db$measures, max.level = 1)
 student_path <- here::here("student_boilerplate_data")
 # proto_unified_db$appendix$explain$grf_short
 # proto_unified_db$template$conference_presentation
+proto_unified_db$methods$exposure_indicator
 boilerplate::boilerplate_export(
   proto_unified_db,
   select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.statistical_models.grf_short_explanation","methods.causal_intervention.grf_simple_text"
-, "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.expappendix.exposure", "appendix.baseline", "appendix.references", "discussion.*", "appendix.explain.grf_short", "template.conference_presentation"),
+, "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "results.grf", "appendix.expappendix.exposure", "appendix.baseline", "appendix.references", "discussion.*", "appendix.explain.grf_short", "template.conference_presentation"),
   data_path = student_path,
   output_file = "student_unified_test_db"
 )
