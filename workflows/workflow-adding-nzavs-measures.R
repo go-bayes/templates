@@ -93,7 +93,6 @@ test_path <- "/Users/joseph/GIT/templates/test"
 
 # import data -------------------------------------------------------------
 proto_unified_db <- boilerplate_import( data_path = my_project_path)
-proto_unified_db$results$grf$
 str(proto_unified_db$measures, max.level = 1)
 # student example
 # set path ----------------------------------------------------------------
