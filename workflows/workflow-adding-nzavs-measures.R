@@ -1314,18 +1314,42 @@ The omnibus test (@tbl-omnibus) indicates that the model found differences in ho
 interpretation_rate_text <- "
 #### Rate Test
 
-The RATE tells us how much better we could do by offering treatment first to those who are predicted to benefit most, rather than treating everyone the same. A higher RATE suggests that targeting people according to their CATE indicators can lead to 'better' overall results (where ‘higher’ always means better, recall we flipped {{flipped_list}})."
+The RATE metric shows how much extra gain (or avoided loss) we achieve by **targeting** instead of treating everyone identically.
 
+**Technical note**: In code we always set `policy = \"treat_best\"`; for harmful exposures this is interpreted as *'treat-those-most-sensitive'* (i.e., prioritise protection or withholding).
+
+* **Beneficial exposure:** we rank by positive CATEs and deliver the exposure to those predicted to **benefit most**.
+* **Detrimental exposure:** we rank by increasingly **positive** CATEs (more predicted harm) and identify those who should be protected or withheld from the exposure.
+
+Either way, a larger **absolute** RATE shows that a CATE-based targeting rule 'outperforms' a one-size-fits-all policy—by boosting outcomes for beneficial exposures or -- in the case where we are explore sensitivity to harm -- evaluating increasing harms for detrimental ones.
+
+Recall we flipped {{flipped_list}} so **'higher' always tracks the analysis goal: higher = more benefit for beneficial exposures, higher = more harm for detrimental exposures.**
+
+Because we test several outcomes, RATE *p*-values are adjusted with {{cate_adjustment}} (q = {{cate_alpha}}) before we decide whether heterogeneity is actionable."
 
 interpretation_rate_no_flip_text <- "
 #### Rate Test
 
-The RATE tells us how much better we could do by offering treatment first to those who are predicted to benefit most, rather than treating everyone the same. A higher RATE suggests that targeting people according to their CATE indicators can lead to 'better' overall results (where 'higher' means 'better)."
+The RATE metric shows how much extra gain in the outcome we achieve by **targeting** instead of treating everyone identically.
+
+* **Beneficial exposure:** we rank by positive CATEs and deliver the exposure to those predicted to **benefit most**.
+* **Detrimental exposure:** we rank by increasingly **positive** CATEs (more predicted harm) and identify those who should be protected or withheld from the exposure.
+
+(Note the valence of the outcomes match the valence of the exposures.)
+
+Either way, a larger **absolute** RATE shows that a CATE-based targeting rule 'outperforms' a one-size-fits-all policy—by boosting outcomes for beneficial exposures or -- in the case where we are explore sensitivity to harm -- evaluating increasing harms for detrimental ones.
+
+Because we test several outcomes, RATE *p*-values are adjusted with {{cate_adjustment}} (q = {{cate_alpha}}) before we decide whether heterogeneity is actionable."
 
 interpretation_qini_text <- "
 #### Qini Curves
 
-The Qini curve helps us understand whether focusing on the people predicted to benefit the most actually leads to better overall outcomes than treating everyone (or no one). We start with those who are forecast to benefit the most, then gradually include more people. If the Qini curve remains above the line for treating everyone equally, it implies a targeted approach is likely beneficial."
+The Qini curve shows the cumulative **gain** as we expand a targeting rule down the CATE ranking.
+
+* **Beneficial exposure:** we add individuals from the top positive CATEs downward; the baseline is 'expose everyone.'
+* **Detrimental exposure:** we first flip outcome direction (so higher values represent **more harm**; see {{flipped_list}}), then *add* the exposure starting with individuals whose CATEs show the **greated harm**, gradually including those predicted to be more resistant to harm; the baseline is 'expose everyone.'  The curve therefore quantifies the harm by when those most suceptible to harm are exposed.
+
+If the Qini curve stays above its baseline, a targeted policy increases the outcome more than a one-size-fits-all alternative. (Outcome directions were flipped where needed—{{flipped_list}}—so the positively valenced exposures always have positively valanced outcomes and negative exposures always have negatively valenced outcomes.)"
 
 
 interpretation_policy_tree_text <- "
