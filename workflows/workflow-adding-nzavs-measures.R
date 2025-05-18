@@ -100,7 +100,6 @@ str(proto_unified_db$measures, max.level = 1)
 student_path <- here::here("student_boilerplate_data")
 # proto_unified_db$appendix$explain$grf_short
 # proto_unified_db$template$conference_presentation
-proto_unified_db$methods$exposure_indicator
 boilerplate::boilerplate_export(
   proto_unified_db,
   select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.statistical_models.grf_short_explanation","methods.causal_intervention.grf_simple_text"
@@ -986,7 +985,7 @@ After estimating the overall average treatment effect (ATE) for the population, 
 
 First, we standardised effect directions by inverting outcomes where lower scores were preferable so that positive values always indicated improvement. Specifically, we inverted {{flipped_list}}.
 
-Next, to reduce overfitting and separate real heterogeneity from noise, we split the data into training and validation folds ({{sample_ratio_policy}}).  A causal forest trained on the first fold produced out-of-sample CATE predictions on the second.  We then computed Rank-Weighted Average Treatment Effect (RATE) metrics—AUTOC and Qini—which quantify the gain from targeting the highest-ranked individuals [@grf2024; @wager2018].  Their *p*-values were corrected with {{cate_adjustment}} at q = {{cate_alpha}} to control the exploratory false-discovery rate [@benjamini1995controlling].  Where heterogeneity remained reliable, we fitted depth-2 policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to distil transparent “treat-if” rules (e.g., *treat if baseline score > X*).
+Next, to reduce overfitting and separate real heterogeneity from noise, we split the data into training and validation folds ({{sample_ratio_policy}}).  A causal forest trained on the first fold produced out-of-sample CATE predictions on the second.  We then computed Rank-Weighted Average Treatment Effect (RATE) metrics—AUTOC and Qini—which quantify the gain from targeting the highest-ranked individuals [@grf2024; @wager2018].  Their *p*-values were corrected with {{cate_adjustment}} at q = {{cate_alpha}} to control the exploratory false-discovery rate [@benjamini1995controlling].  Where heterogeneity remained reliable, we fitted depth-2 policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to distil transparent 'treat-if' rules (e.g., *treat if baseline score > X*).
 
 All heterogeneity steps—calibration tests, RATE, Qini curves, and policy-tree learning—were implemented in R with **grf** [@grf2024], **policytree** [@policytree_package_2024], using graphical and summary functions from **margot** [@margot2024].  This workflow identifies individualised effects, quantifies the policy value of targeting, and delivers practical decision rules.  See [Appendix {{appendix_explain_grf}}](#appendix-explain-grf) for full methodological details."
 #
@@ -2047,8 +2046,6 @@ cat(appendix_causal_lmtp_time_vary_text)
 # {{name_target_population}}
 
 
-cat(appendix_causal_grf)
-
 appendix_positivity_exposures_5_text <- "
 ## Appendix {{appendix_positivity}}: Transition Matrix to Check The Positivity Assumption {#appendix-positivity}
 
@@ -2517,7 +2514,11 @@ A policy tree is essentially a simple decision tree that assigns treatment or co
 
 `grf` integrates with the `policytree` package to derive an optimal decision tree given the causal forest's estimates [@policytree_package_2024]. Our procedure is as follows: use the forest's estimates or doubly robust scores as input to a decision tree algorithm that maximises the expected outcome (welfare) under that tree policy. In other words, we finds splits that best separate who should be treated vs not to improve the overall result. The result is a shallow tree (often depth 1, 2, or 3) that is much easier to interpret than the full forest. Here we use a decision tree of depth = 2.
 
-**Why use policy trees?** Apart from interpretability, policy trees can enforce fairness or simplicity constraints and avoid overfitting by limiting complexity. A shallow tree might capture the broad strokes of heterogeneity (e.g., young vs old, or high risk vs low risk) in a way that practitioners can double-check with domain knowledge. As an example from `grf` documentation: “Deciding who to assign the program based on a complicated black-box CATE function may be undesirable if policymakers want transparent criteria. Likewise, it may be problematic for participants to learn they were denied a beneficial program solely because a black-box algorithm predicted low benefit. In such settings, we want an interpretable policy, for example, a shallow decision tree that says ‘Alice is assigned treatment because she is under 25 and lives in a disadvantaged neighborhood' see: [https://grf-labs.github.io/grf/articles/policy_learning.html](https://grf-labs.github.io/grf/articles/policy_learning.html). This nicely illustrates how a policy tree can provide a rationale in human terms.
+**Why use policy trees?** Apart from interpretability, policy trees can enforce fairness or simplicity constraints and avoid overfitting by limiting complexity. A shallow tree might capture the broad strokes of heterogeneity (e.g., young vs old, or high risk vs low risk) in a way that practitioners can double-check with domain knowledge. As an example from `grf` documentation:
+
+> Deciding who to assign the program based on a complicated black-box CATE function may be undesirable if policymakers want transparent criteria. Likewise, it may be problematic for participants to learn they were denied a beneficial program solely because a black-box algorithm predicted low benefit. In such settings, we want an interpretable policy, for example, a shallow decision tree that says ‘Alice is assigned treatment because she is under 25 and lives in a disadvantaged neighborhood' see: [https://grf-labs.github.io/grf/articles/policy_learning.html](https://grf-labs.github.io/grf/articles/policy_learning.html).
+
+This nicely illustrates how a policy tree can provide a rationale in human terms.
 
 **Training and validation for policy trees:** As when construsting causal forests and evaluating heterogeneity in them using RATE AUTOC or Qini curves, when creating policy trees we must be careful to avoid overfitting. It's tempting to use the same data that suggested heterogeneity to also choose the best splits for the policy tree, but that can lead to optimistic results. The optimal tree is chosen to fit the training data well – if we do not validate it, we might pick a tree that works by chance quirks of the data. Therefore, we use cross-validation to select the tree's complexity (depth) and sample splitting to evaluate its performance, using {{train_proportion_decision_tree}} to train the tree and the remainder to valid it.
 
@@ -3062,7 +3063,7 @@ This second split yields honest policy evaluation and guards against optimistic 
 
 Stakeholders value transparent criteria. The **policytree** algorithm takes $\\widehat{\\tau}(x)$ or doubly-robust scores and learns a shallow decision tree that maximises expected welfare [@policytree_package_2024].
 
-*Advantages*: interpretability, the possibility of fairness constraints, and easy communication (e.g., *“treat if age < 25 and baseline severity high”*).
+*Advantages*: interpretability, the possibility of fairness constraints, and easy communication (e.g., *'treat if age < 25 and baseline severity high'*).
 
 Training mirrors the split above: learn the tree on one fold, evaluate welfare on another.
 
