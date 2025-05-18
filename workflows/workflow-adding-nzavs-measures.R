@@ -98,12 +98,12 @@ str(proto_unified_db$measures, max.level = 1)
 # student example
 # set path ----------------------------------------------------------------
 student_path <- here::here("student_boilerplate_data")
-
-str(proto_unified_db, max.level = 1)
+# proto_unified_db$appendix$explain$grf_short
+# proto_unified_db$template$conference_presentation
 boilerplate::boilerplate_export(
   proto_unified_db,
   select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.statistical_models.grf_short_explanation","methods.causal_intervention.grf_simple_text"
-, "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.exposure", "appendix.baseline", "appendix.references", "discussion.*"),
+, "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "methods.exposure_indicator", "results.grf", "appendix.expappendix.exposure", "appendix.baseline", "appendix.references", "discussion.*", "appendix.explain.grf_short", "template.conference_presentation"),
   data_path = student_path,
   output_file = "student_unified_test_db"
 )
@@ -984,7 +984,9 @@ After estimating the overall average treatment effect (ATE) for the population, 
 
 First, we standardised effect directions by inverting outcomes where lower scores were preferable so that positive values always indicated improvement. Specifically, we inverted {{flipped_list}}.
 
-Next, to reduce overfitting and distinguish true heterogeneity from noise, we split the sample. We trained the causal forest on a training set and tested its predictions exclusively on a validation set ({{sample_ratio_policy}}: training/testing split).  We computed the Rank-Weighted Average Treatment Effect (RATE), which quantifies the benefit of targeting individuals predicted to benefit most [@grf2024; @wager2018].  We judged heterogeneity using RATE AUTOC and Qini *p*-values corrected with {{cate_adjustment}} at q = {{cate_alpha}} to control the false-discovery rate [@benjamini1995controlling].  When evidence was sufficient, we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to generate simple rule-based recommendations (e.g., “'reat if baseline score > X').. We implemented all heterogeneity analyses—calibration tests, RATE, Qini curves, and policy trees—in R using the grf [@grf2024], policytree [@policytree_package_2024], and margot [@margot2024] packages. This approach enabled us to identify individualised effects, confirm their robustness, estimate the potential value of targeting, and propose straightforward strategies for personalisation. (Refer to [Appendix {{appendix_explain_grf}}](#appendix-explain-grf) for a detailed explanation of our approach.)"
+Next, to reduce overfitting and separate real heterogeneity from noise, we split the data into training and validation folds ({{sample_ratio_policy}}).  A causal forest trained on the first fold produced out-of-sample CATE predictions on the second.  We then computed Rank-Weighted Average Treatment Effect (RATE) metrics—AUTOC and Qini—which quantify the gain from targeting the highest-ranked individuals [@grf2024; @wager2018].  Their *p*-values were corrected with {{cate_adjustment}} at q = {{cate_alpha}} to control the exploratory false-discovery rate [@benjamini1995controlling].  Where heterogeneity remained reliable, we fitted depth-2 policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to distil transparent “treat-if” rules (e.g., *treat if baseline score > X*).
+
+All heterogeneity steps—calibration tests, RATE, Qini curves, and policy-tree learning—were implemented in R with **grf** [@grf2024], **policytree** [@policytree_package_2024], using graphical and summary functions from **margot** [@margot2024].  This workflow identifies individualised effects, quantifies the policy value of targeting, and delivers practical decision rules.  See [Appendix {{appendix_explain_grf}}](#appendix-explain-grf) for full methodological details."
 #
 # general_approach_cate_short_no_flip_text <- "
 # ### Heterogeneous Treatment Effects and Treatment Policies
@@ -1050,12 +1052,13 @@ unified_db<- boilerplate_update_entry(
   value = general_approach_cate_long_text
 )
 
-# unified_db<- boilerplate_update_entry(
-#   db = unified_db,
-#   path = "methods.analytic_approach.general_approach_cate_short",
-#   value = general_approach_cate_short_text
-# )
-#
+# ** PREFERRED
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.general_approach_cate_short",
+  value = general_approach_cate_short_text
+)
+
 #
 # unified_db<- boilerplate_update_entry(
 #   db = unified_db,
@@ -2983,7 +2986,9 @@ $$
     \\text{ATE}=E[Y(1)-Y(0)].
 $$
 
-Using the `grf` package, we estimate the ATE doubly-robustly. This means that if either our treatment or outcome model are correctly specified, we obtain consistent causal inferences.
+Using the `grf` package, we estimate the ATE doubly-robustly.  Because we analyse several outcomes, we adjust ATE *p*-values with {{ate_adjustment}} ($\\alpha$ = {{ate_alpha}}) to control the family-wise error rate.
+
+
 
 
 ### 2 Do Effects Vary?  Formal Test of Heterogeneity
@@ -2994,10 +2999,12 @@ $$
   \\tau(x)=E[Y(1)-Y(0)\\mid X=x].
 $$
 
-If $\\tau(x)$ is constant, effects are homogeneous; otherwise they vary. Classical interaction models impose strong forms; **grf** uses *causal forests* to let the data discover complex, nonlinear heterogeneity [@wager2018].
+If $\\tau(x)$ is constant, effects are homogeneous; otherwise they vary. Classical interaction models impose strong forms; **grf** uses *causal forests* to discover complex, nonlinear heterogeneity [@wager2018].  We assess heterogeneity with RATE *p*-values corrected via {{cate_adjustment}} (q = {{cate_alpha}}), controlling the false-discovery rate [@benjamini1995controlling].
 
 
-### 3Causal Forests for Individualised Estimates
+
+
+### 3 Causal Forests for Individualised Estimates
 
 A causal forest is an ensemble of 'honest' causal trees that split on covariates to maximise treated–control contrasts. For each unit $i$ we obtain
 
@@ -3020,7 +3027,7 @@ Strengths are flexibility, orthogonalisation, and per-person estimates.
 
 ### 6 Testing for **Actionable** Heterogeneity: the TOC & RATE Metrics
 
-  anking units by $\\widehat{\\tau}$ defines a **Targeting Operator Characteristic** (TOC) curve: the cumulative gain from treating the top fraction $q$ of predicted responders. Two scalar summaries:
+Ranking units by $\\widehat{\\tau}$ defines a **Targeting Operator Characteristic** (TOC) curve: the cumulative gain from treating the top fraction $q$ of predicted responders. Two scalar summaries:
 
 - **RATE AUTOC** – area under the entire TOC; emphasises the very highest responders.
 - **RATE Qini** – weighted area with weight $q$; rewards sustained gains across larger coverage [@yadlowsky2021evaluating].
@@ -3028,9 +3035,12 @@ Strengths are flexibility, orthogonalisation, and per-person estimates.
 Under $H_0{:}\\tau(x)$ constant, both equal 0.
 `grf::rank_average_treatment_effect()` supplies point estimates, standard errors, and $t$-tests.
 
-> **Interpretation tip**
-  > AUTOC answers *'How sharply can we prioritise?'*
-  > Qini answers *'How valuable is targeting when budgets are modest but not tiny?'*
+**Multiplicity control**: We adjust AUTOC and Qini *p*-values with {{cate_adjustment}} (q = {{cate_alpha}}) before declaring actionable heterogeneity.
+
+Here is an **interpretation tip**:
+
+* AUTOC answers *'How sharply can we prioritise?'*
+* Qini answers *'How valuable is targeting when budgets are modest but not tiny?'*
 
 ### 7 Visualising Policy Value: the Qini Curve
 
@@ -3046,10 +3056,9 @@ Although OOB predictions are out-of-sample per tree, they inherit forest-level d
 
 This second split yields honest policy evaluation and guards against optimistic bias [@grf2024].
 
+### 9 From Black Box to Simple Rules: Policy Trees
 
-### 9From Black Box to Simple Rules: Policy Trees
-
-Stakeholders prefer transparent criteria. The **policytree** algorithm takes $\\widehat{\\tau}(x)$ or doubly-robust scores and learns a shallow decision tree that maximises expected welfare [@policytree_package_2024].
+Stakeholders value transparent criteria. The **policytree** algorithm takes $\\widehat{\\tau}(x)$ or doubly-robust scores and learns a shallow decision tree that maximises expected welfare [@policytree_package_2024].
 
 *Advantages*: interpretability, the possibility of fairness constraints, and easy communication (e.g., *“treat if age < 25 and baseline severity high”*).
 
