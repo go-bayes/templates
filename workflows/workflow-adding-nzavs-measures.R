@@ -101,7 +101,7 @@ student_path <- here::here("student_boilerplate_data")
 # proto_unified_db$template$conference_presentation
 boilerplate::boilerplate_export(
   proto_unified_db,
-  select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.statistical_models.grf_short_explanation","methods.causal_intervention.grf_simple_text", "methods.analytic_approach.simple_general_approach_cate_long", "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "results.grf.*", "appendix.expappendix.exposure", "appendix.baseline", "appendix.references", "discussion.*", "appendix.explain.grf_short",  "appendix.explain.grf_long", "template.conference_presentation"),
+  select_elements = c("measures.*", "methods.sample.nzavs", "methods.target_population", "methods.statistical_models.grf_short_explanation","methods.causal_intervention.grf_simple_text", "methods.analytic_approach.simple_general_approach_cate_long", "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "results.grf.*", "discussion.student_authors_statement"," discussion.student_ethics","discussion.student_data", "appendix.exposure", "appendix.baseline", "appendix.references", "discussion.*", "appendix.explain.grf_short",  "appendix.explain.grf_long", "template.conference_presentation"),
   data_path = student_path,
   output_file = "student_unified_test_db"
 )
@@ -1635,11 +1635,34 @@ nzavs_ethics_2021_2027_text <- "
 The University of Auckland Human Participants Ethics Committee reviews the NZAVS every three years. Our most recent ethics approval statement is as follows: The New Zealand Attitudes and Values Study was approved by the University of Auckland Human Participants Ethics Committee on 26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576."
 
 
+student_nzavs_ethics_2021_2027_text <- "
+### Ethics
+
+The data were simulated. They are not real. The Ethics Approval for the dataset from which the synthetic data were generated is as follows: The University of Auckland Human Participants Ethics Committee reviews the NZAVS every three years. The most recent ethics approval statement is as follows: The New Zealand Attitudes and Values Study was approved by the University of Auckland Human Participants Ethics Committee on 26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576."
+
+
 nzavs_data_availabily_text <- "
 ### Data Availability
 
 The data described in the paper are part of the New Zealand Attitudes and Values Study. Members of the NZAVS management team and research group hold full copies of the NZAVS data. A de-identified dataset containing only the variables analysed in this manuscript is available upon request from the corresponding author or any member of the NZAVS advisory board for replication or checking of any published study using NZAVS data. The code for the analysis can be found at [OSF link](https://osf.io/ab7cx/)."
 
+
+student_nzavs_data_availabily_text <- "
+### Data Availability
+
+The data described in the paper were *simulated* from the New Zealand Attitudes and Values Study (NZAVS). For more information contact professor Joseph Bulbulia at joseph.bulbulia@vuw.ac.nz. For more information about the NZAVS, see: [OSF link](https://osf.io/ab7cx/)."
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.student_data",
+  value = student_nzavs_data_availabily_text
+)
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.student_ethics",
+  value = student_nzavs_ethics_2021_2027_text
+)
 
 nzavs_acknowledgements_2025_text <- "
 ### Acknowledgements
@@ -1647,11 +1670,25 @@ nzavs_acknowledgements_2025_text <- "
 The New Zealand Attitudes and Values Study is supported by a grant from the Templeton Religious Trust (TRT0196; TRT0418). JB received support from the Max Plank Institute for the Science of Human History. The funders had no role in preparing the manuscript or deciding to publish it."
 
 
+
+
 authors_statment_empty_text <-"
 ### Author Statement
 
+
 "
 
+
+sudent_authors_statment_empty_text <-"
+### Author Statement
+
+The Methods and Results section were created using standard protocols from the EPIC lab (Joseph Bulbulia). These were encoded using the `boilerplate` package [@boilerplate2024] and `margot package` [@margot2024] in R. The introduction and conclusion for this research are solely the students work."
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.student_authors_statement",
+  value = sudent_authors_statment_empty_text
+)
 
 
 
