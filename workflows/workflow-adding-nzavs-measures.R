@@ -106,7 +106,6 @@ boilerplate::boilerplate_export(
   output_file = "student_unified_test_db"
 )
 
-
 test_db <- boilerplate_import( data_path = student_path)
 str(test_db, max.level = 1)
 test_db$measures$age
