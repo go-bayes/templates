@@ -3185,17 +3185,10 @@ Training mirrors the split above: learn the tree on one fold, evaluate welfare o
 Statistical optimisation rarely aligns perfectly with equity or political feasibility. Decisions about who *should* receive treatment belong to democratic processes that weigh fairness, cost, and broader social values.
 
 
-### Summary Checklist
+### Putting it together
 
-  | Stage | Tool | Key Output | Guard-rail |
-  |-------|------|------------|------------|
-  | 1 ATE | `average_treatment_effect` | $\\widehat{\\text{ATE}}$ | Doubly-robust |
-  | 2 – 3 CATE | `causal_forest` | $\\widehat{\\tau}(x)$ | Honest trees |
-  | 6 Heterogeneity test | `rank_average_treatment_effect` | AUTOC, Qini + $p$ | Sample split |
-  | 7 Visualise | Qini curve | Gain vs $q$ | Same test fold |
-  | 9 Policy tree | `policy_tree` | Decision rule | Cross-validation + test fold |
-
-  : This workflow delivers both rigorous inference and clear guidance for applied researchers: *How large is heterogeneity? When does targeting pay off? And can we express a good policy in a few, defensible rules?*"
+The sequence—ATE, causal-forest CATEs, RATE/Qini diagnostics, Qini curve, and finally a shallow policy tree—delivers both rigorous evidence and a defensible targeting rule.  Researchers learn **how large** heterogeneity is, **where** targeting pays off under budget constraints, and **which** simple covariate splits capture most of the welfare gain, all while guarding against over-fitting and multiplicity.
+"
 
 unified_db <- boilerplate_update_entry(
   db = unified_db,
