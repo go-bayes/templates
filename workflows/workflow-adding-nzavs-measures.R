@@ -963,14 +963,20 @@ First, we standardised effect directions by inverting outcomes where lower score
 
 Next, to guard against over-fitting we used an *honest* {{sample_ratio_policy}} split:the training fold built the forest; the held-out fold powered every diagnostic **and** learned the policy tree.
 
-**Global evidence (Appendix {{appendix_rate}}).**  On the evaluation fold we (a) checked calibration and (b) computed **RATE-AUTOC** and **RATE-Qini**.Both address the *evidence* question: *can any covariate information beat a uniform policy?*  Causal forests trained on the first fold produced out-of-sample CATE predictions on the second.  We computed Rank-Weighted Average Treatment Effect (RATE) metrics—AUTOC and Qini—which quantify the gain from targeting the highest-ranked individuals [@grf2024; @wager2018].  Their *p*-values were corrected with {{cate_adjustment}} at q = {{cate_alpha}} to control the exploratory false-discovery rate [@benjamini1995controlling].
+#### Global Evidence (Appendix {{appendix_rate}}(#appendix-rate)).
 
-**Budget lens (Appendix {{appendix_qini_curve}}).**  We plotted **Qini curves** to answer a *budget* question: 'if planners can treat at most $p\\%$ of the population, what uplift should they expect?*
+On the evaluation fold we (a) checked calibration and (b) computed **RATE-AUTOC** and **RATE-Qini**.Both address the *evidence* question: *can any covariate information beat a uniform policy?*  Causal forests trained on the first fold produced out-of-sample CATE predictions on the second.  We computed Rank-Weighted Average Treatment Effect (RATE) metrics—AUTOC and Qini—which quantify the gain from targeting the highest-ranked individuals [@grf2024; @wager2018].  Their *p*-values were corrected with {{cate_adjustment}} at q = {{cate_alpha}} to control the exploratory false-discovery rate [@benjamini1995controlling].
+
+#### Budget Lens (Appendix {{appendix_qini_curve}}(#appendix-qini-curve).
+
+We plotted **Qini curves** to answer a *budget* question: 'if planners can treat at most $p\\%$ of the population, what uplift should they expect?*
 This view remains useful even when global RATE tests are inconclusive.
 
 RATE and Qini provide complementary evidence; neither is prerequisite for policy-tree learning.
 
-**Policy trees (reported in the main text):**  We then fit depth-2 policy trees on the evaluation fold. The tree tackles a *decision* question: *which simple rule maximises expected welfare under stated constraints?*
+#### Policy Trees (reported in the main text):
+
+We then fit depth-2 policy trees on the evaluation fold. The tree tackles a *decision* question: *which simple rule maximises expected welfare under stated constraints?*
 
 This workflow identifies individualised effects, quantifies the policy value of targeting, and delivers practical decision rules.  See [Appendix {{appendix_explain_grf}}](#appendix-explain-grf) for full methodological details.
 "
@@ -988,21 +994,25 @@ The analysis had three steps:
 3. **Policy trees** – we distilled the CATE ranking into a depth-2 decision tree that practitioners can execute [@policytree_package_2024; @athey2021].
 
 #### Pre-processing
+
 **Orient outcomes.** We standardised effect directions by inverting outcomes where lower scores were preferable so that outcome values were aligned with the exposure variable. Specifically, we inverted and recomputed heterogeneous treatment effects and treatment policies for {{flipped_list}}.
 
 
 #### Sample-split design
+
 To keep every estimate honest we used a {{sample_ratio_policy}} split:
 *the training fold built the forest, the held-out fold powered all diagnostics **and** learned the policy tree.*
 
-#### Global evidence — RATE (Appendix {{appendix_rate}})
+#### Global evidence — RATE (Appendix {{appendix_rate}}(#appendix-rate))
+
 On the evaluation fold we
 * checked forest calibration, and
 * computed **RATE-AUTOC** and **RATE-Qini**, which test the null that no covariate information can beat a uniform policy [@wager2018].
 
 *p*-values were FDR-adjusted with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling].
 
-#### Budget lens — Qini curves (Appendix {{appendix_qini_curve}})
+#### Budget lens — Qini curves (Appendix {{appendix_qini_curve}}(#appendix-qini-curve))
+
 Qini curves answer a different question:
 *'If planners can treat at most $p\\%$ of the population, what uplift should they expect'*
 This view is valuable even when global RATE tests are inconclusive.
