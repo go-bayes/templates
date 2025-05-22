@@ -86,7 +86,6 @@ test_path <- "/Users/joseph/GIT/templates/test"
 # source(here::here("/Users/joseph/GIT/boilerplate/R", "generate-measures.R"))
 # source(here::here("/Users/joseph/GIT/boilerplate/R", "generate-text.R"))
 # source(here::here("/Users/joseph/GIT/boilerplate/R", "import-export-functions.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "init-functions.R"))
 # source(here::here("/Users/joseph/GIT/boilerplate/R", "manage-measures.R"))
 # source(here::here("/Users/joseph/GIT/boilerplate/R", "merge-databases.R"))
 # source(here::here("/Users/joseph/GIT/boilerplate/R", "utilities.R"))
@@ -785,8 +784,6 @@ We produced all results, tables, and figures with the `margot` R package [@margo
 
 
 
-
-
 lmtp_short_explanation_text_2 <-  "We used a 'modified treatment policy' (MTP) estimand [@haneuse2013estimation; @diaz2012population; @young2014identification; @diaz2023lmtp] to quantify the effect of {{name_exposure_variable}} on {{name_outcome_variable}}.
 
 This estimand captures the difference in the expected outcome under two scenarios, assuming no censoring ($C=1$):
@@ -954,78 +951,57 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 # to revise
 
 general_approach_cate_long_text <- "
-### Moderators and Treatment Policies
+### Moderators and treatment policies
 
-Our primary goal was to derive **transparent treatment rules** that respect individual heterogeneity. We therefore (i) estimated conditional average treatment effects (CATEs) with causal forests [@grf2024]
-and (ii) converted those estimates into shallow **policy trees** that practitioners can execute [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica].
+We pursued two complementary objectives: (i) to test whether personalised targeting, based on individual conditional average treatment effects $\\hat\\tau(x)$, yields welfare gains, and (ii) to convert any such gains into transparent, practitioner‐ready decision rules.
 
-First, we standardised effect directions by inverting outcomes where lower scores were preferable so that outcome values were aligned with the exposure variable. Specifically, we inverted and recomputed heterogeneous treatment effects and treatment policies for {{flipped_list}}.
+#### Pre-processing and honest model training
 
-Next, to guard against over-fitting we used an *honest* {{sample_ratio_policy}} split:the training fold built the forest; the held-out fold powered every diagnostic **and** learned the policy tree.
+Our protocol is as follows: in settings where the exposure is positive, outcomes for which lower is better are sign‐flipped so that larger values always index improvement. Similarly, where the exposure is negative, outcomes for which 'higher is better' are sign flipped.Here, we flipped: {{flipped_list}}.
 
-#### Global Evidence (Appendix {{appendix_rate}}(#appendix-rate)).
+Each model estimate used an honest {{sample_ratio_policy}} split: the training fold built the causal forest with grf [@grf2024], while the held-out fold powered all diagnostic checks and provided data for fitting policy trees.  This separation curbs over-fitting yet keeps the workflow simple.
 
-On the evaluation fold we (a) checked calibration and (b) computed **RATE-AUTOC** and **RATE-Qini**.Both address the *evidence* question: *can any covariate information beat a uniform policy?*  Causal forests trained on the first fold produced out-of-sample CATE predictions on the second.  We computed Rank-Weighted Average Treatment Effect (RATE) metrics—AUTOC and Qini—which quantify the gain from targeting the highest-ranked individuals [@grf2024; @wager2018].  Their *p*-values were corrected with {{cate_adjustment}} at q = {{cate_alpha}} to control the exploratory false-discovery rate [@benjamini1995controlling].
+#### Budget-based screening with Qini curves.
 
-#### Budget Lens (Appendix {{appendix_qini_curve}}(#appendix-qini-curve).
+Before constructing rules we asked a budget question: If resources allow treatment of only the top 20% or 50% of individuals ranked by $\\hat\\tau(x)$, what uplift is purchased relative to treating everyone?
+Qini curves quantified the incremental gain; outcomes whose 95% confidence intervals excluded zero at either spend level were labelled actionable, signalling meaningful heterogeneity in benefit.
 
-We plotted **Qini curves** to answer a *budget* question: 'if planners can treat at most $p\\%$ of the population, what uplift should they expect?*
-This view remains useful even when global RATE tests are inconclusive.
+#### Deriving transparent decision rules.
 
-RATE and Qini provide complementary evidence; neither is prerequisite for policy-tree learning.
+For each actionable outcome we trained depth-2 policy trees with policytree [@policytree_package_2024; @athey_2021_policy_tree_econometrica] on the validation data.  The resulting if–then statements maximise expected welfare under the same budget cap and remain auditable by domain experts.
 
-#### Policy Trees (reported in the main text):
+####  Global heterogeneity tests (supplementary).
 
-We then fit depth-2 policy trees on the evaluation fold. The tree tackles a *decision* question: *which simple rule maximises expected welfare under stated constraints?*
+Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.
 
-This workflow identifies individualised effects, quantifies the policy value of targeting, and delivers practical decision rules.  See [Appendix {{appendix_explain_grf}}](#appendix-explain-grf) for full methodological details.
+Overall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in Appendix {{appendix_explain_grf}}.
 "
-
-# Each split is chosen on doubly-robust welfare scores, and its out-of-sample value is reported with a bootstrap CI.
 
 general_approach_cate_short_text <- "
-### Moderators and Treatment Policies
+### Moderators and treatment policies
 
-Our aim was to move beyond average effects and derive **transparent treatment rules** that respect individual heterogeneity.
-The analysis had three steps:
+We asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.
 
-1. **Causal-forest CATEs** – we estimated conditional average treatment effects with `grf` [@grf2024].
-2. **Diagnostics** – we quantified the value of targeting with RATE and Qini metrics.
-3. **Policy trees** – we distilled the CATE ranking into a depth-2 decision tree that practitioners can execute [@policytree_package_2024; @athey2021].
+#### Pre-processing and honest forests
 
-#### Pre-processing
+Direction was standardised by sign-flipping outcomes whose valence opposed that of the exposure; the affected measures were {{flipped_list}}.  Each analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.
 
-**Orient outcomes.** We standardised effect directions by inverting outcomes where lower scores were preferable so that outcome values were aligned with the exposure variable. Specifically, we inverted and recomputed heterogeneous treatment effects and treatment policies for {{flipped_list}}.
+#### Diagnostics
 
+On the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.
 
-#### Sample-split design
+#### Budget-focused evidence
 
-To keep every estimate honest we used a {{sample_ratio_policy}} split:
-*the training fold built the forest, the held-out fold powered all diagnostics **and** learned the policy tree.*
+Because programme budgets are finite, we next asked: If resources permit treating only the top 20 % or 50 % ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.
 
-#### Global evidence — RATE (Appendix {{appendix_rate}}(#appendix-rate))
+Note that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.
 
-On the evaluation fold we
-* checked forest calibration, and
-* computed **RATE-AUTOC** and **RATE-Qini**, which test the null that no covariate information can beat a uniform policy [@wager2018].
+#### Transparent decision rules
 
-*p*-values were FDR-adjusted with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling].
+For each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.
 
-#### Budget lens — Qini curves (Appendix {{appendix_qini_curve}}(#appendix-qini-curve))
+The workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in Appendix {{appendix_explain_grf}}."
 
-Qini curves answer a different question:
-*'If planners can treat at most $p\\%$ of the population, what uplift should they expect'*
-This view is valuable even when global RATE tests are inconclusive.
-
-RATE and Qini give complementary evidence; neither is required for policy-tree learning.
-
-#### Decision rule — policy tree (main text)
-
-Finally, we fit a depth-2 policy tree on the evaluation fold.
-The tree tackles the *decision* question: *which simple allocation maximises welfare under stated constraints?*  We report the rule and its out-of-sample welfare with bootstrap CIs.
-
-This workflow (forest $\\to$ diagnostics $\\to$ tree) identifies heterogeneous effects, quantifies the policy value of targeting, and delivers an interpretable treatment rule.  Full methodological details appear in Appendix {{appendix_explain_grf}}.
-"
 #
 # general_approach_cate_short_no_flip_text <- "
 # ### Heterogeneous Treatment Effects and Treatment Policies
