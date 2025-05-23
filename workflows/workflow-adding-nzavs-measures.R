@@ -72,7 +72,46 @@ unified_db <- boilerplate_batch_edit(
   category = "measures"
 )
 
-unified_db$measures$env_climate_chg_concern$reference
+
+boilerplate_batch_edit(
+  db = unified_db,
+  field = "reference",
+  new_value = "statsnz_ssga18",
+  match_pattern = "Stats NZ Census Question",
+  category = "measures",
+  preview = TRUE
+)
+
+unified_db <-
+  boilerplate_batch_edit(
+    db = unified_db,
+    field = "reference",
+    new_value = "statsnz_ssga18",
+    match_pattern = "Stats NZ Census Question",
+    category = "measures",
+    preview = FALSE
+  )
+
+
+boilerplate_batch_edit(
+  db = unified_db,
+  field = "reference",
+  new_value = "statsnz_ssga18",
+  match_pattern = "Stats NZ Census Question",
+  category = "measures",
+  preview = TRUE
+)
+
+unified_db <-
+  boilerplate_batch_edit(
+    db = unified_db,
+    field = "reference",
+    new_value = "statsnz_ssga18",
+    match_pattern = "NZ Census",
+    category = "measures",
+    preview = TRUE
+  )
+
 
 boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
 
@@ -93,6 +132,24 @@ unified_db <- boilerplate_batch_clean(
   preview = TRUE
 )
 
+entries_with_chars <- boilerplate_find_chars(
+  db = unified_db,
+  field = "reference",
+  chars = c("@", "[", "]"),
+  category = "measures"
+)
+print(entries_with_chars)
+
+unified_db <- boilerplate_batch_clean(
+  db = unified_db,
+  field = "reference",
+  remove_chars = c("@", "[", "]"),
+  exclude_entries = c("forgiveness"),
+  category = "measures",
+  preview = TRUE
+)
+
+
 boilerplate_find_chars(unified_db, field = "reference", chars = "string_is")
 
 # check
@@ -111,6 +168,25 @@ unified_db <- boilerplate_batch_clean(
   remove_chars = "string_is",
   category = "measures"
 )
+
+# check
+boilerplate_batch_clean(
+  db = unified_db,
+  field = "reference",
+  remove_chars =  "string_is",
+  category = "measures",
+  preview = TRUE
+)
+
+# edit
+boilerplate_batch_clean(
+  db = unified_db,
+  field = "reference",
+  remove_chars = "NZ",
+  category = "measures",
+  preview = TRUE
+)
+
 
 # check
 boilerplate_batch_clean(
@@ -1171,7 +1247,7 @@ unified_db$methods$analytic_approach$general_approach_cate_short
 # add a new custom text entry
 short_evalue_text <- "
 ### Sensitivity Analysis
-We perform sensitivity analyses using the E-value metric [@vanderweele2017; @linden2020EVALUE]. The E-value represents the minimum association strength (on the risk-ratio scale) that an unmeasured confounder would need with both exposure and outcome—after adjusting for measured covariates—to explain away the observed association [@vanderweele2020; @linden2020EVALUE]. Confidence intervals for each E-value were derived from the multiplicity-adjusted confidence intervals of the corresponding coefficient estimates ({{ate_adjustment}}, α = {{ate_alpha}}), so the sensitivity analysis obeys the same error-control framework as the main results."
+We perform sensitivity analyses using the E-value metric [@vanderweele2017; @linden2020EVALUE]. The E-value represents the minimum association strength (on the risk-ratio scale) that an unmeasured confounder would need with both exposure and outcome—after adjusting for measured covariates—to explain away the observed association [@vanderweele2020; @linden2020EVALUE]. Confidence intervals for each E-value were derived from the multiplicity-adjusted confidence intervals of the corresponding coefficient estimates ({{ate_adjustment}}, $\\alpha$ = {{ate_alpha}}), so the sensitivity analysis obeys the same error-control framework as the main results."
 
 
 # unified_db <- boilerplate_remove_entry(
