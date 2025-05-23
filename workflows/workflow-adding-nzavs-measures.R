@@ -45,7 +45,7 @@ cat(test_db$appendix$explain$grf_short)
 cat(test_db$methods$causal_intervention$grf_simple_text)
 
 
-# Using the new boilerplate_export() function
+a# Using the new boilerplate_export() function
 # boilerplate_export(
 #   unified_db,
 #   select_elements = c("methods.statistical.*", "results.main_effect"),
