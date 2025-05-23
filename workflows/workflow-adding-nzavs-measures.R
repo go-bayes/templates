@@ -93,6 +93,25 @@ unified_db <- boilerplate_batch_clean(
   preview = TRUE
 )
 
+boilerplate_find_chars(unified_db, field = "reference", chars = "string_is")
+
+# check
+boilerplate_batch_clean(
+  db = unified_db,
+  field = "reference",
+  remove_chars =  "string_is",
+  category = "measures",
+  preview = TRUE
+)
+
+# edit
+boilerplate_batch_clean(
+  db = unified_db,
+  field = "reference",
+  remove_chars =  "string_is",
+  category = "measures"
+)
+
 # check
 boilerplate_batch_clean(
   db = unified_db,
@@ -415,7 +434,7 @@ Here, $Y({{value_exposure}})$ is the potential outcome if an individual received
 grf_simple_text <- "
 ### Average treatment effect
 
-To learn how the outcome would shift if everyone received a different exposure, we emulate a **target trial** [@hernan2016]. Making the hypothetical experiment explicit fixes the estimand, the data requirements, and the assumptions.
+To learn how the outcome would shift if everyone received a different exposure, we emulate a **target trial** [@hernan2016c]. Making the hypothetical experiment explicit fixes the estimand, the data requirements, and the assumptions.
 
 Our guiding question is:
 
@@ -426,22 +445,22 @@ We compare two interventions:
 1. **{{name_exposure_threshold}}** — every participant is set to {{value_exposure}}.
 2. **{{name_control_threshold}}** — every participant is set to {{value_control}}.
 
-The difference in population means defines the **average treatment effect (ATE)**. Figure @fig-exposure-histogram plots the exposure distribution and its dichotomisation; the centre dashed line marks the mean, flanked by one standard deviation.
+The difference in population means defines the **average treatment effect (ATE)**. Figure @fig-exposure plots the exposure distribution and its dichotomisation; the centre dashed line marks the mean, flanked by one standard deviation.
 
 ```{r}
-#| label: fig-exposure-histogram
-#| fig-cap: \"Histogram of exposure with binary grouping\"
+#| label: fig-exposure
+#| fig-cap: 'Histogram of exposure with binary grouping'
 #| eval: true
-#| fig-height: 18   # tweak if needed
+#| fig-height: 12   # tweak if needed
 #| fig-width: 12    # tweak if needed
 
 graph_cut
 
 ```
 
-Because we test several outcomes, we adjust the ATE confidence intervals for multiplicity with {{ate_adjustment}} at $\alpha = {{ate_alpha}}$.
+Because we test several outcomes, we adjust the ATE confidence intervals for multiplicity with {{ate_adjustment}} at $\\alpha = {{ate_alpha}}$.
 
-The longitudinal design and rich baseline covariates allow us—under the identification assumptions spelled out in Appendix {{appendix_assumptions_grf}}—to attribute differences between the two exposure regimes to causal effects rather than confounding. Conditioning on demographics, personality traits, and other pretreatment factors renders exposure assignment ignorable [@rosenbaum1983central]."
+The longitudinal design and rich baseline covariates allow us -- under the standard identification assumptions of consistency, positivity, and no unmeasured confounding -- to attribute the differences between the two exposure means as a causal effect. Conditioning on demographics, personality traits, and other pretreatment factors renders exposure assignment ignorable [@rosenbaum1983central]."
 
 
 unified_db<- boilerplate_update_entry(
@@ -669,11 +688,11 @@ missing_lmtp_simple_text <- "
 
 To mitigate bias from missing data, we used the following strategies:
 
-#### Baseline missingness**
+#### Baseline missingness
 
 We employed the `ppm` algorithm from the `mice` package in R [@vanbuuren2018] to impute missing baseline data (wave {{baseline_wave}}). This method allowed us to reconstruct incomplete datasets by estimating a plausible value for missing observation. Because we could only pass one data set to the lmtp, we employed single imputation. Approximately {{baseline_missing_data_proportion}}% of covariate values were missing at {{baseline_wave}}. We only used baseline data to impute baseline wave missingness (refer to @zhang2023shouldMultipleImputation).
 
-#### Outcome missingness**
+#### Outcome missingness
 
 To address confounding and selection bias arising from missing responses and panel attrition at the end of study {{outcome_wave}}, we applied censoring weights obtained using nonparametric machine learning ensembles afforded by the `lmtp` package (and its dependencies) in R [@williams2021]."
 
