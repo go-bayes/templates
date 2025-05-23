@@ -24,8 +24,6 @@ test_path <- "/Users/joseph/GIT/templates/test"
 
 # import data -------------------------------------------------------------
 proto_unified_db <- boilerplate_import( data_path = my_project_path)
-str(proto_unified_db$measures, max.level = 1)
-# student example
 # set path ----------------------------------------------------------------
 student_path <- here::here("student_boilerplate_data")
 
@@ -298,7 +296,7 @@ str(unified_db, max.level = 2)
 student_sample_information_text <- "
 ### Sample
 
-The data in this study are simulated for the purposes of instruction from data collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from {{n_total}} participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB).
+The data in this study are simulated for the purposes of instruction from data collected as part of the New Zealand Attitudes and Values Study (NZAVS). The NZAVS is an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from {{n_total}} participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB).
 "
 
 unified_db<- boilerplate_update_entry(
