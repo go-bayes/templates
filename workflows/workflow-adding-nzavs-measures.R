@@ -41,6 +41,8 @@ boilerplate::boilerplate_export(
 test_db <- boilerplate_import( data_path = student_path)
 str(test_db, max.level = 1)
 cat(test_db$discussion$strengths$strengths_grf_short)
+cat(test_db$appendix$explain$grf_short)
+
 # Using the new boilerplate_export() function
 # boilerplate_export(
 #   unified_db,
