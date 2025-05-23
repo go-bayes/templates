@@ -42,6 +42,8 @@ test_db <- boilerplate_import( data_path = student_path)
 str(test_db, max.level = 1)
 cat(test_db$discussion$strengths$strengths_grf_short)
 cat(test_db$appendix$explain$grf_short)
+cat(test_db$methods$causal_intervention$grf_simple_text)
+
 
 # Using the new boilerplate_export() function
 # boilerplate_export(
@@ -411,22 +413,36 @@ Here, $Y({{value_exposure}})$ is the potential outcome if an individual received
 # 3.  **Positivity**: within strata defined by $X$, there is a non-zero probability of receiving either exposure level (`{{value_exposure}}` or `{{value_control}}`).
 
 grf_simple_text <- "
-### Average Treatment Effect
+### Average treatment effect
 
-Researchers often want to know what might happen if we could change (or 'intervene on') a particular variable for everyone in a study—much like testing a new treatment in a randomised trial. Because we cannot always run an actual trial, we imagine a **target trial** [@hernan2016], a hypothetical experiment that clarifies exactly which cause-and-effect question we are trying to answer.
+To learn how the outcome would shift if everyone received a different exposure, we emulate a **target trial** [@hernan2016]. Making the hypothetical experiment explicit fixes the estimand, the data requirements, and the assumptions.
 
-Here, we ask:
+Our guiding question is:
 
-  > 'How would the outcomes of interest change if, for everyone in the population, we set the exposure to **{{value_exposure}}**, compared with setting it to **{{value_control}}**, given each individual’s characteristics?'
+> *How would the outcomes change if, for every individual, we set the exposure to **{{value_exposure}}** rather than **{{value_control}}**, conditional on their baseline characteristics?*
 
-Thus we compare two scenarios:
+We compare two interventions:
 
-1. **{{name_exposure_threshold}}**: Everyone receives exposure level {{value_exposure}}.
-2. **{{name_control_threshold}}**: Everyone receives exposure level {{value_control}}.
+1. **{{name_exposure_threshold}}** — every participant is set to {{value_exposure}}.
+2. **{{name_control_threshold}}** — every participant is set to {{value_control}}.
 
-The difference between these two population means is the **Average Treatment Effect (ATE)**.  Because we evaluate several outcomes, ATE confidence intervals were corrected for multiplicity with {{ate_adjustment}} at $\\alpha$ = {{ate_alpha}}.
+The difference in population means defines the **average treatment effect (ATE)**. Figure @fig-exposure-histogram plots the exposure distribution and its dichotomisation; the centre dashed line marks the mean, flanked by one standard deviation.
 
-By combining time-series data with a rich baseline covariate set, we may, under the identifications assumptions described below, separate the causal effects of the exposure from spurious associations. Measuring demographics, personality traits, and other background factors at baseline helps ensure that, conditional on those covariates, assignment to the two exposure levels is 'as good as random.'  (See Appendix [{{appendix_assumptions_grf}}](#appendix-assumptions_grf) for a full statement of the required assumptions.)"
+```{r}
+#| label: fig-exposure-histogram
+#| fig-cap: \"Histogram of exposure with binary grouping\"
+#| eval: true
+#| fig-height: 18   # tweak if needed
+#| fig-width: 12    # tweak if needed
+
+graph_cut
+
+```
+
+Because we test several outcomes, we adjust the ATE confidence intervals for multiplicity with {{ate_adjustment}} at $\alpha = {{ate_alpha}}$.
+
+The longitudinal design and rich baseline covariates allow us—under the identification assumptions spelled out in Appendix {{appendix_assumptions_grf}}—to attribute differences between the two exposure regimes to causal effects rather than confounding. Conditioning on demographics, personality traits, and other pretreatment factors renders exposure assignment ignorable [@rosenbaum1983central]."
+
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
