@@ -220,6 +220,18 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 str(unified_db, max.level = 2)
 
+student_sample_information_text <- "
+### Sample
+
+The data in this study are simulated for the purposes of instruction from data collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from {{n_total}} participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB).
+"
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.sudent_sample.nzavs",
+  value = student_sample_information_text
+)
+
 # ------------------------------------------------------
 # target population section
 # ------------------------------------------------------
@@ -237,6 +249,18 @@ unified_db<- boilerplate_update_entry(
 
 # save
 boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+
+# for teaching
+student_target_population_text <- "
+### Target Population
+
+The data are simulated from the New Zealand Attitudes and Values Study. For the purposes of this assessment, the target population for this study comprises New Zealand residents as represented in the {{baseline_wave}} of the New Zealand Attitudes and Values Study (NZAVS) during the years {{baseline_wave}} weighted by New Zealand Census weights for age, gender, and ethnicity (refer to @sibley2021). The NZAVS is a national probability study designed to reflect the broader New Zealand population accurately. Despite its comprehensive scope, the NZAVS has some limitations in its demographic representation. Notably, it tends to under-sample males and individuals of Asian descent while over-sampling females and Māori (the indigenous peoples of New Zealand). To address these disparities and enhance the accuracy of our findings, we apply New Zealand Census survey weights to the sample data."
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.student_target_population",
+  value = student_target_population_text
+)
 
 # ------------------------------------------------------
 # causal interventions section
@@ -1637,7 +1661,7 @@ The University of Auckland Human Participants Ethics Committee reviews the NZAVS
 student_nzavs_ethics_2021_2027_text <- "
 ### Ethics
 
-The data were simulated. They are not real. The Ethics Approval for the dataset from which the synthetic data were generated is as follows: The University of Auckland Human Participants Ethics Committee reviews the NZAVS every three years. The most recent ethics approval statement is as follows: The New Zealand Attitudes and Values Study was approved by the University of Auckland Human Participants Ethics Committee on 26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576."
+The data were simulated for the purposes of instruction. The Ethics Approval for the dataset from which the synthetic data were generated is as follows: The University of Auckland Human Participants Ethics Committee reviews the NZAVS every three years. The most recent ethics approval statement is as follows: The New Zealand Attitudes and Values Study was approved by the University of Auckland Human Participants Ethics Committee on 26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576."
 
 
 nzavs_data_availabily_text <- "
@@ -1681,7 +1705,7 @@ authors_statment_empty_text <-"
 sudent_authors_statment_empty_text <-"
 ### Author Statement
 
-The Methods and Results section were created using standard protocols from the EPIC lab (Joseph Bulbulia). These were encoded using the `boilerplate` package [@boilerplate2024] and `margot package` [@margot2024] in R. The introduction and conclusion for this research are solely the students work."
+The Methods and Results section were created using standard protocols from the EPIC lab (Joseph Bulbulia). These were encoded using the `boilerplate` package [@boilerplate2024] and `margot package` [@margot2024] in R. The introduction and conclusion for this research are solely the student's work."
 
 unified_db <- boilerplate_update_entry(
   db = unified_db,
