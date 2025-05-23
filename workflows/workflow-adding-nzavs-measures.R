@@ -99,6 +99,8 @@ student_path <- here::here("student_boilerplate_data")
 
 # proto_unified_db$appendix$explain$grf_short
 # proto_unified_db$template$conference_presentation
+
+proto_unified_db$discussion$strengths$strengths_grf_short
 boilerplate::boilerplate_export(
   proto_unified_db,
   select_elements = c("measures.*", "methods.student_sample.nzavs", "methods.student_target_population", "methods.statistical_models.grf_short_explanation","methods.causal_intervention.grf_simple_text", "methods.analytic_approach.simple_general_approach_cate_long", "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "results.grf.*", "discussion.student_authors_statement"," discussion.student_ethics","discussion.student_data", "appendix.exposure", "appendix.baseline", "appendix.references", "appendix.strengths_grf_short_text", "discussion.*", "appendix.explain.grf_short",  "appendix.explain.grf_long", "template.conference_presentation"),
@@ -108,7 +110,7 @@ boilerplate::boilerplate_export(
 
 test_db <- boilerplate_import( data_path = student_path)
 str(test_db, max.level = 1)
-test_db$measures$age
+test_db$discussion$strengths$strengths_grf_short
 # Using the new boilerplate_export() function
 # boilerplate_export(
 #   unified_db,
@@ -1646,11 +1648,15 @@ In sum, this combination of flexible modelling, rigorous testing, and practical 
 strengths_grf_short_text <- "
 ### Strengths and Limitations of Our Approach
 
-We used causal forests [@grf2024] to estimate how treatment effects may differ for individuals with different characteristics. This method is powerful, however it also depends on measuring all major variables influencing both treatment selection and outcomes. If such variables are missed or mismeasured, results can be biased. Additionally, interpreting subgroup effects can be tricky when many characteristics are involved (refer to [Appendix {{appendix_heterogeneity}}](#appendix-heterogeneity) and statistically significant differences may not always translate into meaningful real-world gains.
+We used causal forests [@grf2024] to estimate how treatment effects may differ for individuals with different characteristics. This method is powerful, however it also depends on measuring all major variables influencing both treatment selection and outcomes. If such variables are missed or mismeasured, results can be biased. Additionally, interpreting subgroup effects can be tricky when many characteristics are involved and statistically significant differences may not always translate into meaningful real-world gains.
 
 Despite these concerns, causal forests offer notable advantages. They allow for flexible, non-parametric modelling [@grf2024], avoiding strict assumptions that might miss complex interactions. We used a robust evaluation method—training our model on half the data and testing it on the remaining half—to avoid overfitting. We then checked whether the predicted differences were genuine and estimated how much benefit we might gain by targeting treatment to those likely to benefit most [@grf2024; @wager2018]. Qini curves [@grf2024] let us see the overall improvement from treating the top-ranked individuals first, and policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] turn these findings into simple ‘if-then’ rules. Together, this approach provides a practical means of identifying and acting on genuine treatment effect differences."
 
-
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.strengths.strengths_grf_short",
+  value = strengths_grf_short_text
+)
 
 nzavs_ethics_2021_2027_text <- "
 ### Ethics
