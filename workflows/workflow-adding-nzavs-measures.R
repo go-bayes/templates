@@ -17,78 +17,10 @@ if (!require(boilerplate, quietly = TRUE)) {
 library(boilerplate)
 
 
-
-# devtools::install_github("go-bayes/boilerplate")
-
-# initial wrangling -- INGNORE
-# master_text_path = here::here("/Users/joseph/GIT/templates/databases/methods")
-# master_measures_path = here::here("/Users/joseph/GIT/templates/databases/measures")
-# #
-# #
-# # # read
-# master_methods_db = margot::here_read("master_methods_db", master_text_path)
-# master_measures_db = margot::here_read("measures_db", master_measures_path)
-#
-# # methods_db = margot::here_read("master_methods_db", master_text_path)
-# # measures_db = margot::here_read("measures_db", master_measures_path)
-#
-# #
-# # # set library path
-# #my_project_path <- "/Users/joseph/GIT/templates/boilerplate_data"
-# # # save the other data
-# boilerplate_save("methods_db", category = "methods", my_project_path)
-# boilerplate_save("measures_db", category = "measures", my_project_path)
-#
-# # Initialize databases in your custom location
-# boilerplate_init(
-#   categories = c("measures", "methods", "results", "discussion", "appendix", "template"),
-#   data_path = my_project_path,  # specify custom path here
-#   create_dirs = TRUE,
-#   confirm = FALSE
-# )
-#
-# # import all
-# unified_db <- boilerplate_import( data_path = my_project_path)
-#
-# methods_db <- boilerplate_methods(unified_db)
-# measures_db <- boilerplate_measures(unified_db)
-# results_db <- boilerplate_results(unified_db)
-# methods_db
-# str(measures_db)
-# str(master_measures_db)
-#
-# merged_db <- boilerplate_merge_databases(master_measures_db, measures_db)
-#
-#
-# margot::here_save(merged_db, "measures_db", my_project_path)
-#
-#
-
-# str(unified_db, max.level = 1)
-
 # set path ----------------------------------------------------------------
-
 my_project_path <- "/Users/joseph/GIT/templates/boilerplate_data"
 test_path <- "/Users/joseph/GIT/templates/test"
 
-# # tests -------------------------------------------------------------------
-# library(cli)
-# library(glue)
-# library(here)
-# library(cli)
-# library(utils)
-# library(stringr)
-
-# # library(janitor)
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "path-operations.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "category-helpers.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "default-databases.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "generate-measures.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "generate-text.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "import-export-functions.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "manage-measures.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "merge-databases.R"))
-# source(here::here("/Users/joseph/GIT/boilerplate/R", "utilities.R"))
 
 # import data -------------------------------------------------------------
 proto_unified_db <- boilerplate_import( data_path = my_project_path)
@@ -99,8 +31,6 @@ student_path <- here::here("student_boilerplate_data")
 
 # proto_unified_db$appendix$explain$grf_short
 # proto_unified_db$template$conference_presentation
-
-proto_unified_db$discussion$strengths$strengths_grf_short
 boilerplate::boilerplate_export(
   proto_unified_db,
   select_elements = c("measures.*", "methods.student_sample.nzavs", "methods.student_target_population", "methods.statistical_models.grf_short_explanation","methods.causal_intervention.grf_simple_text", "methods.analytic_approach.simple_general_approach_cate_long", "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "results.grf.*", "discussion.student_authors_statement"," discussion.student_ethics","discussion.student_data", "appendix.exposure", "appendix.baseline", "appendix.references", "appendix.strengths_grf_short_text", "discussion.*", "appendix.explain.grf_short",  "appendix.explain.grf_long", "template.conference_presentation"),
@@ -120,24 +50,68 @@ cat(test_db$discussion$strengths$strengths_grf_short)
 # )
 
 
-# # # read data into R ---------------------------------------------
-# # # no extra packages needed beyond base R
-# student_unified_db_est <-
-#   readRDS(
-#     url(
-#       "https://raw.githubusercontent.com/go-bayes/templates/main/student_boilerplate_data/student_unified_db"
-#     ),
-#     refhook = NULL
-#   )
-#
-# #
-# #
-# #
-
 
 # Introduction ------------------------------------------------------------
 # import data
 unified_db <- boilerplate_import( data_path = my_project_path)
+
+
+
+
+# edit database -----------------------------------------------------------
+# Example 2: Update all references containing "NZAVS"
+unified_db <- boilerplate_batch_edit(
+  db = unified_db,
+  field = "reference",
+  new_value = "sibley2021",
+  match_pattern = "NZAVS",
+  category = "measures"
+)
+
+unified_db$measures$env_climate_chg_concern$reference
+
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
+
+entries_with_chars <- boilerplate_find_chars(
+  db = unified_db,
+  field = "reference",
+  chars = c("@", "[", "]"),
+  category = "measures"
+)
+print(entries_with_chars)
+
+unified_db <- boilerplate_batch_clean(
+  db = unified_db,
+  field = "reference",
+  remove_chars = c("@", "[", "]"),
+  exclude_entries = c("forgiveness"),
+  category = "measures",
+  preview = TRUE
+)
+
+# check
+boilerplate_batch_clean(
+  db = unified_db,
+  field = "reference",
+  remove_chars = c("@", "[", "]"),
+  exclude_entries = c("forgiveness"),
+  category = "measures",
+  preview = TRUE
+)
+
+# apply
+unified_db <- boilerplate_batch_clean(
+  db = unified_db,
+  field = "reference",
+  remove_chars = c("@", "[", "]"),
+  exclude_entries = c("forgiveness"),
+  category = "measures"
+)
+
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
+
+
+
 
 grf_introduction_text<- "## Introduction
 
