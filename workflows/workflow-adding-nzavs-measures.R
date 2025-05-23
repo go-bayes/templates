@@ -3102,7 +3102,8 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 
 
-appendix_explain_grf_short <- "## Appendix X. Estimating and Interpreting Heterogeneous Treatment Effects with **grf**
+appendix_explain_grf_short <- "
+## Appendix {{appendix_explain_grf}}. Estimating and Interpreting Heterogeneous Treatment Effects with GRF {#appendix-explain-grf}
 
 Here we explain a heterogeneous‐treatment‐effect (HTE) analysis using causal forests [@grf2024]. In our workflow, we move from the average treatment effect (ATE) to individualised effects, quantify the practical value of targeting, and finish with interpretable decision rules.
 
