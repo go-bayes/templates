@@ -449,8 +449,9 @@ The difference in population means defines the **average treatment effect (ATE)*
 
 ```{r}
 #| label: fig-exposure
-#| fig-cap: 'Histogram of exposure with binary grouping'
+#| fig-cap: \"Histogram of exposure with binary groupin\"
 #| eval: true
+#| echo: false
 #| fig-height: 12   # tweak if needed
 #| fig-width: 12    # tweak if needed
 
@@ -462,6 +463,12 @@ Because we test several outcomes, we adjust the ATE confidence intervals for mul
 
 The longitudinal design and rich baseline covariates allow us -- under the standard identification assumptions of consistency, positivity, and no unmeasured confounding -- to attribute the differences between the two exposure means as a causal effect. Conditioning on demographics, personality traits, and other pretreatment factors renders exposure assignment ignorable [@rosenbaum1983central]."
 
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.causal_intervention.grf_simple_text",
+  value = grf_simple_text
+)
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -482,11 +489,7 @@ unified_db<- boilerplate_update_entry(
   value = grf_causal_text
   )
 
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.causal_intervention.grf_simple_text",
-  value = grf_simple_text
-)
+
 
 cat(unified_db$methods$causal_intervention$lmtp_multi_wave)
 
