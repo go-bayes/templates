@@ -105,10 +105,10 @@ boilerplate_batch_clean(
 )
 
 # edit
-boilerplate_batch_clean(
+unified_db <- boilerplate_batch_clean(
   db = unified_db,
   field = "reference",
-  remove_chars =  "string_is",
+  remove_chars = "string_is",
   category = "measures"
 )
 
