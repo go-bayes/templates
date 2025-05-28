@@ -29,6 +29,8 @@ student_path <- here::here("student_boilerplate_data")
 
 # proto_unified_db$appendix$explain$grf_short
 # proto_unified_db$template$conference_presentation
+interpretation_rate_no_flip_text
+
 boilerplate::boilerplate_export(
   proto_unified_db,
   select_elements = c("measures.*", "methods.student_sample.nzavs", "methods.student_target_population", "methods.statistical_models.grf_short_explanation","methods.causal_intervention.grf_simple_text", "methods.analytic_approach.simple_general_approach_cate_long", "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "results.grf.*", "discussion.student_authors_statement"," discussion.student_ethics","discussion.student_data", "appendix.exposure", "appendix.baseline", "appendix.references", "appendix.strengths_grf_short_text", "discussion.*", "appendix.explain.grf_short",  "appendix.explain.grf_long", "template.conference_presentation"),
@@ -37,11 +39,9 @@ boilerplate::boilerplate_export(
 )
 
 test_db <- boilerplate_import( data_path = student_path)
-str(test_db, max.level = 1)
 cat(test_db$discussion$strengths$strengths_grf_short)
 cat(test_db$appendix$explain$grf_short)
 cat(test_db$methods$causal_intervention$grf_simple_text)
-
 
 # Using the new boilerplate_export() function
 # boilerplate_export(
@@ -1070,7 +1070,7 @@ We pursued two complementary objectives: (i) to test whether personalised target
 
 #### Pre-processing and honest model training
 
-Our protocol is as follows: in settings where the exposure is positive, outcomes for which lower is better are sign‐flipped so that larger values always index improvement. Similarly, where the exposure is negative, outcomes for which 'higher is better' are sign flipped.Here, we flipped: {{flipped_list}}.
+Our protocol is as follows: in settings where the exposure is positive, outcomes for which lower is better are sign‐flipped so that larger values always index improvement. Similarly, where the exposure is negative, outcomes for which 'higher is better' are sign flipped. Here, we flipped: {{flipped_list}}.
 
 Each model estimate used an honest {{sample_ratio_policy}} split: the training fold built the causal forest with grf [@grf2024], while the held-out fold powered all diagnostic checks and provided data for fitting policy trees.  This separation curbs over-fitting yet keeps the workflow simple.
 
@@ -1089,6 +1089,13 @@ Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking w
 
 Overall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in Appendix {{appendix_explain_grf}}.
 "
+
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.general_approach_cate_long",
+  value = general_approach_cate_long_text
+)
 
 general_approach_cate_short_text <- "
 ### Moderators and treatment policies
@@ -1115,25 +1122,72 @@ For each actionable outcome we fitted a depth-2 policy tree with policytree on t
 
 The workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in Appendix {{appendix_explain_grf}}."
 
-#
-# general_approach_cate_short_no_flip_text <- "
-# ### Heterogeneous Treatment Effects and Treatment Policies
-#
-# After estimating the overall average treatment effect (ATE) for the population, we turn to the question of whether different people respond differently. We investigate effect modifiers (or moderators)—factors that make the intervention more or less effective for certain subgroups—by estimating the Conditional Average Treatment Effect (CATE) using a causal forest approach. While the ATE reflects the overall impact, the CATE reveals how that impact can vary across individuals with different baseline characteristics. We denote the individual-level estimated treatment effect as $\\hat{\\tau}(x)$, which represents the predicted benefit for an individual with covariates $x$. A notable advantage of causal forests is that we do not have to specify potential moderators in advance; the algorithm uncovers them automatically. We can also apply search algorithms to derive priority treatment rules that target the intervention to those most likely to benefit.
-#
-# First, to reduce overfitting and distinguish true heterogeneity from noise, we split the sample. We trained the causal forest on the first half and tested its predictions exclusively on the second half. In the held-out data, we checked calibration by comparing the mean of the predicted CATEs, $\\hat{\\tau}(x)$, with the overall ATE. We also performed a differential prediction test [@grf2024] to assess whether the predicted variation was genuine. As an additional check for heterogeneity, we computed the Rank-Weighted Average Treatment Effect (RATE), which quantifies the benefit of targeting individuals predicted to benefit most [@grf2024; @wager2018].
-#
-# Having assessed preliminary evidence of heterogeneity using differential prediction and RATE estimation, we used Qini curves [@grf2024] to illustrate how a targeted strategy might outperform a uniform one. Specifically, we compared:
-#
-# 1. **Uniform Allocation:** treating (or not treating) everyone based on the ATE;
-# 2. **Targeted Allocation:** treating those with the highest predicted CATEs ($\\hat{\\tau}(x)$) first.
-#
-# A positive Qini value suggests that a targeted strategy can achieve better outcomes. Here, we considered whether budgets limited to 20% or 50% of the population could yield greater improvements under targeted allocation than under the uniform approach.
-#
-# Finally, when we found signs of genuine heterogeneity (via either RATE or Qini curves), we used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to generate simple, rule-based treatment recommendations (e.g., 'Treat if baseline score > X'). We implemented all heterogeneity analyses—calibration tests, RATE, Qini curves, and policy trees—in R using the grf [@grf2024], policytree [@policytree_package_2024], and margot [@margot2024] packages. This approach enabled us to identify individualised effects, confirm their robustness, estimate the potential value of targeting, and propose straightforward strategies for personalisation. (Refer to [Appendix {{appendix_explain_grf}}](#appendix-explain-grf) for a detailed explanation of our approach.)"
 
-# -After estimating average treatment effects for the population, we wanted to examine whether the exposure would work differently for different people. We used a method called 'causal forests' to find which groups of people might benefit the most, and which groups might benefit the least [@grf2024]. After flipping any scales so that 'higher' always means 'better,' we taught the model on half the data and tested it on the other half (we flipped {{flipped_list}}). This enabled us to better evaluate whether the differences we found were real rather than accidental. We then compared outcomes when we targeted treatment to those predicted to benefit the most (using Qini curves) against simply giving the treatment to everyone. Finally, we used policy trees to boil down these results into simple, if-then rules for deciding who is likely to benefit most from the treatment (refer to [Appendix {{appendix_explain_grf}}](#appendix-explain-grf)).
-#
+
+general_approach_cate_long_no_flip_text <- "
+### Moderators and treatment policies
+
+We pursued two complementary objectives: (i) to test whether personalised targeting, based on individual conditional average treatment effects $\\hat\\tau(x)$, yields welfare gains, and (ii) to convert any such gains into transparent, practitioner‐ready decision rules.
+
+#### Pre-processing and honest model training
+
+Each model estimate used an honest {{sample_ratio_policy}} split: the training fold built the causal forest with grf [@grf2024], while the held-out fold powered all diagnostic checks and provided data for fitting policy trees.  This separation curbs over-fitting yet keeps the workflow simple.
+
+#### Budget-based screening with Qini curves.
+
+Before constructing rules we asked a budget question: If resources allow treatment of only the top 20% or 50% of individuals ranked by $\\hat\\tau(x)$, what uplift is purchased relative to treating everyone?
+Qini curves quantified the incremental gain; outcomes whose 95% confidence intervals excluded zero at either spend level were labelled actionable, signalling meaningful heterogeneity in benefit.
+
+#### Deriving transparent decision rules.
+
+For each actionable outcome we trained depth-2 policy trees with policytree [@policytree_package_2024; @athey_2021_policy_tree_econometrica] on the validation data.  The resulting if–then statements maximise expected welfare under the same budget cap and remain auditable by domain experts.
+
+####  Global heterogeneity tests (supplementary).
+
+Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.
+
+Overall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in Appendix {{appendix_explain_grf}}.
+"
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.general_approach_cate_long_no_flip",
+  value = general_approach_cate_long_no_flip_text
+)
+
+
+general_approach_cate_short_no_flip_text <- "
+### Moderators and treatment policies
+
+We asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.
+
+#### Pre-processing and honest forests
+
+Each analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.
+
+#### Diagnostics
+
+On the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.
+
+#### Budget-focused evidence
+
+Because programme budgets are finite, we next asked: If resources permit treating only the top 20 % or 50 % ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.
+
+Note that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.
+
+#### Transparent decision rules
+
+For each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.
+
+The workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in Appendix {{appendix_explain_grf}}."
+
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.general_approach_cate_short_no_flip",
+  value = general_approach_cate_short_no_flip_text
+)
+
 simple_general_approach_cate_short_text <- "
 ### Learning Moderators and Deriving Practical Treatment Rules
 
@@ -1146,6 +1200,7 @@ After estimating the average treatment effect, we asked *for whom* the exposure 
 5. **Transparent policy.** When heterogeneity looked actionable, we fitted depth-2 **policy trees** on the validation fold, turning the black-box forest into concise *if–then* rules (details in Appendix {{appendix_explain_grf}}).
 
 This pipeline converts complex CATE estimates into interpretable, out-of-sample decision policies while controlling both over-fitting and multiple testing."
+
 
 simple_general_approach_cate_long_no_flip_text<- "
 ### Learning Moderators and Deriving Practical Treatment Rules
@@ -1167,11 +1222,6 @@ simple_general_approach_cate_short_no_flip_text <- "
 We used a method called 'causal forests' to check if a treatment helped some people more than others. We trained the model on half the data and tested it on the other half. This helped us understand whether the differences we found were real rather than accidental. We then compared outcomes when we targeted treatment to those predicted to benefit the most (using Qini curves) against simply giving the treatment to everyone. Finally, we used policy trees to boil down these results into simple, if-then rules for deciding who's likely to benefit most from the treatment (refer to[Appendix {{appendix_explain_grf}}](#appendix-explain-grf))."
 
 
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.analytic_approach.general_approach_cate_long",
-  value = general_approach_cate_long_text
-)
 
 # ** PREFERRED
 unified_db<- boilerplate_update_entry(
@@ -1180,24 +1230,12 @@ unified_db<- boilerplate_update_entry(
   value = general_approach_cate_short_text
 )
 
-#
-# unified_db<- boilerplate_update_entry(
-#   db = unified_db,
-#   path = "methods.analytic_approach.general_approach_cate_long_no_flip",
-#   value = general_approach_cate_long_no_flip_text
-# )
-
-# unified_db<- boilerplate_update_entry(
-#   db = unified_db,
-#   path = "methods.analytic_approach.general_approach_cate_short_no_flip",
-#   value = general_approach_cate_short_no_flip_text
-# )
-
 # unified_db<- boilerplate_update_entry(
 #   db = unified_db,
 #   path = "methods.analytic_approach.simple_general_approach_cate_long",
 #   value = simple_general_approach_cate_long_text
 # )
+
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -1476,7 +1514,9 @@ The Qini curve shows the cumulative **gain** as we expand a targeting rule down 
 * **Beneficial exposure:** we add individuals from the top positive CATEs downward; the baseline is 'expose everyone.'
 * **Detrimental exposure:** we first flip outcome direction (so higher values represent **more harm**; see {{flipped_list}}), then *add* the exposure starting with individuals whose CATEs show the **greated harm**, gradually including those predicted to be more resistant to harm; the baseline is 'expose everyone.'  The curve therefore quantifies the harm by when those most suceptible to harm are exposed.
 
-If the Qini curve stays above its baseline, a targeted policy increases the outcome more than a one-size-fits-all alternative. (Outcome directions were flipped where needed—{{flipped_list}}—so the positively valenced exposures always have positively valanced outcomes and negative exposures always have negatively valenced outcomes.)"
+If the Qini curve stays above its baseline, a targeted policy increases the outcome more than a one-size-fits-all alternative."
+#
+# (Outcome directions were flipped where needed—{{flipped_list}}—so the positively valenced exposures always have positively valanced outcomes and negative exposures always have negatively valenced outcomes.)
 
 
 interpretation_policy_tree_text <- "
@@ -1687,16 +1727,11 @@ unified_db <- boilerplate_update_entry(
 )
 
 # init
-# unified_db <- boilerplate_add_entry(
+# unified_db <- boilerplate_update_entry(
 #   db = unified_db,
-#   path = "results.long",
-#   value = list()
+#   path = "results.interpretation_rate_no_flip_text",
+#   value = results_long_outcomewide_flourishing_2025
 # )
-unified_db <- boilerplate_update_entry(
-  db = unified_db,
-  path = "results.long.outcomewide_flourishing_2025",
-  value = results_long_outcomewide_flourishing_2025
-)
 
 
 # Finally, save the database
@@ -4458,10 +4493,12 @@ measuremeasures_db$alcohol_frequency_2
 # old ---------------------------------------------------------------------
 
 
+# The following outcomes were inverted: {{flipped_list}}.
+
 
 general_approach_cate_long <- "Our primary goal was to move beyond average treatment effects (ATE) and investigate whether the intervention's causale effects reliably varied across individuals based on their characteristics. To achieve this, we estimated conditional average treatment effects (CATEs) using causal forests [@grf2024]. Causal forests are a machine learning method adapted specifically for estimating how treatment effects differ across people defined by a set of covariates. These effects are interesting because they help to clarify for whom treatment effects are likely to have their strongest effects, and for whom treatments effects may not work, or be harmful.
 
-For interpretability across different outcomes, we standardised the direction of effects. Some outcomes, like depression scores, are typically interpreted as 'lower is better'. We inverted the scales for such variables so that positive treatment effects consistently indicated improvement (e.g., a reduction in depression). This ensures that larger positive CATE estimates always signify greater benefit from the treatment. The following outcomes were inverted: {{flipped_list}}.
+For interpretability across different outcomes, we standardised the direction of effects. Some outcomes, like depression scores, are typically interpreted as 'lower is better'. We inverted the scales for such variables so that positive treatment effects consistently indicated improvement (e.g., a reduction in depression). This ensures that larger positive CATE estimates always signify greater benefit from the treatment.
 
 A central challenge when invesitigating individual differences using CATE is ensuring the detected variations are genuine and not just noise or overfitting. Therefore, we rigorously evaluated the causal forest estimates using a {{sample_split}} sample split sample splitting approach. Half the data were used to train the causal forest model (i.e., to identify patterns of differing treatment effects), and the other half (the held-out data) were used exclusively for evaluation.
 
@@ -4479,9 +4516,11 @@ All heterogeneity analyses, including calibration tests, RATE calculations, Qini
 
 Collectively, this multi-stage approach allows us to first estimate individualised effects, rigorously test whether these estimated variations are reliable, evaluate the potential gains from targeting treatment, and finally, derive simple rules to guide personalised intervention strategies if justified by the data.
 "
-general_approach_cate_short <- "Our primary aim was to look beyond average treatment effects (ATE) and explore whether the intervention’s impact varied systematically across individuals. To that end, we estimated individualised treatment effects, also called conditional average treatment effects (CATEs), using causal forests [@grf2024], a machine learning approach tailored for detecting treatment-effect heterogeneity based on covariates.
 
-We standardised effect directions by inverting any outcome where 'lower is better', so positive values consistently denote improvement. The following outcomes were inverted: {{flipped_list}}.
+
+# We standardised effect directions by inverting any outcome where 'lower is better', so positive values consistently denote improvement. The following outcomes were inverted: {{flipped_list}}.
+
+general_approach_cate_short <- "Our primary aim was to look beyond average treatment effects (ATE) and explore whether the intervention’s impact varied systematically across individuals. To that end, we estimated individualised treatment effects, also called conditional average treatment effects (CATEs), using causal forests [@grf2024], a machine learning approach tailored for detecting treatment-effect heterogeneity based on covariates.
 
 A common concern when modelling individual differences using CATE is distinguishing real variation from noise. To address this, we used a {{sample_split}} sample splits. We trained the causal forest on half the data, then tested model predictions exclusively on the remaining half to prevent overfitting.
 
@@ -4498,7 +4537,9 @@ Finally, for practical implementation, we used policy trees [@policytree_package
 
 Taken together, this multi-stage approach first identifies individualised treatment effects, then tests their reliability, estimates the added value of targeted intervention, and, if justified, provides simple rules for personalising treatment in practice."
 
-interpretation_rate_test <- "To assess the potential practical value of tailoring treatment based on individual predictions, we examined the Rank-Weighted Average Treatment Effect (RATE) and Qini curves [@grf2024; @wager2018]. These predictions are estimates (denoted $\\hat{\\tau}(X_i)$) of the underlying conditional average treatment effect (CATE, $\\tau(X_i)$), which represents the average treatment effect for individuals with specific baseline covariates $X_i$. Recall that for some outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects ($\\hat{\\tau}(X_i)$) always indicate greater benefit from treatment. RATE and Qini curves evaluate how well a strategy of prioritising treatment using these CATE predictions $\\hat{\\tau}(X_i)$ performs compared to simpler approaches (e.g., uniform treatment based on the overall average effect, ATE). Specifically, RATE estimates the average gain achieved among the group prioritised by the model [@wager2018]. Qini curves dynamically visualise this potential gain: they plot the cumulative benefit realised as we hypothetically treat an increasing proportion of the population, starting with those individuals having the highest predicted effects $\\hat{\\tau}(X_i)$ [@grf2024]."
+interpretation_rate_test <- "To assess the potential practical value of tailoring treatment based on individual predictions, we examined the Rank-Weighted Average Treatment Effect (RATE) and Qini curves [@grf2024; @wager2018]. These predictions are estimates (denoted $\\hat{\\tau}(X_i)$) of the underlying conditional average treatment effect (CATE, $\\tau(X_i)$), which represents the average treatment effect for individuals with specific baseline covariates $X_i$. Where an outcomes ({{flipped_outcomes}}), scales were inverted so higher predicted effects ($\\hat{\\tau}(X_i)$) always indicate greater benefit from treatment. RATE and Qini curves evaluate how well a strategy of prioritising treatment using these CATE predictions $\\hat{\\tau}(X_i)$ performs compared to simpler approaches (e.g., uniform treatment based on the overall average effect, ATE). Specifically, RATE estimates the average gain achieved among the group prioritised by the model [@wager2018]. Qini curves dynamically visualise this potential gain: they plot the cumulative benefit realised as we hypothetically treat an increasing proportion of the population, starting with those individuals having the highest predicted effects $\\hat{\\tau}(X_i)$ [@grf2024]."
+
+interpretation_rate_test_no_flip <- "To assess the potential practical value of tailoring treatment based on individual predictions, we examined the Rank-Weighted Average Treatment Effect (RATE) and Qini curves [@grf2024; @wager2018]. These predictions are estimates (denoted $\\hat{\\tau}(X_i)$) of the underlying conditional average treatment effect (CATE, $\\tau(X_i)$), which represents the average treatment effect for individuals with specific baseline covariates $X_i$. RATE and Qini curves evaluate how well a strategy of prioritising treatment using these CATE predictions $\\hat{\\tau}(X_i)$ performs compared to simpler approaches (e.g., uniform treatment based on the overall average effect, ATE). Specifically, RATE estimates the average gain achieved among the group prioritised by the model [@wager2018]. Qini curves dynamically visualise this potential gain: they plot the cumulative benefit realised as we hypothetically treat an increasing proportion of the population, starting with those individuals having the highest predicted effects $\\hat{\\tau}(X_i)$ [@grf2024]."
 
 appendix_causal_grf <- "
 ### Exposure Definition
