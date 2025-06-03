@@ -55,8 +55,23 @@ cat(test_db$methods$causal_intervention$grf_simple_text)
 
 # Introduction ------------------------------------------------------------
 # import data
+
 unified_db <- boilerplate_import( data_path = my_project_path)
 
+
+
+
+
+# standardise measures ----------------------------------------------------
+
+
+
+# check
+unified_db$measures <- boilerplate_standardise_measures(unified_db$measures)
+boilerplate_measures_report(unified_db$measures, return_report = TRUE)
+
+# save db
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
 
 
 
@@ -206,6 +221,13 @@ unified_db <- boilerplate_batch_clean(
 )
 
 boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
+
+
+s#
+# # measurs -----------------------------------------------------------------
+# unified_db$measures$sdo$description <- "Social Dominance Orientation was measured using the following items:"
+# unified_db$measures$rwa$description <- "Right Wing Authoritarianism was measured using the following items:"
+#
 
 
 
@@ -4462,6 +4484,7 @@ writeLines(journal_article, "political_orientation_article.qmd")
 
 # write to file
 writeLines(journal_article, "political_orientation_article.qmd")
+
 
 
 
