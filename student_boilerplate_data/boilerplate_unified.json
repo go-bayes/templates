@@ -1,0 +1,2651 @@
+{
+  "measures": {
+    "age": {
+      "description": "We asked participants' ages in an open-ended question (\"What is your age?\" or \"What is your date of birth\").",
+      "waves": "1-current",
+      "reference": "sibley2021",
+      "name": "age",
+      "items": [
+        "What is your date of birth?"
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "agreeableness": {
+      "description": "Mini-IPIP6 Agreeableness dimension: (i) I sympathize with others' feelings. (ii) I am not interested in other people's problems. (r) (iii) I feel others' emotions. (iv) I am not really interested in others. (r)",
+      "waves": "1-current",
+      "reference": "sibley2011",
+      "name": "agreeableness",
+      "items": [
+        "I sympathize with others' feelings.",
+        "I am not interested in other people's problems.",
+        "I feel others' emotions.",
+        "I am not really interested in others (reversed)."
+      ],
+      "keywords": "personality",
+      "reversed_items": 4,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "alcohol_frequency": {
+      "name": "alcohol_frequency",
+      "items": [
+        "\"How often do you have a drink containing alcohol?\""
+      ],
+      "description": "Participants could chose between the following responses: '(1 = Never - I don't drink, 2 = Monthly or less, 3 = Up to 4 times a month, 4 = Up to 3 times a week, 5 = 4 or more times a week, 6 = Don't know)'",
+      "reference": "Ministry_of_Health_2013",
+      "waves": "1-current",
+      "keywords": "health",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "alcohol_intensity": {
+      "name": "alcohol_intensity",
+      "items": [
+        "\"How many drinks containing alcohol do you have on a typical day when drinking alcohol? (number of drinks on a typical day when drinking)\""
+      ],
+      "description": "Participants responded using an open-ended box.",
+      "reference": "Ministry_of_Health_2013",
+      "waves": "6-current",
+      "keywords": "health",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "alert_level_combined": {
+      "name": "alert_level_combined",
+      "items": [
+        "Covid Alert Levels"
+      ],
+      "description": "Defined by levels of lockdown severity",
+      "reference": "sibley2021",
+      "waves": "10-11",
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "anxiety": {
+      "name": "anxiety",
+      "description": "Anxiety was measured using a standard anxiety scale",
+      "reference": "anxiety_reference",
+      "waves": "1-3",
+      "keywords": [
+        "anxiety",
+        "mental health"
+      ],
+      "items": [
+        "feeling nervous or anxious",
+        "worrying too much about different things"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "ban_hate_speech": {
+      "name": "ban_hate_speech",
+      "items": [
+        "People who hold opinions that are harmful or offensive to minority groups should be banned from expressing those views publicly."
+      ],
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "reference": "dore2022boundaries",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "belong": {
+      "description": "We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument (Hagerty & Patusky, 1995): (1) \"Know that people in my life accept and value me\"; (2) \"Feel like an outsider\"; (3) \"Know that people around me share my attitudes and beliefs\". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.",
+      "waves": "1-current",
+      "reference": "hagerty1995",
+      "name": "belong",
+      "items": [
+        "Know that people in my life accept and value me.",
+        "Feel like an outsider (reversed).",
+        "Know that people around me share my attitudes and beliefs."
+      ],
+      "keywords": "cooperation",
+      "reversed_items": 2,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "belong_accept": {
+      "reference": "hagerty1995",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "items": [
+        "Know that people in my life accept and value me."
+      ],
+      "name": "belong_accept",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "belong_beliefs": {
+      "description": "We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument (Hagerty & Patusky, 1995): (1) \"Know that people in my life accept and value me\"; (2) \"Feel like an outsider\"; (3) \"Know that people around me share my attitudes and beliefs\". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.",
+      "reference": "hagerty1995",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "items": [
+        "Know that people around me share my attitudes and beliefs."
+      ],
+      "name": "belong_beliefs",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "belong_routside_reversed": {
+      "description": "We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument (Hagerty & Patusky, 1995): (1) \"Know that people in my life accept and value me\"; (2) \"Feel like an outsider\"; (3) \"Know that people around me share my attitudes and beliefs\". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.",
+      "reference": "hagerty1995",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "items": [
+        "Feel like an outsider (reversed)."
+      ],
+      "name": "belong_routside_reversed",
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "bodysat": {
+      "name": "bodysat",
+      "items": [
+        "I am satisfied with the appearance, size and shape of my body."
+      ],
+      "description": "Ordinal response .",
+      "reference": "stronge2015facebook",
+      "waves": "5-current.",
+      "keywords": "reflective-present",
+      "scale_info": "1 = Very inaccurate to 7 = Very accurate",
+      "scale_anchors": "1 = Very inaccurate to 7 = Very accurate",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "born_nz": {
+      "description": "Open-ended response coded as binary.",
+      "reference": "sibley2021",
+      "waves": "1-2,4-current",
+      "name": "born_nz",
+      "items": [
+        "Where were you born? (please be specific, e.g., which town/city?)"
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "born_nz_binary": {
+      "description": "Coded binary (1 = New Zealand; 0 = elsewhere.)",
+      "waves": "1-2,4-current",
+      "reference": "sibley2021",
+      "name": "born_nz_binary",
+      "items": [
+        "Where were you born? (please be specific, e.g., which town/city?)"
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "charitable_donations": {
+      "description": "Using one item from Hoverd and Sibley (2010), we asked participants, \"How much money have you donated to charity in the last year?\". To stabilise this indicator, we took the natural log of the response + 1.",
+      "reference": "hoverd_religious_2010",
+      "name": "charitable_donations",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "charity_donate": {
+      "name": "charity_donate",
+      "items": [
+        "How much money have you donated to charity in the last year?"
+      ],
+      "description": "Numerical: open-ended response",
+      "reference": "hoverd_religious_2010",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "children_num": {
+      "description": "We measured the number of children using one item from Bulbulia et al. (2015). We asked participants, \"How many children have you given birth to, fathered, or adopted?\" or \"How many children have you given birth to, fathered, and/or parented?\" (waves: 12-15).",
+      "waves": "1-3, 4-current",
+      "reference": "bulbulia_2015",
+      "name": "children_num",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "community_money_binary": {
+      "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
+      "reference": "sibley2021",
+      "waves": "10-13",
+      "keywords": "cooperation",
+      "items": [
+        "Please estimate how much help you have received from the following sources in the last week...friends...TIME (hours)."
+      ],
+      "name": "community_money_binary",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "community_time_binary": {
+      "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
+      "reference": "sibley2021",
+      "waves": "10-13",
+      "keywords": "cooperation",
+      "items": [
+        "Please estimate how much help you have received from the following sources in the last week...members of my community...TIME (hours)."
+      ],
+      "name": "community_time_binary",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "conscientiousness": {
+      "description": "Mini-IPIP6 Conscientiousness dimension: (i) I get chores done right away. (ii) I like order. (iii) I make a mess of things. (r) (iv) I often forget to put things back in their proper place. (r)",
+      "waves": "1-current",
+      "reference": "sibley2011",
+      "name": "conscientiousness",
+      "items": [
+        "I get chores done right away.",
+        "I like order.",
+        "I make a mess of things.",
+        "I often forget to put things back in their proper place."
+      ],
+      "keywords": "personality",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "conspiracy_beliefs": {
+      "name": "conspiracy_beliefs",
+      "items": [
+        "I think that the official version of major world events given by authorities often hides the truth."
+      ],
+      "reference": "knowles2009malleability",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "depression": {
+      "name": "depression",
+      "description": "Depression was measured using a standard depression scale",
+      "reference": "depression_reference",
+      "waves": "1-3",
+      "keywords": [
+        "depression",
+        "mental health"
+      ],
+      "items": [
+        "feeling down or depressed",
+        "having little interest in doing things"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "doubts_official_version": {
+      "reference": "knowles2009malleability",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "I think that the official version of major world events given by authorities often hides the truth."
+      ],
+      "name": "doubts_official_version",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "doubts_official_version_truth": {
+      "reference": "knowles2009malleability",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "I think that the official version of major world events given by authorities often hides the truth."
+      ],
+      "name": "doubts_official_version_truth",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "education_level_coarsen": {
+      "description": "We asked participants, \"What is your highest level of qualification?\". We coded participans highest finished degree according to the New Zealand Qualifications Authority. Ordinal-Rank 0-10 NZREG codes (with overseas school qualifications coded as Level 3, and all other ancillary categories coded as missing)",
+      "waves": "1, 4-current",
+      "reference": "sibley2021",
+      "name": "education_level_coarsen",
+      "items": [
+        "What is your highest level of qualification?"
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "emp_job_sat": {
+      "name": "emp_job_sat",
+      "description": "Job satisfaction was measured with a single item.",
+      "reference": "eisenbarth2022aspects",
+      "waves": "1-present",
+      "keywords": [
+        "employment",
+        "mental health"
+      ],
+      "items": [
+        "How satisfied are you with your current job?"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "emp_job_secure": {
+      "description": "Participants indicated their feeling of job security by answering \"How secure do you feel in your current job?\" on a scale from 1 (not secure) to 7 (very secure).",
+      "waves": "1-3,4-7,9-current",
+      "reference": "sibley2021",
+      "name": "emp_job_secure",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "emp_job_valued": {
+      "name": "emp_job_valued",
+      "description": "Perceved organizational gratitude was measured with a single item.",
+      "reference": "sibley2021",
+      "waves": "10-present",
+      "keywords": [
+        "employment",
+        "mental health"
+      ],
+      "items": [
+        "How valued do you feel by your current organization?"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "emp_job_valued_binary": {
+      "name": "emp_job_valued_binary",
+      "description": "Perceved organizational gratitude was measured with a single item.",
+      "reference": "sibley2021",
+      "waves": "10-present",
+      "keywords": [
+        "employment",
+        "mental health"
+      ],
+      "items": [
+        "How valued do you feel by your current organization?"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "employed": {
+      "description": "Binary response: (0 = No, 1 = Yes)",
+      "reference": "statsnz_ssga18",
+      "waves": "1-current",
+      "keywords": "demography",
+      "items": [
+        "Are you currently employed (This includes self-employed of casual work)?"
+      ],
+      "name": "employed",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "employed_binary": {
+      "description": "Binary response: (0 = No, 1 = Yes)",
+      "waves": "1-current",
+      "reference": "statsnz_ssga18",
+      "name": "employed_binary",
+      "items": [
+        "Are you currently employed (This includes self-employed of casual work)?"
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_1080poison": {
+      "name": "env_1080poison",
+      "items": [
+        "Please rate how strongly you oppose or support each of the following possible policies or issues...Increased government spending on new motorways."
+      ],
+      "description": ".",
+      "reference": "milfont_sociopolitical_2022",
+      "waves": "1,4-5,10-11",
+      "keywords": "environment",
+      "scale_info": "1 = \"Strongly Oppose\" to 7 = \"Strongly Support\"",
+      "scale_anchors": "1 = \"Strongly Oppose\" to 7 = \"Strongly Support\"",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_climate_chg_cause": {
+      "name": "env_climate_chg_cause",
+      "items": [
+        "Climate change is caused by humans."
+      ],
+      "reference": "sibley2013model",
+      "waves": "1-current",
+      "keywords": "environment",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_climate_chg_concern": {
+      "reference": "sibley2021",
+      "waves": "5-current",
+      "keywords": "environment",
+      "items": [
+        "I am deeply concerned about climate change."
+      ],
+      "name": "env_climate_chg_concern",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_climate_chg_real": {
+      "reference": "sibley2013model",
+      "waves": "1-current",
+      "keywords": "environment",
+      "items": [
+        "Climate change is real."
+      ],
+      "name": "env_climate_chg_real",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_efficacy": {
+      "reference": "sharma2008we",
+      "waves": "1-9;12-15",
+      "keywords": "environment",
+      "items": [
+        "By taking personal action I believe I can make a positive difference to environmental problems.",
+        "I feel I can make a difference to the state of the environment."
+      ],
+      "name": "env_efficacy",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_efficacy_action_belief": {
+      "name": "env_efficacy_action_belief",
+      "items": [
+        "By taking personal action I believe I can make a positive difference to environmental problems."
+      ],
+      "reference": "sharma2008we",
+      "waves": "1-9;12-15",
+      "keywords": "environment",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_efficacy_action_feeling": {
+      "reference": "sharma2008we",
+      "waves": "1-9;12-15",
+      "keywords": "environment",
+      "items": [
+        "I feel I can make a difference to the state of the environment."
+      ],
+      "name": "env_efficacy_action_feeling",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_not_climate_chg_cause": {
+      "reference": "sibley2013model",
+      "waves": "1-current",
+      "keywords": "environment",
+      "items": [
+        "1. Climate change is caused by humans (reversed)."
+      ],
+      "name": "env_not_climate_chg_cause",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_not_climate_chg_concern": {
+      "reference": "sibley2021",
+      "waves": "5-current",
+      "keywords": "environment",
+      "items": [
+        "I am deeply concerned about climate change (reversed)."
+      ],
+      "name": "env_not_climate_chg_concern",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_not_climate_chg_real": {
+      "reference": "sibley2013model",
+      "waves": "1-current",
+      "keywords": "environment",
+      "items": [
+        "Climate change is real (reversed)."
+      ],
+      "name": "env_not_climate_chg_real",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_not_env_efficacy": {
+      "reference": "sharma2008we",
+      "waves": "1-9;12-15",
+      "keywords": "environment",
+      "items": [
+        "By taking personal action I believe I can make a positive difference to environmental problems (reversed)",
+        "I feel I can make a difference to the state of the environment (reversed)."
+      ],
+      "name": "env_not_env_efficacy",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": [
+        1,
+        2
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_not_sat_nz_environment": {
+      "reference": "tiliouine_measuring_2006",
+      "waves": "1-current",
+      "keywords": "environment",
+      "items": [
+        "Please rate your level of satisfaction with the following aspects of your life and New Zealand...The quality of New Zealand's natural environment (reversed)."
+      ],
+      "name": "env_not_sat_nz_environment",
+      "scale_info": "0 = Completely Dissatisfied, 10 =  Completely Datisfied",
+      "scale_anchors": [
+        "0 = Completely Dissatisfied",
+        "10 =  Completely Datisfied"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_routine_made": {
+      "name": "env_routine_made",
+      "items": [
+        "Have you made changes to your daily routine in order to protect the environment?"
+      ],
+      "waves": "1-6",
+      "keywords": "environment",
+      "reference": "liu2012hope",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_routine_willing": {
+      "reference": "liu2012hope",
+      "waves": "1-6",
+      "keywords": "environment",
+      "items": [
+        "Are you willing to change your daily routine in order to protect the environment?"
+      ],
+      "name": "env_routine_willing",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_sac_made": {
+      "name": "env_sac_made",
+      "items": [
+        "Have you made sacrifices to your standard of living (e.g., accepted higher prices, driven less, conserved energy) in order to protect the environment?"
+      ],
+      "waves": "1-6,9",
+      "keywords": "environment",
+      "reference": "liu2012hope",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_sac_willing": {
+      "reference": "liu2012hope",
+      "waves": "1-6,9",
+      "keywords": "environment",
+      "items": [
+        "Are you willing to make sacrifices to your standard of living (e.g., accept higher prices, drive less, conserve energy) in order to protect the environment?"
+      ],
+      "name": "env_sac_willing",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "env_sat_nz_environment": {
+      "name": "env_sat_nz_environment",
+      "items": [
+        "Please rate your level of satisfaction with the following aspects of your life and New Zealand...The quality of New Zealand’s natural environment."
+      ],
+      "reference": "tiliouine_measuring_2006",
+      "waves": "1-current",
+      "keywords": "environment",
+      "scale_info": "0 = Completely Dissatisfied, 10 =  Completely Datisfied",
+      "scale_anchors": [
+        "0 = Completely Dissatisfied",
+        "10 =  Completely Datisfied"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "envefficacy": {
+      "reference": "sharma2008we",
+      "waves": "1-9;12-15",
+      "keywords": "environment",
+      "items": [
+        "By taking personal action I believe I can make a positive difference to environmental problems.",
+        "I feel I can make a difference to the state of the environment."
+      ],
+      "name": "envefficacy",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "eth_cat": {
+      "description": "Coded string: (1 = New Zealand European; 2 = Māori; 3 = Pacific; 4 = Asian)",
+      "waves": "1-current",
+      "reference": "statsnz_ssga18",
+      "name": "eth_cat",
+      "items": [
+        "Which ethnic group(s) do you belong to?"
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "euro": {
+      "description": "Code string (Binary): (0 = not European, 1 = European)",
+      "waves": "1-current",
+      "reference": "statsnz_ssga18",
+      "name": "euro",
+      "items": [
+        "Which ethnic group(s) do you belong to?"
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "extraversion": {
+      "description": "Mini-IPIP6 Extraversion dimension: (i) I am the life of the party. (ii) I don't talk a lot. (r) (iii) I keep in the background. (r) (iv) I talk to a lot of different people at parties.",
+      "waves": "1-current",
+      "reference": "sibley2011",
+      "name": "extraversion",
+      "items": [
+        "I am the life of the party.",
+        "I don't talk a lot (reversed).",
+        "I keep in the background (reversed).",
+        "I talk to a lot of different people at parties."
+      ],
+      "keywords": "personality",
+      "reversed_items": [
+        2,
+        3
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "family_money_binary": {
+      "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
+      "waves": "10-13",
+      "keywords": "cooperation",
+      "items": [
+        "Please estimate how much help you have received from the following sources in the last week...family...MONEY (dollars)"
+      ],
+      "name": "family_money_binary",
+      "reference": "sibley2021",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "family_time_binary": {
+      "name": "family_time_binary",
+      "items": [
+        "Please estimate how much help you have received from the following sources in the last week...family...TIME (hours)."
+      ],
+      "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
+      "waves": "10-13",
+      "keywords": "cooperation",
+      "reference": "sibley2021",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "forgiveness": {
+      "name": "forgiveness",
+      "items": [
+        "Sometimes I can't sleep because of thinking about past wrongs I have suffered.",
+        "I can usually forgive and forget when someone does me wrong.",
+        "I find myself regularly thinking about past times that I have been wronged."
+      ],
+      "description": "We assessed participants' forgiveness using reversed scores of a the NZAVS \"vengeful rumination scale.\" This scale contains three items, adapted from @caprara_indicators_1986 and @berry_forgivingness_2005, and developed for NZAVS, ordinal response scale 1-7 (1 = Strongly Disagree to 7 = Strongly Agree).",
+      "reference": "combines @berry_forgivingness_2005 and @caprara_indicators_1986.",
+      "waves": "10-current",
+      "keywords": "reflective-present",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "free_speech": {
+      "name": "free_speech",
+      "items": [
+        "Although I may disagree with the opinions that other people hold, they should be allowed to express those views publicly."
+      ],
+      "reference": "dore2022boundaries",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "friends_money_binary": {
+      "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
+      "reference": "sibley2021",
+      "waves": "10-13",
+      "keywords": "cooperation",
+      "items": [
+        "Please estimate how much help you have received from the following sources in the last week...family...MONEY (dollars)"
+      ],
+      "name": "friends_money_binary",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "friends_time_binary": {
+      "name": "friends_time_binary",
+      "items": [
+        "Please estimate how much help you have received from the following sources in the last week...friends...TIME (hours)."
+      ],
+      "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
+      "reference": "sibley2021",
+      "waves": "10-13",
+      "keywords": "cooperation",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "gratitude": {
+      "name": "gratitude",
+      "items": [
+        "I have much in my life to be thankful for.",
+        "When I look at the world, I don't see much to be grateful for (reversed).",
+        "I am grateful to a wide variety of people."
+      ],
+      "description": "Ordinal response scale 1 = Strongly Disagree to 7 = Strongly Agree.",
+      "reference": "mccullough_grateful_2002",
+      "waves": "10-current",
+      "keywords": "reflective-life",
+      "reversed_items": 2,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "has_siblings": {
+      "description": "\"Do you have siblings?\"",
+      "reference": "stronge2019onlychild",
+      "name": "has_siblings",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "hlth_bmi": {
+      "name": "hlth_bmi",
+      "items": [
+        "What is your height? (metres)\" and \"What is your weight? (kg)."
+      ],
+      "description": "Based on participants indication of their height and weight we calculated the BMI by dividing the weight in kilograms by the square of the height in meters.",
+      "reference": "sibley2021",
+      "waves": "2-current",
+      "keywords": "health",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "hlth_disability_binary": {
+      "description": "We assessed disability with a one-item indicator adapted from Verbrugge (1997). It asks, \"Do you have a health condition or disability that limits you and that has lasted for 6+ months?\" (1 = Yes, 0 = No).",
+      "waves": "5-current",
+      "reference": "verbrugge1997",
+      "name": "hlth_disability_binary",
+      "items": [
+        "Do you have a health condition or disability that limits you and that has lasted for 6+ months?"
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "hlth_fatigue": {
+      "waves": "5-current",
+      "reference": "sibley2020",
+      "name": "hlth_fatigue",
+      "items": [
+        "During the last 30 days, how often did ... you feel exhausted?"
+      ],
+      "keywords": "psychological-well-being",
+      "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "hlth_sleep_hours": {
+      "name": "hlth_sleep_hours",
+      "items": [
+        "During the past month, on average, how many hours of actual sleep did you get per night?"
+      ],
+      "description": "Open ended response.",
+      "reference": "buysse1989pittsburgh",
+      "waves": "5-current",
+      "keywords": "health",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "honesty_humility": {
+      "description": "Mini-IPIP6 Honesty-Humility dimension: (i) I feel entitled to more of everything. (r) (ii) I deserve more things in life. (r) (iii) I would like to be seen driving around in a very expensive car. (r) (iv) I would get a lot of pleasure from owning expensive luxury goods. (r)",
+      "waves": "1-current",
+      "reference": "sibley2011",
+      "name": "honesty_humility",
+      "items": [
+        "I feel entitled to more of everything (reversed).",
+        "I deserve more things in life (reversed).",
+        "I deserve more things in life (reversed).",
+        "I would get a lot of pleasure from owning expensive luxury goods (reversed)."
+      ],
+      "keywords": "personality",
+      "reversed_items": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "hours_charity": {
+      "name": "hours_charity",
+      "items": [
+        "Hours spent … voluntary/charitable work."
+      ],
+      "description": "Numerical: open-ended response",
+      "reference": "sibley2011",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "hours_children": {
+      "description": "Numerical: open-ended response",
+      "reference": "sibley2021",
+      "waves": "1, 4-current",
+      "keywords": "hours",
+      "items": [
+        "Hours spent ... looking after children"
+      ],
+      "name": "hours_children",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "hours_commute": {
+      "description": "",
+      "reference": "sibley2021",
+      "waves": "1,4-current",
+      "keywords": "hours",
+      "items": [
+        "Hours spent...travelling/commuting."
+      ],
+      "name": "hours_commute",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "hours_comp_games": {
+      "description": "Numerical: open-ended response",
+      "reference": "sibley2021",
+      "waves": "1, 4-current",
+      "keywords": "hours",
+      "items": [
+        "Hours spent ... playing computer games"
+      ],
+      "name": "hours_comp_games",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "household_inc": {
+      "name": "household_inc",
+      "items": [
+        "Please estimate your total household income (before tax) for the year XXXX."
+      ],
+      "waves": "1-current",
+      "keywords": "demography",
+      "reference": "sibley2021",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "kessler_latent_anxiety": {
+      "name": "kessler_latent_anxiety",
+      "items": [
+        "During the past 30 days, how often did...you feel restless or fidgety?",
+        "During the past 30 days, how often did...you feel that everything was an effort?",
+        "During the past 30 days, how often did...you feel nervous?"
+      ],
+      "reference": "kessler2002",
+      "waves": "2-current",
+      "keywords": "psychological-well-being",
+      "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "kessler_latent_depression": {
+      "name": "kessler_latent_depression",
+      "items": [
+        "During the past 30 days, how often did...you feel hopeless?",
+        "During the past 30 days, how often did...you feel so depressed that nothing could cheer you up?",
+        "During the past 30 days, how often did...you feel you feel restless or fidgety?"
+      ],
+      "reference": "kessler2002",
+      "waves": "2-current",
+      "keywords": "psychological-well-being",
+      "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "kessler6": {
+      "reference": "kessler2002",
+      "waves": "2-current",
+      "keywords": "psychological-well-being",
+      "items": [
+        "During the past 30 days, how often did...you feel hopeless?",
+        "During the past 30 days, how often did...you feel so depressed nothing could cheer you up?",
+        "During the past 30 days, how often did...you feel restless or fidgety?",
+        "During the past 30 days, how often did...you feel that everything was an effort?",
+        "During the past 30 days, how often did...you feel worthless?",
+        "During the past 30 days, how often did...you feel nervous?"
+      ],
+      "name": "kessler6",
+      "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "kessler6_sum": {
+      "reference": "kessler2002",
+      "waves": "2-current",
+      "keywords": "psychological-well-being",
+      "items": [
+        "During the past 30 days, how often did...you feel hopeless?",
+        "During the past 30 days, how often did...you feel so depressed nothing could cheer you up?",
+        "During the past 30 days, how often did...you feel restless or fidgety?",
+        "During the past 30 days, how often did...you feel that everything was an effort?",
+        "During the past 30 days, how often did...you feel worthless?",
+        "During the past 30 days, how often did...you feel nervous?"
+      ],
+      "name": "kessler6_sum",
+      "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "life_satisfaction": {
+      "name": "life_satisfaction",
+      "description": "Life satisfaction was measured using a standard scale",
+      "reference": "satisfaction_reference",
+      "waves": "1-4",
+      "keywords": [
+        "wellbeing",
+        "satisfaction"
+      ],
+      "items": [
+        "i am satisfied with my life",
+        "the conditions of my life are excellent"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "lifesat": {
+      "name": "lifesat",
+      "items": [
+        "I am satisfied with my life.",
+        "In most ways my life is close to ideal."
+      ],
+      "description": ".",
+      "reference": "diener1985a",
+      "waves": "5-current",
+      "keywords": "health",
+      "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "log_hours_children": {
+      "description": "We took the natural log of the response + 1.",
+      "waves": "1,4-current.",
+      "reference": "sibley2011",
+      "name": "log_hours_children",
+      "items": [
+        "Hours spent...looking after children."
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "log_hours_commute": {
+      "name": "log_hours_commute",
+      "items": [
+        "Hours spent...travelling/commuting."
+      ],
+      "description": "We took the natural log of the response + 1.",
+      "waves": "1,4-current",
+      "reference": "sibley2021",
+      "keywords": "hours",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "log_hours_exercise": {
+      "description": "We took the natural log of the response + 1.",
+      "waves": "1,4-current",
+      "reference": "sibley2011",
+      "name": "log_hours_exercise",
+      "items": [
+        "Hours spent...exercising/physical activity."
+      ],
+      "keywords": "hours",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "log_hours_housework": {
+      "description": "We took the natural log of the response + 1.",
+      "waves": "1,4-current.",
+      "reference": "sibley2011",
+      "name": "log_hours_housework",
+      "items": [
+        "Hours spent...housework/cooking."
+      ],
+      "keywords": "hours",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "log_hours_work": {
+      "description": "We took the natural log of the response + 1.",
+      "waves": "1,4-current",
+      "reference": "sibley2011",
+      "name": "log_hours_work",
+      "items": [
+        "Hours spent...working in paid employment."
+      ],
+      "keywords": "hours",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "log_household_inc": {
+      "name": "log_household_inc",
+      "items": [
+        "Please estimate your total household income (before tax) for the year XXXX."
+      ],
+      "description": "We took the natural log of the response + 1.",
+      "waves": "1-3, 4-current",
+      "keywords": "demography",
+      "reference": "sibley2021",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "male": {
+      "description": "We asked participants' gender in an open-ended question: \"what is your gender?\" or \"Are you male or female?\" (waves: 1-5). Female was coded as 0, Male was coded as 1, and gender diverse coded as 3 (Fraser et al., 2020). (or 0.5 = neither female nor male). Here, we coded all those who responded as Male as 1, and those who did not as 0.",
+      "waves": "1-current",
+      "reference": "fraser_coding_2020",
+      "name": "male",
+      "items": [
+        "What is your gender?"
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "male_binary": {
+      "description": "Here, we coded all those who responded as Male as 1, and those who did not as 0.",
+      "waves": "1-current",
+      "reference": "fraser_coding_2020",
+      "name": "male_binary",
+      "items": [
+        "We asked participants’ gender in an open-ended question: \"what is your gender?\""
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "meaning_purpose": {
+      "name": "meaning_purpose",
+      "items": [
+        "My life has a clear sense of purpose"
+      ],
+      "description": ".",
+      "reference": "steger_meaning_2006",
+      "waves": "10-current",
+      "keywords": "reflective-life",
+      "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "meaning_sense": {
+      "name": "meaning_sense",
+      "items": [
+        "I have a good sense of what makes my life meaningful."
+      ],
+      "description": ".",
+      "reference": "steger_meaning_2006",
+      "waves": "10-current",
+      "keywords": "reflective-life",
+      "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "mistrust_emphasis_on_science": {
+      "reference": "hartman2017",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "Our society places too much emphasis on science (reversed)."
+      ],
+      "name": "mistrust_emphasis_on_science",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "mistrust_free_speech": {
+      "reference": "dore2022boundaries",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "Although I may disagree with the opinions that other people hold, they should be allowed to express those views publicly (reversed)."
+      ],
+      "name": "mistrust_free_speech",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "mistrust_official_version_truth": {
+      "reference": "knowles2009malleability",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "I think that the official version of major world events given by authorities often hides the truth."
+      ],
+      "name": "mistrust_official_version_truth",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "mistrust_police": {
+      "reference": "tyler2005",
+      "waves": "7,9-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "People's basic rights are well protected by the New Zealand Police (reversed).",
+        "There are many things about the New Zealand Police and its policies that need to be changed.",
+        "The New Zealand Police care about the well-being of everyone they deal with (reversed)."
+      ],
+      "name": "mistrust_police",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": [
+        1,
+        3
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "mistrust_politicians": {
+      "reference": "sibley2020a",
+      "waves": "9-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "Politicians in New Zealand can generally be trusted (reversed)."
+      ],
+      "name": "mistrust_politicians",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "mistrust_scientific_community": {
+      "reference": "nisbet2015",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "I have a high degree of confidence in the scientific community (reversed)."
+      ],
+      "name": "mistrust_scientific_community",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "modesty": {
+      "description": "Participants indicated the extent to which they agree with the following four statements from Campbell et al. (2004), and Sibley et al. (2011) (1 = Strongly Disagree to 7 = Strongly Agree): (i) I want people to know that I am an important person of high status, (Waves: 1, 10-14); (ii) I am an ordinary person who is no better than others. (all waves); (iii) I wouldn't want people to treat me as though I were superior to them. (all waves); (iv) I think that I am entitled to more respect than the average person is. (all waves)",
+      "waves": "10-14",
+      "reference": "campbell2004",
+      "name": "modesty",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "neighbourhood_community": {
+      "name": "neighbourhood_community",
+      "items": [
+        "I feel a sense of community with others in my local neighbourhood."
+      ],
+      "description": ".",
+      "reference": "sengupta2013",
+      "waves": "6-current",
+      "keywords": "reflective-social",
+      "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "neuroticism": {
+      "description": "Mini-IPIP6 Neuroticism dimension: (i) I have frequent mood swings. (ii) I am relaxed most of the time. (r) (iii) I get upset easily. (iv) I seldom feel blue. (r)",
+      "waves": "1-current",
+      "reference": "sibley2011",
+      "name": "neuroticism",
+      "items": [
+        "I have frequent mood swings.",
+        "I am relaxed most of the time (reversed).",
+        "I get upset easily.",
+        "I seldom feel blue (reversed)."
+      ],
+      "keywords": "personality",
+      "reversed_items": [
+        2,
+        4
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "not_heterosexual_binary": {
+      "name": "not_heterosexual_binary",
+      "items": [
+        "How would you describe your sexual orientation? (e.g., heterosexual, homosexual, straight, gay, lesbian, bisexual, etc.)"
+      ],
+      "description": "Open-ended question, coded as binary (not heterosexual = 1).",
+      "reference": "greaves2017diversity",
+      "waves": "5-current",
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "not_lost": {
+      "name": "not_lost",
+      "items": [
+        "Indicator of whether participant was not lost to follow up in the following wave."
+      ],
+      "reference": "sibley2021",
+      "waves": "1-current",
+      "keywords": "coding",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "nz_dep2018": {
+      "name": "nz_dep2018",
+      "items": [
+        "New Zealand Deprivation - Decile Index - Using 2018 Census Data"
+      ],
+      "description": "Numerical: (1-10)",
+      "reference": "atkinson2019",
+      "waves": "1-current",
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "nzsei_13_l": {
+      "description": "This index uses the income, age, and education of a reference group, in this case, the 2013 New Zealand census, to calculate a score for each occupational group. Scores range from 10 (Lowest) to 90 (Highest). This list of index scores for occupational groups was used to assign each participant a NZSEI-13 score based on their occupation.",
+      "waves": "8-current",
+      "reference": "fahy2017",
+      "name": "nzsei_13_l",
+      "items": [
+        "We assessed occupational prestige and status using the New Zealand Socio-economic Index 13 (NZSEI-13)."
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "openness": {
+      "description": "Mini-IPIP6 Openness to Experience dimension: (i) I have a vivid imagination. (ii) I have difficulty understanding abstract ideas. (r) (iii) I do not have a good imagination. (r) (iv) I am not interested in abstract ideas. (r)",
+      "waves": "1-current",
+      "reference": "sibley2011",
+      "name": "openness",
+      "items": [
+        "I have a vivid imagination.",
+        "I have difficulty understanding abstract ideas (reversed).",
+        "I do not have a good imagination (reversed).",
+        "I am not interested in abstract ideas (reversed)."
+      ],
+      "keywords": "personality",
+      "reversed_items": [
+        2,
+        3,
+        4
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "parent": {
+      "name": "parent",
+      "items": [
+        "\"If you are a parent, in which year was your eldest child born?\" (Parents were coded as 1, while the others were coded as 0)"
+      ],
+      "reference": "sibley2020",
+      "waves": "1-current",
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "parent_binary": {
+      "description": "Parents were coded as 1, while the others were coded as 0.",
+      "waves": "5-current",
+      "reference": "sibley2021",
+      "name": "parent_binary",
+      "items": [
+        "If you are a parent, in which year was your eldest child born?"
+      ],
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "partner": {
+      "description": "\"What is your relationship status?\" (e.g., single, married, de-facto, civil union, widowed, living together, etc.)",
+      "reference": "sibley2021",
+      "name": "partner",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "partner_binary": {
+      "name": "partner_binary",
+      "items": [
+        "What is your relationship status? (e.g., single, married, de-facto, civil union, widowed, living together, etc.)"
+      ],
+      "description": "Coded as binary (has partner = 1).",
+      "waves": "1-current",
+      "keywords": "demography",
+      "reference": "sibley2021",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "perc_age_discrim": {
+      "name": "perc_age_discrim",
+      "items": [
+        "I feel that I am often discriminated against because of my age."
+      ],
+      "waves": "2-current",
+      "keywords": "prejudice",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "perc_discrim": {
+      "name": "perc_discrim",
+      "items": [
+        "I feel that I am often discriminated against because of my ethnicity."
+      ],
+      "waves": "1-current",
+      "keywords": "prejudice",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "perc_gend_discrim": {
+      "name": "perc_gend_discrim",
+      "items": [
+        "I feel that I am often discriminated against because of my gender."
+      ],
+      "waves": "2-current",
+      "keywords": "prejudice",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "perc_religious_discrim": {
+      "name": "perc_religious_discrim",
+      "items": [
+        "I feel that I am often discriminated against because of my religious/spiritual beliefs."
+      ],
+      "waves": "7-current",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "perfectionism": {
+      "name": "perfectionism",
+      "items": [
+        "Doing my best never seems to be enough.",
+        "My performance rarely measures up to my standards.",
+        "I am hardly ever satisfied with my performance."
+      ],
+      "description": ".",
+      "reference": "rice_short_2014",
+      "waves": "10-current",
+      "keywords": "reflective-present",
+      "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "pol_politician_trust": {
+      "name": "pol_politician_trust",
+      "items": [
+        "Politicians in New Zealand can generally be trusted."
+      ],
+      "waves": "9-current",
+      "keywords": "institutional_trust",
+      "reference": "sibley2020a",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "pol_wing": {
+      "description": "We measured participants' political right-wing orientation using a single item adapted from Jost (2006): \"Please rate how politically left-wing versus right-wing you see yourself as being.\" (1 = Extremely left-wing to 7 = Extremely right-wing)",
+      "reference": "jost_end_2006-1",
+      "name": "pol_wing",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "police_trust": {
+      "name": "police_trust",
+      "items": [
+        "People's basic rights are well protected by the New Zealand Police.",
+        "There are many things about the New Zealand Police and its policies that need to be changed (reversed).",
+        "The New Zealand Police care about the well-being of everyone they deal with."
+      ],
+      "reference": "tyler2005",
+      "waves": "7,9-current",
+      "keywords": "institutional_trust",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 2,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "political_conservative": {
+      "waves": "1-current",
+      "reference": "jost_end_2006-1",
+      "name": "political_conservative",
+      "items": [
+        "Please rate how politically liberal versus conservative you see yourself as being."
+      ],
+      "keywords": "demography",
+      "scale_info": "1 = Extremely Liberal, 7 = Extremely Conservative",
+      "scale_anchors": [
+        "1 = Extremely Liberal",
+        "7 = Extremely Conservative"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "power_no_control_composite": {
+      "reference": "overall2016power",
+      "waves": "10-13,16",
+      "keywords": "present",
+      "items": [
+        "I do not have enough power or control over important parts of my life.",
+        "Other people have too much power or control over important parts of my life."
+      ],
+      "name": "power_no_control_composite",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "power_others_control": {
+      "name": "power_others_control",
+      "items": [
+        "Other people have too much power or control over important parts of my life."
+      ],
+      "waves": "10-13,16",
+      "keywords": "present",
+      "reference": "overall2016power",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "power_self_nocontrol": {
+      "reference": "overall2016power",
+      "waves": "10-13,16",
+      "keywords": "present",
+      "items": [
+        "Other people have too much power or control over important parts of my life."
+      ],
+      "name": "power_self_nocontrol",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "pwb_standard_living": {
+      "name": "pwb_standard_living",
+      "items": [
+        "Please rate your level of satisfaction with the following aspects of your life...Your standard of living."
+      ],
+      "description": ".",
+      "waves": "1-current",
+      "keywords": "reflective-present",
+      "reference": "cummins_developing_2003",
+      "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
+      "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "pwb_your_future_security": {
+      "name": "pwb_your_future_security",
+      "items": [
+        "Please rate your level of satisfaction with the following aspects of your life...Your future security."
+      ],
+      "description": ".",
+      "reference": "cummins_developing_2003",
+      "waves": "1-current",
+      "keywords": "reflective-present",
+      "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
+      "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "pwb_your_health": {
+      "name": "pwb_your_health",
+      "items": [
+        "Please rate your level of satisfaction with the following aspects of your life...Your health."
+      ],
+      "description": ".",
+      "waves": "1-current",
+      "keywords": "reflective-present",
+      "reference": "cummins_developing_2003",
+      "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
+      "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "pwb_your_relationships": {
+      "name": "pwb_your_relationships",
+      "items": [
+        "Please rate your level of satisfaction with the following aspects of your life...Your personal relationships."
+      ],
+      "description": ".",
+      "waves": "1-current",
+      "keywords": "reflective-present",
+      "reference": "cummins_developing_2003",
+      "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
+      "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_believe_god": {
+      "name": "religion_believe_god",
+      "items": [
+        "Do you believe in a God?"
+      ],
+      "description": "Binary response: (0 = No, 1 = Yes)",
+      "reference": "eurobarometer2005b",
+      "waves": "2-current",
+      "keywords": "religion",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_believe_god_binary": {
+      "description": "Binary response: (0 = No, 1 = Yes)",
+      "reference": "eurobarometer2005b",
+      "waves": "2-current",
+      "keywords": "religion",
+      "items": [
+        "Do you believe in a God?"
+      ],
+      "name": "religion_believe_god_binary",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_believe_spirit": {
+      "description": "Binary response: (0 = No, 1 = Yes)",
+      "reference": "eurobarometer2005b",
+      "waves": "2-current",
+      "keywords": "religion",
+      "items": [
+        "Do you believe in some form of spirit or life force?"
+      ],
+      "name": "religion_believe_spirit",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_believe_spirit_binary": {
+      "description": "Binary response: (0 = No, 1 = Yes)",
+      "reference": "eurobarometer2005b",
+      "waves": "2-current",
+      "keywords": "religion",
+      "items": [
+        "Do you believe in some form of spirit or life force?"
+      ],
+      "name": "religion_believe_spirit_binary",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_bigger_denominations": {
+      "name": "religion_bigger_denominations",
+      "items": [
+        "Do you identify with a religion and/or spiritual group? --> (If yes...)--> What religion or spiritual group?"
+      ],
+      "reference": "sibley2021",
+      "waves": "1-current",
+      "keywords": "religion",
+      "description": "Open-ended (string). Coded from New Zealand Census Categories. Levels are: \"Not Religious\",\"Anglican\",\"Buddhist\", \"Catholic\", \"Christian (Non-Denominational)\", \"Christian (Other Denominations)\",\"Hindu\", \"Jewish\", \"Muslim\",\"Presbyterian, Congregational, Reformed\", \"Other Religions\".",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_church": {
+      "name": "religion_church",
+      "items": [
+        "How many times did you attend a church or place of worship in the last month?"
+      ],
+      "description": "Numerical: open-ended response",
+      "reference": "sibley2012",
+      "waves": "2-11; 12(imputed); 13(partial)- current.",
+      "keywords": "religion",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_church_binary": {
+      "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
+      "reference": "sibley2012",
+      "waves": "2-11; 14-current",
+      "keywords": "religion",
+      "items": [
+        "Do you identify with a religion and/or spiritual group? -> How many times did you attend a church or place of worship in the last month?"
+      ],
+      "name": "religion_church_binary",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_identification_level": {
+      "name": "religion_identification_level",
+      "items": [
+        "How important is your religion to how you see yourself?"
+      ],
+      "waves": "1-current",
+      "keywords": "religion",
+      "reference": "sibley2021",
+      "scale_info": "1 = Not Important, 7 = Very Important",
+      "scale_anchors": [
+        "1 = Not Important",
+        "7 = Very Important"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_prayer": {
+      "description": "Numerical: open-ended response",
+      "reference": "bulbulia_2015",
+      "waves": "6-12, 14-current",
+      "keywords": "religion",
+      "items": [
+        "Do you identify with a religion and/or spiritual group? -> How many times did you pray in the last week?"
+      ],
+      "name": "religion_prayer",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_prayer_binary": {
+      "description": "Numerical: open-ended response",
+      "reference": "bulbulia_2015",
+      "waves": "6-12, 14-current",
+      "keywords": "religion",
+      "items": [
+        "Do you identify with a religion and/or spiritual group? -> How many times did you pray in the last week?"
+      ],
+      "name": "religion_prayer_binary",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_religious": {
+      "name": "religion_religious",
+      "items": [
+        "Do you identify with a religion and/or spiritual group?"
+      ],
+      "description": "Binary response: (0 = No, 1 = Yes)",
+      "reference": "statsnz_ssga18",
+      "waves": "1-current",
+      "keywords": "religion",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_religious_binary": {
+      "description": "Binary response: (0 = No, 1 = Yes)",
+      "reference": "statsnz_ssga18",
+      "waves": "1-current",
+      "keywords": "religion",
+      "items": [
+        "Do you identify with a religion and/or spiritual group?"
+      ],
+      "name": "religion_religious_binary",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_scripture": {
+      "description": "Numerical: open-ended response",
+      "reference": "bulbulia2016",
+      "waves": "6-12, 14-current",
+      "keywords": "religion",
+      "items": [
+        "Do you identify with a religion and/or spiritual group? -> How many times did you read religious scripture in the last week?"
+      ],
+      "name": "religion_scripture",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_scripture_binary": {
+      "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
+      "reference": "bulbulia2016",
+      "waves": "6-12, 14-current",
+      "keywords": "religion",
+      "items": [
+        "Do you identify with a religion and/or spiritual group? -> How many times did you read religious scripture in the last week?"
+      ],
+      "name": "religion_scripture_binary",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_spiritual_identification": {
+      "reference": "postmes2013single",
+      "waves": "8,10,12-current",
+      "keywords": "religion",
+      "items": [
+        "I identify as a spiritual person"
+      ],
+      "name": "religion_spiritual_identification",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "religion_spiritual_identification_level": {
+      "reference": "postmes2013single",
+      "waves": "8,10,12-current",
+      "keywords": "religion",
+      "items": [
+        "I identify as a spiritual person"
+      ],
+      "name": "religion_spiritual_identification_level",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "rumination": {
+      "name": "rumination",
+      "items": [
+        "During the last 30 days, how often did...you have negative thoughts that repeated over and over?"
+      ],
+      "description": "Ordinal responses: 0 = None of The Time, 1 = A little of The Time, 2 = Some of The Time, 3 = Most of The Time, 4 = All of The Time.",
+      "reference": "nolen-hoeksema_effects_1993",
+      "waves": "2-current",
+      "keywords": "psychological-wellbeing",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "rural_gch_2018_l": {
+      "name": "rural_gch_2018_l",
+      "items": [
+        "High Urban Accessibility = 1, Medium Urban Accessibility = 2, Low Urban Accessibility  = 3, Remote = 4, Very Remote = 5."
+      ],
+      "description": "\"Participants residence locations were coded according to a five-level ordinal categorisation ranging from Urban to Rural.\"",
+      "reference": "whitehead2023unmasking",
+      "waves": "1-current",
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "rwa": {
+      "name": "rwa",
+      "items": [
+        "It is always better to trust the judgment of the proper authorities in government and religion than to listen to the noisy rabble-rousers in our society who are trying to create doubt in people's minds.",
+        "It would be best for everyone if the proper authorities censored magazines so that people could not get their hands on trashy and disgusting material.",
+        "Our country will be destroyed some day if we do not smash the perversions eating away at our moral fibre and traditional beliefs.",
+        "People should pay less attention to The Bible and other old traditional forms of religious guidance, and instead develop their own personal standards of what is moral and immoral.",
+        "Atheists and others who have rebelled against established religions are no doubt every bit as good and virtuous as those who attend church regularly.",
+        "Some of the best people in our country are those who are challenging our government, criticizing religion, and ignoring the \"normal way\" things are supposed to be done (reversed)."
+      ],
+      "reference": "altemeyer1996authoritarian",
+      "waves": "1-current",
+      "keywords": "demography",
+      "description": "Right Wing Authoritarianism was measured using the following items:",
+      "reversed_items": 6,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "sample_frame_opt_in_binary": {
+      "name": "sample_frame_opt_in_binary",
+      "items": [
+        "Participant was not randomly sampled from the New Zealand Electoral Roll."
+      ],
+      "description": "Code string (Binary): (0 = No, 1 = Yes)",
+      "reference": "sibley2021",
+      "waves": "1-current",
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "sdo": {
+      "name": "sdo",
+      "items": [
+        "It is OK if some groups have more of a chance in life than others.",
+        "Inferior groups should stay in their place.",
+        "To get ahead in life, it is sometimes okay to step on other groups.",
+        "We should have increased social equality (reversed).",
+        "It would be good if groups could be equal (reversed).",
+        "We should do what we can to equalise conditions for different groups (reversed)."
+      ],
+      "reference": "sidanius1999social",
+      "waves": "1-current",
+      "keywords": "demography",
+      "description": "Social Dominance Orientation was measured using the following items:",
+      "reversed_items": [
+        4,
+        5,
+        6
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "self_control": {
+      "name": "self_control",
+      "items": [
+        "In general, I have a lot of self-control",
+        "I wish I had more self-discipline (reversed)"
+      ],
+      "reference": "tangney_high_2004",
+      "waves": "5-current",
+      "keywords": "present",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 2,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "self_control_have_lots": {
+      "name": "self_control_have_lots",
+      "items": [
+        "In general, I have a lot of self-control."
+      ],
+      "description": ".",
+      "waves": "5-current",
+      "keywords": "reflective-present",
+      "reference": "tangney_high_2004",
+      "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "self_control_wish_more_reversed": {
+      "name": "self_control_wish_more_reversed",
+      "items": [
+        "I wish I had more self-discipline."
+      ],
+      "description": ".",
+      "reference": "tangney_high_2004",
+      "waves": "5-current",
+      "keywords": "reflective-present",
+      "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "self_esteem": {
+      "name": "self_esteem",
+      "items": [
+        "On the whole am satisfied with myself.",
+        "Take a positive attitude toward myself.",
+        "Am inclined to feel that I am a failure (reversed)."
+      ],
+      "description": ".",
+      "reference": "rosenberg1965",
+      "waves": "1-current",
+      "keywords": "reflective-present",
+      "scale_info": "1 = Very inaccurate to 7 = Very accurate",
+      "scale_anchors": "1 = Very inaccurate to 7 = Very accurate",
+      "reversed_items": 3,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "sexual_satisfaction": {
+      "name": "sexual_satisfaction",
+      "items": [
+        "How satisfied are you with your sex life?"
+      ],
+      "description": "Participants were asked to report their sexual orientation; ordinal response: 1 = Not satisfied to 7 = Very satisfied.",
+      "reference": "sibley2021",
+      "waves": "10-current",
+      "keywords": "reflective-present",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "sfhealth": {
+      "reference": "instrument1992mos",
+      "waves": "5-current",
+      "keywords": "health",
+      "items": [
+        "\"In general, would you say your health is...\"",
+        "\"I seem to get sick a little easier than other people\" (reversed).",
+        "\"I expect my health to get worse\" (reversed)."
+      ],
+      "name": "sfhealth",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": [
+        2,
+        3
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "short_form_health": {
+      "name": "short_form_health",
+      "items": [
+        "In general, would you say your health is..."
+      ],
+      "reference": "instrument1992mos",
+      "waves": "5-current",
+      "keywords": "health",
+      "scale_info": "1 = Poor, 7 = Excellent",
+      "scale_anchors": [
+        "1 = Poor",
+        "7 = Excellent"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "smoker_binary": {
+      "name": "smoker_binary",
+      "items": [
+        "Do you currently smoke tobacco cigarettes?"
+      ],
+      "description": "Binary smoking indicator (0 = No, 1 = Yes).",
+      "reference": "sibley2021",
+      "waves": "4-current",
+      "keywords": "health",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "support": {
+      "waves": "1-current",
+      "reference": "cutrona1987",
+      "name": "support",
+      "items": [
+        "There are people I can depend on to help me if I really need it.",
+        "There is no one I can turn to for guidance in times of stress (reversed).",
+        "I know there are people I can turn to when I need help."
+      ],
+      "keywords": "social",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 2,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "support_help": {
+      "reference": "cutrona1987",
+      "waves": "1-current",
+      "keywords": "social",
+      "items": [
+        "There are people I can depend on to help me if I really need it."
+      ],
+      "name": "support_help",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "support_noguidance_reversed": {
+      "reference": "cutrona1987",
+      "waves": "1-current",
+      "keywords": "social",
+      "items": [
+        "There is no one I can turn to for guidance in times of stress (reversed)."
+      ],
+      "name": "support_noguidance_reversed",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "support_turnto": {
+      "reference": "cutrona1987",
+      "waves": "1-current",
+      "keywords": "social",
+      "items": [
+        "I know there are people I can turn to when I need help."
+      ],
+      "name": "support_turnto",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "trust_free_speech": {
+      "reference": "dore2022boundaries",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "Although I may disagree with the opinions that other people hold, they should be allowed to express those views publicly."
+      ],
+      "name": "trust_free_speech",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "trust_not_official_version_truth": {
+      "reference": "knowles2009malleability",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "I think that the official version of major world events given by authorities often hides the truth."
+      ],
+      "name": "trust_not_official_version_truth",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "trust_science": {
+      "reference": "hartman2017",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "Our society places too much emphasis on science (reversed)."
+      ],
+      "name": "trust_science",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "trust_science_high_confidence_scientific_community": {
+      "name": "trust_science_high_confidence_scientific_community",
+      "items": [
+        "I have a high degree of confidence in the scientific community."
+      ],
+      "reference": "nisbet2015",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "trust_science_high_confidence_scientific_community_cat": {
+      "description": "Quantiles of",
+      "reference": "nisbet2015",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "I have a high degree of confidence in the scientific community."
+      ],
+      "name": "trust_science_high_confidence_scientific_community_cat",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "trust_science_low_confidence_scientific_community": {
+      "reference": "nisbet2015",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "I have a high degree of confidence in the scientific community (reversed)."
+      ],
+      "name": "trust_science_low_confidence_scientific_community",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": 1,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "trust_science_our_society_places_too_much_emphasis_reversed": {
+      "name": "trust_science_our_society_places_too_much_emphasis_reversed",
+      "items": [
+        "Our society places too much emphasis on science."
+      ],
+      "reference": "hartman2017",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "trust_scientists": {
+      "reference": "nisbet2015",
+      "waves": "11-current",
+      "keywords": "institutional_trust",
+      "items": [
+        "I have a high degree of confidence in the scientific community."
+      ],
+      "name": "trust_scientists",
+      "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "urban_binary": {
+      "description": "We coded whether they are living in an urban or rural area (1 = Urban, 0 = Rural) based on the addresses provided.",
+      "waves": "1-current",
+      "reference": "sibley2021",
+      "name": "urban_binary",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "vengeful_rumin": {
+      "name": "vengeful_rumin",
+      "items": [
+        "Sometimes I can't sleep because of thinking about past wrongs I have suffered.",
+        "I can usually forgive and forget when someone does me wrong (reversed scored).",
+        "I find myself regularly thinking about past times that I have been wronged."
+      ],
+      "description": "This scale contains three items, adapted from @caprara_indicators_1986 and @berry_forgivingness_2005, and developed for NZAVS; .",
+      "reference": "sibley2021",
+      "waves": "10-current",
+      "keywords": "reflective-present",
+      "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
+      "reversed_items": 2,
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "volunteers": {
+      "description": "We measured hours of volunteering using one item from Sibley et al. (2011): \"Hours spent … voluntary/charitable work.\" To stabilise this indicator, we took the natural log of the response + 1.",
+      "reference": "sibley2011",
+      "name": "volunteers",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "w_gend_age_ethnic": {
+      "name": "w_gend_age_ethnic",
+      "items": [
+        "weight(age,gender,ethnicity) = prop_census(age,gender,ethnicity)/prop_sample(age,gender,ethnicity)"
+      ],
+      "description": "Sample weights for NZ population (NZ Census)",
+      "reference": "sibley2021",
+      "waves": "1-current",
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "w_gend_age_euro": {
+      "description": "Sample weights for NZ population (NZ Census)",
+      "reference": "sibley2021",
+      "waves": "1-current",
+      "keywords": "demography",
+      "items": [
+        "weight(age,gender,european) = prop_census(age,gender,ethnicity)/prop_sample(age,gender,european)"
+      ],
+      "name": "w_gend_age_euro",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_asians": {
+      "name": "warm_asians",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...Asians in general."
+      ],
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_chinese": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...Chinese."
+      ],
+      "name": "warm_chinese",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_disabled": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "12-15",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...People with disability."
+      ],
+      "name": "warm_disabled",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_elderly": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "9-16",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...Elderly people."
+      ],
+      "name": "warm_elderly",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_immigrants": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...toward Immigrants in general."
+      ],
+      "name": "warm_immigrants",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_indians": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "2-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...toward Indians."
+      ],
+      "name": "warm_indians",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_lgbtq": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "12-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...LGBTQ+ people."
+      ],
+      "name": "warm_lgbtq",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_maori": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...Māori."
+      ],
+      "name": "warm_maori",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_mental_illness": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "9-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...People with mental illness."
+      ],
+      "name": "warm_mental_illness",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_muslims": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "4-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...Muslims."
+      ],
+      "name": "warm_muslims",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_nz_euro": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...NZ Europeans."
+      ],
+      "name": "warm_nz_euro",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_overweight": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...Overweight people."
+      ],
+      "name": "warm_overweight",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_pacific": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "1-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...Pacific Islanders."
+      ],
+      "name": "warm_pacific",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    },
+    "warm_refugees": {
+      "reference": "Modelled on United States National Election Study.",
+      "waves": "9-current",
+      "keywords": "cooperation",
+      "items": [
+        "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...Refugees."
+      ],
+      "name": "warm_refugees",
+      "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
+      "standardised": true,
+      "standardised_date": "2025-05-29"
+    }
+  },
+  "methods": {
+    "eligibility": {
+      "standard": "\n### Eligibility Criteria\n\nTo be included in the analysis of this study, participants needed to participate in the {{baseline_wave}} of the study and respond to the baseline measure of {{name_exposure_variable}}.\n\nParticipants may have been lost to follow-up at the end of the study if they met eligibility criteria at {{baseline_wave}}. We adjusted for attrition and non-response using censoring weights, described below.\n\nA total of {{n_participants}} individuals met these criteria and were included in the study.\n"
+    },
+    "confounding_control": {
+      "vanderweele": "\n### Confounding Control\n\nTo manage confounding in our analysis, we implement @vanderweele2019's *modified disjunctive cause criterion* by following these steps:\n\n1. **Identified all common causes** of both the treatment and outcomes.\n2. **Excluded instrumental variables** that affect the exposure but not the outcome. Instrumental variables do not contribute to controlling confounding and can reduce the efficiency of the estimates.\n3. **Included proxies for unmeasured confounders** affecting both exposure and outcome. According to the principles of d-separation @pearl2009a, using proxies allows us to control for their associated unmeasured confounders indirectly.\n4. **Controlled for baseline exposure** and **baseline outcome**. Both are used as proxies for unmeasured common causes, enhancing the robustness of our causal estimates, refer to @vanderweele2020.\n"
+    },
+    "causal_intervention": {
+      "grf_simple_text": "\n### Average treatment effect\n\nTo learn how the outcome would shift if everyone received a different exposure, we emulate a **target trial** [@hernan2016c]. Making the hypothetical experiment explicit fixes the estimand, the data requirements, and the assumptions.\n\nOur guiding question is:\n\n> *How would the outcomes change if, for every individual, we set the exposure to **{{value_exposure}}** rather than **{{value_control}}**, conditional on their baseline characteristics?*\n\nWe compare two interventions:\n\n1. **{{name_exposure_threshold}}** — every participant is set to {{value_exposure}}.\n2. **{{name_control_threshold}}** — every participant is set to {{value_control}}.\n\nThe difference in population means defines the **average treatment effect (ATE)**. Figure @fig-exposure plots the exposure distribution and its dichotomisation; the centre dashed line marks the mean, flanked by one standard deviation.\n\n```{r}\n#| label: fig-exposure\n#| fig-cap: \"Histogram of exposure with binary groupin\"\n#| eval: true\n#| echo: false\n#| fig-height: 12   # tweak if needed\n#| fig-width: 12    # tweak if needed\n\ngraph_cut\n\n```\n\nBecause we test several outcomes, we adjust the ATE confidence intervals for multiplicity with {{ate_adjustment}} at $\\alpha = {{ate_alpha}}$.\n\nThe longitudinal design and rich baseline covariates allow us -- under the standard identification assumptions of consistency, positivity, and no unmeasured confounding -- to attribute the differences between the two exposure means as a causal effect. Conditioning on demographics, personality traits, and other pretreatment factors renders exposure assignment ignorable [@rosenbaum1983central]."
+    },
+    "analytic_approach": {
+      "general_approach_cate_long": "\n### Moderators and treatment policies\n\nWe pursued two complementary objectives: (i) to test whether personalised targeting, based on individual conditional average treatment effects $\\hat\\tau(x)$, yields welfare gains, and (ii) to convert any such gains into transparent, practitioner‐ready decision rules.\n\n#### Pre-processing and honest model training\n\nOur protocol is as follows: in settings where the exposure is positive, outcomes for which lower is better are sign‐flipped so that larger values always index improvement. Similarly, where the exposure is negative, outcomes for which 'higher is better' are sign flipped.Here, we flipped: {{flipped_list}}. \n\nEach model estimate used an honest {{sample_ratio_policy}} split: the training fold built the causal forest with grf [@grf2024], while the held-out fold powered all diagnostic checks and provided data for fitting policy trees.  This separation curbs over-fitting yet keeps the workflow simple.\n\n#### Budget-based screening with Qini curves.\n\nBefore constructing rules we asked a budget question: If resources allow treatment of only the top 20% or 50% of individuals ranked by $\\hat\\tau(x)$, what uplift is purchased relative to treating everyone?\nQini curves quantified the incremental gain; outcomes whose 95% confidence intervals excluded zero at either spend level were labelled actionable, signalling meaningful heterogeneity in benefit.\n\n#### Deriving transparent decision rules.\n\nFor each actionable outcome we trained depth-2 policy trees with policytree [@policytree_package_2024; @athey_2021_policy_tree_econometrica] on the validation data.  The resulting if–then statements maximise expected welfare under the same budget cap and remain auditable by domain experts.\n\n####  Global heterogeneity tests (supplementary).\n\nAppendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.\n\nOverall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in Appendix {{appendix_explain_grf}}.\n",
+      "general_approach_cate_long_no_flip": "\n### Moderators and treatment policies\n\nWe pursued two complementary objectives: (i) to test whether personalised targeting, based on individual conditional average treatment effects $\\hat\\tau(x)$, yields welfare gains, and (ii) to convert any such gains into transparent, practitioner‐ready decision rules.\n\n#### Pre-processing and honest model training\n\nEach model estimate used an honest {{sample_ratio_policy}} split: the training fold built the causal forest with grf [@grf2024], while the held-out fold powered all diagnostic checks and provided data for fitting policy trees.  This separation curbs over-fitting yet keeps the workflow simple.\n\n#### Budget-based screening with Qini curves.\n\nBefore constructing rules we asked a budget question: If resources allow treatment of only the top 20% or 50% of individuals ranked by $\\hat\\tau(x)$, what uplift is purchased relative to treating everyone?\nQini curves quantified the incremental gain; outcomes whose 95% confidence intervals excluded zero at either spend level were labelled actionable, signalling meaningful heterogeneity in benefit.\n\n#### Deriving transparent decision rules.\n\nFor each actionable outcome we trained depth-2 policy trees with policytree [@policytree_package_2024; @athey_2021_policy_tree_econometrica] on the validation data.  The resulting if–then statements maximise expected welfare under the same budget cap and remain auditable by domain experts.\n\n####  Global heterogeneity tests (supplementary).\n\nAppendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.\n\nOverall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in Appendix {{appendix_explain_grf}}.\n",
+      "general_approach_cate_short": "\n### Moderators and treatment policies\n\nWe asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.\n\n#### Pre-processing and honest forests\n\nDirection was standardised by sign-flipping outcomes whose valence opposed that of the exposure; the affected measures were {{flipped_list}}.  Each analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.\n\n#### Diagnostics\n\nOn the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.\n\n#### Budget-focused evidence\n\nBecause programme budgets are finite, we next asked: If resources permit treating only the top 20 % or 50 % ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.\n\nNote that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning. \n\n#### Transparent decision rules\n\nFor each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.\n\nThe workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in Appendix {{appendix_explain_grf}}.",
+      "general_approach_cate_short_no_flip": "\n### Moderators and treatment policies\n\nWe asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.\n\n#### Pre-processing and honest forests\n\nEach analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.\n\n#### Diagnostics\n\nOn the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.\n\n#### Budget-focused evidence\n\nBecause programme budgets are finite, we next asked: If resources permit treating only the top 20 % or 50 % ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.\n\nNote that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.\n\n#### Transparent decision rules\n\nFor each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.\n\nThe workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in Appendix {{appendix_explain_grf}}.",
+      "simple_general_approach_cate_long": "\n### Learning Moderators and Deriving Practical Treatment Rules\n\nAfter estimating the average treatment effect, we asked *for whom* the exposure helps and *how* to act on that knowledge.  The workflow:\n\n1. **Orient outcomes.** All scales were re-coded so that higher scores had the same valence as the exposure (flipped: {{flipped_list}}).\n2. **Honest causal forest.** A {{sample_ratio_policy}} split trained the forest and produced out-of-sample CATEs $\\hat\\tau(x)$ on the validation fold [@grf2024].\n3. **Global heterogeneity test.** On the validation fold we computed **RATE-AUTOC** and **RATE-Qini**; FDR was controlled with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling] (see Appendix {{appendix_rate}}).\n4. **Budget lens.** **Qini curves** compared “treat top–ranked” to “treat all”, revealing expected uplift at budget caps (Appendix {{appendix_qini_curve}}).\n5. **Transparent policy.** When heterogeneity looked actionable, we fitted depth-2 **policy trees** on the validation fold, turning the black-box forest into concise *if–then* rules (details in Appendix {{appendix_explain_grf}}).\n\nThis pipeline converts complex CATE estimates into interpretable, out-of-sample decision policies while controlling both over-fitting and multiple testing.",
+      "simple_general_approach_cate_long_no_flip": "\n### Learning Moderators and Deriving Practical Treatment Rules\n\nAfter estimating the average treatment effect, we asked *for whom* the exposure helps and *how* to act on that knowledge.  The workflow:\n\n1. **Orient outcomes.** All scales were re-coded so that higher scores had the same valence as the exposure (flipped: {{flipped_list}}).\n2. **Honest causal forest.** A {{sample_ratio_policy}} split trained the forest and produced out-of-sample CATEs $\\hat\\tau(x)$ on the validation fold [@grf2024].\n3. **Global heterogeneity test.** On the validation fold we computed **RATE-AUTOC** and **RATE-Qini**; FDR was controlled with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling] (see Appendix {{appendix_rate}}).\n4. **Budget lens.** **Qini curves** compared “treat top–ranked” to “treat all”, revealing expected uplift at budget caps (Appendix {{appendix_qini_curve}}).\n5. **Transparent policy.** When heterogeneity looked actionable, we fitted depth-2 **policy trees** on the validation fold, turning the black-box forest into concise *if–then* rules (details in Appendix {{appendix_explain_grf}}).\n\nThis pipeline converts complex CATE estimates into interpretable, out-of-sample decision policies while controlling both over-fitting and multiple testing.",
+      "simple_general_approach_cate_short": "\n### Learning Moderators and Deriving Practical Treatment Rules\n\nAfter estimating the average treatment effect, we asked *for whom* the exposure helps and *how* to act on that knowledge.  The workflow:\n\n1. **Orient outcomes.** All scales were re-coded so that higher scores had the same valence as the exposure (flipped: {{flipped_list}}).\n2. **Honest causal forest.** A {{sample_ratio_policy}} split trained the forest and produced out-of-sample CATEs $\\hat\\tau(x)$ on the validation fold [@grf2024].\n3. **Global heterogeneity test.** On the validation fold we computed **RATE-AUTOC** and **RATE-Qini**; FDR was controlled with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling] (see Appendix {{appendix_rate}}).\n4. **Budget lens.** **Qini curves** compared “treat top–ranked” to “treat all”, revealing expected uplift at budget caps (Appendix {{appendix_qini_curve}}).\n5. **Transparent policy.** When heterogeneity looked actionable, we fitted depth-2 **policy trees** on the validation fold, turning the black-box forest into concise *if–then* rules (details in Appendix {{appendix_explain_grf}}).\n\nThis pipeline converts complex CATE estimates into interpretable, out-of-sample decision policies while controlling both over-fitting and multiple testing.",
+      "simple_general_approach_cate_short_no_flip": "\n### Moderators and Treatment Policies\n\nWe used a method called 'causal forests' to check if a treatment helped some people more than others. We trained the model on half the data and tested it on the other half. This helped us understand whether the differences we found were real rather than accidental. We then compared outcomes when we targeted treatment to those predicted to benefit the most (using Qini curves) against simply giving the treatment to everyone. Finally, we used policy trees to boil down these results into simple, if-then rules for deciding who's likely to benefit most from the treatment (refer to[Appendix {{appendix_explain_grf}}](#appendix-explain-grf))."
+    },
+    "exposure_indicator": "\n### Exposure Indicator\n\n\nThe New Zealand Attitudes and Values Study assesses {{name_exposure_variable}} using the following question:\n\n\n{{measures_exposure}}(Refer to [Appendix {{appendix_measures}}](#appendix-measures)).",
+    "missing_data": {
+      "missing_grf_simple": "\n### Missing Data\n\nThe GRF package accepts missing values at baseline. To obtain valid inference for missing responses we computed inverse probability of censoring weights for censoring of the exposure, given that systematic censoring following the baseline wave may lead to selection bias that limit generalistion to the baseline target population [@bulbulia2024wierd]. See [Appendix {{appendix_explain_grf}}](#appendix-explain-grf)."
+    },
+    "statistical_models": {
+      "grf_short_explanation": "\n### Statistical Estimation\n\nWe estimate heterogeneous treatment effects with Generalized Random Forests (GRF) [@grf2024]. GRF extends random forests for causal inference by focusing on conditional average treatment effects (CATE). It handles complex interactions and non-linearities without explicit model specification, and it provides 'honest' estimates by splitting data between model-fitting and inference. GRF is doubly robust because it remains consistent if either the outcome model or the propensity model is correct. We evaluate policies with the `policytree` package [@policytree_package_2024; @athey_2021_policy_tree_econometrica] and visualise results with `margot` [@margot2024]. (Refer to [Appendix {{appendix_explain_grf}}](#appendix-explain-grf) for a detailed explanation of our approach.)"
+    },
+    "causal_identification_criteria": "\n### Causal Identification Assumptions\n\nThis study relies on the following identification assumptions for estimating the causal effect of {{name_exposure_variable}}:\n\n1. **Consistency**: the observed outcome under the observed {{name_exposure_variable}} is equal to the potential outcome under that exposure level. As part of consistency, we assume no interference: the potential outcomes for one individual are not affected by the {{name_exposure_variable}} status of other individuals.\n\n2. **No unmeasured confounding**: all variables that affect both {{name_exposure_variable}} and the outcome have been measured and accounted for in the analysis.\n\n3. **Positivity**: there is a non-zero probability of receiving each level of {{name_exposure_variable}} for every combination of values of {{name_exposure_variable}} and confounders in the population. Positivity is the only fundamental casual assumption that can be evaluated with data (refer to [Appendix {{appendix_positivity}}](#appendix-positivity)).",
+    "causal_assumptions": {
+      "identification": "This study relies on the following identification assumptions for estimating the causal effect of {{exposure_var}}:\n\n1. **Consistency**: the observed outcome under the observed {{exposure_var}} is equal to the potential outcome under that exposure level.\n\n2. **Positivity**: there is a non-zero probability of receiving each level of {{exposure_var}} for every combination of values of {{exposure_var}} and confounders in the population.\n\n3. **No unmeasured confounding**: all variables that affect both {{exposure_var}} and the outcome have been measured and accounted for in the analysis.",
+      "confounding_control": "To manage confounding in our analysis, we implement [@vanderweele2019]'s *modified disjunctive cause criterion* by following these steps:\n\n1. **Identified all common causes** of both the treatment and outcomes.\n2. **Excluded instrumental variables** that affect the exposure but not the outcome.\n3. **Included proxies for unmeasured confounders** affecting both exposure and outcome.\n4. **Controlled for baseline exposure** and **baseline outcome**."
+    },
+    "sensitivity_analysis": {
+      "short_evalue": "\n### Sensitivity Analysis\nWe perform sensitivity analyses using the E-value metric [@vanderweele2017; @linden2020EVALUE]. The E-value represents the minimum association strength (on the risk-ratio scale) that an unmeasured confounder would need with both exposure and outcome—after adjusting for measured covariates—to explain away the observed association [@vanderweele2020; @linden2020EVALUE]. Confidence intervals for each E-value were derived from the multiplicity-adjusted confidence intervals of the corresponding coefficient estimates ({{ate_adjustment}}, $\\alpha$ = {{ate_alpha}}), so the sensitivity analysis obeys the same error-control framework as the main results."
+    },
+    "student_target_population": "\n### Target Population\n\nThe data are simulated from the New Zealand Attitudes and Values Study. For the purposes of this assessment, the target population for this study comprises New Zealand residents as represented in the {{baseline_wave}} of the New Zealand Attitudes and Values Study (NZAVS) during the years {{baseline_wave}} weighted by New Zealand Census weights for age, gender, and ethnicity (refer to @sibley2021). The NZAVS is a national probability study designed to reflect the broader New Zealand population accurately. Despite its comprehensive scope, the NZAVS has some limitations in its demographic representation. Notably, it tends to under-sample males and individuals of Asian descent while over-sampling females and Māori (the indigenous peoples of New Zealand). To address these disparities and enhance the accuracy of our findings, we apply New Zealand Census survey weights to the sample data."
+  },
+  "results": {
+    "grf": {
+      "interpretation_ominibus_test_negative": "\n#### Omnibus Test\n\nThe omnibus test did not provide statistically reliable evidence for overall treatment effect heterogeneity beyond chance. However, omnibus tests can lack power for detecting subtle or localised heterogeneity. Therefore, we examined more specific indicators of potential targeting benefits and subgroup differences. Refer to [Appendix {{appendix_cate_validation_grf}}](#appendix-cate-validation).",
+      "interpretation_ominibus_test_positive": "\n#### Omnibus Test\n\nThe omnibus test (@tbl-omnibus) indicates that the model found differences in how individuals respond to {{omnibus_confirmed_heterogeneity_outcome}}.  Notably, omnibus tests can lack power for detecting subtle or localised heterogeneity. However, even with its anti-conservativism, the test confirmed heterogeneity for {{omnibus_confirmed_heterogeneity_outcome}}. Refer to [Appendix {{appendix_cate_validation_grf}}](#appendix-cate-validation).",
+      "interpretation_policy_tree": "\n#### Policy Trees\n\nWe used policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] to find straightforward ‘if-then’ rules for who benefits most from treatment, based on participant characteristics. Because we flipped some measures, a higher predicted effect always means greater improvement. Policy trees can uncover small but important subgroups whose treatment responses stand out, even when the overall differences might be modest.",
+      "interpretation_qini": "\n#### Qini Curves\n\nThe Qini curve shows the cumulative **gain** as we expand a targeting rule down the CATE ranking.\n\n* **Beneficial exposure:** we add individuals from the top positive CATEs downward; the baseline is 'expose everyone.'\n* **Detrimental exposure:** we first flip outcome direction (so higher values represent **more harm**; see {{flipped_list}}), then *add* the exposure starting with individuals whose CATEs show the **greated harm**, gradually including those predicted to be more resistant to harm; the baseline is 'expose everyone.'  The curve therefore quantifies the harm by when those most suceptible to harm are exposed.\n\nIf the Qini curve stays above its baseline, a targeted policy increases the outcome more than a one-size-fits-all alternative.",
+      "interpretation_rate": "\n#### Rate Test\n\nThe RATE metric shows how much extra gain (or avoided loss) we achieve by **targeting** instead of treating everyone identically.\n\n**Technical note**: In code we always set `policy = \"treat_best\"`; for harmful exposures this is interpreted as *'treat-those-most-sensitive'* (i.e., prioritise protection or withholding).\n\n* **Beneficial exposure:** we rank by positive CATEs and deliver the exposure to those predicted to **benefit most**.\n* **Detrimental exposure:** we rank by increasingly **positive** CATEs (more predicted harm) and identify those who should be protected or withheld from the exposure.\n\nEither way, a larger **absolute** RATE shows that a CATE-based targeting rule 'outperforms' a one-size-fits-all policy—by boosting outcomes for beneficial exposures or -- in the case where we are explore sensitivity to harm -- evaluating increasing harms for detrimental ones.\n\nRecall we flipped {{flipped_list}} so **'higher' always tracks the analysis goal: higher = more benefit for beneficial exposures, higher = more harm for detrimental exposures.**\n\nBecause we test several outcomes, RATE *p*-values are adjusted with {{cate_adjustment}} (q = {{cate_alpha}}) before we decide whether heterogeneity is actionable.",
+      "interpretation_rate_no_flip": "\n#### Rate Test\n\nThe RATE metric shows how much extra gain in the outcome we achieve by **targeting** instead of treating everyone identically.\n\n* **Beneficial exposure:** we rank by positive CATEs and deliver the exposure to those predicted to **benefit most**.\n* **Detrimental exposure:** we rank by increasingly **positive** CATEs (more predicted harm) and identify those who should be protected or withheld from the exposure.\n\n(Note the valence of the outcomes match the valence of the exposures.)\n\nEither way, a larger **absolute** RATE shows that a CATE-based targeting rule 'outperforms' a one-size-fits-all policy—by boosting outcomes for beneficial exposures or -- in the case where we are explore sensitivity to harm -- evaluating increasing harms for detrimental ones.\n\nBecause we test several outcomes, RATE *p*-values are adjusted with {{cate_adjustment}} (q = {{cate_alpha}}) before we decide whether heterogeneity is actionable."
+    }
+  },
+  "discussion": {
+    "acknowlegements": {
+      "nzavs_acknowledgements_2025": "\n### Acknowledgements\n\nThe New Zealand Attitudes and Values Study is supported by a grant from the Templeton Religious Trust (TRT0196; TRT0418). JB received support from the Max Plank Institute for the Science of Human History. The funders had no role in preparing the manuscript or deciding to publish it."
+    },
+    "authors_statement": {
+      "empty": "\n### Author Statement\n\n\n"
+    },
+    "authors_statment_empty": "\n### Author Statement\n\n\n",
+    "ethics": {
+      "nzavs_2021_2027": "\n### Ethics\n\nThe University of Auckland Human Participants Ethics Committee reviews the NZAVS every three years. Our most recent ethics approval statement is as follows: The New Zealand Attitudes and Values Study was approved by the University of Auckland Human Participants Ethics Committee on 26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576."
+    },
+    "future_directions": null,
+    "implications": {
+      "clinical": null,
+      "policy": null,
+      "theoretical": null
+    },
+    "limitations": null,
+    "nzavs_acknowledgements_2025": "\n### Acknowledgements\n\nThe New Zealand Attitudes and Values Study is supported by a grant from the Templeton Religious Trust (TRT0196; TRT0418). JB received support from the Max Plank Institute for the Science of Human History. The funders had no role in preparing the manuscript or deciding to publish it.",
+    "nzavs_data_availabily": "\n### Data Availability\n\nThe data described in the paper are part of the New Zealand Attitudes and Values Study. Members of the NZAVS management team and research group hold full copies of the NZAVS data. A de-identified dataset containing only the variables analysed in this manuscript is available upon request from the corresponding author or any member of the NZAVS advisory board for replication or checking of any published study using NZAVS data. The code for the analysis can be found at [OSF link](https://osf.io/ab7cx/).",
+    "strengths": {
+      "simple_general_approach_cate_long": "\n### Moderators and Treatment Policies\n\nIn simple terms, we wanted to see if a treatment works differently for different people, rather than just figuring out one overall benefit for everyone. We used a method called 'causal forests' (think of it like a special type of decision tree) to find which groups of people might benefit the most, and which groups might benefit the least.\n\nBecause some of our measures work in opposite directions ('lower is better', e.g. depression), we flipped those measures so that 'higher' always means 'better.' That way, if we talk about a 'positive effect,' it consistently means the person improved.\n\nTo avoid fooling ourselves by spotting fake patterns in the data, we split our sample in half. We used the first half to teach our causal forest model what to look for, then tested it on the second half—so we only trust what shows up in that new data, where the model wasn’t allowed to 'peek.'\n\nWe tested whether the model’s predictions were sensible in two ways:\n1.  **Do the average predictions match the overall effect?** This checks if the model's idea of an 'average effect' fits what we actually see in the second half of the data.\n2.  **Is there real variety in who benefits most?** The model estimates different effects for different people, but we need to confirm that these differences aren not just random noise.\n\nWe also used two extra tools:\n- **Qini curves**: these plots show if focusing on the people who the model says would benefit most actually leads to better outcomes than just treating (or not treating) everyone.\n- **Policy trees**: these are straightforward 'if-then' rules (e.g., 'If a person’s baseline score is above X, recommend treatment'). Qini curves give more insight than 'black box' machine learning models, and can help guide decisions in real-world practice.\n\nPutting it all together, this step-by-step approach lets us investigate whether treatments should be applied the same way for everyone, or whether we can do better by matching treatments to the people who stand to benefit the most (refer to appendix {{appendix_analytic_approach}}.",
+      "strengths_grf_long": "\n### Strengths and Limitations of Our Approach\n\nWe used causal forests [@grf2024]—a statistical method designed to estimate Conditional Average Treatment Effects (CATEs)—to investigate how treatment effectiveness might vary across individuals with different characteristics. This strategy offers several advantages over simpler regression models, yet it also comes with important caveats.\n\n#### Potential Limitations\n\nFirst, our results depend heavily on having measured all key variables that affect both who receives treatment and how strongly they respond. If important factors are missing, the estimated differences in treatment effects may be biased. Selecting which characteristics to include in the model is also critical: omitting relevant factors or including inappropriate ones can yield misleading conclusions. Any further analyses that rely on these estimates—such as deciding whom to treat first—will inherit the same potential biases.\n\nSecond, interpreting subgroup effects can be challenging when many characteristics are considered simultaneously. Because these estimates are conditional on all factors in the model, a statistically significant finding for one subgroup may not necessarily hold when additional characteristics vary. Moreover, even if the model detects genuine differences, small or niche effects might not translate into meaningful real-world improvements.\n\n#### Strengths\n\nDespite these considerations, our approach provides a powerful way to uncover and potentially leverage treatment effect heterogeneity. Causal forests [@grf2024] do not assume a simple linear or additive structure, enabling them to detect complex interactions among diverse covariates. To ensure the findings are not just statistical artifacts, we used a {{sample_split}} sample split: one half of the data to build the model and the other to test its predictions on unseen data. This guards against overfitting and gives a more reliable indication of how well the model generalises.\n\nWe also explicitly assess the reliability and practical value of the predicted differences in treatment effects. We perform statistical checks—such as calibration and differential prediction tests [@grf2024]—to determine whether these variations are genuine rather than noise. Additionally, the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018] estimates how much we might improve outcomes if we treat only the individuals predicted to benefit most, instead of treating everyone equally. To visualise this, Qini curves [@grf2024] show how much extra benefit accumulates as we expand treatment from the top-ranked individuals to a larger portion of the population. Finally, policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] translate these insights into straightforward ‘if-then’ rules based on key baseline characteristics, making the findings more accessible for real-world decision-making.\n\nIn sum, this combination of flexible modelling, rigorous testing, and practical tools for targeting treatment offers a robust framework for studying and applying treatment effect heterogeneity. Nonetheless, these benefits hinge on the completeness of our data and the accuracy of our assumptions.\n",
+      "strengths_grf_short": "\n### Strengths and Limitations of Our Approach\n\nWe used causal forests [@grf2024] to estimate how treatment effects may differ for individuals with different characteristics. This method is powerful, however it also depends on measuring all major variables influencing both treatment selection and outcomes. If such variables are missed or mismeasured, results can be biased. Additionally, interpreting subgroup effects can be tricky when many characteristics are involved and statistically significant differences may not always translate into meaningful real-world gains.\n\nDespite these concerns, causal forests offer notable advantages. They allow for flexible, non-parametric modelling [@grf2024], avoiding strict assumptions that might miss complex interactions. We used a robust evaluation method—training our model on half the data and testing it on the remaining half—to avoid overfitting. We then checked whether the predicted differences were genuine and estimated how much benefit we might gain by targeting treatment to those likely to benefit most [@grf2024; @wager2018]. Qini curves [@grf2024] let us see the overall improvement from treating the top-ranked individuals first, and policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] turn these findings into simple ‘if-then’ rules. Together, this approach provides a practical means of identifying and acting on genuine treatment effect differences."
+    },
+    "student_authors_statement": "\n### Author Statement\n\nThe Methods and Results section were created using standard protocols from the EPIC lab (Joseph Bulbulia). These were encoded using the `boilerplate` package [@boilerplate2024] and `margot package` [@margot2024] in R. The introduction and conclusion for this research are solely the student's work.",
+    "student_data": "\n### Data Availability\n\nThe data described in the paper were *simulated* from the New Zealand Attitudes and Values Study (NZAVS). For more information contact professor Joseph Bulbulia at joseph.bulbulia@vuw.ac.nz. For more information about the NZAVS, see: [OSF link](https://osf.io/ab7cx/).",
+    "student_ethics": "\n### Ethics\n\nThe data were simulated for the purposes of instruction. The Ethics Approval for the dataset from which the synthetic data were generated is as follows: The University of Auckland Human Participants Ethics Committee reviews the NZAVS every three years. The most recent ethics approval statement is as follows: The New Zealand Attitudes and Values Study was approved by the University of Auckland Human Participants Ethics Committee on 26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576."
+  },
+  "appendix": {
+    "explain": {
+      "grf_long": "\nIn this appendix we show how to estimate causal effects with the `grf` R package (Generalised Random Forests).\n\n#### Menu of HTE diagnostics\n\nInvestigators can choose one, some, or all of the following tools, depending on the scientific or operational question:\n\n* **RATE AUTOC / RATE Qini (global evidence)** – 'Should we abandon a uniform policy at all?'  Tests the null of no actionable heterogeneity on a validation split.\n* **Qini curves (budget lens)** – 'If we can treat only up to $p\\%$, what uplift do we expect?'  Reads the targeting curve at specific spend levels.\n* **Policy trees (decision rule)** – 'Which simple, transparent allocation rule maximises expected welfare under constraints?'  Optimises welfare directly, agnostic to hypothesis-testing conventions.\n\nThese tools are complementary rather than sequential.  A study may stop after RATE, skip RATE and go straight to a decision rule, or report the full trio; the choice should reflect the primary inferential aim — evidence, optimisation, or communication.\n\nBelow we **illustrate** all three analyses in turn.  In practice an investigator may run only the subset that addresses their question.\n\n\nHowever, we begin with the overall average treatment effect (ATE), investigate whether effects vary (heterogeneity), and --where useful -- estimate individualised effects and derive simple, actionable treatment rules.\n\n### Step 1 Estimating the Average Treatment Effect (ATE)\n\nThe ATE answers a simple question: on average, how much does treatment change the outcome? In a well‑randomised trial (or an observational study with adequate control), we estimate it with the difference in mean outcomes between treated and control units. Formally,\n\n$${\\rm ATE}=E\\,[Y(1)-Y(0)],$$\n\nwhere $Y(1)$ and $Y(0)$ denote potential outcomes under treatment and control.\n`grf::average_treatment_effect()` computes the ATE, using doubly‑robust estimation for precision. This step gives us a baseline—say, the new therapy lifts well‑being by 0.25 points (1–7 scale).\n\nWe start here because the ATE tells us whether the treatment works **on average** if everyone were treated versus no-one. Yet a zero (or noisy) ATE does not rule out helpful or harmful effects for sub-groups, and a non-zero ATE does not guarantee benefits for all.  We often want to examine heterogeneity.\n\n\n+### Step 2 Assessing Heterogeneous Treatment Effects (HTE)\n\nTreatments seldom work equally for everyone. We define the conditional average treatment effect (CATE) for covariate profile $x$ as\n$$\\tau(x)=E\\,[Y(1)-Y(0)\\mid X=x].$$\nIf $\\tau(x)$ is constant, effects are homogeneous; if it varies, we have heterogeneity.\n\nClassical regression tackles heterogeneity via interaction terms, but that approach demands strong functional‐form assumptions. Real‑world heterogeneity can be non‑linear and high‑dimensional; guessing the correct model risks misspecification or over‑fitting [@Sadique2022]. Thus we turn to causal forests, which let the data speak.\n\n\n+### Step 3 Estimating Individualised Effects with Causal Forests\n\nA causal forest is an ensemble of 'honest' causal trees grown to capture **differences** in treatment effects rather than outcome levels [@grf2024]. Each tree splits the data to maximise treated‑versus‑control contrasts within leaves, and the forest averages those leaf‑level estimates to give\n$$\\hat\\tau(x)$$\nfor every individual.\n\n Advantages:\n\n- **Flexibility** – no need to pre‑specify interactions or non‑linearities.\n- **Orthogonalisation** – residualising outcomes and treatment probabilities focuses the forest on causal signal [@wager2018].\n- **Per‑person estimates** – we obtain $\\hat\\tau(x_i)$ for every $i$.\n\n+### Step 4 Honest Estimation and Out-of-Bag Validation\n\nOver‑fitting lurks in flexible models. `grf` combats this with 'honest' trees: one half‑sample picks splits, the other half estimates effects, ensuring each leaf estimate is out‑of‑sample. Out‑of‑bag (OOB) predictions—averaging over trees that did **not** train on an observation—provide further unbiased validation and standard errors [@grf2024].\n\n+### Step 5 Handling Missing Data and Basic Validation\n\nMissing covariate values? No drama. `grf` uses the MIA (Missing Incorporated in Attributes) rule: it treats 'missing' as a legitimate split category, so we keep cases rather than impute or drop them [@grf2024]. Hyper‑parameters rarely need fine‑tuning, though cross‑validation can refine minimum leaf size, tree depth, and the like.\n\n+### Step 6 Global evidence with RATE (AUTOC & Qini)\n\nDo the estimated $\\hat\\tau(x)$ really differ, or is it just noise? The RATE framework answers this. We rank individuals by $\\hat\\tau$ and ask whether treating the top scorers improves outcomes relative to random assignment. The Targeting Operator Characteristic (TOC) curve plots this gain over treatment fractions $q$. Two scalar summaries are\n\n* **AUTOC** – area under the TOC; accentuates extreme responders.\n* **Qini** – a weighted area (weights grow with $q$); favours broader gains [@yadlowsky2021evaluating].\n\nUnder $H_0$ (no heterogeneity) both metrics equal zero; `grf::rank_average_treatment_effect()` supplies estimates, standard errors, and $t$‑tests. Rejecting $H_0$ signals actionable heterogeneity.\n\nBoth metrics aggregate the whole targeting curve, so a single negative stretch can drag the average below zero.  Thus a reliably negative RATE warns that *no blanket ranking policy should be adopted*, no matter what the tail behaviour looks like.\n\nRATE therefore answers a *global* question: if we were to use our estimated $\\hat{\\tau}(x)$ to prioritise who gets treated **across the entire population**, would outcomes improve compared with treating everyone (or no-one) identically?  If there were no heterogeneity, then any rule based on $X$ (including our $\\hat{\\tau}(x)$ estimates) should do no better than random assignment.\n\n+### Step 7 Quantifying policy value with RATE metrics\n\nBeyond significance, AUTOC and Qini quantify the **magnitude** of improvement from targeting. A large AUTOC means a prioritisation rule sharply distinguishes high‑benefit individuals; a large Qini means gains persist over wider coverage. Policymakers can weigh these gains against costs—because budgets rarely stretch to treating everyone (as any Kiwi running a lab grant knows too well).\n\n### Step 8 Budget-constrained gains via Qini curves\n\nRATE tells us whether heterogeneity exists in aggregate; the Qini curve drills down to **how much uplift we get at each spend level**.  A planner who can only afford to treat the top 20 % cares about the leftmost fifth of the curve, even if the global RATE is negative.\n\n*Practical note:* because the Qini curve is read off the **same validation split** used for RATE, comparisons are on equal footing and over-optimism is kept in check.\n\n\n```{r, results='asis'}\n#| label: fig-example-qini\n#| fig-cap: \"Example Qini Curve.\"\n#| eval: true\n#| echo: false\n#| fig-width: 12\n#| fig-height: 12\nmodels_binary_batch_example$model_t2_agreeableness_z$policy_tree\n\n```\n\n\nIn the above illustration, the Qini curve rises sharply at the beginning, indicating that the first several percent of individuals treated (those with the highest predicted $\tau(x)$) yield a large gains to agreeableness. By contrast, the dashed line is roughly a 35-degree line starting at (0,0) – it represents a policy that doesn’t use the heterogeneity (just treating people arbitrarily), which yields, on average, a linear accumulation of the overall ATE. At $x=1.0$ (100% treated), both the model-based policy and the random policy coincide – at that point, everyone is treated, so the total gain is just the ATE. The fact that the Qini curve is above the solid line (forming a 'bulge') indicates that targeting is effective: we achieve more outcome gain for the same treatment fraction [@grf2024]. The area between the solid curve and dashed line up to a certain point corresponds to the RATE metrics discussed (QINI would be the total area between them from 0 to 1).\n\nIn our analysis, we report budget-constrained thresholds for treating the top 20% or 50% of recipients. Policymakers often have limits on how many people can be treated (due to cost or other constraints). The Qini curve allows us to zoom in on specific treatment fractions. For instance, if we can only treat 20% of the population, we look at $q = 0.2$ on the x-axis. The y-value of the Qini curve at $0.2$ tells us the expected gain from treating the top 20% (as ranked by the model) compared to treating 20% randomly.\n\nThe Qini curve allows us to visualise and explain how the effectiveness of the treatment allocation changes as we expand who gets treated. For an applied researcher, this is very useful. We do more than not that 'heterogeneity exists.'  We are able to advise whether, 'if we have a budget to treat X% of people, here's what outcome we can expect.' For example, suppose an education intervention has an average effect of 5 test score points. The Qini analysis might show that focusing on the top 50% of the population (maybe those with certain demographic profiles) could yield an average effect of .15 SD units for those expected to benefit, meaning we would save resources on those unlikely to gain. At 100% (treating everyone), we're back to average treatment effect, which in this example is about half this amount (0.07 SD units). So the policy insight is: if only 50% can be afforded, target that group to maximise impact.\n\nTo summarise, Qini curves allow us to identify and communicate the value of targeted policies at specific coverage levels. They show whether the benefit of the treatment is concentrated in a small segment of the population or more widely distributed. When making policy recommendations, one could use the Qini curve to decide, for instance, 'we should implement the program for the top 50% most likely to benefit; beyond 50%, the returns diminish to roughly the average effect, so including more people isn’t cost-effective.' This level of analysis goes beyond saying 'there is heterogeneity'; instead, we quantifies *how much improvement* is possible and for what percentage of a target population.\n\n### Step 9 Avoiding over-fitting in policy evaluation (sample splitting for RATE/Qini)\n\nAn important statistical caution: when we use the same data to both train a model (such the causal forest) and evaluate its performance (like computing how well targeting does), we can get overly optimistic results. Even though the causal forest provides OOB estimates that are ostensibly out-of-sample for each individual, there is still a subtle form of overfitting possible if we are not careful. The forest was constructed to maximise heterogeneity in the training data, so using those same estimates to evaluate the policy can bias the evaluation upward (we might overstate the value of targeting because we are implicitly reusing the data).\n\nTo ensure valid inference, the best practice is to use explicit sample splitting or cross-fitting for the evaluation stage. This means, for example, after training the causal forest on the whole dataset (or a portion of it), we assess the RATE or Qini metrics on a fresh hold-out set that was not used in training. Here we use a separate hold-out set in which we train {{traning_proportion}} of the data, and use the unseen remainder as the validation set.\n\nWhy do we do this? Even though the forest’s OOB predictions are not directly from a model that saw that observation's outcome, there remains correlation – each observation’s prediction is an average from many trees, and while any given tree didn't see that observation, it saw many others including some that are also used in evaluating the policy. There is also the fact that OOB predictions are a form of cross-validation but not a true independent test, especially since the forest structure was influenced by all data. To be rigorous, researchers often do a double sample split: one split to train the forest, and a second split (completely independent) to compute the policy metrics like Qini or evaluate a specific targeting rule. This double-splitting ensures that when we say 'targeting the top 20% yields X improvement,' that claim is verified on data that played no part in determining who was top 20%. Thus, our inference (confidence intervals, p-values for heterogeneity) remains valid and not overly optimistic.\n\nIn plain terms, our workflow is as follows:\n\n1. Split the data into two parts: A and B.\n2. Use part A to train the causal forest and get $\\hat{\\tau}(x)$.\n3. Use part B to evaluate heterogeneity: apply the targeting rule in B, compute observed gains, and estimate RATE/Qini metrics on that held-out data.\n\nBy doing this, when we report 'p = 0.01 for heterogeneity' or 'Qini = 0.10 at 20% spending', we know these numbers are honest assessments of how the model would perform on new data, not just the data we fit it to.\n\nEven with OOB estimates, further sample splitting guards against optimistic bias.  This extra step is crucial for rigour: it prevents us from convincing ourselves that a complicated model is useful when in fact it might be explaining noise.\n\n### Step 10: Translating Insights into a Policy Tree\n\nCausal forests, while powerful, are 'black box' in nature – they may involve hundreds of trees and intricate splits that are not easy to interpret. For practical decision-making (especially in policy contexts), stakeholders often prefer a simple rule (for example, a checklist or a flowchart) that determines treatment eligibility. This is where policy trees come in. We addresse the *operational* question: given a budget and evidence of heterogeneity, which covariate splits deliver the largest welfare gain in a form stakeholders can audit?  Rather than picking out a familiar category grouping such as gender or ethnicity, policy trees reveal how effect variation aligns with resource availability.\n\nA policy tree is essentially a simple decision tree that assigns treatment or control based on a few covariates splits, optimised to yield good outcomes. The idea is to summarise the individual treatment effects $\\hat{\\tau}(x)$ (or directly use the data) into a set of if-then rules that approximate the optimal targeting. For instance, a policy tree might look like: 'If age < 25 and baseline severity is high, give treatment; if age ≥ 25 and baseline severity is low, do not treat,' etc. These rules are much easier to communicate than a black-box forest.\n\n`grf` integrates with the `policytree` package to derive an optimal decision tree given the causal forest's estimates [@policytree_package_2024]. We feed either $\\hat\\tau(x)$ or doubly-robust scores into `policytree::policy_tree()`, which searches for splits that maximise expected welfare subject to a depth constraint.  The result is a shallow tree (often depth 1–2) that is far easier to communicate than the full forest.\n\n\n**Why use policy trees?** Apart from interpretability, policy trees can enforce fairness or simplicity constraints and avoid overfitting by limiting complexity. A shallow tree might capture the broad strokes of heterogeneity (e.g., young vs old, or high risk vs low risk) in a way that practitioners can double-check with domain knowledge. As an example from `grf` documentation:\n\n> Deciding who to assign the program based on a complicated black-box CATE function may be undesirable if policymakers want transparent criteria. Likewise, it may be problematic for participants to learn they were denied a beneficial program solely because a black-box algorithm predicted low benefit. In such settings, we want an interpretable policy, for example, a shallow decision tree that says ‘Alice is assigned treatment because she is under 25 and lives in a disadvantaged neighborhood' see: [https://grf-labs.github.io/grf/articles/policy_learning.html](https://grf-labs.github.io/grf/articles/policy_learning.html).\n\nThis nicely illustrates how a policy tree can provide a rationale in human terms.\n\n+**Training and validation for policy trees:** As when **constructing** causal forests and evaluating heterogeneity with RATE/Qini, we must avoid over-fitting. It is tempting to use the same data that suggested heterogeneity to also choose the best splits for the policy tree, but that can lead to optimistic results. The optimal tree is chosen to fit the training data well – if we do not validate it, we might pick a tree that works by chance quirks of the data. Therefore, we use cross-validation to select the tree's complexity (depth) and sample splitting to evaluate its performance, using {{train_proportion_decision_tree}} to train the tree and the remainder to valid it.\n\n\n```{r, results='asis'}\n#| label: fig-example-decision-tree\n#| fig-cap: \"Example Decision Tree.\"\n#| eval: true\n#| include: true\n#| echo: false\n#| fig-width: 10\n#| fig-height: 14\nmodels_binary_batch_example$model_t2_agreeableness_z$combined_plot\n```\n\n**Example**: Recall, @fig-example-qini shows reliable treatment heterogeneity for the effect of religious service attendance on agreeableness. @fig-example-decision-tree presents a policy tree analysis in which simple treatment rules are evaluated indicating who we should 'treat' with religious service if we hope to optimise agreeableness. Here we find that three variables predict treatment benefits: weekly hours commuting, weekly hours doing housework, and household income.  Specifically:\n\n- Participants who commute less than about 5.8 hours per week and have a household income above NZD 28,600 experience greater gains in agreeableness when attending religious services. However among those with very low income and lower commuting demands we would not expect added gains for agreeableness from religious service attendance.\n- Meanwhile, those with comparable higher commuting hours who household working hours are less than 16 hours per week are not expected to benefit in Agreeableness. However, those who are heavier commuters but and also doing more housework are expected to gain in agreeableness.\n\nThis analysis holds both theoretical and practical interest. Rather than picking out a familiar category grouping such as gender or ethnicity, policy trees reveal that effect vary by resource availability.\n\nOverall, policy trees condense the insights from causal forests into actionable guidelines.+We emphasise that deriving these guidelines includes rigorous validation: one part of the data learns the policy, another tests it. This ensures that the simple rules we recommend (e.g. 'treat those with lower time demands; do not treat incomes at a certain level') are supported by evidence rather than being artifacts of noise.\n\nAlthough estimating heterogeneous treatment effects and deriving actionable policy rules can be both theoretically and practically important, two considerations should temper our enthusiasm.\n\nFirst, the factors highlighted in policy trees are predictors of treatment-effect variability, but these predictors do not themselves have a causal interpretation. Returning to the example above, we should not infer that intervening to set someone’s travel and housework times to different values would change the variability in response. To understand the causal effects of joint interventions, we would need a different analysis. Decision trees are important because they draw attention to segments of a population likely to benefit, but they do not clarify the effects of changing a population structure.\n\nSecond, decisions about prioritising treatment rules are often ethical and political. Even if we set aside uncertainties in the modelling process, few would argue that fairness and justice should be determined by optimisation rules alone.. Even if we set aside uncertainties in the modelling process, few would argue that fairness and justice should be determined by optimisation rules alone. Such questions are typically resolved through democratic processes that involve stakeholder consultations, reflection on social values, a reckoning with historical inequities, and considerations beyond the scope of statistical analyses.",
+      "grf_short": "\n## Appendix {{appendix_explain_grf}}. Estimating and Interpreting Heterogeneous Treatment Effects with GRF {#appendix-explain-grf}\n\nHere we explain a heterogeneous‐treatment‐effect (HTE) analysis using causal forests [@grf2024]. In our workflow, we move from the average treatment effect (ATE) to individualised effects, quantify the practical value of targeting, and finish with interpretable decision rules.\n\n\n### 1 Average Treatment Effect (ATE)\n\nThe ATE answers: *'What would happen, on average, if everyone received treatment versus no one?'*\n\n$$\n    \\text{ATE}=E[Y(1)-Y(0)].\n$$\n\nUsing the `grf` package, we estimate the ATE doubly-robustly.  Because we analyse several outcomes, we adjust ATE *p*-values with {{ate_adjustment}} ($\\alpha$ = {{ate_alpha}}) to control the family-wise error rate.\n\n\n\n\n### 2 Do Effects Vary?  Formal Test of Heterogeneity\n\nDefine the conditional average treatment effect (CATE)\n\n$$\n  \\tau(x)=E[Y(1)-Y(0)\\mid X=x].\n$$\n\nIf $\\tau(x)$ is constant, effects are homogeneous; otherwise they vary. Classical interaction models impose strong forms; **grf** uses *causal forests* to discover complex, nonlinear heterogeneity [@wager2018].  We assess heterogeneity with RATE *p*-values corrected via {{cate_adjustment}} (q = {{cate_alpha}}), controlling the false-discovery rate [@benjamini1995controlling].\n\n\n\n\n### 3 Causal Forests for Individualised Estimates\n\nA causal forest is an ensemble of 'honest' causal trees that split on covariates to maximise treated–control contrasts. For each unit $i$ we obtain\n\n$$\n  \\widehat{\\tau}(x_i)\n$$\n\nStrengths are flexibility, orthogonalisation, and per-person estimates.\n\n\n### 4 Built-in Protection Against Over-fitting\n\n  Honesty (split half/estimate half) plus out-of-bag (OOB) predictions yield unbiased $\\widehat{\\tau}(x)$ and standard errors without manual hyper-tuning.\n\n\n### 5 Missing Data Handling\n\n**grf** deploys 'Missing Incorporated in Attributes' (MIA): missingness is a valid split, so cases stay in the analysis -- no ad-hoc imputation required.\n\n\n### 6 Testing for **Actionable** Heterogeneity: the TOC & RATE Metrics\n\nRanking units by $\\widehat{\\tau}$ defines a **Targeting Operator Characteristic** (TOC) curve: the cumulative gain from treating the top fraction $q$ of predicted responders. Two scalar summaries:\n\n- **RATE AUTOC** – area under the entire TOC; emphasises the very highest responders.\n- **RATE Qini** – weighted area with weight $q$; rewards sustained gains across larger coverage [@yadlowsky2021evaluating].\n\nUnder $H_0{:}\\tau(x)$ constant, both equal 0.\n`grf::rank_average_treatment_effect()` supplies point estimates, standard errors, and $t$-tests.\n\n**Multiplicity control**: We adjust AUTOC and Qini *p*-values with {{cate_adjustment}} (q = {{cate_alpha}}) before declaring actionable heterogeneity.\n\nHere is an **interpretation tip**:\n\n* AUTOC answers *'How sharply can we prioritise?'*\n* Qini answers *'How valuable is targeting when budgets are modest but not tiny?'*\n\n### 7 Visualising Policy Value: the Qini Curve\n\nPlotting the Qini curve (cumulative gain vs $q$) reveals where returns plateau. Investigators (and policy audiences) can see at a glance whether benefits concentrate in, say, the top 20 % or persist up to 50 %.\n\n\n### 8 Valid Inference for RATE / Qini\n\nAlthough OOB predictions are out-of-sample per tree, they inherit forest-level dependence. We use an explicit **sample split**:\n\n1. **Train set**: fit the causal forest and compute $\\widehat{\\tau}(x)$.\n2. **Test set**: compute RATE AUTOC/Qini and run $H_0$ tests.\n\nThis second split yields honest policy evaluation and guards against optimistic bias [@grf2024].\n\n### 9 From Black Box to Simple Rules: Policy Trees\n\nStakeholders value transparent criteria. The **policytree** algorithm takes $\\widehat{\\tau}(x)$ or doubly-robust scores and learns a shallow decision tree that maximises expected welfare [@policytree_package_2024].\n\n*Advantages*: interpretability, the possibility of fairness constraints, and easy communication (e.g., *'treat if age < 25 and baseline severity high'*).\n\nTraining mirrors the split above: learn the tree on one fold, evaluate welfare on another.\n\n> **Caveat**  Splits identify predictors of *effect variation*, not causal levers. Changing a covariate in the tree does **not** guarantee an effect on $\\tau(x)$.\n\n\n### 10 Ethical and Practical Considerations\n\nStatistical optimisation rarely aligns perfectly with equity or political feasibility. Decisions about who *should* receive treatment belong to democratic processes that weigh fairness, cost, and broader social values.\n\n\n### Putting it together\n\nThe sequence—ATE, causal-forest CATEs, RATE/Qini diagnostics, Qini curve, and finally a shallow policy tree—delivers both rigorous evidence and a defensible targeting rule.  Researchers learn **how large** heterogeneity is, **where** targeting pays off under budget constraints, and **which** simple covariate splits capture most of the welfare gain, all while guarding against over-fitting and multiplicity.\n"
+    },
+    "references": "\n\n## References {.appendix-refs}\n\n",
+    "baseline": "\n## Appendix B: Measures and Demographic Statistics {#appendix-baseline}\n\n### Measures\n\n```{r, results='asis'}\ncat(appendix_text_all_measures) # make this with boilerplate_measures_text\n```\n\n### Sample Demographic Statistics\n\n@tbl-appendix-baseline presents sample demographic statistics.\n\n::: {#tbl-appendix-baseline}\n```{r, results = 'asis'}\n#| eval: true\n#| include: true\n#| echo: false\n\ncat(latex_table_baseline)\n\n```\nDemographic statistics for New Zealand Attitudes and Values Cohort {{baseline_wave}}.\n:::\n",
+    "exposure": "\n### Exposure Variable: {{name_exposure_variable}}  {#appendix-exposure}\n\n@tbl-sample-appendix-exposures presents sample statistics for the {{name_exposure_variable}} during the {{baseline_wave}} and {{exposure_waves}}.\n\n::: {#tbl-appendix-exposures}\n```{r, results = 'asis'}\n#| eval: true\n#| include: true\n#| echo: false\n\ncat(latex_table_exposures)\n\n```\nDemographic statistics for New Zealand Attitudes and Values Cohort {{baseline_wave}}.\n:::\n"
+  },
+  "template": {
+    "conference_presentation": "---\ntitle: \"{{title}}\"\nauthor: \"{{authors}}\"\ndate: \"{{date}}\"\nformat:\n  revealjs:\n    theme: default\n    logo: institution_logo.png\nbibliography: references.bib\n---\n\n## Research Question\n\n{{research_question}}\n\n## Methods\n{{methods_brief}}\n\n## Key Findings\n{{results_highlights}}\n\n## Implications\n{{implications}}\n\n## Thank You\n{{acknowledgments}}\n"
+  }
+}

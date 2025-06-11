@@ -2,7 +2,7 @@
 # if (!boilerplate_path_exists(unified_db$results, "grf")) {
 #   unified_db$results$grf <- list()
 # }
-devtools::load_all("/Users/joseph/GIT/boilerplate/")
+# devtools::load_all("/Users/joseph/GIT/boilerplate/")
 
 # initialise measures
 # install from GitHub if not already installed
@@ -17,13 +17,66 @@ if (!require(boilerplate, quietly = TRUE)) {
 library(boilerplate)
 
 
+
 # set path ----------------------------------------------------------------
 my_project_path <- "/Users/joseph/GIT/templates/boilerplate_data"
 test_path <- "/Users/joseph/GIT/templates/test"
 
 
+
+# tests -------------------------------------------------------------------
+
+boilerplate_init(create_dirs = TRUE, confirm = TRUE)
+
+boilerplate_init()
+
+
+# import all databases into a unified structure
+all_db <- boilerplate_import()
+
+# add a new method entry directly to the unified database
+all_db$methods$sample_selection <- "Participants were selected from {{population}} during {{timeframe}}."
+
+# save all changes at once
+boilerplate_save(all_db)
+
+test_test_db <- boilerplate_import()
+
+boilerplate_save(
+  all_db
+)
+
+
+# generate text with variable substitution
+methods_text <- boilerplate_generate_text(
+  category = "methods",
+  sections = c("sample", "sample_selection"),
+  global_vars = list(
+    population = "university students",
+    timeframe = "2020-2021"
+  ),
+  db = all_db,  # pass the unified database
+  add_headings = TRUE
+)
+
+cat(methods_text)
+
+
+
+
+
+
+
+
+
 # import data -------------------------------------------------------------
 proto_unified_db <- boilerplate_import( data_path = my_project_path)
+
+boilerplate_save(
+  proto_unified_db,
+  data_path = my_project_path
+)
+
 # set path ----------------------------------------------------------------
 student_path <- here::here("student_boilerplate_data")
 
@@ -52,14 +105,36 @@ cat(test_db$methods$causal_intervention$grf_simple_text)
 # )
 
 
+boilerplate_save(
+  test_db,
+  output_file = "student_unified_test_db",
+  data_path = student_path
+)
+test_db <- boilerplate_import( data_path = student_path)
+
 
 # Introduction ------------------------------------------------------------
 # import data
 
-unified_db <- boilerplate_import( data_path = my_project_path)
+unified_db <- boilerplate_import()
 
 
+unified_db$bibliography
 
+# add bibliography --------------------------------------------------------
+
+# Configure bibliography source
+db <- boilerplate_add_bibliography(
+  unified_db,
+  url = "https://raw.githubusercontent.com/go-bayes/templates/refs/heads/main/bib/references.bib",
+  local_path = "references2.bib"
+)
+
+# Download and copy bibliography
+boilerplate_copy_bibliography(db, target_dir = "data/boilerplate")
+
+# Save configuration
+boilerplate_save(db, data_path = "boilerplate/data/")
 
 
 # standardise measures ----------------------------------------------------
@@ -71,7 +146,7 @@ unified_db$measures <- boilerplate_standardise_measures(unified_db$measures)
 boilerplate_measures_report(unified_db$measures, return_report = TRUE)
 
 # save db
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
+boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 
 
