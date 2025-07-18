@@ -1,0 +1,31 @@
+{
+  "measures": {
+    "anxiety": {
+      "name": null,
+      "description": null,
+      "reference": null,
+      "waves": null,
+      "keywords": null,
+      "items": null
+    }
+  },
+  "methods": {
+    "causal_assumptions": [],
+    "statistical": [],
+    "sample_selection": "Participants were selected from {{population}} during {{timeframe}}."
+  },
+  "results": {
+    "domain": []
+  },
+  "discussion": {
+    "implications": []
+  },
+  "appendix": [],
+  "template": [],
+  "bibliography": {
+    "url": "https://raw.githubusercontent.com/go-bayes/templates/refs/heads/main/bib/references.bib",
+    "local_path": "references.bib",
+    "validate": true,
+    "last_updated": "2025-07-18 13:54:22"
+  }
+}

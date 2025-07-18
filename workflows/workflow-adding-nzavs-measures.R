@@ -3,7 +3,7 @@
 #   unified_db$results$grf <- list()
 # }
 # devtools::load_all("/Users/joseph/GIT/boilerplate/")
-
+# had used
 # initialise measures
 # install from GitHub if not already installed
 if (!require(boilerplate, quietly = TRUE)) {
@@ -19,62 +19,61 @@ library(boilerplate)
 
 
 # set path ----------------------------------------------------------------
-my_project_path <- "/Users/joseph/GIT/templates/boilerplate_data"
+# my_data_path <- "/Users/joseph/GIT/templates/boilerplate_data" Old path
 test_path <- "/Users/joseph/GIT/templates/test"
 
 
+#
+# # tests -------------------------------------------------------------------
+#
+# boilerplate_init(create_dirs = TRUE, confirm = TRUE)
+#
+# boilerplate_init()
+#
+#
+# # # import all databases into a unified structure
+# all_db <- boilerplate_import()
+#
+# # add a new method entry directly to the unified database
+# all_db$methods$sample_selection <- "Participants were selected from {{population}} during {{timeframe}}."
+#
+# # save all changes at once
+# boilerplate_save(all_db)
+#
+# test_test_db <- boilerplate_import()
+# boilerplate_save(
+#   all_db
+# )
+#
+#
+# # generate text with variable substitution
+# methods_text <- boilerplate_generate_text(
+#   category = "methods",
+#   sections = c("sample", "sample_selection"),
+#   global_vars = list(
+#     population = "university students",
+#     timeframe = "2020-2021"
+#   ),
+#   db = all_db,  # pass the unified database
+#   add_headings = TRUE
+# )
+#
+# cat(methods_text)
+#
+#
 
-# tests -------------------------------------------------------------------
 
-boilerplate_init(create_dirs = TRUE, confirm = TRUE)
-
-boilerplate_init()
-
-
-# import all databases into a unified structure
-all_db <- boilerplate_import()
-
-# add a new method entry directly to the unified database
-all_db$methods$sample_selection <- "Participants were selected from {{population}} during {{timeframe}}."
-
-# save all changes at once
-boilerplate_save(all_db)
-
-test_test_db <- boilerplate_import()
-
-boilerplate_save(
-  all_db
-)
-
-
-# generate text with variable substitution
-methods_text <- boilerplate_generate_text(
-  category = "methods",
-  sections = c("sample", "sample_selection"),
-  global_vars = list(
-    population = "university students",
-    timeframe = "2020-2021"
-  ),
-  db = all_db,  # pass the unified database
-  add_headings = TRUE
-)
-
-cat(methods_text)
-
-
-
-
+use_data_path = here::here("boilerplate", "data")
 
 
 
 
 
 # import data -------------------------------------------------------------
-proto_unified_db <- boilerplate_import( data_path = my_project_path)
-
+proto_unified_db <- boilerplate_import( data_path = use_data_path)
 boilerplate_save(
   proto_unified_db,
-  data_path = my_project_path
+  data_path = use_data_path
 )
 
 # set path ----------------------------------------------------------------
@@ -116,26 +115,25 @@ test_db <- boilerplate_import( data_path = student_path)
 # Introduction ------------------------------------------------------------
 # import data
 
-unified_db <- boilerplate_import()
+unified_db <- boilerplate_import( data_path = use_data_path)
+#boilerplate_save(unified_db, create_backup = FALSE)
 
-
-unified_db$bibliography
 
 # add bibliography --------------------------------------------------------
 
 # Configure bibliography source
-db <- boilerplate_add_bibliography(
+unified_db <- boilerplate_add_bibliography(
   unified_db,
   url = "https://raw.githubusercontent.com/go-bayes/templates/refs/heads/main/bib/references.bib",
   local_path = "references2.bib"
 )
-
-# Download and copy bibliography
-boilerplate_copy_bibliography(db, target_dir = "data/boilerplate")
-
+#boilerplate_copy_bibliography()
+# # Download and copy bibliography
+# boilerplate_copy_bibliography(unified_db, target_dir = "data/boilerplate", create)
 # Save configuration
-boilerplate_save(db, data_path = "boilerplate/data/")
+# boilerplate_save(unified_db, data_path = "boilerplate/databases/backup/", create_dirs=TRUE)
 
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
 
 # standardise measures ----------------------------------------------------
 
@@ -146,7 +144,7 @@ unified_db$measures <- boilerplate_standardise_measures(unified_db$measures)
 boilerplate_measures_report(unified_db$measures, return_report = TRUE)
 
 # save db
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 
@@ -219,11 +217,11 @@ check_template_vars <- function(obj) {
   FALSE  # Simplified for example
 }
 
-my_project_path
-my_project_path
-db <- boilerplate_import(data_path = my_project_path)
-boilerplate_save_json(db, data_path = my_project_path, "db")
-boilerplate_save_json()
+use_data_path
+use_data_path
+db <- boilerplate_import(data_path = use_data_path)
+boilerplate_save(db, data_path = use_data_path, "db")
+#boilerplate_save_json()
 # edit database -----------------------------------------------------------
 # Example 2: Update all references containing "NZAVS"
 unified_db <- boilerplate_batch_edit(
@@ -275,7 +273,7 @@ unified_db <-
   )
 
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
 
 entries_with_chars <- boilerplate_find_chars(
   db = unified_db,
@@ -369,10 +367,10 @@ unified_db <- boilerplate_batch_clean(
   category = "measures"
 )
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
 
 
-s#
+
 # # measurs -----------------------------------------------------------------
 # unified_db$measures$sdo$description <- "Social Dominance Orientation was measured using the following items:"
 # unified_db$measures$rwa$description <- "Right Wing Authoritarianism was measured using the following items:"
@@ -396,7 +394,7 @@ unified_db<- boilerplate_update_entry(
   value = grf_introduction_text
 )
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 # student place holder
@@ -416,7 +414,7 @@ unified_db<- boilerplate_update_entry(
   value = grf_introduction_text
 )
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 # METHODS -----------------------------------------------------------------
@@ -459,7 +457,7 @@ unified_db<- boilerplate_update_entry(
   value = sample_information_text_timeline
 )
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 str(unified_db, max.level = 2)
@@ -492,7 +490,7 @@ unified_db<- boilerplate_update_entry(
 )
 
 # save
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 # for teaching
 student_target_population_text <- "
@@ -713,7 +711,7 @@ unified_db<- boilerplate_update_entry(
   path = "methods.causal_intervention.grf_simple_text",
   value = grf_simple_text
 )
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -738,7 +736,7 @@ unified_db<- boilerplate_update_entry(
 
 cat(unified_db$methods$causal_intervention$lmtp_multi_wave)
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 # To infer causal effects, we assume:
@@ -751,7 +749,7 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 
 # test --------------------------------------------------------------------
 
-unified_db <- boilerplate_import( data_path = my_project_path)
+unified_db <- boilerplate_import( data_path = use_data_path)
 
 # ------------------------------------------------------
 # identification assumptions section
@@ -789,7 +787,7 @@ unified_db<- boilerplate_update_entry(
 
 cat(unified_db$methods$causal_identification_criteria)
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 
@@ -829,7 +827,7 @@ unified_db<- boilerplate_update_entry(
 )
 
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 outcomewide_personality_text <- "### Personality Outcomes
@@ -872,7 +870,7 @@ unified_db<- boilerplate_update_entry(
 )
 cat(unified_db$methods$outcomes$outcomewide_personality)
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 # ------------------------------------------------------
@@ -898,7 +896,7 @@ unified_db<- boilerplate_update_entry(
 )
 
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 # ------------------------------------------------------
@@ -923,6 +921,34 @@ unified_db<- boilerplate_update_entry(
   db = unified_db,
   path = "methods.eligibility.standard",
   value = eligibility_standard_text
+)
+
+
+eligibility_standard_special <- "
+### Eligibility Criteria
+
+To be included in the analysis of this study, participants needed to participate in the {{baseline_wave}} of the study and respond to the baseline measure of {{name_exposure_variable}}. Additionally, participants needed to meet the following eligibility criteria: {{eligibility_criteria}}.
+
+We allowed participants to have been lost to follow-up at the end of the study if they met eligibility criteria at {{baseline_wave}}. We adjusted for attrition and non-response using censoring weights, described below.
+
+A total of {{n_participants}} individuals met these criteria and were included in the study.
+"
+
+
+# if (!boilerplate_path_exists(unified_db$methods, "eligibility")) {
+#   unified_db$eligibility <- list()
+# }
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.eligibility.standard",
+  value = eligibility_standard_text
+)
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.eligibility.special",
+  value = eligibility_standard_special
 )
 
 
@@ -1012,7 +1038,7 @@ unified_db<- boilerplate_update_entry(
 )
 
 
-methods_exposure_indicator_text
+
 # checks
 cat(unified_db$methods$missing_data$missing_lmtp_simple)
 
@@ -1024,7 +1050,7 @@ cat(unified_db$methods$missing_data$missing_grf_simple)
 
 
 # save progress
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 
@@ -1140,7 +1166,7 @@ unified_db<- boilerplate_update_entry(
   value = lmtp_long_explanation_text
 )
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 
@@ -1226,7 +1252,7 @@ cat(unified_db$methods$statistical_models$sdr_long_explanation)
 cat(unified_db$methods$statistical_models$grf_short_explanation)
 
 # save progress
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 
@@ -1447,7 +1473,7 @@ cat(unified_db$methods$analytic_approach$simple_general_approach_cate_long_no_fl
 cat(unified_db$methods$analytic_approach$simple_general_approach_cate_short_no_flip)
 
 # # save progress
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 unified_db$methods$analytic_approach$general_approach_cate_short
 # sensitivity analysis ----------------------------------------------------
@@ -1470,7 +1496,7 @@ unified_db <- boilerplate_update_entry(
 
 
 # yes save
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 
@@ -1478,7 +1504,7 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 #
 #
 # # First, import the database
-# unified_db <- boilerplate_import(data_path = my_project_path)
+# unified_db <- boilerplate_import(data_path = use_data_path)
 # unified_db$methods$causal_identification_criteria
 #
 # # Causal identification criteria
@@ -1618,10 +1644,10 @@ boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
 # )
 #
 # # Finally, save the database
-# boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+# boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 #
 # # To verify the changes
-# unified_db <- boilerplate_import(data_path = my_project_path)
+# unified_db <- boilerplate_import(data_path = use_data_path)
 # # Check one entry to verify it's been saved correctly
 # cat(boilerplate_get_entry(unified_db, "methods.missing_data.missing_lmtp_simple"))
 
@@ -1906,10 +1932,10 @@ unified_db <- boilerplate_update_entry(
 
 
 # Finally, save the database
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 # To verify the changes
-unified_db <- boilerplate_import(data_path = my_project_path)
+unified_db <- boilerplate_import(data_path = use_data_path)
 # Check one entry to verify it's been saved correctly
 cat(boilerplate_get_entry(unified_db, "methods.missing_data.missing_lmtp_simple"))
 
@@ -2101,9 +2127,9 @@ unified_db <- boilerplate_update_entry(
 )
 
 # save
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
-# boilerplate_import(unified_db, data_path = my_project_path, create_backup = FALSE)
+# boilerplate_import(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 # Appendix  ---------------------------------------------------------------
@@ -3253,7 +3279,7 @@ unified_db <- boilerplate_update_entry(
   value = explain_grf
 )
 
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 
@@ -3417,7 +3443,7 @@ unified_db <- boilerplate_update_entry(
 
 
 # save
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 
@@ -3532,7 +3558,7 @@ unified_db <- boilerplate_update_entry(
   path = "appendix.explain.grf_short",
   value = appendix_explain_grf_short
 )
-boilerplate_save(unified_db, data_path = my_project_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 
@@ -4817,7 +4843,7 @@ unified_db$measures$emp_job_valued_binary <- list(
 )
 unified_db$measures$emp_job_sat
 
-boilerplate::boilerplate_save(unified_db, data_path = my_project_path, create_backup = TRUE)
+boilerplate::boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
 
 
 
