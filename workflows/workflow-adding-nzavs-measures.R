@@ -927,9 +927,7 @@ unified_db<- boilerplate_update_entry(
 eligibility_standard_special <- "
 ### Eligibility Criteria
 
-To be included in the analysis of this study, participants needed to participate in the {{baseline_wave}} of the study and respond to the baseline measure of {{name_exposure_variable}}. Additionally, participants needed to meet the following eligibility criteria: {{eligibility_criteria}}.
-
-We allowed participants to have been lost to follow-up at the end of the study if they met eligibility criteria at {{baseline_wave}}. We adjusted for attrition and non-response using censoring weights, described below.
+To be included in the analysis of this study, participants needed to participate in the {{baseline_wave}} of the study and respond to the baseline measure of {{name_exposure_variable}}. {{eligibility_criteria}}. We allowed participants to have been lost to follow-up in the final wave of the study. We adjusted for attrition and non-response using inverse probability of censoring weights, described below.
 
 A total of {{n_participants}} individuals met these criteria and were included in the study.
 "
@@ -1966,11 +1964,15 @@ In sum, this combination of flexible modelling, rigorous testing, and practical 
 
 # Short Version
 strengths_grf_short_text <- "
-### Strengths and Limitations of Our Approach
+#### Strengths and limitations of our approach
 
-We used causal forests [@grf2024] to estimate how treatment effects may differ for individuals with different characteristics. This method is powerful, however it also depends on measuring all major variables influencing both treatment selection and outcomes. If such variables are missed or mismeasured, results can be biased. Additionally, interpreting subgroup effects can be tricky when many characteristics are involved and statistically significant differences may not always translate into meaningful real-world gains.
+We used causal forests to uncover how the treatment effect changes across people who differ in age, gender, baseline scores, and other measured characteristics [@grf2024].
+This flexible, non-parametric method avoids the rigid functional‐form assumptions of linear or logistic regression and can capture complex, higher-order interactions that would otherwise be missed.
 
-Despite these concerns, causal forests offer notable advantages. They allow for flexible, non-parametric modelling [@grf2024], avoiding strict assumptions that might miss complex interactions. We used a robust evaluation method—training our model on half the data and testing it on the remaining half—to avoid overfitting. We then checked whether the predicted differences were genuine and estimated how much benefit we might gain by targeting treatment to those likely to benefit most [@grf2024; @wager2018]. Qini curves [@grf2024] let us see the overall improvement from treating the top-ranked individuals first, and policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] turn these findings into simple ‘if-then’ rules. Together, this approach provides a practical means of identifying and acting on genuine treatment effect differences."
+To guard against over-fitting we split the data: one portion trained the forest, and the other evaluated its predictions train/test ratio: {{sample_split}}.
+On the evaluation set we computed three complementary metrics: (i) rate statistics: the area under the treatment–outcome curve (AUTOC) which summarise how well the model ranks individuals from 'most likely to benefit' to 'least likely to benefit' based on their baseline caracteristics; (ii) Qini curves which show the cumulative gain achieved by treating successively larger fractions of the population -- which is relevant to understanding gains from different spend levels. Policy trees, which convert the forest’s complex predictions into a short set of human-readable if–then rules that can guide targeting in practice [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Collectively, these tools helpt to clarfy whether heterogeneous effects exist, but also how much extra benefit a data-driven targeting policy might yield over random allocation [@wager2018].
+
+Of course, every observational approach carries risks. As with any method that relies on ignorability (treatments are 'as good as random', conditional on measured covariates), we assume we have measured all factors that may jointly influence treatment assignment and the outcomes. If important confounders are unobserved or poorly measured, our estimates may be biased.  Interpreting subgroup findings can also be challenging: statistically significant differences are not always large enough to matter in real life, and the more characteristics we examine, the greater the danger of mistaking noise for signal. These limitations must be kept firmly in mind when interpreting results."
 
 unified_db <- boilerplate_update_entry(
   db = unified_db,
@@ -2038,7 +2040,78 @@ unified_db <- boilerplate_update_entry(
   path = "discussion.student_authors_statement",
   value = sudent_authors_statment_empty_text
 )
+implications.theoretical <-"
+### Implications Theoretical
 
+
+
+"
+
+
+implications.clinical <-"
+### Implications Clinical
+
+
+
+"
+
+
+
+implications.policy <-"
+### Implications Policy
+
+
+
+"
+
+interpret_findings <-"
+### Interpretation and Interest of Findings
+
+
+
+"
+
+
+limitations <-"
+### Limitations
+
+
+
+"
+
+
+# check entries
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.implications.theoretical",
+  value = implications.theoretical
+)
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.implications.clinical",
+  value = implications.clinical
+)
+
+
+# unified_db <- boilerplate_update_entry(
+#   db = unified_db,
+#   path = "discussion.limitations",
+#   value = limitations
+# )
+
+
+# unified_db <- boilerplate_add_entry(
+#   db = unified_db,
+#   path = "discussion.interpret_findings",
+#   value = interpret_findings
+# )
+
+# unified_db <- boilerplate_update_entry(
+#   db = unified_db,
+#   path = "discussion.implications.policy",
+#   value = implications.policy
+# )
 
 
 # check entries
@@ -2913,21 +2986,6 @@ RATE tells us whether heterogeneity exists in aggregate; the Qini curve drills d
 
 *Practical note:* because the Qini curve is read off the **same validation split** used for RATE, comparisons are on equal footing and over-optimism is kept in check.
 
-
-```{r, results='asis'}
-#| label: fig-example-qini
-#| fig-cap: \"Example Qini Curve.\"
-#| eval: true
-#| echo: false
-#| fig-width: 12
-#| fig-height: 12
-models_binary_batch_example$model_t2_agreeableness_z$policy_tree
-
-```
-
-
-In the above illustration, the Qini curve rises sharply at the beginning, indicating that the first several percent of individuals treated (those with the highest predicted $\tau(x)$) yield a large gains to agreeableness. By contrast, the dashed line is roughly a 35-degree line starting at (0,0) – it represents a policy that doesn’t use the heterogeneity (just treating people arbitrarily), which yields, on average, a linear accumulation of the overall ATE. At $x=1.0$ (100% treated), both the model-based policy and the random policy coincide – at that point, everyone is treated, so the total gain is just the ATE. The fact that the Qini curve is above the solid line (forming a 'bulge') indicates that targeting is effective: we achieve more outcome gain for the same treatment fraction [@grf2024]. The area between the solid curve and dashed line up to a certain point corresponds to the RATE metrics discussed (QINI would be the total area between them from 0 to 1).
-
 In our analysis, we report budget-constrained thresholds for treating the top 20% or 50% of recipients. Policymakers often have limits on how many people can be treated (due to cost or other constraints). The Qini curve allows us to zoom in on specific treatment fractions. For instance, if we can only treat 20% of the population, we look at $q = 0.2$ on the x-axis. The y-value of the Qini curve at $0.2$ tells us the expected gain from treating the top 20% (as ranked by the model) compared to treating 20% randomly.
 
 The Qini curve allows us to visualise and explain how the effectiveness of the treatment allocation changes as we expand who gets treated. For an applied researcher, this is very useful. We do more than not that 'heterogeneity exists.'  We are able to advise whether, 'if we have a budget to treat X% of people, here's what outcome we can expect.' For example, suppose an education intervention has an average effect of 5 test score points. The Qini analysis might show that focusing on the top 50% of the population (maybe those with certain demographic profiles) could yield an average effect of .15 SD units for those expected to benefit, meaning we would save resources on those unlikely to gain. At 100% (treating everyone), we're back to average treatment effect, which in this example is about half this amount (0.07 SD units). So the policy insight is: if only 50% can be afforded, target that group to maximise impact.
@@ -2967,26 +3025,7 @@ A policy tree is essentially a simple decision tree that assigns treatment or co
 
 This nicely illustrates how a policy tree can provide a rationale in human terms.
 
-+**Training and validation for policy trees:** As when **constructing** causal forests and evaluating heterogeneity with RATE/Qini, we must avoid over-fitting. It is tempting to use the same data that suggested heterogeneity to also choose the best splits for the policy tree, but that can lead to optimistic results. The optimal tree is chosen to fit the training data well – if we do not validate it, we might pick a tree that works by chance quirks of the data. Therefore, we use cross-validation to select the tree's complexity (depth) and sample splitting to evaluate its performance, using {{train_proportion_decision_tree}} to train the tree and the remainder to valid it.
-
-
-```{r, results='asis'}
-#| label: fig-example-decision-tree
-#| fig-cap: \"Example Decision Tree.\"
-#| eval: true
-#| include: true
-#| echo: false
-#| fig-width: 10
-#| fig-height: 14
-models_binary_batch_example$model_t2_agreeableness_z$combined_plot
-```
-
-**Example**: Recall, @fig-example-qini shows reliable treatment heterogeneity for the effect of religious service attendance on agreeableness. @fig-example-decision-tree presents a policy tree analysis in which simple treatment rules are evaluated indicating who we should 'treat' with religious service if we hope to optimise agreeableness. Here we find that three variables predict treatment benefits: weekly hours commuting, weekly hours doing housework, and household income.  Specifically:
-
-- Participants who commute less than about 5.8 hours per week and have a household income above NZD 28,600 experience greater gains in agreeableness when attending religious services. However among those with very low income and lower commuting demands we would not expect added gains for agreeableness from religious service attendance.
-- Meanwhile, those with comparable higher commuting hours who household working hours are less than 16 hours per week are not expected to benefit in Agreeableness. However, those who are heavier commuters but and also doing more housework are expected to gain in agreeableness.
-
-This analysis holds both theoretical and practical interest. Rather than picking out a familiar category grouping such as gender or ethnicity, policy trees reveal that effect vary by resource availability.
++**Training and validation for policy trees:** As when **constructing** causal forests and evaluating heterogeneity with RATE/Qini, we must avoid over-fitting. It is tempting to use the same data that suggested heterogeneity to also choose the best splits for the policy tree, but that can lead to optimistic results. The optimal tree is chosen to fit the training data well – if we do not validate it, we might pick a tree that works by chance quirks of the data. Therefore, we use cross-validation to select the tree's complexity (depth) and sample splitting to evaluate its performance, using {{train_proportion_decision_tree}} of the data to train the tree and the remainder to valid it.
 
 Overall, policy trees condense the insights from causal forests into actionable guidelines.+We emphasise that deriving these guidelines includes rigorous validation: one part of the data learns the policy, another tests it. This ensures that the simple rules we recommend (e.g. 'treat those with lower time demands; do not treat incomes at a certain level') are supported by evidence rather than being artifacts of noise.
 
@@ -3179,21 +3218,6 @@ While single-number metrics (AUTOC, Qini indices) are useful, it is often enligh
 
 For example, @fig-example-qini presents a Qini curve result in a causal forest analysis investigating the effects of religious service attendance on personality (here 'Agreeableness'). The straight, solid (orange) line indicates the expected gains from treating indiscriminately according to the ATE. The dashed (blue) curve indicates the expected gains from treating using  $\\hat{\\tau}(X)$). The x-axis ('spend') represents the fraction of individuals treated (scaled to a budget), and the y-axis ('gain') represents the improvement in outcome (e.g., additional treatment effect) from targeting those individuals versus random assignment. A steeper, higher dashed curve indicates that the model-based targeting yields much better outcomes for the treated fraction than random selection (solid line). This curve stops (or 'plateaus') after treating approximately 50% of population, because at that point we have assigned treatment to the units predicted to benefit, $\\hat{\\tau_i}(X)> 0)$.
 
-
-```{r, results='asis'}
-#| label: fig-example-qini
-#| fig-cap: \"Example Qini Curve.\"
-#| eval: true
-#| include: true
-#| echo: false
-#| fig-width: 12
-#| fig-height: 12
-models_binary_batch_example$model_t2_agreeableness_z$policy_tree
-```
-
-
-In the above illustration, the Qini curve rises sharply at the beginning, indicating that the first several percent of individuals treated (those with the highest predicted $\tau(x)$) yield a large gains to agreeableness. By contrast, the dashed line is roughly a 35-degree line starting at (0,0) – it represents a policy that doesn’t use the heterogeneity (just treating people arbitrarily), which yields, on average, a linear accumulation of the overall ATE. At $x=1.0$ (100% treated), both the model-based policy and the random policy coincide – at that point, everyone is treated, so the total gain is just the ATE. The fact that the Qini curve is above the solid line (forming a 'bulge') indicates that targeting is effective: we achieve more outcome gain for the same treatment fraction [@grf2024]. The area between the solid curve and dashed line up to a certain point corresponds to the RATE metrics discussed (QINI would be the total area between them from 0 to 1).
-
 In our analysis, we report budget-constrained thresholds for treating the top 20% or 50% of recipients. Policymakers often have limits on how many people can be treated (due to cost or other constraints). The Qini curve allows us to zoom in on specific treatment fractions. For instance, if we can only treat 20% of the population, we look at $q = 0.2$ on the x-axis. The y-value of the Qini curve at $0.2$ tells us the expected gain from treating the top 20% (as ranked by the model) compared to treating 20% randomly.
 
 The Qini curve allows us to visualise and explain how the effectiveness of the treatment allocation changes as we expand who gets treated. For an applied researcher, this is very useful. We do more than not that 'heterogeneity exists.'  We are able to advise whether, 'if we have a budget to treat X% of people, here's what outcome we can expect.' For example, suppose an education intervention has an average effect of 5 test score points. The Qini analysis might show that focusing on the top 50% of the population (maybe those with certain demographic profiles) could yield an average effect of .15 SD units for those expected to benefit, meaning we would save resources on those unlikely to gain. At 100% (treating everyone), we're back to average treatment effect, which in this example is about half this amount (0.07 SD units). So the policy insight is: if only 50% can be afforded, target that group to maximise impact.
@@ -3236,25 +3260,7 @@ A policy tree is essentially a simple decision tree that assigns treatment or co
 +**Training and validation for policy trees:** As when **constructing** causal forests and evaluating heterogeneity with RATE/Qini, we must be careful to avoid over-fitting.
 It is tempting to use the same data that suggested heterogeneity to also choose the best splits for the policy tree, but that can lead to optimistic results. The optimal tree is chosen to fit the training data well – if we do not validate it, we might pick a tree that works by chance quirks of the data. Therefore, we use cross-validation to select the tree's depth and sample splitting to evaluate its performance, using {{train_proportion_decision_tree}} to train the tree and the remainder to **validate** it.
 
-
-
-```{r, results='asis'}
-#| label: fig-example-decision-tree
-#| fig-cap: \"Example Decision Tree.\"
-#| eval: true
-#| include: true
-#| echo: false
-#| fig-width: 10
-#| fig-height: 14
-models_binary_batch_example$model_t2_agreeableness_z$combined_plot
-```
-
-**Example**: Recall, @fig-example-qini shows reliable treatment heterogeneity for the effect of religious service attendance on agreeableness. @fig-example-decision-tree presents a policy tree analysis in which simple treatment rules are evaluated indicating who we should 'treat' with religious service if we hope to optimise agreeableness. Here we find that three variables predict treatment benefits: weekly hours commuting, weekly hours doing housework, and household income.  Specifically:
-
-- Participants who commute less than about 5.8 hours per week and have a household income above NZD 28,600 experience greater gains in agreeableness when attending religious services. However among those with very low income and lower commuting demands we would not expect added gains for agreeableness from religious service attendance.
-- Meanwhile, those with comparable higher commuting hours who household working hours are less than 16 hours per week are not expected to benefit in Agreeableness. However, those who are heavier commuters but and also doing more housework are expected to gain in agreeableness.
-
-This analysis holds both theoretical and practical interest. Rather than picking out a familiar category grouping such as gender or ethnicity, policy trees reveal that effect vary by resource availability.
+Policy tree analysis holds both theoretical and practical interest. Rather than picking out a familiar category grouping such as gender or ethnicity, policy trees reveal that effect vary by resource availability.
 
 Overall, policy trees condense the insights from causal forests into actionable guidelines. We emphasise that deriving these guidelines includes rigorous validation: we use one part of the data to learn the policy and another to test it. This ensures that the simple rules we recommend (e.g. 'treat those with lower time demands; do not treat incomes at a certain level') are supported by evidence rather than being artifacts of noise.
 
