@@ -118,7 +118,6 @@ test_db <- boilerplate_import( data_path = student_path)
 unified_db <- boilerplate_import( data_path = use_data_path)
 #boilerplate_save(unified_db, create_backup = FALSE)
 
-
 # add bibliography --------------------------------------------------------
 
 # Configure bibliography source
@@ -1941,6 +1940,46 @@ cat(social_religious_vs_secular$interpretation)
 "
 
 
+why_cate_hard <- "
+## Why Estimating Heterogeneous Treatment Effects Is Hard
+
+Modern policy and intervention science increasingly asks **“for whom does it work?”** rather than the classical average‐treatment‐effect question. Yet uncovering effect heterogeneity is intrinsically difficult, for both statistical and conceptual reasons.  Below we outline six obstacles that arise when analysts rely on conventional moderation analyses. This discussion motivates the move to non‑parametric machine‐learning tools such as causal forests.
+
+### 1. Rigid Functional‑Form Assumptions
+
+Traditional moderation tests add interaction terms e.g., *Treatment $\\times$ Age*, inside a linear or logistic regression.  This forces the conditional average treatment effect (CATE) to vary in a very specific, low‑order polynomial way.  If the true effect surface is non‑linear, discontinuous, or involves higher‑order interactions (e.g., *Treatment $\\times$ Age $\\times$  Income*), the fitted model cannot capture this surface, leading to attenuation or even suppression of real heterogeneity.
+
+### 2. Thin Data in High‑Dimensional Space
+
+Every additional moderator partitions the sample into finer strata.  A model that is linear in each covariate 'borrows strength' across strata, but once the true pattern bends or breaks, there may be only a handful of treated and untreated observations in any local neighbourhood.  Standard errors balloon, power collapses, and estimates become highly unstable to small perturbations.
+
+### 3. Arbitrary Categorisation of Continuous Variables
+
+To make interaction plots digestible, researchers often dichotomise or trichotomise continuous moderators at arbitrary splits -- such as one standard deviation above or below the mean for a covariate.  Apart from discarding measurement precision and distorting scales, such decisions can both mask and manufacture interaction effects. As modelled interactions increase, uncertainty propogates.
+
+### 4. Scarcity of Support (Positivity/Overlap Violations)
+
+Interaction coefficients are identified only where treated and untreated cases coexist for each moderator value.  If, say, all highly economically deprived participants receive the control while wealthier participants receive the treatment, the model must extrapolate across a data void. Here again, the resulting estimates are driven by modelling assumptions rather than empirical support.
+
+### 5. Interpretation Overload
+
+A regression with several interaction terms yields a forest of coefficients and *p*‑values.  Analysts typically resort to inspecting conditional effects at arbitrarily chosen 'representative' covariate values, again assuming linearity and suppressing complex structure in the data. The world need not, and typically does not, unfold at the pre-determined joints of an analysts imagination.
+
+### 6. Lack of Individual‑Level Ranking
+
+Classical moderation answers explanatory questions (*Is the effect larger for group **A** than group **B**?*) but decision‑makers often need actionable scoring rules (*Who should we treat first?*).  Linear interaction models rarely produce well‑calibrated CATE estimates for every individual, limiting their utility for personalised intervention. Providing such estimates is a difficult statisitcal problem.
+
+#### Implication
+
+Because of these obstacles, traditional moderation analyses frequently miss or misstate true underlying heterogeneity in a population, and struggle to convert statistical findings into actionable guidance.  Causal forests, and related ensemble methods, address these weaknesses by (i) allowing non‑parametric effect surfaces, (ii) adaptively pooling information across similar units, (iii) safeguarding against over‑fitting via sample splitting, and (iv) outputting an estimated CATE for every participant, complete with honest variance estimates.
+"
+
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.grf.why_cate_hard",
+  value = why_cate_hard
+)
+
 
 unified_db <- boilerplate_update_entry(
   db = unified_db,
@@ -1996,41 +2035,45 @@ unified_db <- boilerplate_import(data_path = use_data_path)
 cat(boilerplate_get_entry(unified_db, "methods.missing_data.missing_lmtp_simple"))
 
 
-
-
 # Discussion --------------------------------------------------------------
 
 strengths_grf_long_text <- "
 ### Strengths and Limitations of Our Approach
 
-We used causal forests [@grf2024]—a statistical method designed to estimate Conditional Average Treatment Effects (CATEs)—to investigate how treatment effectiveness might vary across individuals with different characteristics. This strategy offers several advantages over simpler regression models, yet it also comes with important caveats.
+We use a statistical method designed to estimate Conditional Average Treatment Effects (CATEs) to investigate how treatment effectiveness might vary across individuals with different characteristics. This methods is deploys *causal forests* [@grf202]. Our strategy offers several advantages over simpler regression models, yet it also comes with important caveats. We next describe consider the promise, and perils of causal forests.
 
 #### Potential Limitations
 
-First, our results depend heavily on having measured all key variables that affect both who receives treatment and how strongly they respond. If important factors are missing, the estimated differences in treatment effects may be biased. Selecting which characteristics to include in the model is also critical: omitting relevant factors or including inappropriate ones can yield misleading conclusions. Any further analyses that rely on these estimates—such as deciding whom to treat first—will inherit the same potential biases.
+First, our results depend heavily on having measured the key variables that affect both who receives treatment and how strongly they respond. If important variables are missing, the estimated differences in treatment effects may be biased. Selecting which characteristics to include in the model, and which to leave out, is also critical. The dinner party of CATE estimation is only as good as the indicators we invite to it.  Noisy indicators may drown out true insights. The insights of indicators left out cannot be obtained. Any further analyses that rely on these estimates, such as deciding whom to treat first, will inherit the same potential biases of our measures.
 
-Second, interpreting subgroup effects can be challenging when many characteristics are considered simultaneously. Because these estimates are conditional on all factors in the model, a statistically significant finding for one subgroup may not necessarily hold when additional characteristics vary. Moreover, even if the model detects genuine differences, small or niche effects might not translate into meaningful real-world improvements.
+Second, interpreting subgroup effects can be challenging when many characteristics are considered simultaneously. Because these estimates are conditional on all factors in the model, as well as on the population that is modelled, a statistically significant finding for one subgroup may not necessarily hold when additional characteristics are included in a model. Moreover, even if the model detects genuine differences, small or niche effects might not translate into meaningful real-world advice. Given that each individual carries multiple indicators --  age, and ethnicity, and education-level, body mass, anxiety-level, work and commuting regime, rural or urban status, occupational status, personality facets, religion -- and given that we can only observe, at most, one treatment condition for each individual, inferences to conditional average treatment effects from individual-level data is a **difficult statistical problem**, which forest and ensemble methods may not fully resolve. The ambition of our causal questions may reach ahead of warrented confidence.
 
 #### Strengths
 
-Despite these considerations, our approach provides a powerful way to uncover and potentially leverage treatment effect heterogeneity. Causal forests [@grf2024] do not assume a simple linear or additive structure, enabling them to detect complex interactions among diverse covariates. To ensure the findings are not just statistical artifacts, we used a {{sample_split}} sample split: one half of the data to build the model and the other to test its predictions on unseen data. This guards against overfitting and gives a more reliable indication of how well the model generalises.
+Although we should remain humbled by the challenges of causal inferences,  we should be encouraged by recent progress in machine learning for uncovering treatment effect heterogeneity. When combined with methods for cross-validation on data the model has not observed, causal forests offer a powerful method for uncovering, and potentially leveraging, treatment-effect heterogeneity in the populations of interest. Causal forests [@grf2024] do not assume a simple linear or additive structure, enabling them to detect complex interactions among diverse covariates. To ensure the findings are not mere statistical artifacts, we used a {{sample_split}} sample splitting such that part of the data is used to build the model and the other part is used test its predictions -- the tested part remaing unseen during model training. These qualities allow for feature detection and and guard against overfitting, yeilding more reliable generalisations when extrapolating beyond a given study.
 
-We also explicitly assess the reliability and practical value of the predicted differences in treatment effects. We perform statistical checks—such as calibration and differential prediction tests [@grf2024]—to determine whether these variations are genuine rather than noise. Additionally, the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018] estimates how much we might improve outcomes if we treat only the individuals predicted to benefit most, instead of treating everyone equally. To visualise this, Qini curves [@grf2024] show how much extra benefit accumulates as we expand treatment from the top-ranked individuals to a larger portion of the population. Finally, policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] translate these insights into straightforward ‘if-then’ rules based on key baseline characteristics, making the findings more accessible for real-world decision-making.
+We also explicitly assess the reliability and practical value of the predicted differences in treatment effects.  The Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018] estimates how much we might improve outcomes if we treat individuals by their ranked predicted benefit, instead of treating everyone without regard to their covariates. Qini curves [@grf2024] show how much extra benefit accumulates as we expand treatment from the top-ranked individuals to a larger portion of the population at different budget-levels. Finally, policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] translate insights into straightforward ‘if-then’ rules for which several baseline characteristics are most predictive of treatment response. Such policy-rules make findings more accessible for real-world decision-making.
 
-In sum, this combination of flexible modelling, rigorous testing, and practical tools for targeting treatment offers a robust framework for studying and applying treatment effect heterogeneity. Nonetheless, these benefits hinge on the completeness of our data and the accuracy of our assumptions.
+Thus as combinationing of flexible machine-learning with rigorous cross-validation, the application of algorithms for quantifying the hazards and benefits of CATE-based prioritisation, and and practical decision-making tools for effectively targeting treatments, offers a robust framework for investigating treatment effect heterogeneity and better informing policy. Again, such benefits rely on untestable assumptions both about the qualities of the data and of the mechanisms that generate them.
 "
+unified_db <- boilerplate_update_entry(
+  db = unified_db,
+  path = "discussion.strengths.strengths_grf_long_text",
+  value = strengths_grf_long_text
+)
 
+# We perform statistical checks, such as calibration and differential prediction tests [@grf2024], to better assess our confidence in  whether observed variations are genuine rather than noise. Additionally
 # Short Version
+
 strengths_grf_short_text <- "
 #### Strengths and limitations of our approach
 
-We used causal forests to uncover how the treatment effect changes across people who differ in age, gender, baseline scores, and other measured characteristics [@grf2024].
-This flexible, non-parametric method avoids the rigid functional‐form assumptions of linear or logistic regression and can capture complex, higher-order interactions that would otherwise be missed.
+We used causal forests to uncover how the treatment effect changes across people who differ in age, gender, baseline scores, and other measured characteristics [@grf2024]. This flexible, non-parametric method avoids the rigid functional‐form assumptions of linear or logistic regression and can capture complex, higher-order interactions that would otherwise be missed.
 
-To guard against over-fitting we split the data: one portion trained the forest, and the other evaluated its predictions train/test ratio: {{sample_split}}.
-On the evaluation set we computed three complementary metrics: (i) rate statistics: the area under the treatment–outcome curve (AUTOC) which summarise how well the model ranks individuals from 'most likely to benefit' to 'least likely to benefit' based on their baseline caracteristics; (ii) Qini curves which show the cumulative gain achieved by treating successively larger fractions of the population -- which is relevant to understanding gains from different spend levels. Policy trees, which convert the forest’s complex predictions into a short set of human-readable if–then rules that can guide targeting in practice [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Collectively, these tools helpt to clarfy whether heterogeneous effects exist, but also how much extra benefit a data-driven targeting policy might yield over random allocation [@wager2018].
+To guard against over-fitting we split the data: one portion trained the forest, and the other evaluated its predictions train/test ratio: {{sample_split}}. On the evaluation set we computed three complementary metrics: (i) rate statistics: the area under the treatment–outcome curve (AUTOC) which summarise how well the model ranks individuals from 'most likely to benefit' to 'least likely to benefit' based on their baseline caracteristics; (ii) Qini curves which show the cumulative gain achieved by treating successively larger fractions of the population -- which is relevant to understanding gains from different spend levels. policy trees, which convert the forest’s complex predictions into a short set of human-readable if–then rules that can guide targeting in practice [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Collectively, these tools helpt to clarfy whether heterogeneous effects exist, but also how much extra benefit a data-driven targeting policy might yield over random allocation [@wager2018].
 
-Of course, every observational approach carries risks. As with any method that relies on ignorability (treatments are 'as good as random', conditional on measured covariates), we assume we have measured all factors that may jointly influence treatment assignment and the outcomes. If important confounders are unobserved or poorly measured, our estimates may be biased.  Interpreting subgroup findings can also be challenging: statistically significant differences are not always large enough to matter in real life, and the more characteristics we examine, the greater the danger of mistaking noise for signal. These limitations must be kept firmly in mind when interpreting results."
+Although causal forests improve on traditional parametric methods, every observational approach carries risks. First, causal inference in observatiaonl settings inevitably relies on untestable ignorability assumptions (treatments are 'as good as random' conditional on measured covariates). Whether we have measured all factors that may jointly influence treatment assignment and the outcomes cannot be evaluated by statistical tests. If important confounders are unobserved or poorly measured, our estimates may be biased.  Interpreting subgroup findings can also be challenging: statistically significant differences are not always large enough to matter in real life. The twin dangers of mistaking noise for signal remains and of missing true signals abide. Such limitations must be kept firmly in mind when interpreting results.
+"
 
 unified_db <- boilerplate_update_entry(
   db = unified_db,
