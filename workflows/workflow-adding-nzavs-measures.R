@@ -433,7 +433,7 @@ Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS
 sample_information_text_timeline <- "
 ### Sample
 
-Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from {{n_total}} participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB). Refer to [Appendix {{appendix_timeline}}](#appendix-timeline) for a histogram of daily responses for this cohort.
+Data were collected as part of the New Zealand Attitudes and Values Study (NZAVS), an annual longitudinal national probability panel assessing New Zealand residents’ social attitudes, personality, ideology, and health outcomes. The panel began in 2009 and has since expanded to include over fifty researchers, with responses from {{n_total}} participants to date. The study operates independently of political or corporate funding and is based at a university. It employs prize draws to incentivise participation. The NZAVS tends to slightly under-sample males and individuals of Asian descent and to over-sample females and Māori (the Indigenous people of New Zealand). To enhance the representativeness of our sample population estimates for the target population of New Zealand, we apply census-based survey weights that adjust for age, gender, and ethnicity (New Zealand European, Asian, Māori, Pacific) [@sibley2021]. For more information about the NZAVS, visit: [OSF.IO/75SNB](https://doi.org/10.17605/OSF.IO/75SNB). Refer to [ S{{appendix_timeline}}](#appendix-timeline) for a histogram of daily responses for this cohort.
 "
 
 
@@ -473,6 +473,9 @@ unified_db<- boilerplate_update_entry(
   path = "methods.sudent_sample.nzavs",
   value = student_sample_information_text
 )
+
+
+
 
 # ------------------------------------------------------
 # target population section
@@ -590,7 +593,7 @@ Our estimation relies on standard causal assumptions:
 2.  **Consistency**: an individual's observed outcome corresponds to their potential outcome under the exposure they actually received.
 3.  **Positivity**: within strata defined by $X$, there is a non-zero probability of receiving either exposure level (`{{value_exposure}}` or `{{value_control}}`).
 
-(Refer to [Appendix {{appendix_assumptions}}](#appendix-assumptions) for further details). The target population is {{name_target_population}}."
+(Refer to [S{{appendix_assumptions}}](#appendix-assumptions) for further details). The target population is {{name_target_population}}."
 
 
 lmtp_multi_wave_long_text <-"
@@ -662,9 +665,14 @@ $$ \\tau(x) = E[Y({{value_exposure}}) - Y({{value_control}})|X = x] $$
 
 Here, $Y({{value_exposure}})$ is the potential outcome if an individual received the {{name_exposure_threshold}} exposure, $Y({{value_control}})$ is the potential outcome if they received the {{name_control_threshold}} exposure, and $X$ represents the full set of baseline covariates measured before the exposure. The CATE, $\\tau(x)$, estimates the average difference in outcomes between the two exposures for individuals with specific characteristics $x$.
 
-(Refer to [Appendix {{appendix_assumptions_grf}}](#appendix-assumptions_grf) and [{{appendix_explain_grf}}](#appendix-explain-grf), w further details). The target population is {{name_target_population}}."
+(Refer to [S{{appendix_assumptions_grf}}](#appendix-assumptions_grf) and [{{appendix_explain_grf}}](#appendix-explain-grf), w further details). The target population is {{name_target_population}}."
 
 
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.causal_intervention.grf",
+  value = grf_causal_text
+)
 
 # To estimate this effect using observational data, we must account for **confounding**. Confounders are variables associated with both the exposure and the outcome that can distort the estimated relationship. In this study, we adjust for a rich set of baseline covariates, $X$, including demographic factors, personality traits, and baseline measures relevant to the outcome. We assume there are no time-varying confounders relevant to this cross-sectional design. By including these baseline covariates in our statistical model, we aim to remove non-causal associations between the exposure and the outcome, assuming that, conditional on $X$, the exposure is 'as good as random.'
 #
@@ -726,17 +734,46 @@ unified_db<- boilerplate_update_entry(
 )
 
 
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.causal_intervention.grf",
-  value = grf_causal_text
-  )
 
 
 
 cat(unified_db$methods$causal_intervention$lmtp_multi_wave)
 
 boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
+
+
+overlap <- "
+### Overlap
+
+```{r, results = 'asis'}
+overlap$text_summary
+```
+
+@fig-overlap graphs the propensity score distribution, where values closer to zero indicate a lower probability of treatment, and values closer to one indicate a higher probability of treatment. The dashed lines indicate regions of common support.
+
+```{r}
+#| label: fig-overlap
+#| fig-cap: \"Histogram of exposure with binary groupin\"
+#| eval: true
+#| echo: false
+#| fig-height: 12   # tweak if needed
+#| fig-width: 12    # tweak if needed
+
+overlap$propensity_plots$exposure
+```
+
+
+"
+
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.overlap",
+  value = overlap
+)
+
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
+
 
 
 # To infer causal effects, we assume:
@@ -773,7 +810,7 @@ This study relies on the following identification assumptions for estimating the
 
 2. **No unmeasured confounding**: all variables that affect both {{name_exposure_variable}} and the outcome have been measured and accounted for in the analysis.
 
-3. **Positivity**: there is a non-zero probability of receiving each level of {{name_exposure_variable}} for every combination of values of {{name_exposure_variable}} and confounders in the population. Positivity is the only fundamental casual assumption that can be evaluated with data (refer to [Appendix {{appendix_positivity}}](#appendix-positivity))."
+3. **Positivity**: there is a non-zero probability of receiving each level of {{name_exposure_variable}} for every combination of values of {{name_exposure_variable}} and confounders in the population. Positivity is the only fundamental casual assumption that can be evaluated with data (refer to [S{{appendix_positivity}}](#appendix-positivity))."
 
 
 # add criteria
@@ -800,8 +837,13 @@ methods_exposure_indicator_text <- "
 The New Zealand Attitudes and Values Study assesses {{name_exposure_variable}} using the following question:
 
 
-{{measures_exposure}}(Refer to [Appendix {{appendix_measures}}](#appendix-measures))."
+{{measures_exposure}}(Refer to [S{{appendix_measures}}](#appendix-measures))."
 
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.exposure_indicator",
+  value = methods_exposure_indicator_text
+)
 
 
 # outcome domains ---------------------------------------------------------
@@ -818,7 +860,7 @@ We adopt an outcome-wide approach, modelling every outcome in a domain. This str
   | Life-Reflective     | Gratitude, Life Satisfaction, Meaning (Sense & Purpose), Personal Wellbeing Index |
   |       Social        | Social Belonging, Social Support, Neighbourhood Community |
 
-: Outcome domains and example dimensions. Data summaries for all measures used in this study are provided in [Appendix {{appendix_outcomes}}](#appendix-outcomes). {#tbl-outcomes}"
+: Outcome domains and example dimensions. Data summaries for all measures used in this study are provided in [S{{appendix_outcomes}}](#appendix-outcomes). {#tbl-outcomes}"
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -861,7 +903,7 @@ We adopt an outcome-wide approach, modelling every outcome in a domain. This str
 |  | Would like to be seen driving around in a very expensive car. (R) |
 |  | Would get a lot of pleasure from owning expensive luxury goods. (R) |
 
-: Personality domains and associated items from the Mini-IPIP6. (R) indicates reverse-scored items. Data summaries for all measures used in this study are provided in [Appendix {{appendix_outcomes}}](#appendix-outcomes). {#tbl-outcomes}"
+: Personality domains and associated items from the Mini-IPIP6. (R) indicates reverse-scored items. Data summaries for all measures used in this study are provided in [S{{appendix_outcomes}}](#appendix-outcomes). {#tbl-outcomes}"
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -871,6 +913,18 @@ unified_db<- boilerplate_update_entry(
 cat(unified_db$methods$outcomes$outcomewide_personality)
 
 boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
+
+
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "template.grf.simple",
+  value = grf_introduction_text
+)
+
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
+
+
 
 
 # ------------------------------------------------------
@@ -989,7 +1043,7 @@ To address confounding and selection bias arising from missing responses and pan
 missing_grf_simple_text <- "
 ### Missing Data
 
-The GRF package accepts missing values at baseline. To obtain valid inference for missing responses we computed inverse probability of censoring weights for censoring of the exposure, given that systematic censoring following the baseline wave may lead to selection bias that limit generalistion to the baseline target population [@bulbulia2024wierd]. See [Appendix {{appendix_explain_grf}}](#appendix-explain-grf)."
+The GRF package accepts missing values at baseline. To obtain valid inference for missing responses we computed inverse probability of censoring weights for censoring of the exposure, given that systematic censoring following the baseline wave may lead to selection bias that limit generalistion to the baseline target population [@bulbulia2024wierd]. See [S{{appendix_explain_grf}}](#appendix-explain-grf)."
 
 
 # make category
@@ -1029,11 +1083,6 @@ unified_db<- boilerplate_update_entry(
 )
 
 
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.exposure_indicator",
-  value = methods_exposure_indicator_text
-)
 
 
 
@@ -1088,7 +1137,13 @@ We estimated this parameter using a cross-fitted ($k = {{n_folds}}$), doubly rob
 
 We used the Super Learner ensemble algorithm [@polley2023; @vanderlaan2007super] with `SL.glmnet`, `SL.ranger`, and `SL.xgboost` as base learners [@friedman2010regularization; @wright2017ranger; @chen2016xgboost].
 
-We produced all results, tables, and figures with the `margot` R package [@margot2024]. See [Appendix {{appendix_technical_lmtp}}](#appendix-technical-lmtp) for technical details."
+We produced all results, tables, and figures with the `margot` R package [@margot2024]. See [S{{appendix_technical_lmtp}}](#appendix-technical-lmtp) for technical details."
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.lmtp_short_explanation",
+  value = lmtp_short_explanation_text
+)
 
 
 
@@ -1119,7 +1174,15 @@ We estimated this target parameter using a cross-fitted ($k = {{n_folds}}$), dou
 
 We estimated these mechanisms using the Super Learner ensemble algorithm [@polley2023; @vanderlaan2007super]. Super Learner combines predictions from multiple algorithms (base learners) to improve estimation accuracy. Our base learners included regularised regression (`SL.glmnet`), random forests (`SL.ranger`), and gradient boosting (`SL.xgboost`) [@friedman2010regularization; @wright2017ranger; @chen2016xgboost].
 
-We produced all results, tables, and figures with the `margot` R package [@margot2024]. Please see [Appendix {{appendix_technical_lmtp}}](#appendix-technical-lmtp) for complete technical details."
+We produced all results, tables, and figures with the `margot` R package [@margot2024]. Please see [S{{appendix_technical_lmtp}}](#appendix-technical-lmtp) for complete technical details."
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.lmtp_short_explanation_2",
+  value = lmtp_short_explanation_text_2
+)
+
+
 
 # lmtp long
 lmtp_long_explanation_text <- "
@@ -1144,19 +1207,10 @@ To calculate the effect estimate under these assumptions, we used a state-of-the
 
 We used an ensemble method called Super Learner to implement the machine learning component [@polley2023; @vanderlaan2007super]. Instead of relying on a single algorithm, Super Learner combines predictions from several (here: regularised regression via `SL.glmnet`, random forests via `SL.ranger`, and gradient boosting via `SL.xgboost` to improve prediction accuracy for the different parts of the TMLE calculation [@polley2023; @xgboost2023; @Ranger2017; @SuperLearner2023]. We also used {{n_folds}}-fold cross-fitting, a resampling technique that helps prevent overfitting and ensures the statistical validity of our results.
 
-We generated results, tables, and figures using the `margot` R package [@margot2024]. For readers interested in the mathematical and computational specifics, please see [Appendix {{appendix_technical_lmtp}}](#appendix-technical-lmtp)."
+We generated results, tables, and figures using the `margot` R package [@margot2024]. For readers interested in the mathematical and computational specifics, please see [S{{appendix_technical_lmtp}}](#appendix-technical-lmtp)."
 
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.statistical_models.lmtp_short_explanation",
-  value = lmtp_short_explanation_text
-)
 
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.statistical_models.lmtp_short_explanation_2",
-  value = lmtp_short_explanation_text_2
-)
+
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -1197,9 +1251,14 @@ We use cross-validation to reduce overfitting and improve finite-sample performa
 grf_short_explanation_text <- "
 ### Statistical Estimation
 
-We estimate heterogeneous treatment effects with Generalized Random Forests (GRF) [@grf2024]. GRF extends random forests for causal inference by focusing on conditional average treatment effects (CATE). It handles complex interactions and non-linearities without explicit model specification, and it provides 'honest' estimates by splitting data between model-fitting and inference. GRF is doubly robust because it remains consistent if either the outcome model or the propensity model is correct. We evaluate policies with the `policytree` package [@policytree_package_2024; @athey_2021_policy_tree_econometrica] and visualise results with `margot` [@margot2024]. (Refer to [Appendix {{appendix_explain_grf}}](#appendix-explain-grf) for a detailed explanation of our approach.)"
+We estimate heterogeneous treatment effects with Generalized Random Forests (GRF) [@grf2024]. GRF extends random forests for causal inference by focusing on conditional average treatment effects (CATE). It handles complex interactions and non-linearities without explicit model specification, and it provides 'honest' estimates by splitting data between model-fitting and inference. GRF is doubly robust because it remains consistent if either the outcome model or the propensity model is correct. We evaluate policies with the `policytree` package [@policytree_package_2024; @athey_2021_policy_tree_econometrica] and visualise results with `margot` [@margot2024]. (Refer to [S{{appendix_explain_grf}}](#appendix-explain-grf) for a detailed explanation of our approach.)"
 
 
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.statistical_models.grf_short_explanation",
+  value = grf_short_explanation_text
+)
 
 # make category
 # unified_db$methods$statistical_models <- list()
@@ -1235,11 +1294,6 @@ unified_db<- boilerplate_update_entry(
 )
 
 
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.statistical_models.grf_short_explanation",
-  value = grf_short_explanation_text
-)
 
 
 # checks
@@ -1280,9 +1334,9 @@ For each actionable outcome we trained depth-2 policy trees with policytree [@po
 
 ####  Global heterogeneity tests (supplementary).
 
-Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.
+S{{#appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.
 
-Overall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in Appendix {{appendix_explain_grf}}.
+Overall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in S{{appendix_explain_grf}}.
 "
 
 
@@ -1303,7 +1357,7 @@ Direction was standardised by sign-flipping outcomes whose valence opposed that 
 
 #### Diagnostics
 
-On the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.
+On the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. S{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.
 
 #### Budget-focused evidence
 
@@ -1315,7 +1369,16 @@ Note that RATE and Qini provide complementary lenses—global versus budget-spec
 
 For each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.
 
-The workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in Appendix {{appendix_explain_grf}}."
+The workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in S{{appendix_explain_grf}}."
+
+# ** PREFERRED
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.analytic_approach.general_approach_cate_short",
+  value = general_approach_cate_short_text
+)
+
+
 
 
 
@@ -1339,7 +1402,7 @@ For each actionable outcome we trained depth-2 policy trees with policytree [@po
 
 ####  Global heterogeneity tests (supplementary).
 
-Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.
+S{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.
 
 Overall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in Appendix {{appendix_explain_grf}}.
 "
@@ -1362,7 +1425,7 @@ Each analysis used an honest {{sample_ratio_policy}} split: the training fold bu
 
 #### Diagnostics
 
-On the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. Appendix {{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.
+On the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. S{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.
 
 #### Budget-focused evidence
 
@@ -1390,9 +1453,9 @@ After estimating the average treatment effect, we asked *for whom* the exposure 
 
 1. **Orient outcomes.** All scales were re-coded so that higher scores had the same valence as the exposure (flipped: {{flipped_list}}).
 2. **Honest causal forest.** A {{sample_ratio_policy}} split trained the forest and produced out-of-sample CATEs $\\hat\\tau(x)$ on the validation fold [@grf2024].
-3. **Global heterogeneity test.** On the validation fold we computed **RATE-AUTOC** and **RATE-Qini**; FDR was controlled with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling] (see Appendix {{appendix_rate}}).
-4. **Budget lens.** **Qini curves** compared “treat top–ranked” to “treat all”, revealing expected uplift at budget caps (Appendix {{appendix_qini_curve}}).
-5. **Transparent policy.** When heterogeneity looked actionable, we fitted depth-2 **policy trees** on the validation fold, turning the black-box forest into concise *if–then* rules (details in Appendix {{appendix_explain_grf}}).
+3. **Global heterogeneity test.** On the validation fold we computed **RATE-AUTOC** and **RATE-Qini**; FDR was controlled with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling] (see S{{appendix_rate}}).
+4. **Budget lens.** **Qini curves** compared “treat top–ranked” to “treat all”, revealing expected uplift at budget caps (S{{appendix_qini_curve}}).
+5. **Transparent policy.** When heterogeneity looked actionable, we fitted depth-2 **policy trees** on the validation fold, turning the black-box forest into concise *if–then* rules (details in S{{appendix_explain_grf}}).
 
 This pipeline converts complex CATE estimates into interpretable, out-of-sample decision policies while controlling both over-fitting and multiple testing."
 
@@ -1404,7 +1467,7 @@ After estimating the average treatment effect, we asked *for whom* the exposure 
 
 1. **Orient outcomes.** All scales were re-coded so that higher scores had the same valence as the exposure (flipped: {{flipped_list}}).
 2. **Honest causal forest.** A {{sample_ratio_policy}} split trained the forest and produced out-of-sample CATEs $\\hat\\tau(x)$ on the validation fold [@grf2024].
-3. **Global heterogeneity test.** On the validation fold we computed **RATE-AUTOC** and **RATE-Qini**; FDR was controlled with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling] (see Appendix {{appendix_rate}}).
+3. **Global heterogeneity test.** On the validation fold we computed **RATE-AUTOC** and **RATE-Qini**; FDR was controlled with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling] (see S{{appendix_rate}}).
 4. **Budget lens.** **Qini curves** compared “treat top–ranked” to “treat all”, revealing expected uplift at budget caps (Appendix {{appendix_qini_curve}}).
 5. **Transparent policy.** When heterogeneity looked actionable, we fitted depth-2 **policy trees** on the validation fold, turning the black-box forest into concise *if–then* rules (details in Appendix {{appendix_explain_grf}}).
 
@@ -1414,16 +1477,11 @@ This pipeline converts complex CATE estimates into interpretable, out-of-sample 
 simple_general_approach_cate_short_no_flip_text <- "
 ### Moderators and Treatment Policies
 
-We used a method called 'causal forests' to check if a treatment helped some people more than others. We trained the model on half the data and tested it on the other half. This helped us understand whether the differences we found were real rather than accidental. We then compared outcomes when we targeted treatment to those predicted to benefit the most (using Qini curves) against simply giving the treatment to everyone. Finally, we used policy trees to boil down these results into simple, if-then rules for deciding who's likely to benefit most from the treatment (refer to[Appendix {{appendix_explain_grf}}](#appendix-explain-grf))."
+We used a method called 'causal forests' to check if a treatment helped some people more than others. We trained the model on half the data and tested it on the other half. This helped us understand whether the differences we found were real rather than accidental. We then compared outcomes when we targeted treatment to those predicted to benefit the most (using Qini curves) against simply giving the treatment to everyone. Finally, we used policy trees to boil down these results into simple, if-then rules for deciding who's likely to benefit most from the treatment (refer to[S{{appendix_explain_grf}}](#appendix-explain-grf))."
 
 
 
-# ** PREFERRED
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
-  path = "methods.analytic_approach.general_approach_cate_short",
-  value = general_approach_cate_short_text
-)
+
 
 # unified_db<- boilerplate_update_entry(
 #   db = unified_db,
@@ -1661,12 +1719,12 @@ boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 interpretation_ominibus_test_negative_text <-  "
 #### Omnibus Test
 
-The omnibus test did not provide statistically reliable evidence for overall treatment effect heterogeneity beyond chance. However, omnibus tests can lack power for detecting subtle or localised heterogeneity. Therefore, we examined more specific indicators of potential targeting benefits and subgroup differences. Refer to [Appendix {{appendix_cate_validation_grf}}](#appendix-cate-validation)."
+The omnibus test did not provide statistically reliable evidence for overall treatment effect heterogeneity beyond chance. However, omnibus tests can lack power for detecting subtle or localised heterogeneity. Therefore, we examined more specific indicators of potential targeting benefits and subgroup differences. Refer to [S{{appendix_cate_validation_grf}}](#appendix-cate-validation)."
 
 interpretation_ominibus_test_positive_text <- "
 #### Omnibus Test
 
-The omnibus test (@tbl-omnibus) indicates that the model found differences in how individuals respond to {{omnibus_confirmed_heterogeneity_outcome}}.  Notably, omnibus tests can lack power for detecting subtle or localised heterogeneity. However, even with its anti-conservativism, the test confirmed heterogeneity for {{omnibus_confirmed_heterogeneity_outcome}}. Refer to [Appendix {{appendix_cate_validation_grf}}](#appendix-cate-validation)."
+The omnibus test (@tbl-omnibus) indicates that the model found differences in how individuals respond to {{omnibus_confirmed_heterogeneity_outcome}}.  Notably, omnibus tests can lack power for detecting subtle or localised heterogeneity. However, even with its anti-conservativism, the test confirmed heterogeneity for {{omnibus_confirmed_heterogeneity_outcome}}. Refer to [S{{appendix_cate_validation_grf}}](#appendix-cate-validation)."
 
 
 
@@ -2208,7 +2266,7 @@ boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 # Appendix  ---------------------------------------------------------------
 
 appendix_timeline_text <- "
-## Appendix {{appendix_timeline}}: Daily Data Collection  {#appendix-timeline}
+##S{{appendix_timeline}}: Daily Data Collection  {#appendix-timeline}
 
 {{< pagebreak >}}
 
@@ -2231,7 +2289,7 @@ cat(appendix_timeline_text)
 
 
 appendix_baseline_text <- "
-## Appendix B: Measures and Demographic Statistics {#appendix-baseline}
+## S2: Measures and Demographic Statistics {#appendix-baseline}
 
 ### Measures
 
@@ -2334,7 +2392,7 @@ boilerplate_get_entry(
 
 
 appendix_confounding_lmtp_swig_text <- "
-## Appendix {{appendix_confounding}}: Confouding Control {#appendix-confounding}
+## S{{appendix_confounding}}: Confouding Control {#appendix-confounding}
 
 ::: {#tbl-C}
 ```{=latex}
@@ -2359,7 +2417,7 @@ Where there are multiple exposures, causal inference may be threatened by time-v
 
 cat(appendix_confounding_lmtp_swig_text)
 appendix_confounding_lmtp_dag_text <- "
-## Appendix {{appendix_confounding}}: Confouding Control {#appendix-confounding}
+## S{{appendix_confounding}}: Confouding Control {#appendix-confounding}
 
 ::: {#tbl-C}
 ```{=latex}
@@ -2381,7 +2439,7 @@ Additionally, we control for time-varying confounders at each exposure wave [@ro
 The covariates included for confounding control are described in @pedro_2024effects."
 
 appendix_confounding_threewave_x_text <- "
-##Appendix {{appendix_confounding}}: Confouding Control {#appendix-confounding}
+## S{{appendix_confounding}}: Confouding Control {#appendix-confounding}
 
 ::: {#tbl-confounding}
 ```{=latex}
@@ -2403,7 +2461,7 @@ cat(appendix_confounding_threewave_x_text)
 
 
 appendix_confounding_threewave_l_text <- "
-## Appendix {{appendix_confounding}}: Confouding Control {#appendix-confounding}
+## S{{appendix_confounding}}: Confouding Control {#appendix-confounding}
 
 ::: {#tbl-confounding}
 ```{=latex}
@@ -2425,7 +2483,7 @@ cat(appendix_confounding_threewave_l_text)
 
 
 appendix_assumptions_grf_text <- "
-## Appendix {{appendix_assumptions_grf}}: How Statistical Models Influence Detecting Treatment Effect Differences
+## S{{appendix_assumptions_grf}}: How Statistical Models Influence Detecting Treatment Effect Differences
 
 This explanation draws on @bulbulia2024swigstime.
 
@@ -2473,7 +2531,7 @@ cat(appendix_assumptions_grf_text)
 # needs n_final_exposure_wave, n_outcome_wave, exposure_variable, name_control_regime, name_exposure_regime, value_exposure_set_high, value_exposure_set_low,appendix_positivity, number_exposure_waves, appendix_positivity
 
 appendix_technical_lmtp_time_vary_text <- "
-## Appendix {{appendix_explain_lmtp_time_vary}}: Causal Contrasts and Causal Assumptions {#appendix-assumptions}
+## S{{appendix_explain_lmtp_time_vary}}: Causal Contrasts and Causal Assumptions {#appendix-assumptions}
 ### Notation
   - $A_k$: Observed {{name_exposure_variable}} at Wave $k$, for $k = 1, \\dots, {{n_final_exposure_wave}}$.
   - $Y_\\tau$: Outcomes measured at the end of the study (Wave {{n_outcome_wave}}).
@@ -2544,7 +2602,7 @@ cat(appendix_causal_lmtp_time_vary_text)
 
 
 appendix_positivity_exposures_5_text <- "
-## Appendix {{appendix_positivity}}: Transition Matrix to Check The Positivity Assumption {#appendix-positivity}
+## S{{appendix_positivity}}: Transition Matrix to Check The Positivity Assumption {#appendix-positivity}
 
 
 ```{r}
@@ -2593,7 +2651,7 @@ transition_tables$tables[[5]]
 
 
 appendix_positivity_exposures_1_text <- "
-## Appendix {{appendix_positivity}}: Transition Matrix to Check The Positivity Assumption {#appendix-positivity}
+## S{{appendix_positivity}}: Transition Matrix to Check The Positivity Assumption {#appendix-positivity}
 
 @tbl-transition-waveb-wave1 presents the transition matrix indicating change in the exposure variable between the baseline and exposure waves.
 
@@ -2624,7 +2682,7 @@ appendix_references_text <- "
 
 
 appendix_positivity_exposures_1_binary_text <- "
-## Appendix {{appendix_positivity}}: Transition Matrix to Check The Positivity Assumption {#appendix-positivity}
+## S{{appendix_positivity}}: Transition Matrix to Check The Positivity Assumption {#appendix-positivity}
 
 
 ```{r}
@@ -2653,7 +2711,7 @@ appendix_references_text <- "
 
 
 appendix_confusions_cross_lagged_model_deficiencies_text_old<-"
-## Appendix {{appendix_confusions_cross_lagged_model_deficiencies}}: Inadequacy of Cross Lagged Models
+## S{{appendix_confusions_cross_lagged_model_deficiencies}}: Inadequacy of Cross Lagged Models
 
 Aiken's regression textbook to assert that three conditions must generally be met to establish causality.
 
@@ -3036,7 +3094,7 @@ First, the factors highlighted in policy trees are predictors of treatment-effec
 Second, decisions about prioritising treatment rules are often ethical and political. Even if we set aside uncertainties in the modelling process, few would argue that fairness and justice should be determined by optimisation rules alone.. Even if we set aside uncertainties in the modelling process, few would argue that fairness and justice should be determined by optimisation rules alone. Such questions are typically resolved through democratic processes that involve stakeholder consultations, reflection on social values, a reckoning with historical inequities, and considerations beyond the scope of statistical analyses."
 
 appendix_confusions_cross_lagged_model_deficiencies_text<-"
-## Appendix {{appendix_confusions_cross_lagged_model_deficiencies}}: Inadequacy of Cross Lagged Models
+## S{{appendix_confusions_cross_lagged_model_deficiencies}}: Inadequacy of Cross Lagged Models
 
 Aiken's regression textbook to assert that three conditions must generally be met to establish causality.
 
@@ -3455,7 +3513,7 @@ boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 appendix_explain_grf_short <- "
-## Appendix {{appendix_explain_grf}}. Estimating and Interpreting Heterogeneous Treatment Effects with GRF {#appendix-explain-grf}
+## S{{appendix_explain_grf}}. Estimating and Interpreting Heterogeneous Treatment Effects with GRF {#appendix-explain-grf}
 
 Here we explain a heterogeneous‐treatment‐effect (HTE) analysis using causal forests [@grf2024]. In our workflow, we move from the average treatment effect (ATE) to individualised effects, quantify the practical value of targeting, and finish with interpretable decision rules.
 
