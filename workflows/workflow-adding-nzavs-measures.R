@@ -366,6 +366,9 @@ unified_db <- boilerplate_batch_clean(
   category = "measures"
 )
 
+boilerplate_validate_references(unified_db)
+
+
 boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
 
 
@@ -4219,6 +4222,7 @@ boilerplate_manage_text(
   db = methods_db
 )
 
+
 # ------------------------------------------------------
 # usage example: generating audience-specific reports
 # ------------------------------------------------------
@@ -4918,8 +4922,8 @@ The target population for this analysis is {{name_target_population}}."
 str(unified_db, max.level = 1)
 unified_db$measures$emp_job_sat <- list(
   name = "Job Satisfaction",
-  description = "Job satisfaction was measured with a single item.",
-  reference = "[@eisenbarth2022aspects]",
+  description = "Job satisfaction was measured with a single item:",
+  reference = "eisenbarth2022aspects",
   waves = "1-present",
   keywords = c("employment", "mental health"),
   items = list(
@@ -4929,8 +4933,8 @@ unified_db$measures$emp_job_sat <- list(
 
 unified_db$measures$emp_job_valued <- list(
   name = "Perceive Gratitude from Organisation",
-  description = "Perceved organizational gratitude was measured with a single item.",
-  reference = "Developed for the NZAVS",
+  description = "Perceved organizational gratitude was measured with a single item:",
+  reference = "sibley2021",
   waves = "10-present",
   keywords = c("employment", "mental health"),
   items = list(
@@ -4941,7 +4945,7 @@ unified_db$measures$emp_job_valued <- list(
 unified_db$measures$emp_job_valued_binary <- list(
   name = "Perceive Gratitude from Organisation (binary)",
   description = "Perceved organizational gratitude was measured with a single item.",
-  reference = "Developed for the NZAVS",
+  reference = "sibley2021",
   waves = "10-present",
   keywords = c("employment", "mental health"),
   items = list(
@@ -4949,10 +4953,20 @@ unified_db$measures$emp_job_valued_binary <- list(
   )
 )
 unified_db$measures$emp_job_sat
+boilerplate_standardise_measures()
+use_data_path
+boilerplate_measures_report(unified_db$measures)
 
-boilerplate::boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
+unified_db$measures <- boilerplate_standardise_measures(unified_db$measures)
+head(unified_db$methods$analytic_approach)
+boilerplate_measures_report(unified_db_test)
+unified_db$discussion$acknowlegements
+boilerplate_list_files(data_path = use_data_path)
+unified_db$measures$emp_job_valued
+use_data_path
+boilerplate::boilerplate_save(unified_db, data_path = use_data_path, format = "both", create_backup = TRUE)
 
-
+use_data_path
 
 
 # SHIFT INTERVENTION ------------------------------------------------------
