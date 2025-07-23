@@ -410,13 +410,10 @@
     },
     "emp_job_sat": {
       "name": "Job Satisfaction",
-      "description": "Job satisfaction was measured with a single item.",
+      "description": "Job satisfaction was measured with a single item:",
       "reference": "[@eisenbarth2022aspects]",
       "waves": "1-present",
-      "keywords": [
-        "employment",
-        "mental health"
-      ],
+      "keywords": ["employment", "mental health"],
       "items": [
         "How satisfied are you with your current job?"
       ]
@@ -431,13 +428,10 @@
     },
     "emp_job_valued": {
       "name": "Perceive Gratitude from Organisation",
-      "description": "Perceved organizational gratitude was measured with a single item.",
+      "description": "Perceved organizational gratitude was measured with a single item:",
       "reference": "Developed for the NZAVS",
       "waves": "10-present",
-      "keywords": [
-        "employment",
-        "mental health"
-      ],
+      "keywords": ["employment", "mental health"],
       "items": [
         "How valued do you feel by your current organization?"
       ]
@@ -447,10 +441,7 @@
       "description": "Perceved organizational gratitude was measured with a single item.",
       "reference": "Developed for the NZAVS",
       "waves": "10-present",
-      "keywords": [
-        "employment",
-        "mental health"
-      ],
+      "keywords": ["employment", "mental health"],
       "items": [
         "How valued do you feel by your current organization?"
       ]
