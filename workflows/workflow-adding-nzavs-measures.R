@@ -3009,7 +3009,7 @@ Lastly, Cross-Lagged Panel Models (CLPMs), such as those used in Study 4, do not
 
 
 explain_grf_long <- "
-In this appendix we show how to estimate causal effects with the `grf` R package (Generalised Random Forests).
+In this appendix we explain how we estimate causal effects with the `grf` R package (Generalised Random Forests).
 
 #### Menu of HTE diagnostics
 
@@ -3202,13 +3202,14 @@ Lastly, Cross-Lagged Panel Models (CLPMs), such as those used in Study 4, do not
 
 # grf use  ----------------------------------------------------------------
 
-
+yola
 explain_grf <- "
 Here, we explain how the `grf` R package (Generalized Random Forests) can be used to estimate causal effects with causal forests.
 
 #### Menu of HTE diagnostics
 
-Investigators may run one, several, or all of the following, depending on the scientific or operational question:
+WOur workflow is as follow:
+* **Calibration tests**: we first assess the calibration of the predictions using the held-out data [@grf2024]. This involved checking if the average of the predicted CATEs accurately reflected the overall average treatment effect (ATE) found in the evaluation sample. We also test whether the *predicted variation* in treatment effects (heterogeneous treatment effects, HTE) is reliable. A specific 'differential prediction' test acts as an omnibus indicator ($p$-value) of whether the model successfully captures statistically significant variability in how individuals respond to the treatment [@grf2024].
 * **RATE AUTOC / RATE Qini (global evidence)** – 'Should we abandon a uniform policy?'
 * **Qini curves (budget lens)** – 'If we treat at most $p\\%$, what uplift should we expect?'
 * **Policy trees (decision rule)** – 'Which simple, transparent allocation maximises welfare under constraints?'
@@ -4807,7 +4808,7 @@ measuremeasures_db$alcohol_frequency_2
 
 general_approach_cate_long <- "Our primary goal was to move beyond average treatment effects (ATE) and investigate whether the intervention's causale effects reliably varied across individuals based on their characteristics. To achieve this, we estimated conditional average treatment effects (CATEs) using causal forests [@grf2024]. Causal forests are a machine learning method adapted specifically for estimating how treatment effects differ across people defined by a set of covariates. These effects are interesting because they help to clarify for whom treatment effects are likely to have their strongest effects, and for whom treatments effects may not work, or be harmful.
 
-For interpretability across different outcomes, we standardised the direction of effects. Some outcomes, like depression scores, are typically interpreted as 'lower is better'. We inverted the scales for such variables so that positive treatment effects consistently indicated improvement (e.g., a reduction in depression). This ensures that larger positive CATE estimates always signify greater benefit from the treatment.
+For interpretability across different outcomes, we standardised the direction of effects. Some outcomes, such as depression scores, are typically interpreted as 'lower is better'. We inverted the scales for such variables so that positive treatment effects consistently indicated improvement (e.g., a reduction in depression). This ensures that larger positive CATE estimates always signify greater benefit from the treatment.
 
 A central challenge when invesitigating individual differences using CATE is ensuring the detected variations are genuine and not just noise or overfitting. Therefore, we rigorously evaluated the causal forest estimates using a {{sample_split}} sample split sample splitting approach. Half the data were used to train the causal forest model (i.e., to identify patterns of differing treatment effects), and the other half (the held-out data) were used exclusively for evaluation.
 
@@ -4819,7 +4820,7 @@ To visualise the benefit of prioritisation, we used Qini curves [@grf2024]. Thes
 
 The Qini curve plots the cumulative gain (or loss) achieved by the targeted approach as we increase the proportion of the sample receiving treatment (starting with those predicted to benefit most). Positive Qini values indicate that targeting treatment based on predicted CATEs yields better overall outcomes than the uniform approach for that proportion treated. This helps determine if a personalised strategy is advantageous, and potentially for what fraction of the population.
 
-Finally, if we detected reliable heterogeneity , we aimed to translate these complex CATE predictions into simpler, actionable rules using policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Policy trees learn simple decision rules (e.g., 'Treat individuals with baseline score > X and age < Y') that optimise treatment allocation based on the estimated CATEs. Policy tree estimation identify defining baseline characteristics that distinguish subgroups with markedly different responses, providing transparent, interpretable guidelines for potentially tailoring treatment in practice.
+Finally, if we detect reliable heterogeneity , we aim to translate these complex CATE predictions into simpler, actionable rules using policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Policy trees learn simple decision rules (e.g., 'Treat individuals with baseline score > X and age < Y') that optimise treatment allocation based on the estimated CATEs. Policy tree estimation identifies defining baseline characteristics that distinguish subgroups with markedly different responses, providing transparent, interpretable guidelines for potentially tailoring treatment in practice.
 
 All heterogeneity analyses, including calibration tests, RATE calculations, Qini curves, and policy trees, were conducted using R, primarily with the `grf` [@grf2024], `policytree` [@policytree_package_2024], and `margot` [@margot2024] packages. The figures presented were generated using `margot`.
 
