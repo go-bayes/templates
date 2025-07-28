@@ -3209,7 +3209,7 @@ Here, we explain how the `grf` R package (Generalized Random Forests) can be use
 #### Menu of HTE diagnostics
 
 WOur workflow is as follow:
-* **Calibration tests**: we first assess the calibration of the predictions using the held-out data [@grf2024]. This involved checking if the average of the predicted CATEs accurately reflected the overall average treatment effect (ATE) found in the evaluation sample. We also test whether the *predicted variation* in treatment effects (heterogeneous treatment effects, HTE) is reliable. A specific 'differential prediction' test acts as an omnibus indicator ($p$-value) of whether the model successfully captures statistically significant variability in how individuals respond to the treatment [@grf2024].
+* **Caalibration tests**: we first assess the calibration of the predictions using the held-out data [@grf2024]. This involved checking if the average of the predicted CATEs accurately reflected the overall average treatment effect (ATE) found in the evaluation sample. We also test whether the *predicted variation* in treatment effects (heterogeneous treatment effects, HTE) is reliable. A specific 'differential prediction' test acts as an omnibus indicator ($p$-value) of whether the model successfully captures statistically significant variability in how individuals respond to the treatment [@grf2024].
 * **RATE AUTOC / RATE Qini (global evidence)** – 'Should we abandon a uniform policy?'
 * **Qini curves (budget lens)** – 'If we treat at most $p\\%$, what uplift should we expect?'
 * **Policy trees (decision rule)** – 'Which simple, transparent allocation maximises welfare under constraints?'
