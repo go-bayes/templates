@@ -399,6 +399,49 @@ unified_db<- boilerplate_update_entry(
 boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
+grf_flow_chart <- "
+### Heterogeneity Treatment Effect Decision Flow
+
+The following flowchart shows the decision logic:
+
+  START: For each model
+           |
+           v
+  STEP 1: EXCLUSION CHECK
+  Is RATE QINI < 0 (sig) OR RATE AUTOC < 0 (sig)?
+           |
+      +----+----+
+      |         |
+     YES       NO
+      |         |
+      v         v
+  EXCLUDED    STEP 2: SELECTION CHECK
+              Is RATE QINI > 0 (sig) OR RATE AUTOC > 0 (sig)?
+                       |
+                  +----+----+
+                  |         |
+                 YES       NO
+                  |         |
+                  v         v
+              SELECTED   NOT SELECTED
+                  |
+                  v
+              STEP 3: CALIBRATION
+                  |
+                  v
+              STEP 4: QINI CURVES
+
+"
+
+unified_db<- boilerplate_update_entry(
+  db = unified_db,
+  path = "methods.grf_flow_chart",
+  value = grf_flow_chart
+)
+
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
+
+
 # student place holder
 grf_introduction_text<- "## Introduction
 
@@ -1351,27 +1394,40 @@ unified_db<- boilerplate_update_entry(
 general_approach_cate_short_text <- "
 ### Moderators and treatment policies
 
-We asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.
+We asked whether individualised targeting, guided by conditional average treatment effects $\\hat{\\tau}(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.
 
 #### Pre-processing and honest forests
 
-Direction was standardised by sign-flipping outcomes whose valence opposed that of the exposure; the affected measures were {{flipped_list}}.  Each analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.
+Direction was standardised by sign-flipping outcomes whose valence opposed that of the exposure; the affected measures were {{flipped_list}}.  Each analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024
+, while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.
 
-#### Diagnostics
+#### Algorithmic approach to heterogeneity detection
 
-On the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. S{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.
+Our analysis proceeded through three distinct stages:
 
-#### Budget-focused evidence
+**Stage 1: Statistical evidence for heterogeneity**
 
-Because programme budgets are finite, we next asked: If resources permit treating only the top 20 % or 50 % ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.
+We first assessed evidence for heterogeneous treatment effects using three complementary tests:
+- Omnibus test for differential prediction and calibration
+- RATE-AUTOC test (Area Under the Targeting Operating Characteristic)
+- RATE-Qini test (weighted area emphasising broader improvements)
 
-Note that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.
+These tests employed five-fold cross-validation following [@wager2024_sequential_validation_hte]. Any outcome with statistically significant negative RATE-AUTOC or RATE-Qini was excluded from further analysis, as these indicate that priority assignment would perform worse than random allocation (p-values adjusted by the Bonferroni correction at q={{cate_alpha}})
 
-#### Transparent decision rules
+**Stage 2: Budget-specific exploration**
 
-For each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.
+For outcomes passing Stage 1 (at least one positive RATE result), we conducted exploratory analysis using Qini curves. Assuming a unit treatment cost per participant, we examined potential gains at two budget constraints:
 
-The workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in S{{appendix_explain_grf}}."
+- Top 10% of population (highly restricted resources)
+- Top 40% of population (moderate resource constraint)
+
+This analysis quantifies the expected uplift from targeted treatment under realistic budget scenarios, with 95% confidence intervals indicating precision. Results are exploratory and intended to inform resource allocation decisions.
+
+**Stage 3: Transparent decision rules**
+
+For outcomes showing promise in Stage 2, we developed interpretable if-then rules using depth-2 policy trees [@policytree_package_2024; @athey_2021_policy_tree_econometrica]. To ensure robustness, we employed `margot::margot_policy_tree_stability()` with {{n_iterations}} iterations of varying train/test splits. Variables appearing consistently (>{{stability_threshold}}% frequency) indicate reliable treatment effect modifiers, while high variability suggests the decision boundaries may be unstable.
+
+This staged approach—statistical testing $\\rightarrow$ budget exploration $\\rightarrow$ stable rule extraction—ensures we only develop targeting strategies for outcomes with solid evidence of heterogeneity, quantifies their practical value under resource constraints, and delivers decision rules that practitioners can implement with confidence. S{{appendix_rate}} reports detailed RATE statistics and S{{appendix_explain_grf}} provides algorithmic details."
 
 # ** PREFERRED
 unified_db<- boilerplate_update_entry(
@@ -1379,10 +1435,6 @@ unified_db<- boilerplate_update_entry(
   path = "methods.analytic_approach.general_approach_cate_short",
   value = general_approach_cate_short_text
 )
-
-
-
-
 
 general_approach_cate_long_no_flip_text <- "
 ### Moderators and treatment policies
@@ -1431,7 +1483,7 @@ On the evaluation fold we first verified forest calibration, then computed RATE-
 
 #### Budget-focused evidence
 
-Because programme budgets are finite, we next asked: If resources permit treating only the top 20 % or 50 % ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.
+Because programme budgets are finite, we next asked: If resources permit treating only the top 10 % or 40 % ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.
 
 Note that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.
 
@@ -3202,14 +3254,13 @@ Lastly, Cross-Lagged Panel Models (CLPMs), such as those used in Study 4, do not
 
 # grf use  ----------------------------------------------------------------
 
-yola
 explain_grf <- "
 Here, we explain how the `grf` R package (Generalized Random Forests) can be used to estimate causal effects with causal forests.
 
 #### Menu of HTE diagnostics
 
-WOur workflow is as follow:
-* **Caalibration tests**: we first assess the calibration of the predictions using the held-out data [@grf2024]. This involved checking if the average of the predicted CATEs accurately reflected the overall average treatment effect (ATE) found in the evaluation sample. We also test whether the *predicted variation* in treatment effects (heterogeneous treatment effects, HTE) is reliable. A specific 'differential prediction' test acts as an omnibus indicator ($p$-value) of whether the model successfully captures statistically significant variability in how individuals respond to the treatment [@grf2024].
+Our workflow is as follow:
+* **Calibration tests**: we first assess the calibration of the predictions using the held-out data [@grf2024]. This involved checking if the average of the predicted CATEs accurately reflected the overall average treatment effect (ATE) found in the evaluation sample. We also test whether the *predicted variation* in treatment effects (heterogeneous treatment effects, HTE) is reliable. A specific 'differential prediction' test acts as an omnibus indicator ($p$-value) of whether the model successfully captures statistically significant variability in how individuals respond to the treatment [@grf2024].
 * **RATE AUTOC / RATE Qini (global evidence)** – 'Should we abandon a uniform policy?'
 * **Qini curves (budget lens)** – 'If we treat at most $p\\%$, what uplift should we expect?'
 * **Policy trees (decision rule)** – 'Which simple, transparent allocation maximises welfare under constraints?'
@@ -3229,7 +3280,6 @@ Moreover, even if the ATE is non-zero (e.g. the treatment has a positive overall
 +Because multiple outcomes were evaluated, we corrected ATE results using {{ate_adjustment}} at α = {{ate_alpha}}.  For all heterogeneity (CATE) tests allow for controlled the false-discovery rate with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling].
 
 
-
 ### Step 2: Assessing Heterogeneous Treatment Effects (HTE)
 
 Realistically, treatment effects are often heterogeneous, meaning the treatment's magnitude (and direction) of effect can differ across individuals and subgroups. For example, a therapy might work better for participants with a certain personality trait, or an educational intervention might benefit students with lower initial skills more than those with higher skills. Heterogeneous Treatment Effect (HTE) analysis seeks to estimate how the treatment effect varies as a function of individual characteristics. We denote the Conditional Average Treatment Effect (CATE) for an individual with features $x$ as:
@@ -3238,7 +3288,7 @@ $$\\tau(x) = E[Y(1) - Y(0)\\mid X = x]$$
 
 where $X$ represents the covariates (individual characteristics). In plain language, $\\tau(x)$ is the expected treatment effect for an individual with attributes $x$. If $\\tau(x)$ is the same for all $x$, the treatment effect is homogeneous (everyone benefits the same amount). If $\\tau(x)$ varies — for instance, $\\tau(x)$ is higher for some people and lower or even negative for others — then we have treatment effect heterogeneity.
 
-**Standard parametric approaches vs. HTE**: Traditionally, researchers might use regression models with interaction terms to examine heterogeneity. For example, one might include terms like Treatment $\times$ Covariate in a linear regression to see if the effect differs by that covariate. However, standard parametric models impose strong assumptions. Often a simple model assumes a homogeneous effect (one treatment coefficient for all) unless specific interactions are added. Even when interactions are included, the model usually assumes a particular functional form (e.g. linear or additive effects of covariates). This can be very restrictive – real heterogeneity might involve complex, non-linear combinations of attributes that are hard to pre-specify. If we try to include many interaction terms or non-linear effects (such as polynomials or splines), we risk model misspecification (choosing the wrong form) and overfitting in small samples [@Sadique2022]. In short, classical regression approaches require us to guess the right pattern of heterogeneity in advance, and they treat everything outside that guess as noise.
+**Standard parametric approaches vs. HTE**: traditionally, researchers might use regression models with interaction terms to examine heterogeneity. For example, one might include terms like Treatment $\times$ Covariate in a linear regression to see if the effect differs by that covariate. However, standard parametric models impose strong assumptions. Often a simple model assumes a homogeneous effect (one treatment coefficient for all) unless specific interactions are added. Even when interactions are included, the model usually assumes a particular functional form (e.g. linear or additive effects of covariates). This can be very restrictive – real heterogeneity might involve complex, non-linear combinations of attributes that are hard to pre-specify. If we try to include many interaction terms or non-linear effects (such as polynomials or splines), we risk model misspecification (choosing the wrong form) and overfitting in small samples [@Sadique2022]. In short, classical regression approaches require us to guess the right pattern of heterogeneity in advance, and they treat everything outside that guess as noise.
 
 **Example:** imagine a study on a new depression therapy. A simple model might assume the therapy has the same effect on all patients (homogeneous effect). If we suspect younger patients respond differently than older patients, we could add an age interaction. But what if the effect actually depends on a combination of age and baseline symptom severity in a non-linear way? Capturing that with a parametric model would require carefully specifying complex interactions (e.g. Age $\times$ Severity, perhaps non-linearly) and would quickly become impractical with many covariates.
 
@@ -3248,9 +3298,9 @@ Because of these challenges, we turn to a more flexible, data-driven approach: c
 
 A causal forest (as implemented in grf) is a machine learning method that extends the idea of random forests to estimate $\\tau(x)$ (the CATE) for each individual. A causal forest is an ensemble of many decision trees that are grown specifically to capture differences in treatment effect across individuals [@grf2024]. In essence, each tree in a causal forest partitions the data based on covariates, aiming to group together individuals with similar treatment responses. By averaging over many such trees (each built on a random subset of data and covariates), the forest produces a robust estimate of the individual treatment effect for each person’s feature profile.
 
-**How causal forests avoid strong assumptions**: Unlike a parametric model, a causal forest model does not assume the treatment effect is constant or linear in the covariates. It can discover non-linear relationships and interactions automatically. For example, a causal forest might find that for younger participants the therapy is very effective, whereas for older participants with high baseline depression the effect is smaller – even if we didn't explicitly program an 'age $\times$ baseline' interaction. The forest algorithm will try splitting the data on different covariates to maximize differences in outcomes between treated and control within each split, effectively letting the data determine where the treatment effect differs. This means we are not forcing a single form of heterogeneity; the model can capture complex patterns (such as a treatment working only at certain combinations of characteristics) that a linear model might miss.
+**How causal forests avoid strong assumptions**: unlike a parametric model, a causal forest model does not assume the treatment effect is constant or linear in the covariates. It can discover non-linear relationships and interactions automatically. For example, a causal forest might find that for younger participants the therapy is very effective, whereas for older participants with high baseline depression the effect is smaller – even if we didn't explicitly program an 'age $\times$ baseline' interaction. The forest algorithm will try splitting the data on different covariates to maximize differences in outcomes between treated and control within each split, effectively letting the data determine where the treatment effect differs. This means we are not forcing a single form of heterogeneity; the model can capture complex patterns (such as a treatment working only at certain combinations of characteristics) that a linear model might miss.
 
-**Causal forest mechanics:** Each tree in a causal forest is constructed in a way that is similar to a standard random forest, but the splitting criterion is tailored to treatment effect estimation. At each split, the algorithm looks for a covariate and a cut-point that best separate the data into two groups with different treatment effects. In other words, it tries to maximize the contrast in outcomes between treated and control in the two child nodes [@grf2024]. This is different from a standard regression tree that would split based on differences in outcome levels; the causal tree splits based on differences in **treatment effects. Once the tree is grown, the treatment effect within each final leaf can be estimated by comparing the average outcomes of treated vs. control units in that leaf. To get a prediction for a new individual with features $x$, we drop that individual down each tree (finding which leaf they land in), and take the leaf's estimated treatment effect. The causal forest averages those estimates across many trees, yielding $\\hat{\tau}(x)$, an estimate of that individual's treatment effect.
+**Causal forest mechanics:** each tree in a causal forest is constructed in a way that is similar to a standard random forest, but the splitting criterion is tailored to treatment effect estimation. At each split, the algorithm looks for a covariate and a cut-point that best separate the data into two groups with different treatment effects. In other words, it tries to maximize the contrast in outcomes between treated and control in the two child nodes [@grf2024]. This is different from a standard regression tree that would split based on differences in outcome levels; the causal tree splits based on differences in **treatment effects. Once the tree is grown, the treatment effect within each final leaf can be estimated by comparing the average outcomes of treated vs. control units in that leaf. To get a prediction for a new individual with features $x$, we drop that individual down each tree (finding which leaf they land in), and take the leaf's estimated treatment effect. The causal forest averages those estimates across many trees, yielding $\\hat{\tau}(x)$, an estimate of that individual's treatment effect.
 
 Importantly, grf uses an approach called 'orthogonalisation' (or 'Robinson’s transformation') to handle confounding in observational data: it first estimates the outcome without treatment and the propensity of treatment, then focuses the forest on the residuals [@wager2018]. This ensures that the forest primarily learns the difference attributable to treatment, not just baseline outcome differences or propensities. (In a randomised experiment, this step is less critical since treatment assignment is independent of $X$, but it is very useful in observational studies.)
 
@@ -3272,31 +3322,44 @@ Empirical data often have missing values in some covariates. Unlike many traditi
 
 Beyond missing data, another core aspect of model validation is ensuring our findings are not artifacts of particular sample splits or tuning choices. Although random forests typically have a few hyperparameters (number of trees, depth, etc.), the defaults in `grf` are often reasonable, and we employ them here. Users can use cross-validation to fine-tune parameters such as minimum leaf size or complexity if needed. For example, one might try different minimum leaf sizes and check which yields the best out-of-sample predictive performance for treatment effects. However, because causal forests average over many trees and use honesty, they are relatively robust and often do not require extensive tuning.
 
-
 ### Step 6 Global evidence with RATE (AUTOC & Qini)
 
-After fitting a causal forest and obtaining individualised effect estimates $\\hat{\tau}(x)$, a crucial question is: do these estimates provide evidence that treatment effects truly vary, or could the apparent heterogeneity be just noise? In other words, we want to test the hypothesis that the treatment effect is actually the same for everyone.
+After fitting a causal forest and obtaining individualised effect estimates $\\hat{\\tau}(x)$, a crucial question is: do these estimates provide evidence that treatment effects truly vary, or could the apparent heterogeneity be just noise? In other words, we want to test the hypothesis that the treatment effect is actually the same for everyone.
 
 We begin with an approach implemented in the `grf` framework that uses the Rank-Weighted Average Treatment Effect (RATE) metrics as a basis for a hypothesis test [@grf2024]. The idea is to ask: if we were to use our estimated $\\hat{\\tau}(x)$ to prioritise who gets treated, would outcomes improve compared to treating people at random? If there were no heterogeneity, then any rule based on $X$ (including our $\\hat{\\tau}(x)$ estimates) should do no better than random assignment. If there is heterogeneity and we have identified it correctly, then targeting those with higher $\\hat{\\tau}(x)$ should yield better outcomes on average.
 
-Concretely, we can sort individuals by their estimated benefit $\\hat{\tau}(x)$ (from highest to lowest). Suppose we progressively treat people in that order – first the top 10% most likely to benefit, then 20%, and so on. If heterogeneity is meaningful, the people with higher $\\hat{\\tau}(x)$ should indeed have larger actual treatment effects on average, so treating them first gives us a bigger gain than treating a random 10% or 20%. We can summarise this with a Targeting Operator Characteristic (TOC) curve – analogous to an ROC curve in classification – which for each fraction $q$ of the population treated (x-axis) shows the excess treatment effect achieved by targeting based on $\\hat{\tau}$ (y-axis) compared to random treatment [@grf2024]. If there were no heterogeneity, this curve would be flat (no gain from targeting). If there were heterogeneity, the curve would rise – especially at low $q$, where we are focusing on the top predicted responders [refer to @yadlowsky2021evaluating].
+Concretely, we can sort individuals by their estimated benefit $\\hat{\\tau}(x)$ (from highest to lowest). Suppose we progressively treat people in that order – first the top 10% most likely to benefit, then 20%, and so on. If heterogeneity is meaningful, the people with higher $\\hat{\\tau}(x)$ should indeed have larger actual treatment effects on average, so treating them first gives us a bigger gain than treating a random 10% or 20%. We can summarise this with a Targeting Operator Characteristic (TOC) curve – analogous to an ROC curve in classification – which for each fraction $q$ of the population treated (x-axis) shows the excess treatment effect achieved by targeting based on $\\hat{\\tau}$ (y-axis) compared to random treatment [@grf2024]. If there were no heterogeneity, this curve would be flat (no gain from targeting). If there were heterogeneity, the curve would rise – especially at low $q$, where we are focusing on the top predicted responders [refer to @yadlowsky2021evaluating].
 
 The test for heterogeneity can then be based on the area under this TOC curve or other summaries of it. Specifically, grf defines:
 
 - **AUTOC:** the Area Under the TOC Curve. This essentially integrates the benefit of targeting across all possible fractions treated [@grf2024]. If there's no heterogeneity, AUTOC should be zero (no area under the curve, since the curve is flat at zero gain).
 
-- **Qini:** a related metric (named after a concept by Radcliffe, 2007) which is a weighted area under the TOC [@radcliffe2007using]. The Qini index weights larger fractions more heavily (technically, Qini = $\\int_0^1 q \\cdot \\mathrm{TOC}(q),dq$) [@radcliffe2007using]. Intuitively, AUTOC tends to emphasise the extremes (are there a small group of people with very large effects?) whereas Qini gives more weight to broader improvements (moderate effects spread across more people) [@yadlowsky2021evaluating].
+- **Qini:** a related metric (named after a concept by Radcliffe, 2007) which is a weighted area under the TOC [@radcliffe2007using]. The Qini index weights larger fractions more heavily (technically, Qini = $\\int_0^1 q \\cdot \\mathrm{TOC}(q),dq$) [@radcliffe2007using]. Intuitively, AUTOC tends to emphasise the extremes (are there a small group of
+  people with very large effects?) whereas Qini gives more weight to broader improvements (moderate effects spread across more people) [@yadlowsky2021evaluating].
 
-Both metrics aggregate the **whole** targeting curve.  A single negative stretch can drag the average below zero, so a reliably negative RATE warns that *no blanket ranking policy should be adopted*, no matter how attractive the extreme tail looks.
+Both metrics aggregate the **whole** targeting curve. A single negative stretch can drag the average below zero, so a reliably negative RATE warns that *no blanket ranking policy should be adopted*, no matter how attractive the extreme tail looks.
 
-To test for heterogeneity, we can check whether these metrics are significantly greater than zero. Under $H_0$ (no heterogeneity), we expect no gain from targeting, so, for example, AUTOC = 0. We can compute an estimate of AUTOC or Qini from the data (using held-out samples to avoid bias) and compute a standard error. Thanks to theoretical results, these metrics satisfy a central limit theorem, so we can do a simple $t$-test. Essentially, we test:
+To test for heterogeneity with proper statistical validity, we employ a five-fold cross-validation approach following [@wager2024_sequential_validation_hte]. This sequential validation ensures that our test statistics have valid p-values under the null hypothesis of no heterogeneity. The procedure works as follows:
+
+1. **Split the data into 5 folds** for cross-validation
+2. **For each fold** (used as test data):
+ - Train a causal forest on the other 4 folds
+ - Predict $\\hat{\\tau}(x)$ for the held-out fold
+ - Compute doubly-robust (DR) scores for the test fold
+ - Calculate RATE metrics (AUTOC and Qini) using these honest predictions
+3. **Aggregate results** across all 5 folds using martingale aggregation [@wager2024_sequential_validation_hte]
+
+This cross-validation approach is crucial because it provides 'honest' estimates – the predictions $\\hat{\\tau}(x)$ used to rank individuals are made on data that wasn't used to train the model. This prevents overfitting from inflating our test statistics. The martingale aggregation method ensures that the resulting p-values are valid even though we'recombining information across multiple folds.
+
+Thanks to theoretical results from [@wager2024_sequential_validation_hte], this cross-validated approach satisfies a central limit theorem, allowing us to perform a simple $t$-test. Essentially, we test:
 
 - $H_0$: RATE (e.g., AUTOC or Qini) = 0 (no heterogeneity detectable)
 - $H_A$: RATE $> 0$
 
-If the test rejects $H_0$, we have evidence that some individuals benefit more than others, beyond what we would expect by chance [@grf2024]. This is strong evidence of treatment effect heterogeneity. If we fail to reject, it suggests that any differences our forest found might not be statistically reliable – in other words, we cannot be sure the treatment effect isn't basically uniform.
+If the test rejects $H_0$, we have evidence that some individuals benefit more than others, beyond what we would expect by chance [@grf2024]. This is strong evidence of treatment effect heterogeneity. If we fail to reject, it suggests that any differences our forest found might not be statistically reliable – in other words, we cannot be sure the treatment effect isn't basically uniform. If the RATE test is reliably *below* zero, we exclude priority assignment by an individual's $\\hat{\\tau}(x)$, as this strategy can be expected to do worse than no priority assignment.
 
-To summarise this step: we use the forest's output to construct a test for heterogeneity. This moves us from simply eyeballing $\\hat{\\tau}(x)$ values (which can be noisy) to a rigorous statistical test of whether tailoring treatment based on $X$ has potential value.
+To summarise this step: we use the forest's output with cross-validation to construct a rigorous test for heterogeneity. This moves us from simply eyeballing $\\hat{\\tau}(x)$ values (which can be noisy) to a statistically valid test of whether tailoring treatment based on $X$ has potential value.
+
 
 ### Step 7 Quantifying policy value with RATE metrics
 
@@ -3310,51 +3373,24 @@ Two key RATE metrics have already been mentioned: AUTOC and Qini. Both summarise
 
 Both AUTOC and Qini are numbers (scalars) that we can compute for a given prioritisation rule (like the causal forest's ranking). They can be compared to baseline strategies. For instance, one baseline is a policy that does not use any covariates – e.g. treat a random fraction $q$ of people. That baseline would by definition have a TOC curve of zero (no preferential gain) and thus AUTOC = Qini = 0. Another baseline could be treating everyone (which yields the ATE as the outcome gain, but of course no targeting because everyone is treated.  This latter baseline is the rule that we use here. We are interested in incremental improvements over the ATE by targeting  $\\hat{\\tau}(X)$).
 
-In a policy-setting context, these metrics help answer the question: 'Could we improve outcomes by targeting the treatment to specific individuals instead of a one-size-fits-all approach?' and 'If yes, how large might that improvement be?' For example, suppose the ATE of a job training program is an earnings increase of USD 500 on average. A statistically reliable Qini or AUTOC might reveal that if we only gave the program to the half of people who benefit the most (according to some characteristics), the average impact for those treated could be much higher, say $1000, and essentially zero for those not treated – implying resources can be better allocated. On the other hand, if no heterogeneity were found, we cannot be certain that targeting would change the payoff. Additionally, we might find reliable evidence that **targeting** performs worse than random assignment, and advise caution if the aim is to maximise benefits across the population.
+In a policy-setting context, these metrics help answer the question: 'Could we improve outcomes by targeting the treatment to specific individuals instead of a one-size-fits-all approach?' and 'If yes, how large might that improvement be?' For example, suppose the ATE of a job training program is an earnings increase of NZD 500 on average. A statistically reliable Qini or AUTOC might reveal that if we only gave the program to the half of people who benefit the most (according to some characteristics), the average effect for those treated could be much higher, say $1000, and essentially zero for those not treated – implying resources can be better allocated. On the other hand, if no heterogeneity were found, we could not be certain that targeting would change the payoff. Additionally, we might find reliable evidence that **targeting** performs worse than random assignment, and advise caution if the aim is to maximise benefits across the population.
 
+To evaluate the benefits of prioritisation by CATE, `grf` provides a function rank_average_treatment_effect() that computes these metrics and even performs statistical tests. An analyst might use it in an applied study to report, for example: 'Using the causal forest’s predicted CATEs as a prioritisation rule, we find a rank-weighted treatment effect (AUTOC) of 0.15 (SE = 0.05), indicating a substantial improvement from targeted treatment over a non-targeted policy [@grf2024]. The Qini coefficient is 0.10 (SE = 0.03). Both are reliably greater than zero, reinforcing the presence of actionable heterogeneity. These numbers would be in the units of the outcome (or outcome difference), and they tell policymakers the potential gain from personalised treatment assignment.
 
-To make this concrete, `grf` provides a function rank_average_treatment_effect() that computes these metrics and even performs statistical tests. An analyst might use it in an applied study to report, for example: 'Using the causal forest’s predicted CATEs as a prioritisation rule, we find a rank-weighted treatment effect (AUTOC) of 0.15 (SE = 0.05), indicating a substantial improvement from targeted treatment over a non-targeted policy [@grf2024]. The Qini coefficient is 0.10 (SE = 0.03). Both are reliably greater than zero, reinforcing the presence of actionable heterogeneity. These numbers would be in the units of the outcome (or outcome difference), and they tell policymakers the potential gain from personalised treatment assignment.
-
-In summary, RATE metrics such as AUTOC and Qini serve a dual purpose: (1) they statistically test for any heterogeneity (as discussed in Step 6) and (2) they quantify how effective our estimated heterogeneity is for improving outcomes through targeting. They help translate complex heterogeneity estimates into a single measure of 'policy value.' If these metrics are small or insignificant, it means even if effects vary, it may not be useful for targeting (perhaps the variation is too minor or too uncertain). If they are large, it suggests real potential to increase impact by focusing the treatment where it works best.
+In summary, RATE metrics such as AUTOC and Qini serve a dual purpose: (1) they statistically test for any heterogeneity (as discussed in Step 6) and (2) they quantify how effective our estimated heterogeneity is for improving outcomes through targeting. They help translate complex heterogeneity estimates into advice about whether to target treatements by an individual's measured covariates.  If RATE metrics are small or insignificant, it means even if effects vary, it may not be useful for targeting (perhaps the variation is too minor or too uncertain). If they are large, it suggests real potential to increase impact by focusing the treatment where it works best. Importantly, whether RATE results are detectable depends on the size of the sample and the quality of a study's measures and design. Additionally, whether results generalise depend on the whether the sample is representative of the target population, perhaps conditional on survey weighting and other methods for transporting results.
 
 ### Step 8 Budget-constrained gains via Qini curves
 
-While single-number metrics (AUTOC, Qini indices) are useful, it is often enlightening to look at the Qini curve or the underlying targeting curve visually. The Qini curve plots the cumulative gain in outcome as we allocate treatment to a larger fraction of the population, ranking by predicted treatment effect [@grf2024]. The x-axis typically is the fraction (or percentage) of the population treated (sorted from highest predicted benefit downwards), and the y-axis is the net gain achieved by that policy compared to treating that fraction at random.
+Although single-number metrics (AUTOC, Qini indices) are useful, it is often enlightening to look at the Qini curve or the underlying targeting curve visually. The Qini curve plots the cumulative gain in outcome as we allocate treatment to a larger fraction of the population, ranking by predicted treatment effect [@grf2024]. The x-axis typically is the fraction (or percentage) of the population treated (sorted from highest predicted benefit downwards), and the y-axis is the net gain achieved by that policy compared to treating that fraction at random.
 
-For example, @fig-example-qini presents a Qini curve result in a causal forest analysis investigating the effects of religious service attendance on personality (here 'Agreeableness'). The straight, solid (orange) line indicates the expected gains from treating indiscriminately according to the ATE. The dashed (blue) curve indicates the expected gains from treating using  $\\hat{\\tau}(X)$). The x-axis ('spend') represents the fraction of individuals treated (scaled to a budget), and the y-axis ('gain') represents the improvement in outcome (e.g., additional treatment effect) from targeting those individuals versus random assignment. A steeper, higher dashed curve indicates that the model-based targeting yields much better outcomes for the treated fraction than random selection (solid line). This curve stops (or 'plateaus') after treating approximately 50% of population, because at that point we have assigned treatment to the units predicted to benefit, $\\hat{\\tau_i}(X)> 0)$.
+In our analysis, we report budget-constrained thresholds for treating the top 10% or 40% of recipients. Policymakers often have limits on how many people can be treated (due to cost or other constraints). The Qini curve allows us to zoom in on specific treatment fractions. For instance, if we can only treat 10% of the population, we look at $q = 0.1$ on the x-axis. The y-value of the Qini curve at $0.1$ tells us the expected gain from treating the top 10% (as ranked by the model) compared to treating 10% randomly. Our Qini curves are constructed using different training and validation sets with a 50/50 split. Note that curves shapes are sensitive to treatement costs. Here we assign a uniform costs of 'one' to each treated unit.
 
-In our analysis, we report budget-constrained thresholds for treating the top 20% or 50% of recipients. Policymakers often have limits on how many people can be treated (due to cost or other constraints). The Qini curve allows us to zoom in on specific treatment fractions. For instance, if we can only treat 20% of the population, we look at $q = 0.2$ on the x-axis. The y-value of the Qini curve at $0.2$ tells us the expected gain from treating the top 20% (as ranked by the model) compared to treating 20% randomly.
-
-The Qini curve allows us to visualise and explain how the effectiveness of the treatment allocation changes as we expand who gets treated. For an applied researcher, this is very useful. We do more than not that 'heterogeneity exists.'  We are able to advise whether, 'if we have a budget to treat X% of people, here's what outcome we can expect.' For example, suppose an education intervention has an average effect of 5 test score points. The Qini analysis might show that focusing on the top 50% of the population (maybe those with certain demographic profiles) could yield an average effect of .15 SD units for those expected to benefit, meaning we would save resources on those unlikely to gain. At 100% (treating everyone), we're back to average treatment effect, which in this example is about half this amount (0.07 SD units). So the policy insight is: if only 50% can be afforded, target that group to maximise impact.
-
-To summarise, Qini curves allow us to identify and communicate the value of targeted policies at specific coverage levels. They show whether the benefit of the treatment is concentrated in a small segment of the population or more widely distributed. When making policy recommendations, one could use the Qini curve to decide, for instance, 'we should implement the program for the top 50% most likely to benefit; beyond 50%, the returns diminish to roughly the average effect, so including more people isn’t cost-effective.' This level of analysis goes beyond saying 'there is heterogeneity'; instead, we quantifies *how much improvement* is possible and for what percentage of a target population.
-
-**Practical note:** because the Qini curve is derived from the **same validation split** used for RATE, both views sit on equal footing and over-optimism is checked.
+The Qini curve allows us to visualise and explain how the effectiveness of the treatment allocation changes as we expand who gets treated. For an applied researcher, this is very useful. We do more than not that 'heterogeneity exists.'  We are able to advise whether, 'if we have a budget to treat X% of people, here's what outcome we can expect.' For example, suppose an education intervention has an average effect of 5 test score points. The Qini analysis might show that focusing on the top 40% of the population (maybe those with certain demographic profiles) could yield an average effect of .15 SD units for those expected to benefit, meaning we would save resources on those unlikely to gain. At 100% (treating everyone), we're back to average treatment effect, which in this example is about half this amount (0.07 SD units). So the policy insight is: if only 40% can be afforded, target those individuals who are expected to maximise impact. Note we define this groups by all baseline covariates in the model, conditional no other baseline covariates. In Qini curve analysis we do not assign treatment on the basis of group membership as such. Moreover, we emphasise again that the shape of Qini curves will differ depending on the costs of treatment.  Hence, although Qini curves allow us to identify and communicate the value of targeted policies at specific coverage levels under assumed treatment costs an expenditure levels, to guide policy the assumptions that underpin the curves should be developed with field experts and policy makers.
 
 
-+### Step 9 Avoiding over-fitting in policy evaluation (sample splitting for RATE/Qini)
+### Step 9 Transparent targeting rules with policy trees
 
-An important statistical caution: when we use the same data to both train a model (such the causal forest) and evaluate its performance (like computing how well targeting does), we can get overly optimistic results. Even though the causal forest provides OOB estimates that are ostensibly out-of-sample for each individual, there is still a subtle form of overfitting possible if we are not careful. The forest was constructed to maximise heterogeneity in the training data, so using those same estimates to evaluate the policy can bias the evaluation upward (we might overstate the value of targeting because we are implicitly reusing the data).
-
-To ensure valid inference, the best practice is to use explicit sample splitting or cross-fitting for the evaluation stage. This means, for example, after training the causal forest on the whole dataset (or a portion of it), we assess the RATE or Qini metrics on a fresh hold-out set that was not used in training. Here we use a separate hold-out set in which we train {{training_proportion}} of the data and use the unseen remainder as the validation set.
-
-
-Why do we do this? Even though the forest’s OOB predictions are not directly from a model that saw that observation's outcome, there remains correlation – each observation’s prediction is an average from many trees, and while any given tree didn't see that observation, it saw many others including some that are also used in evaluating the policy. There is also the fact that OOB predictions are a form of cross-validation but not a true independent test, especially since the forest structure was influenced by all data. To be rigorous, researchers often do a double sample split: one split to train the forest, and a second split (completely independent) to compute the policy metrics like Qini or evaluate a specific targeting rule. This double-splitting ensures that when we say 'targeting the top 20% yields X improvement,' that claim is verified on data that played no part in determining who was top 20%. Thus, our inference (confidence intervals, p-values for heterogeneity) remains valid and not overly optimistic.
-
-In plain terms, our workflow is as follows:
-
-1. Split the data into two parts: A and B.
-2. Use part A to train the causal forest and get $\\hat{\tau}(x)$.
-3. Use part B to evaluate heterogeneity: apply the targeting rule in B, compute observed gains, and estimate RATE/Qini metrics on that held-out data.
-
-
-By doing this, when we report 'p = 0.01 for heterogeneity' or 'Qini = 0.10 at 20% spending', we know these numbers are honest assessments of how the model would perform on new data, not just the data we fit it to.
-
-In short, even with OOB estimates, further sample splitting is used for final evaluation to ensure our conclusions about heterogeneous effects and the benefits of targeting are reliable. This extra step is crucial for rigour: it prevents us from convincing ourselves that a complicated model is useful when in fact it might be explaining noise.
-
-### Step 10 Transparent targeting rules with policy trees
-
-Finally, once we have evidence of heterogeneity and an effective way to target treatment, we might want to translate the complex model into a simple decision rule. Causal forests, while powerful, are 'black box' in nature – they may involve hundreds of trees and intricate splits that are not easy to interpret. For practical decision-making (especially in policy contexts), stakeholders often prefer a simple rule (for example, a checklist or a flowchart) that determines treatment eligibility. This is where policy trees come in.
+Finally, if we have evidence for heterogeneity and an effective way to target treatment, we might want to translate the complex model into a simple decision rule. Causal forests, although powerful, are 'black boxes'-– they may involve hundreds of trees and intricate splits that are not easy to interpret. For practical decision-making (especially in policy contexts), stakeholders often prefer a simple rule (for example, a checklist or a flowchart) that determines treatment eligibility. This is where policy trees come in.
 
 A policy tree is essentially a simple decision tree that assigns treatment or control based on a few covariates splits, optimised to yield good outcomes. The idea is to summarise the individual treatment effects $\\hat{\\tau}(x)$ (or directly use the data) into a set of if-then rules that approximate the optimal targeting. For instance, a policy tree might look like: 'If age < 25 and baseline severity is high, give treatment; if age ≥ 25 and baseline severity is low, do not treat,' etc. These rules are much easier to communicate than a black-box forest.
 
@@ -3374,9 +3410,30 @@ Although estimating heterogeneous treatment effects and deriving actionable poli
 First, the factors highlighted in policy trees are predictors of treatment-effect variability, but these predictors do not themselves have a causal interpretation. Returning to the example above, we should not infer that intervening to set someone’s travel and housework times to different values would change the variability in response. To understand the causal effects of joint interventions, we would need a different analysis. Decision trees are important because they highlight segments likely to benefit, but they do not clarify the effects of changing a population’s structure.
 
 Second, decisions about prioritising treatment rules are often ethical and political. Even if we set aside uncertainties in the modelling process, few would argue that fairness and justice should be determined by optimisation rules alone. Such questions are typically resolved through democratic processes that involve stakeholder consultations, reflection on social values, a reckoning with historical inequities, and considerations beyond the scope of statistical analyses.
+
+
+
+### Step 10 Avoiding over-fitting in policy evaluation (sample splitting for RATE/Qini)
+
+An important statistical caution: when we use the same data to both train a model (such the causal forest) and evaluate its performance (like computing how well targeting does), we can get overly optimistic results. Even though the causal forest provides OOB estimates that are ostensibly out-of-sample for each individual, there is still a subtle form of overfitting possible if we are not careful. The forest was constructed to maximise heterogeneity in the training data, so using those same estimates to evaluate the policy can bias the evaluation upward (we might overstate the value of targeting because we are implicitly reusing the data).
+
+To ensure valid inference, the best practice is to use explicit sample splitting or cross-fitting for the evaluation stage. This means, for example, after training the causal forest on the whole dataset (or a portion of it), we assess the RATE, Qini Curve, and Policy Tree metrics on a fresh hold-out set that was not used in training. For RATE estimates we use five-fold cross-validation. For Qini Curve and Policy Tree estimates, we use a separate hold-out set in which we train {{training_proportion}} of the data and use the unseen remainder as the validation set.
+
+Why do we do this? Even though the causal forest's OOB predictions are not directly from a model that saw that observation's outcome, there remains correlation – each observation’s prediction is an average from many trees, and while any given tree didn't see that observation, it saw many others including some that are also used in evaluating the policy. There is also the fact that OOB predictions are a form of cross-validation but not a true independent test, especially since the forest structure was influenced by all data. For this reason, investigators should do a double sample split: one split to train the forest, and a second split (completely independent) to compute the policy metrics like Qini or evaluate a specific targeting rule. This double-splitting ensures that when we say 'targeting the top 10% yields X improvement,' that claim is verified on data that played no part in determining who was top 10%. Thus, our inference (confidence intervals, p-values for heterogeneity) remains valid and not overly optimistic.
+
+In plain terms, our workflow is as follows:
+
+1. Split the data into two parts: A and B.
+2. Use part A to train the causal forest and get $\\hat{\tau}(x)$.
+3. Use part B to evaluate heterogeneity: apply the targeting rule in B, compute observed gains, and estimate RATE/Qini metrics on that held-out data.
+
+
+By doing this, when we report 'p = 0.01 for heterogeneity' or 'Qini = 0.10 at 20% spending', we know these numbers are honest assessments of how the model would perform on new data, not just the data we fit it to.
+
+In short, even with OOB estimates when constructing causal forests, further sample splitting is used for final evaluation to ensure our conclusions about heterogeneous effects and the benefits of targeting are reliable. This extra step is crucial for rigour: it prevents us from convincing ourselves that a complicated model is useful when in fact it might be explaining noise.
 "
-
-
+yola
+library(boilerplate)
 
 unified_db <- boilerplate_update_entry(
   db = unified_db,
@@ -4973,3 +5030,10 @@ use_data_path
 # SHIFT INTERVENTION ------------------------------------------------------
 
 # We defined $\\dd(A)$ as a hypothetical intervention that increased the value of the {{name_exposure_variable}} by 20% (i.e., multiplied each person's value by 1.2).
+
+
+
+
+
+
+
