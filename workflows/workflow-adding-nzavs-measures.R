@@ -18,102 +18,104 @@ library(boilerplate)
 
 
 
-# set path ----------------------------------------------------------------
-# my_data_path <- "/Users/joseph/GIT/templates/boilerplate_data" Old path
-test_path <- "/Users/joseph/GIT/templates/test"
-
-
-#
-# # tests -------------------------------------------------------------------
-#
-# boilerplate_init(create_dirs = TRUE, confirm = TRUE)
-#
-# boilerplate_init()
+# # set path ----------------------------------------------------------------
+# # my_data_path <- "/Users/joseph/GIT/templates/boilerplate_data" Old path
+# test_path <- "/Users/joseph/GIT/templates/test"
 #
 #
-# # # import all databases into a unified structure
-# all_db <- boilerplate_import()
+# #
+# # # tests -------------------------------------------------------------------
+# #
+# # boilerplate_init(create_dirs = TRUE, confirm = TRUE)
+# #
+# # boilerplate_init()
+# #
+# #
+# # # # import all databases into a unified structure
+# # all_db <- boilerplate_import()
+# #
+# # # add a new method entry directly to the unified database
+# # all_db$methods$sample_selection <- "Participants were selected from {{population}} during {{timeframe}}."
+# #
+# # # save all changes at once
+# # boilerplate_save(all_db)
+# #
+# # test_test_db <- boilerplate_import()
+# # boilerplate_save(
+# #   all_db
+# # )
+# #
+# #
+# # # generate text with variable substitution
+# # methods_text <- boilerplate_generate_text(
+# #   category = "methods",
+# #   sections = c("sample", "sample_selection"),
+# #   global_vars = list(
+# #     population = "university students",
+# #     timeframe = "2020-2021"
+# #   ),
+# #   db = all_db,  # pass the unified database
+# #   add_headings = TRUE
+# # )
+# #
+# # cat(methods_text)
+# #
+# #
 #
-# # add a new method entry directly to the unified database
-# all_db$methods$sample_selection <- "Participants were selected from {{population}} during {{timeframe}}."
 #
-# # save all changes at once
-# boilerplate_save(all_db)
+# use_data_path = here::here("boilerplate", "data")
 #
-# test_test_db <- boilerplate_import()
+#
+#
+#
+#
+# # import data -------------------------------------------------------------
+# proto_unified_db <- boilerplate_import( data_path = use_data_path)
+#
 # boilerplate_save(
-#   all_db
+#   proto_unified_db,
+#   data_path = use_data_path
 # )
 #
+# # set path ----------------------------------------------------------------
+# student_path <- here::here("student_boilerplate_data")
 #
-# # generate text with variable substitution
-# methods_text <- boilerplate_generate_text(
-#   category = "methods",
-#   sections = c("sample", "sample_selection"),
-#   global_vars = list(
-#     population = "university students",
-#     timeframe = "2020-2021"
-#   ),
-#   db = all_db,  # pass the unified database
-#   add_headings = TRUE
+# # proto_unified_db$appendix$explain$grf_short
+# # proto_unified_db$template$conference_presentation
+# interpretation_rate_no_flip_text
+#
+# boilerplate::boilerplate_export(
+#   proto_unified_db,
+#   select_elements = c("measures.*", "methods.student_sample.nzavs", "methods.student_target_population", "methods.statistical_models.grf_short_explanation","methods.causal_intervention.grf_simple_text", "methods.analytic_approach.simple_general_approach_cate_long", "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "results.grf.*", "discussion.student_authors_statement"," discussion.student_ethics","discussion.student_data", "appendix.exposure", "appendix.baseline", "appendix.references", "appendix.strengths_grf_short_text", "discussion.*", "appendix.explain.grf_short",  "appendix.explain.grf_long", "template.conference_presentation"),
+#   data_path = student_path,
+#   output_file = "student_unified_test_db"
 # )
 #
-# cat(methods_text)
+# test_db <- boilerplate_import( data_path = student_path)
+# cat(test_db$discussion$strengths$strengths_grf_short)
+# cat(test_db$appendix$explain$grf_short)
+# cat(test_db$methods$causal_intervention$grf_simple_text)
+#
+# # Using the new boilerplate_export() function
+# # boilerplate_export(
+# #   unified_db,
+# #   select_elements = c("methods.statistical.*", "results.main_effect"),
+# #   output_file = "selected_elements.rds",
+# #   data_path = test_path,
+# # )
 #
 #
-
-
-use_data_path = here::here("boilerplate", "data")
-
-
-
-
-
-# import data -------------------------------------------------------------
-proto_unified_db <- boilerplate_import( data_path = use_data_path)
-boilerplate_save(
-  proto_unified_db,
-  data_path = use_data_path
-)
-
-# set path ----------------------------------------------------------------
-student_path <- here::here("student_boilerplate_data")
-
-# proto_unified_db$appendix$explain$grf_short
-# proto_unified_db$template$conference_presentation
-interpretation_rate_no_flip_text
-
-boilerplate::boilerplate_export(
-  proto_unified_db,
-  select_elements = c("measures.*", "methods.student_sample.nzavs", "methods.student_target_population", "methods.statistical_models.grf_short_explanation","methods.causal_intervention.grf_simple_text", "methods.analytic_approach.simple_general_approach_cate_long", "methods.sensitivity_analysis.short_evalue", "methods.grf_simple_text", "methods.causal_assumptions.*", "methods.causal_identification_criteria", "methods.statistical_models.grf_short_explanation", "methods.missing_data.missing_grf_simple", "methods.exposure_indicator", "methods.analytic_approach.*","methods.causal_intervention.grf_simple_text", "methods.confounding_control.vanderweele","methods.eligibility.standard", "results.grf.*", "discussion.student_authors_statement"," discussion.student_ethics","discussion.student_data", "appendix.exposure", "appendix.baseline", "appendix.references", "appendix.strengths_grf_short_text", "discussion.*", "appendix.explain.grf_short",  "appendix.explain.grf_long", "template.conference_presentation"),
-  data_path = student_path,
-  output_file = "student_unified_test_db"
-)
-
-test_db <- boilerplate_import( data_path = student_path)
-cat(test_db$discussion$strengths$strengths_grf_short)
-cat(test_db$appendix$explain$grf_short)
-cat(test_db$methods$causal_intervention$grf_simple_text)
-
-# Using the new boilerplate_export() function
-# boilerplate_export(
-#   unified_db,
-#   select_elements = c("methods.statistical.*", "results.main_effect"),
-#   output_file = "selected_elements.rds",
-#   data_path = test_path,
+# boilerplate_save(
+#   test_db,
+#   output_file = "student_unified_test_db",
+#   data_path = student_path
 # )
-
-
-boilerplate_save(
-  test_db,
-  output_file = "student_unified_test_db",
-  data_path = student_path
-)
-test_db <- boilerplate_import( data_path = student_path)
-
+# test_db <- boilerplate_import( data_path = student_path)
+#
 
 # Introduction ------------------------------------------------------------
 # import data
+use_data_path = here::here("boilerplate", "data")
 
 unified_db <- boilerplate_import( data_path = use_data_path)
 #boilerplate_save(unified_db, create_backup = FALSE)
@@ -145,21 +147,6 @@ boilerplate_measures_report(unified_db$measures, return_report = TRUE)
 # save db
 boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
-
-
-
-
-# save workflow as json ---------------------------------------------------
-
-
-
-
-
-
-
-
-
-)
 
 # 6. Validate before manuscript submission
 # ----------------------------------------
@@ -368,7 +355,6 @@ unified_db <- boilerplate_batch_clean(
 
 boilerplate_validate_references(unified_db)
 
-
 boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
 
 
@@ -400,38 +386,57 @@ boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 grf_flow_chart <- "
-### Heterogeneity Treatment Effect Decision Flow
+#### Heterogeneity Treatment Effect Decision Flow
 
-The following flowchart shows the decision logic:
 
-  START: For each model
-           |
-           v
-  STEP 1: EXCLUSION CHECK
-  Is RATE QINI < 0 (sig) OR RATE AUTOC < 0 (sig)?
-           |
-      +----+----+
-      |         |
-     YES       NO
-      |         |
-      v         v
-  EXCLUDED    STEP 2: SELECTION CHECK
-              Is RATE QINI > 0 (sig) OR RATE AUTOC > 0 (sig)?
-                       |
-                  +----+----+
-                  |         |
-                 YES       NO
-                  |         |
-                  v         v
-              SELECTED   NOT SELECTED
-                  |
-                  v
-              STEP 3: CALIBRATION
-                  |
-                  v
-              STEP 4: QINI CURVES
+```text
+This following flowchart shows the decision logic:
+
+    START: For each model
+             |
+             v
+    STEP 1: EXCLUSION CHECK
+    Is RATE QINI < 0 (stat sig) OR RATE AUTOC < 0 (stat sig)?
+             |
+        +----+----+
+        |         |
+       YES       NO
+        |         |
+        v         v
+    EXCLUDED    STEP 2: RATE SELECTION CHECK
+    (Stop)      Is RATE QINI > 0 (stat sig) OR RATE AUTOC > 0 (stat sig)?
+                         |
+                    +----+----+
+                    |         |
+                   YES       NO
+                    |         |
+                    v         v
+                SELECTED   UNCLEAR
+                    |         |
+                    v         v
+                STEP 3: QINI CURVE ANALYSIS
+                (Applied to all non-excluded models)
+                    |         |
+                    v         v
+                Already     Check: Is QINI curve positive
+                selected     at any spend level?
+                            |
+                       +----+----+
+                       |         |
+                      YES       NO
+                       |         |
+                       v         v
+                   SELECTED   UNCLEAR
+                             (final)
+
+```
+
+Note: Models can be SELECTED as merting consideration for CATE allocation based on either:
+- Statistically significant positive RATE tests (QINI or AUTOC)
+- Positive QINI curves at specific budget levels
 
 "
+
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -439,7 +444,7 @@ unified_db<- boilerplate_update_entry(
   value = grf_flow_chart
 )
 
-boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 # student place holder
@@ -1355,35 +1360,30 @@ boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 
 # approach text -----------------------------------------------------------
-# to revise
-
+# to revise  We controlled the false discovery rate at q={{cate_alpha}} via {{cate_adjustment}}.
 general_approach_cate_long_text <- "
 ### Moderators and treatment policies
 
-We pursued two complementary objectives: (i) to test whether personalised targeting, based on individual conditional average treatment effects $\\hat\\tau(x)$, yields welfare gains, and (ii) to convert any such gains into transparent, practitioner‐ready decision rules.
+We asked whether individualised targeting, guided by conditional average treatment effects $\\hat{\\tau}(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.
 
 #### Pre-processing and honest model training
 
-Our protocol is as follows: in settings where the exposure is positive, outcomes for which lower is better are sign‐flipped so that larger values always index improvement. Similarly, where the exposure is negative, outcomes for which 'higher is better' are sign flipped. Here, we flipped: {{flipped_list}}.
+Direction was standardised by sign-flipping outcomes whose valence opposed that of the exposure; the affected measures were {{flipped_list}}. Each analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.
 
-Each model estimate used an honest {{sample_ratio_policy}} split: the training fold built the causal forest with grf [@grf2024], while the held-out fold powered all diagnostic checks and provided data for fitting policy trees.  This separation curbs over-fitting yet keeps the workflow simple.
+#### Stage 1: Omnibus and Rank Average Treatment Effect Analysis (RATE)
 
-#### Budget-based screening with Qini curves.
+On the evaluation data, we first ran an omnibus test for differential prediction and calibration to detect any systematic prediction error. Concurrently, we computed RATE-AUTOC (Area Under the Targeting Operating Characteristic) and RATE-Qini (weighted area emphasising broader improvements) statistics. All RATE tests employed five-fold cross-validation following [@wager2024_sequential_validation_hte]. Detailed results are reported in S{{appendix_rate}}.
 
-Before constructing rules we asked a budget question: If resources allow treatment of only the top 20% or 50% of individuals ranked by $\\hat\\tau(x)$, what uplift is purchased relative to treating everyone?
-Qini curves quantified the incremental gain; outcomes whose 95% confidence intervals excluded zero at either spend level were labelled actionable, signalling meaningful heterogeneity in benefit.
+#### Stage 2: Budget-specific exploration
 
-#### Deriving transparent decision rules.
+For outcomes passing Stage 1 (i.e., at least one non-negative RATE result), we conducted exploratory analysis using Qini curves. Assuming a unit treatment cost per participant, we examined potential gains at the top 10 % and 40% of the population (highly restricted/restricted resources). This analysis quantifies the expected uplift from targeted treatment under realistic budget scenarios, with 95% confidence intervals indicating precision. Results are exploratory and intended to inform resource allocation decisions.
 
-For each actionable outcome we trained depth-2 policy trees with policytree [@policytree_package_2024; @athey_2021_policy_tree_econometrica] on the validation data.  The resulting if–then statements maximise expected welfare under the same budget cap and remain auditable by domain experts.
+#### Stage 3: Transparent decision rules
 
-####  Global heterogeneity tests (supplementary).
+For outcomes showing promise in Stage 2, we developed interpretable 'if–then' rules using depth-2 policy trees [@policytree_package_2024; @athey_2021_policy_tree_econometrica]. To ensure robustness, we employed `margot::margot_policy_tree_stability()` with {{n_iterations}} iterations of varying train/test splits. Variables appearing consistently (>{{stability_threshold}} % frequency) indicate reliable treatment effect modifiers, while high variability suggests the decision boundaries may be unstable.
 
-S{{#appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.
-
-Overall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in S{{appendix_explain_grf}}.
+This staged approach -- forest $\\rightarrow$ omnibus and rate diagnostics $\\rightarrow$ Qini-screening $\\rightarrow$ stability-based rule extraction -- ensures we only develop targeting strategies for outcomes with solid evidence of heterogeneity, quantifies their practical value under resource constraints, and delivers decision rules that practitioners can implement with confidence. Algorithmic details appear in S{{appendix_explain_grf}}.
 "
-
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -1391,43 +1391,41 @@ unified_db<- boilerplate_update_entry(
   value = general_approach_cate_long_text
 )
 
+# Outcomes with statistically significant negative RATE-AUTOC or RATE-Qini (p-values adjusted by the Bonferroni correction at q={{cate_alpha}}) were excluded from subsequent stages, as these indicate that covariate-informed priority assignment would perform worse than random allocation.
 general_approach_cate_short_text <- "
-### Moderators and treatment policies
+### Heterogeneous Treatment Effects: moderators and treatment policies
 
-We asked whether individualised targeting, guided by conditional average treatment effects $\\hat{\\tau}(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.
+We asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.
 
 #### Pre-processing and honest forests
 
-Direction was standardised by sign-flipping outcomes whose valence opposed that of the exposure; the affected measures were {{flipped_list}}.  Each analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024
-, while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.
+Each analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.
 
-#### Algorithmic approach to heterogeneity detection
+#### Diagnostics
 
-Our analysis proceeded through three distinct stages:
+On the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. S{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.
 
-**Stage 1: Statistical evidence for heterogeneity**
+#### Budget-focused evidence
 
-We first assessed evidence for heterogeneous treatment effects using three complementary tests:
-- Omnibus test for differential prediction and calibration
-- RATE-AUTOC test (Area Under the Targeting Operating Characteristic)
-- RATE-Qini test (weighted area emphasising broader improvements)
+Because programme budgets are finite, we next asked: If resources permit treating only the top 10% ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.
 
-These tests employed five-fold cross-validation following [@wager2024_sequential_validation_hte]. Any outcome with statistically significant negative RATE-AUTOC or RATE-Qini was excluded from further analysis, as these indicate that priority assignment would perform worse than random allocation (p-values adjusted by the Bonferroni correction at q={{cate_alpha}})
+Note that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.
 
-**Stage 2: Budget-specific exploration**
+#### Transparent decision rules
 
-For outcomes passing Stage 1 (at least one positive RATE result), we conducted exploratory analysis using Qini curves. Assuming a unit treatment cost per participant, we examined potential gains at two budget constraints:
+For each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.
 
-- Top 10% of population (highly restricted resources)
-- Top 40% of population (moderate resource constraint)
+The workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.
 
-This analysis quantifies the expected uplift from targeted treatment under realistic budget scenarios, with 95% confidence intervals indicating precision. Results are exploratory and intended to inform resource allocation decisions.
+#### Challenges in estimating heterogeneous treatment effects
 
-**Stage 3: Transparent decision rules**
+Estimating individualised treatment effects poses several fundamental challenges. First, inferring $\\hat\\tau(x)$ requires modelling how treatment effects vary with high-dimensional covariates, which risks severe overfitting when sample sizes are modest or predictors are numerous. Second, treatment assignment must satisfy overlap (positivity) across all covariate strata: sparse or empty regions in $X$ undermine the credibility of any estimated heterogeneity, inflating variance or introducing bias.
 
-For outcomes showing promise in Stage 2, we developed interpretable if-then rules using depth-2 policy trees [@policytree_package_2024; @athey_2021_policy_tree_econometrica]. To ensure robustness, we employed `margot::margot_policy_tree_stability()` with {{n_iterations}} iterations of varying train/test splits. Variables appearing consistently (>{{stability_threshold}}% frequency) indicate reliable treatment effect modifiers, while high variability suggests the decision boundaries may be unstable.
+Third, standard machine-learning algorithms optimise predictive accuracy, not causal effect estimation; naively applying them can produce systematically mis-calibrated CATEs. Honest splitting (or cross-fitting) mitigates this, but at the cost of reduced effective sample size in each fold. Fourth, unmeasured confounding or model‐misspecification can masquerade as heterogeneity, so rigorous diagnostic tests (e.g. omnibus, RATE-AUTOC, RATE-Qini) are essential to distinguish genuine treatment effect variation from artefacts of imbalance or noise.
 
-This staged approach—statistical testing $\\rightarrow$ budget exploration $\\rightarrow$ stable rule extraction—ensures we only develop targeting strategies for outcomes with solid evidence of heterogeneity, quantifies their practical value under resource constraints, and delivers decision rules that practitioners can implement with confidence. S{{appendix_rate}} reports detailed RATE statistics and S{{appendix_explain_grf}} provides algorithmic details."
+Finally, the trade-off between flexibility and interpretability looms large: highly flexible methods (causal forests, deep nets) can uncover subtle patterns but yield complex CATE surfaces, whereas simpler parametric models may miss non-linear interactions. Our staged pipeline—forest $\\rightarrow$ diagnostics $\\rightarrow$ Qini-screening $\\rightarrow$ policy-tree—navigates these trade-offs by first safeguarding against overfitting and false positives, then focusing on budget‐relevant gains, and finally distilling results into transparent, low-depth decision rules. Furhter details on our approach and algorithms appear in S{{appendix_explain_grf}}.
+"
+
 
 # ** PREFERRED
 unified_db<- boilerplate_update_entry(
@@ -1435,6 +1433,8 @@ unified_db<- boilerplate_update_entry(
   path = "methods.analytic_approach.general_approach_cate_short",
   value = general_approach_cate_short_text
 )
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = F)
+
 
 general_approach_cate_long_no_flip_text <- "
 ### Moderators and treatment policies
@@ -1461,6 +1461,11 @@ S{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether a
 Overall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in Appendix {{appendix_explain_grf}}.
 "
 
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
+
+
+
+
 unified_db<- boilerplate_update_entry(
   db = unified_db,
   path = "methods.analytic_approach.general_approach_cate_long_no_flip",
@@ -1469,7 +1474,7 @@ unified_db<- boilerplate_update_entry(
 
 
 general_approach_cate_short_no_flip_text <- "
-### Moderators and treatment policies
+### Heterogeneous Treatment Effects: moderators and treatment policies
 
 We asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.
 
@@ -1483,7 +1488,7 @@ On the evaluation fold we first verified forest calibration, then computed RATE-
 
 #### Budget-focused evidence
 
-Because programme budgets are finite, we next asked: If resources permit treating only the top 10 % or 40 % ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.
+Because programme budgets are finite, we next asked: If resources permit treating only the top 10% ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.
 
 Note that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.
 
@@ -1491,8 +1496,19 @@ Note that RATE and Qini provide complementary lenses—global versus budget-spec
 
 For each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.
 
-The workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in Appendix {{appendix_explain_grf}}."
+The workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.
 
+#### Challenges in estimating heterogeneous treatment effects
+
+Estimating individualised treatment effects poses several fundamental challenges. First, inferring $\\hat\\tau(x)$ requires modelling how treatment effects vary with high-dimensional covariates, which risks severe overfitting when sample sizes are modest or predictors are numerous. Second, treatment assignment must satisfy overlap (positivity) across all covariate strata: sparse or empty regions in $X$ undermine the credibility of any estimated heterogeneity, inflating variance or introducing bias.
+
+Third, standard machine-learning algorithms optimise predictive accuracy, not causal effect estimation; naively applying them can produce systematically mis-calibrated CATEs. Honest splitting (or cross-fitting) mitigates this, but at the cost of reduced effective sample size in each fold. Fourth, unmeasured confounding or model‐misspecification can masquerade as heterogeneity, so rigorous diagnostic tests (e.g. omnibus, RATE-AUTOC, RATE-Qini) are essential to distinguish genuine treatment effect variation from artefacts of imbalance or noise.
+
+Finally, the trade-off between flexibility and interpretability looms large: highly flexible methods (causal forests, deep nets) can uncover subtle patterns but yield complex CATE surfaces, whereas simpler parametric models may miss non-linear interactions. Our staged pipeline—forest $\\rightarrow$ diagnostics $\\rightarrow$ Qini-screening $\\rightarrow$ policy-tree—navigates these trade-offs by first safeguarding against overfitting and false positives, then focusing on budget‐relevant gains, and finally distilling results into transparent, low-depth decision rules. Furhter details on our approach and algorithms appear in S{{appendix_explain_grf}}.
+"
+
+
+unified_db$measures
 
 unified_db<- boilerplate_update_entry(
   db = unified_db,
@@ -2121,20 +2137,22 @@ unified_db <- boilerplate_update_entry(
 # Short Version
 
 strengths_grf_short_text <- "
-#### Strengths and limitations of our approach
-
 We used causal forests to uncover how the treatment effect changes across people who differ in age, gender, baseline scores, and other measured characteristics [@grf2024]. This flexible, non-parametric method avoids the rigid functional‐form assumptions of linear or logistic regression and can capture complex, higher-order interactions that would otherwise be missed.
 
-To guard against over-fitting we split the data: one portion trained the forest, and the other evaluated its predictions train/test ratio: {{sample_split}}. On the evaluation set we computed three complementary metrics: (i) rate statistics: the area under the treatment–outcome curve (AUTOC) which summarise how well the model ranks individuals from 'most likely to benefit' to 'least likely to benefit' based on their baseline caracteristics; (ii) Qini curves which show the cumulative gain achieved by treating successively larger fractions of the population -- which is relevant to understanding gains from different spend levels. policy trees, which convert the forest’s complex predictions into a short set of human-readable if–then rules that can guide targeting in practice [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Collectively, these tools helpt to clarfy whether heterogeneous effects exist, but also how much extra benefit a data-driven targeting policy might yield over random allocation [@wager2018].
+To guard against over-fitting we split the data: one portion trained the forest, and the other evaluated its predictions train/test ratio: 50/50. On the evaluation set we computed three complementary metrics: (i) rate statistics: the area under the treatment–outcome curve (AUTOC) which summarise how well the model ranks individuals from 'most likely to benefit' to 'least likely to benefit' based on their baseline caracteristics; (ii) Qini curves which show the cumulative gain achieved by treating successively larger fractions of the population -- which is relevant to understanding gains from different spend levels. policy trees, which convert the forest's complex predictions into a short set of human-readable if–then rules that can guide targeting in practice [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Collectively, these tools help to clarify whether heterogeneous effects exist, and also how much extra benefit a data-driven targeting policy might yield over random allocation [@wager2018].
 
-Although causal forests improve on traditional parametric methods, every observational approach carries risks. First, causal inference in observatiaonl settings inevitably relies on untestable ignorability assumptions (treatments are 'as good as random' conditional on measured covariates). Whether we have measured all factors that may jointly influence treatment assignment and the outcomes cannot be evaluated by statistical tests. If important confounders are unobserved or poorly measured, our estimates may be biased.  Interpreting subgroup findings can also be challenging: statistically significant differences are not always large enough to matter in real life. The twin dangers of mistaking noise for signal remains and of missing true signals abide. Such limitations must be kept firmly in mind when interpreting results.
+Although causal forests improve on traditional parametric methods, every observational approach carries risks.
+
+First, causal inference in observational settings inevitably relies on untestable ignorability assumptions (treatments are 'as good as random' conditional on measured covariates). Whether we have measured all factors that may jointly influence treatment assignment and the outcomes cannot be evaluated by statistical tests. If strong common causes of both the exposure and outcome are unobserved or poorly measured, our estimates will be biased.  Interpreting subgroup findings can also be challenging: statistically significant differences are not always large enough to matter in real life. More basic, perhaps, methods for detecting real differences rely on measures that are, in survey research, inherently noisy, and noise often, but no always, attenuates affects. The twin dangers of mistaking noise for signal, or of obscuring singles from noise, abide. Such limitations must be kept firmly in mind when interpreting results. \n
 "
-
+cat(strengths_grf_short_text)
 unified_db <- boilerplate_update_entry(
   db = unified_db,
   path = "discussion.strengths.strengths_grf_short",
   value = strengths_grf_short_text
 )
+# save
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 
 nzavs_ethics_2021_2027_text <- "
 ### Ethics
@@ -3071,7 +3089,7 @@ Investigators can choose one, some, or all of the following tools, depending on 
 * **Qini curves (budget lens)** – 'If we can treat only up to $p\\%$, what uplift do we expect?'  Reads the targeting curve at specific spend levels.
 * **Policy trees (decision rule)** – 'Which simple, transparent allocation rule maximises expected welfare under constraints?'  Optimises welfare directly, agnostic to hypothesis-testing conventions.
 
-These tools are complementary rather than sequential.  A study may stop after RATE, skip RATE and go straight to a decision rule, or report the full trio; the choice should reflect the primary inferential aim — evidence, optimisation, or communication.
+These tools are complementary rather than sequential.
 
 Below we **illustrate** all three analyses in turn.  In practice an investigator may run only the subset that addresses their question.
 
@@ -3150,7 +3168,7 @@ To summarise, Qini curves allow us to identify and communicate the value of targ
 
 ### Step 9 Avoiding over-fitting in policy evaluation (sample splitting for RATE/Qini)
 
-An important statistical caution: when we use the same data to both train a model (such the causal forest) and evaluate its performance (like computing how well targeting does), we can get overly optimistic results. Even though the causal forest provides OOB estimates that are ostensibly out-of-sample for each individual, there is still a subtle form of overfitting possible if we are not careful. The forest was constructed to maximise heterogeneity in the training data, so using those same estimates to evaluate the policy can bias the evaluation upward (we might overstate the value of targeting because we are implicitly reusing the data).
+An important statistical caution: when we use the same data to both train a model (such the causal forest) and evaluate its performance (such as computing how well targeting does), we can get overly optimistic results. Even though the causal forest provides OOB estimates that are ostensibly out-of-sample for each individual, there is still a subtle form of overfitting possible if we are not careful. The forest was constructed to maximise heterogeneity in the training data, so using those same estimates to evaluate the policy can bias the evaluation upward (we might overstate the value of targeting because we are implicitly reusing the data).
 
 To ensure valid inference, the best practice is to use explicit sample splitting or cross-fitting for the evaluation stage. This means, for example, after training the causal forest on the whole dataset (or a portion of it), we assess the RATE or Qini metrics on a fresh hold-out set that was not used in training. Here we use a separate hold-out set in which we train {{traning_proportion}} of the data, and use the unseen remainder as the validation set.
 
@@ -3262,10 +3280,10 @@ Here, we explain how the `grf` R package (Generalized Random Forests) can be use
 Our workflow is as follow:
 * **Calibration tests**: we first assess the calibration of the predictions using the held-out data [@grf2024]. This involved checking if the average of the predicted CATEs accurately reflected the overall average treatment effect (ATE) found in the evaluation sample. We also test whether the *predicted variation* in treatment effects (heterogeneous treatment effects, HTE) is reliable. A specific 'differential prediction' test acts as an omnibus indicator ($p$-value) of whether the model successfully captures statistically significant variability in how individuals respond to the treatment [@grf2024].
 * **RATE AUTOC / RATE Qini (global evidence)** – 'Should we abandon a uniform policy?'
-* **Qini curves (budget lens)** – 'If we treat at most $p\\%$, what uplift should we expect?'
+* **Qini curves (budget lens)** – 'If we treat at most $p\\%$, what uplift should we expect at given budget?'
 * **Policy trees (decision rule)** – 'Which simple, transparent allocation maximises welfare under constraints?'
 
-The tools are complementary, not sequential.  A study may stop after RATE, skip RATE and go straight to a policy tree, or report the full trio; the choice should reflect whether the aim is evidence, optimisation, or communication.
+Although these tools are complementary, not sequential, a reliably negative RATE AUTOC or RATE Qini result is evidence against including an model for subsequent Qini curve or policytree analysis. Qini curve results are subject to decision thresholds about the treated proportion of the the population and the costs of treatment. This increases researcher degrees of freedom (by default we estimate results at 10% of the population, and assign a treatment value = 1 so that we can also interpret the x-axis on the Qini curve plots as the treated fraction. We report policytree results for depth = 2 decision trees with estimates for the estimated treatment effects for the treated and untreated so that magnitudes of heterogeneity can be evaluated by decision makers.
 
 ### Step 1: Estimating the Average Treatment Effect (ATE)
 
@@ -3334,8 +3352,7 @@ The test for heterogeneity can then be based on the area under this TOC curve or
 
 - **AUTOC:** the Area Under the TOC Curve. This essentially integrates the benefit of targeting across all possible fractions treated [@grf2024]. If there's no heterogeneity, AUTOC should be zero (no area under the curve, since the curve is flat at zero gain).
 
-- **Qini:** a related metric (named after a concept by Radcliffe, 2007) which is a weighted area under the TOC [@radcliffe2007using]. The Qini index weights larger fractions more heavily (technically, Qini = $\\int_0^1 q \\cdot \\mathrm{TOC}(q),dq$) [@radcliffe2007using]. Intuitively, AUTOC tends to emphasise the extremes (are there a small group of
-  people with very large effects?) whereas Qini gives more weight to broader improvements (moderate effects spread across more people) [@yadlowsky2021evaluating].
+- **Qini:** a related metric (named after a concept by Radcliffe, 2007) which is a weighted area under the TOC [@radcliffe2007using]. The Qini index weights larger fractions more heavily (technically, Qini = $\\int_0^1 q \\cdot \\mathrm{TOC}(q),dq$) [@radcliffe2007using]. Intuitively, AUTOC tends to emphasise the extremes (are there a small group of people with very large effects?) whereas Qini gives more weight to broader improvements (moderate effects spread across more people) [@yadlowsky2021evaluating].
 
 Both metrics aggregate the **whole** targeting curve. A single negative stretch can drag the average below zero, so a reliably negative RATE warns that *no blanket ranking policy should be adopted*, no matter how attractive the extreme tail looks.
 
@@ -3383,9 +3400,9 @@ In summary, RATE metrics such as AUTOC and Qini serve a dual purpose: (1) they s
 
 Although single-number metrics (AUTOC, Qini indices) are useful, it is often enlightening to look at the Qini curve or the underlying targeting curve visually. The Qini curve plots the cumulative gain in outcome as we allocate treatment to a larger fraction of the population, ranking by predicted treatment effect [@grf2024]. The x-axis typically is the fraction (or percentage) of the population treated (sorted from highest predicted benefit downwards), and the y-axis is the net gain achieved by that policy compared to treating that fraction at random.
 
-In our analysis, we report budget-constrained thresholds for treating the top 10% or 40% of recipients. Policymakers often have limits on how many people can be treated (due to cost or other constraints). The Qini curve allows us to zoom in on specific treatment fractions. For instance, if we can only treat 10% of the population, we look at $q = 0.1$ on the x-axis. The y-value of the Qini curve at $0.1$ tells us the expected gain from treating the top 10% (as ranked by the model) compared to treating 10% randomly. Our Qini curves are constructed using different training and validation sets with a 50/50 split. Note that curves shapes are sensitive to treatement costs. Here we assign a uniform costs of 'one' to each treated unit.
+In our analysis, we report budget-constrained thresholds for treating the top 10% of recipients. Policymakers often have limits on how many people can be treated (due to cost or other constraints). The Qini curve allows us to zoom in on specific treatment fractions. For instance, if we can only treat 10% of the population, we look at $q = 0.1$ on the x-axis. The y-value of the Qini curve at $0.1$ tells us the expected gain from treating the top 10% (as ranked by the model) compared to treating 10% randomly. Our Qini curves are constructed using different training and validation sets with a 50/50 split. Note that curves shapes are sensitive to treatement costs. Here we assign a uniform costs of 'one' to each treated unit.
 
-The Qini curve allows us to visualise and explain how the effectiveness of the treatment allocation changes as we expand who gets treated. For an applied researcher, this is very useful. We do more than not that 'heterogeneity exists.'  We are able to advise whether, 'if we have a budget to treat X% of people, here's what outcome we can expect.' For example, suppose an education intervention has an average effect of 5 test score points. The Qini analysis might show that focusing on the top 40% of the population (maybe those with certain demographic profiles) could yield an average effect of .15 SD units for those expected to benefit, meaning we would save resources on those unlikely to gain. At 100% (treating everyone), we're back to average treatment effect, which in this example is about half this amount (0.07 SD units). So the policy insight is: if only 40% can be afforded, target those individuals who are expected to maximise impact. Note we define this groups by all baseline covariates in the model, conditional no other baseline covariates. In Qini curve analysis we do not assign treatment on the basis of group membership as such. Moreover, we emphasise again that the shape of Qini curves will differ depending on the costs of treatment.  Hence, although Qini curves allow us to identify and communicate the value of targeted policies at specific coverage levels under assumed treatment costs an expenditure levels, to guide policy the assumptions that underpin the curves should be developed with field experts and policy makers.
+The Qini curve allows us to visualise and explain how the effectiveness of the treatment allocation changes as we expand who gets treated. For an applied researcher, this is very useful. We do more than not that 'heterogeneity exists.'  We are able to advise whether, 'if we have a budget to treat X% of people, here's what outcome we can expect.' For example, suppose an education intervention has an average effect of 5 test score points. The Qini analysis might show that focusing on the top fraction of responders in the population (maybe those with certain demographic profiles) could yield an average effect of .15 SD units for those expected to benefit, meaning we would save resources on those unlikely to gain. At 100% (treating everyone), we're back to average treatment effect. So the policy insight is: if only 10% can be afforded, target those individuals who are expected to maximise impact. Note we define this groups by all baseline covariates in the model, conditional no other baseline covariates. In Qini curve analysis we do not assign treatment on the basis of group membership as such. Moreover, we emphasise again that the shape of Qini curves will differ depending on the costs of treatment.  Hence, although Qini curves allow us to identify and communicate the value of targeted policies at specific coverage levels under assumed treatment costs an expenditure levels, to guide policy the assumptions that underpin the curves should be developed with field experts and policy makers.
 
 
 ### Step 9 Transparent targeting rules with policy trees
@@ -3428,7 +3445,7 @@ In plain terms, our workflow is as follows:
 3. Use part B to evaluate heterogeneity: apply the targeting rule in B, compute observed gains, and estimate RATE/Qini metrics on that held-out data.
 
 
-By doing this, when we report 'p = 0.01 for heterogeneity' or 'Qini = 0.10 at 20% spending', we know these numbers are honest assessments of how the model would perform on new data, not just the data we fit it to.
+By doing this, when we report 'p = 0.01 for heterogeneity' or 'Qini = 0.10 at 10% spending', we know these numbers are honest assessments of how the model would perform on new data, not just the data we fit it to.
 
 In short, even with OOB estimates when constructing causal forests, further sample splitting is used for final evaluation to ensure our conclusions about heterogeneous effects and the benefits of targeting are reliable. This extra step is crucial for rigour: it prevents us from convincing ourselves that a complicated model is useful when in fact it might be explaining noise.
 "
@@ -5010,9 +5027,75 @@ unified_db$measures$emp_job_valued_binary <- list(
     "How valued do you feel by your current organization?"
   )
 )
-unified_db$measures$emp_job_sat
-boilerplate_standardise_measures()
-use_data_path
+unified_db$measures$log_hours_exercise
+
+unified_db$measures$hours_exercise_who_cat <- list(
+  name = "Weekly hours exercising/physical activity (WHO 2010 classification)",
+  description = "Responses classified by WHO codes:
+  1.  Inactive: 0 h/week
+	2.	Insufficiently active: > 0 to < 2.5 h/week (< 150 min/week)
+	3.	Meeting guidelines: ≥ 2.5 to < 5 h/week (150–300 min/week)
+	4.	Highly active: ≥ 5 to < 7.5 h/week (300–450 min/week)
+	5.	Very highly active: ≥ 7.5 h/week (> 450 min/week) )",
+  reference = "who_2010_exercise",
+  waves = "1,4-current",
+  keywords = c("health", "hours"),
+  items = list(
+    "'Hours spent...exercising/physical activity' (coded)"
+  )
+)
+
+unified_db$measures$hours_exercise_who_cat_num <- list(
+  name = "Weekly hours exercising/physical activity (WHO 2010 classification)",
+  description = "Responses classified by WHO codes:
+  1.  Inactive: 0 h/week
+	2.	Insufficiently active: > 0 to < 2.5 h/week (< 150 min/week)
+	3.	Meeting guidelines: ≥ 2.5 to < 5 h/week (150–300 min/week)
+	4.	Highly active: ≥ 5 to < 7.5 h/week (300–450 min/week)
+	5.	Very highly active: ≥ 7.5 h/week (> 450 min/week) )",
+  reference = "who_2010_exercise",
+  waves = "1,4-current",
+  keywords = c("health", "hours"),
+  items = list(
+    "'Hours spent...exercising/physical activity' (coded numeric 1-5)"
+  )
+)
+unified_db$measures$hlth_bmi
+unified_db$measures$bmi_cat_num <- list(
+  name = "Body Mass Index (WHO 1995 classification)",
+  description = "Responses classified by WHO codes:
+1. Underweight: BMI less than 18.5
+2. Normal weight: BMI 18.5 to 24.9
+3. Overweight: BMI 25.0 to 29.9
+4. Obese Class I: BMI 30.0 to 34.9
+5. Obese Class II: BMI 35.0 to 39.9
+6. Obese Class III: BMI 40.0 or higher (coded numeric)",
+  reference = "WHO1995Anthropometry",
+  waves = "2-current",
+  keywords = c("health"),
+  items = list(
+    "'What is your height? (meters)'/'How much do you weigh? (kgs)'"
+  )
+)
+
+
+unified_db$measures$bmi_cat <- list(
+  name = "Body Mass Index (WHO 1995 classification)",
+  description = "Responses classified by WHO codes:
+1. Underweight: BMI less than 18.5
+2. Normal weight: BMI 18.5 to 24.9
+3. Overweight: BMI 25.0 to 29.9
+4. Obese Class I: BMI 30.0 to 34.9
+5. Obese Class II: BMI 35.0 to 39.9
+6. Obese Class III: BMI 40.0 or higher",
+  reference = "WHO1995Anthropometry",
+  waves = "2-current",
+  keywords = c("health"),
+  items = list(
+    "'What is your height? (meters)'/'How much do you weigh? (kgs)'"
+  )
+)
+
 boilerplate_measures_report(unified_db$measures)
 
 unified_db$measures <- boilerplate_standardise_measures(unified_db$measures)
@@ -5022,7 +5105,9 @@ unified_db$discussion$acknowlegements
 boilerplate_list_files(data_path = use_data_path)
 unified_db$measures$emp_job_valued
 use_data_path
-boilerplate::boilerplate_save(unified_db, data_path = use_data_path, format = "both", create_backup = TRUE)
+boilerplate::boilerplate_save(unified_db, data_path = use_data_path,
+                             # format = "both",
+                              create_backup = TRUE)
 
 use_data_path
 

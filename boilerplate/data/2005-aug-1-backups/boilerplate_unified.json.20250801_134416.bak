@@ -42,7 +42,7 @@
     "url": "https://raw.githubusercontent.com/go-bayes/templates/refs/heads/main/bib/references.bib",
     "local_path": "references2.bib",
     "validate": true,
-    "last_updated": "2025-08-01 14:34:35"
+    "last_updated": "2025-08-01 13:13:57"
   },
   "discussion": {
     "acknowlegements": {
@@ -69,7 +69,7 @@
       "simple_general_approach_cate_long": "\n### Moderators and Treatment Policies\n\nIn simple terms, we wanted to see if a treatment works differently for different people, rather than just figuring out one overall benefit for everyone. We used a method called 'causal forests' (think of it like a special type of decision tree) to find which groups of people might benefit the most, and which groups might benefit the least.\n\nBecause some of our measures work in opposite directions ('lower is better', e.g. depression), we flipped those measures so that 'higher' always means 'better.' That way, if we talk about a 'positive effect,' it consistently means the person improved.\n\nTo avoid fooling ourselves by spotting fake patterns in the data, we split our sample in half. We used the first half to teach our causal forest model what to look for, then tested it on the second half—so we only trust what shows up in that new data, where the model wasn’t allowed to 'peek.'\n\nWe tested whether the model’s predictions were sensible in two ways:\n1.  **Do the average predictions match the overall effect?** This checks if the model's idea of an 'average effect' fits what we actually see in the second half of the data.\n2.  **Is there real variety in who benefits most?** The model estimates different effects for different people, but we need to confirm that these differences aren not just random noise.\n\nWe also used two extra tools:\n- **Qini curves**: these plots show if focusing on the people who the model says would benefit most actually leads to better outcomes than just treating (or not treating) everyone.\n- **Policy trees**: these are straightforward 'if-then' rules (e.g., 'If a person’s baseline score is above X, recommend treatment'). Qini curves give more insight than 'black box' machine learning models, and can help guide decisions in real-world practice.\n\nPutting it all together, this step-by-step approach lets us investigate whether treatments should be applied the same way for everyone, or whether we can do better by matching treatments to the people who stand to benefit the most (refer to appendix {{appendix_analytic_approach}}.",
       "strengths_grf_long": "\n### Strengths and Limitations of Our Approach\n\nWe used causal forests [@grf2024]—a statistical method designed to estimate Conditional Average Treatment Effects (CATEs)—to investigate how treatment effectiveness might vary across individuals with different characteristics. This strategy offers several advantages over simpler regression models, yet it also comes with important caveats.\n\n#### Potential Limitations\n\nFirst, our results depend heavily on having measured all key variables that affect both who receives treatment and how strongly they respond. If important factors are missing, the estimated differences in treatment effects may be biased. Selecting which characteristics to include in the model is also critical: omitting relevant factors or including inappropriate ones can yield misleading conclusions. Any further analyses that rely on these estimates—such as deciding whom to treat first—will inherit the same potential biases.\n\nSecond, interpreting subgroup effects can be challenging when many characteristics are considered simultaneously. Because these estimates are conditional on all factors in the model, a statistically significant finding for one subgroup may not necessarily hold when additional characteristics vary. Moreover, even if the model detects genuine differences, small or niche effects might not translate into meaningful real-world improvements.\n\n#### Strengths\n\nDespite these considerations, our approach provides a powerful way to uncover and potentially leverage treatment effect heterogeneity. Causal forests [@grf2024] do not assume a simple linear or additive structure, enabling them to detect complex interactions among diverse covariates. To ensure the findings are not just statistical artifacts, we used a {{sample_split}} sample split: one half of the data to build the model and the other to test its predictions on unseen data. This guards against overfitting and gives a more reliable indication of how well the model generalises.\n\nWe also explicitly assess the reliability and practical value of the predicted differences in treatment effects. We perform statistical checks—such as calibration and differential prediction tests [@grf2024]—to determine whether these variations are genuine rather than noise. Additionally, the Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018] estimates how much we might improve outcomes if we treat only the individuals predicted to benefit most, instead of treating everyone equally. To visualise this, Qini curves [@grf2024] show how much extra benefit accumulates as we expand treatment from the top-ranked individuals to a larger portion of the population. Finally, policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] translate these insights into straightforward ‘if-then’ rules based on key baseline characteristics, making the findings more accessible for real-world decision-making.\n\nIn sum, this combination of flexible modelling, rigorous testing, and practical tools for targeting treatment offers a robust framework for studying and applying treatment effect heterogeneity. Nonetheless, these benefits hinge on the completeness of our data and the accuracy of our assumptions.\n",
       "strengths_grf_long_text": "\n### Strengths and Limitations of Our Approach\n\nWe use a statistical method designed to estimate Conditional Average Treatment Effects (CATEs) to investigate how treatment effectiveness might vary across individuals with different characteristics. This methods is deploys *causal forests* [@grf202]. Our strategy offers several advantages over simpler regression models, yet it also comes with important caveats. We next describe consider the promise, and perils of causal forests.\n\n#### Potential Limitations\n\nFirst, our results depend heavily on having measured the key variables that affect both who receives treatment and how strongly they respond. If important variables are missing, the estimated differences in treatment effects may be biased. Selecting which characteristics to include in the model, and which to leave out, is also critical. The dinner party of CATE estimation is only as good as the indicators we invite to it.  Noisy indicators may drown out true insights. The insights of indicators left out cannot be obtained. Any further analyses that rely on these estimates, such as deciding whom to treat first, will inherit the same potential biases of our measures.\n\nSecond, interpreting subgroup effects can be challenging when many characteristics are considered simultaneously. Because these estimates are conditional on all factors in the model, as well as on the population that is modelled, a statistically significant finding for one subgroup may not necessarily hold when additional characteristics are included in a model. Moreover, even if the model detects genuine differences, small or niche effects might not translate into meaningful real-world advice. Given that each individual carries multiple indicators --  age, and ethnicity, and education-level, body mass, anxiety-level, work and commuting regime, rural or urban status, occupational status, personality facets, religion -- and given that we can only observe, at most, one treatment condition for each individual, inferences to conditional average treatment effects from individual-level data is a **difficult statistical problem**, which forest and ensemble methods may not fully resolve. The ambition of our causal questions may reach ahead of warrented confidence.\n\n#### Strengths\n\nAlthough we should remain humbled by the challenges of causal inferences,  we should be encouraged by recent progress in machine learning for uncovering treatment effect heterogeneity. When combined with methods for cross-validation on data the model has not observed, causal forests offer a powerful method for uncovering, and potentially leveraging, treatment-effect heterogeneity in the populations of interest. Causal forests [@grf2024] do not assume a simple linear or additive structure, enabling them to detect complex interactions among diverse covariates. To ensure the findings are not mere statistical artifacts, we used a {{sample_split}} sample splitting such that part of the data is used to build the model and the other part is used test its predictions -- the tested part remaing unseen during model training. These qualities allow for feature detection and and guard against overfitting, yeilding more reliable generalisations when extrapolating beyond a given study.\n\nWe also explicitly assess the reliability and practical value of the predicted differences in treatment effects.  The Rank-Weighted Average Treatment Effect (RATE) [@grf2024; @wager2018] estimates how much we might improve outcomes if we treat individuals by their ranked predicted benefit, instead of treating everyone without regard to their covariates. Qini curves [@grf2024] show how much extra benefit accumulates as we expand treatment from the top-ranked individuals to a larger portion of the population at different budget-levels. Finally, policy trees [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica] translate insights into straightforward ‘if-then’ rules for which several baseline characteristics are most predictive of treatment response. Such policy-rules make findings more accessible for real-world decision-making.\n\nThus as combinationing of flexible machine-learning with rigorous cross-validation, the application of algorithms for quantifying the hazards and benefits of CATE-based prioritisation, and and practical decision-making tools for effectively targeting treatments, offers a robust framework for investigating treatment effect heterogeneity and better informing policy. Again, such benefits rely on untestable assumptions both about the qualities of the data and of the mechanisms that generate them.\n",
-      "strengths_grf_short": "\nWe used causal forests to uncover how the treatment effect changes across people who differ in age, gender, baseline scores, and other measured characteristics [@grf2024]. This flexible, non-parametric method avoids the rigid functional‐form assumptions of linear or logistic regression and can capture complex, higher-order interactions that would otherwise be missed.\n\nTo guard against over-fitting we split the data: one portion trained the forest, and the other evaluated its predictions train/test ratio: 50/50. On the evaluation set we computed three complementary metrics: (i) rate statistics: the area under the treatment–outcome curve (AUTOC) which summarise how well the model ranks individuals from 'most likely to benefit' to 'least likely to benefit' based on their baseline caracteristics; (ii) Qini curves which show the cumulative gain achieved by treating successively larger fractions of the population -- which is relevant to understanding gains from different spend levels. policy trees, which convert the forest's complex predictions into a short set of human-readable if–then rules that can guide targeting in practice [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Collectively, these tools help to clarify whether heterogeneous effects exist, and also how much extra benefit a data-driven targeting policy might yield over random allocation [@wager2018].\n\nAlthough causal forests improve on traditional parametric methods, every observational approach carries risks.\n\nFirst, causal inference in observational settings inevitably relies on untestable ignorability assumptions (treatments are 'as good as random' conditional on measured covariates). Whether we have measured all factors that may jointly influence treatment assignment and the outcomes cannot be evaluated by statistical tests. If strong common causes of both the exposure and outcome are unobserved or poorly measured, our estimates will be biased.  Interpreting subgroup findings can also be challenging: statistically significant differences are not always large enough to matter in real life. More basic, perhaps, methods for detecting real differences rely on measures that are, in survey research, inherently noisy, and noise often, but no always, attenuates affects. The twin dangers of mistaking noise for signal, or of obscuring singles from noise, abide. Such limitations must be kept firmly in mind when interpreting results. \n\n"
+      "strengths_grf_short": "\n#### Strengths and limitations of our approach\n\nWe used causal forests to uncover how the treatment effect changes across people who differ in age, gender, baseline scores, and other measured characteristics [@grf2024]. This flexible, non-parametric method avoids the rigid functional‐form assumptions of linear or logistic regression and can capture complex, higher-order interactions that would otherwise be missed.\n\nTo guard against over-fitting we split the data: one portion trained the forest, and the other evaluated its predictions train/test ratio: {{sample_split}}. On the evaluation set we computed three complementary metrics: (i) rate statistics: the area under the treatment–outcome curve (AUTOC) which summarise how well the model ranks individuals from 'most likely to benefit' to 'least likely to benefit' based on their baseline caracteristics; (ii) Qini curves which show the cumulative gain achieved by treating successively larger fractions of the population -- which is relevant to understanding gains from different spend levels. policy trees, which convert the forest’s complex predictions into a short set of human-readable if–then rules that can guide targeting in practice [@policytree_package_2024; @athey2021; @athey_2021_policy_tree_econometrica]. Collectively, these tools helpt to clarfy whether heterogeneous effects exist, but also how much extra benefit a data-driven targeting policy might yield over random allocation [@wager2018].\n\nAlthough causal forests improve on traditional parametric methods, every observational approach carries risks. First, causal inference in observatiaonl settings inevitably relies on untestable ignorability assumptions (treatments are 'as good as random' conditional on measured covariates). Whether we have measured all factors that may jointly influence treatment assignment and the outcomes cannot be evaluated by statistical tests. If important confounders are unobserved or poorly measured, our estimates may be biased.  Interpreting subgroup findings can also be challenging: statistically significant differences are not always large enough to matter in real life. The twin dangers of mistaking noise for signal remains and of missing true signals abide. Such limitations must be kept firmly in mind when interpreting results."
     },
     "student_authors_statement": "\n### Author Statement\n\nThe Methods and Results section were created using standard protocols from the EPIC lab (Joseph Bulbulia). These were encoded using the `boilerplate` package [@boilerplate2024] and `margot package` [@margot2024] in R. The introduction and conclusion for this research are solely the student's work.",
     "student_data": "\n### Data Availability\n\nThe data described in the paper were *simulated* from the New Zealand Attitudes and Values Study (NZAVS). For more information contact professor Joseph Bulbulia at joseph.bulbulia@vuw.ac.nz. For more information about the NZAVS, see: [OSF link](https://osf.io/ab7cx/).",
@@ -86,7 +86,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "agreeableness": {
       "description": "Mini-IPIP6 Agreeableness dimension: (i) I sympathize with others' feelings. (ii) I am not interested in other people's problems. (r) (iii) I feel others' emotions. (iv) I am not really interested in others. (r)",
@@ -102,7 +102,7 @@
       "keywords": "personality",
       "reversed_items": 4,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "alcohol_frequency": {
       "name": "alcohol_frequency",
@@ -114,7 +114,7 @@
       "waves": "1-current",
       "keywords": "health",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "alcohol_intensity": {
       "name": "alcohol_intensity",
@@ -126,7 +126,7 @@
       "waves": "6-current",
       "keywords": "health",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "alert_level_combined": {
       "name": "alert_level_combined",
@@ -138,7 +138,7 @@
       "waves": "10-11",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "anxiety": {
       "name": "anxiety",
@@ -151,7 +151,7 @@
         "worrying too much about different things"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "ban_hate_speech": {
       "name": "ban_hate_speech",
@@ -167,7 +167,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "belong": {
       "description": "We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument (Hagerty & Patusky, 1995): (1) \"Know that people in my life accept and value me\"; (2) \"Feel like an outsider\"; (3) \"Know that people around me share my attitudes and beliefs\". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.",
@@ -182,7 +182,7 @@
       "keywords": "cooperation",
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "belong_accept": {
       "reference": "hagerty1995",
@@ -198,7 +198,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "belong_beliefs": {
       "description": "We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument (Hagerty & Patusky, 1995): (1) \"Know that people in my life accept and value me\"; (2) \"Feel like an outsider\"; (3) \"Know that people around me share my attitudes and beliefs\". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.",
@@ -210,7 +210,7 @@
       ],
       "name": "belong_beliefs",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "belong_routside_reversed": {
       "description": "We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument (Hagerty & Patusky, 1995): (1) \"Know that people in my life accept and value me\"; (2) \"Feel like an outsider\"; (3) \"Know that people around me share my attitudes and beliefs\". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.",
@@ -223,31 +223,7 @@
       "name": "belong_routside_reversed",
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
-    },
-    "bmi_cat": {
-      "name": "bmi_cat",
-      "description": "Responses classified by WHO codes: 1. Underweight: BMI less than 18.5 2. Normal weight: BMI 18.5 to 24.9 3. Overweight: BMI 25.0 to 29.9 4. Obese Class I: BMI 30.0 to 34.9 5. Obese Class II: BMI 35.0 to 39.9 6. Obese Class III: BMI 40.0 or higher",
-      "reference": "WHO1995Anthropometry",
-      "waves": "2-current",
-      "keywords": "health",
-      "items": [
-        "'What is your height? (meters)'/'How much do you weigh? (kgs)'"
-      ],
-      "standardised": true,
-      "standardised_date": "2025-08-02"
-    },
-    "bmi_cat_num": {
-      "name": "bmi_cat_num",
-      "description": "Responses classified by WHO codes: 1. Underweight: BMI less than 18.5 2. Normal weight: BMI 18.5 to 24.9 3. Overweight: BMI 25.0 to 29.9 4. Obese Class I: BMI 30.0 to 34.9 5. Obese Class II: BMI 35.0 to 39.9 6. Obese Class III: BMI 40.0 or higher (coded numeric)",
-      "reference": "WHO1995Anthropometry",
-      "waves": "2-current",
-      "keywords": "health",
-      "items": [
-        "'What is your height? (meters)'/'How much do you weigh? (kgs)'"
-      ],
-      "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "bodysat": {
       "name": "bodysat",
@@ -261,7 +237,7 @@
       "scale_info": "1 = Very inaccurate to 7 = Very accurate",
       "scale_anchors": "1 = Very inaccurate to 7 = Very accurate",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "born_nz": {
       "description": "Open-ended response coded as binary.",
@@ -273,7 +249,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "born_nz_binary": {
       "description": "Coded binary (1 = New Zealand; 0 = elsewhere.)",
@@ -285,14 +261,14 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "charitable_donations": {
       "description": "Using one item from Hoverd and Sibley (2010), we asked participants, \"How much money have you donated to charity in the last year?\". To stabilise this indicator, we took the natural log of the response + 1.",
       "reference": "hoverd_religious_2010",
       "name": "charitable_donations",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "charity_donate": {
       "name": "charity_donate",
@@ -304,7 +280,7 @@
       "waves": "1-current",
       "keywords": "cooperation",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "children_num": {
       "description": "We measured the number of children using one item from Bulbulia et al. (2015). We asked participants, \"How many children have you given birth to, fathered, or adopted?\" or \"How many children have you given birth to, fathered, and/or parented?\" (waves: 12-15).",
@@ -312,7 +288,7 @@
       "reference": "bulbulia_2015",
       "name": "children_num",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "community_money_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -324,7 +300,7 @@
       ],
       "name": "community_money_binary",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "community_time_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -336,7 +312,7 @@
       ],
       "name": "community_time_binary",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "conscientiousness": {
       "description": "Mini-IPIP6 Conscientiousness dimension: (i) I get chores done right away. (ii) I like order. (iii) I make a mess of things. (r) (iv) I often forget to put things back in their proper place. (r)",
@@ -351,7 +327,7 @@
       ],
       "keywords": "personality",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "conspiracy_beliefs": {
       "name": "conspiracy_beliefs",
@@ -367,7 +343,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "depression": {
       "name": "depression",
@@ -380,7 +356,7 @@
         "having little interest in doing things"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "doubts_official_version": {
       "reference": "knowles2009malleability",
@@ -396,7 +372,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "doubts_official_version_truth": {
       "reference": "knowles2009malleability",
@@ -412,7 +388,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "education_level_coarsen": {
       "description": "We asked participants, \"What is your highest level of qualification?\". We coded participans highest finished degree according to the New Zealand Qualifications Authority. Ordinal-Rank 0-10 NZREG codes (with overseas school qualifications coded as Level 3, and all other ancillary categories coded as missing)",
@@ -424,7 +400,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "emp_job_sat": {
       "name": "emp_job_sat",
@@ -436,7 +412,7 @@
         "How satisfied are you with your current job?"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "emp_job_secure": {
       "description": "Participants indicated their feeling of job security by answering \"How secure do you feel in your current job?\" on a scale from 1 (not secure) to 7 (very secure).",
@@ -444,7 +420,7 @@
       "reference": "sibley2021",
       "name": "emp_job_secure",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "emp_job_valued": {
       "name": "emp_job_valued",
@@ -456,7 +432,7 @@
         "How valued do you feel by your current organization?"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "emp_job_valued_binary": {
       "name": "emp_job_valued_binary",
@@ -468,7 +444,7 @@
         "How valued do you feel by your current organization?"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "employed": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -480,7 +456,7 @@
       ],
       "name": "employed",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "employed_binary": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -492,7 +468,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_1080poison": {
       "name": "env_1080poison",
@@ -506,7 +482,7 @@
       "scale_info": "1 = \"Strongly Oppose\" to 7 = \"Strongly Support\"",
       "scale_anchors": "1 = \"Strongly Oppose\" to 7 = \"Strongly Support\"",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_climate_chg_cause": {
       "name": "env_climate_chg_cause",
@@ -522,7 +498,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_climate_chg_concern": {
       "reference": "sibley2021",
@@ -538,7 +514,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_climate_chg_real": {
       "reference": "sibley2013model",
@@ -554,7 +530,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_efficacy": {
       "reference": "sharma2008we",
@@ -571,7 +547,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_efficacy_action_belief": {
       "name": "env_efficacy_action_belief",
@@ -587,7 +563,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_efficacy_action_feeling": {
       "reference": "sharma2008we",
@@ -603,7 +579,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_not_climate_chg_cause": {
       "reference": "sibley2013model",
@@ -620,7 +596,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_not_climate_chg_concern": {
       "reference": "sibley2021",
@@ -637,7 +613,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_not_climate_chg_real": {
       "reference": "sibley2013model",
@@ -654,7 +630,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_not_env_efficacy": {
       "reference": "sharma2008we",
@@ -672,7 +648,7 @@
       ],
       "reversed_items": [1, 2],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_not_sat_nz_environment": {
       "reference": "tiliouine_measuring_2006",
@@ -689,7 +665,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_routine_made": {
       "name": "env_routine_made",
@@ -705,7 +681,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_routine_willing": {
       "reference": "liu2012hope",
@@ -721,7 +697,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_sac_made": {
       "name": "env_sac_made",
@@ -737,7 +713,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_sac_willing": {
       "reference": "liu2012hope",
@@ -753,7 +729,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "env_sat_nz_environment": {
       "name": "env_sat_nz_environment",
@@ -769,7 +745,7 @@
         "10 =  Completely Datisfied"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "envefficacy": {
       "reference": "sharma2008we",
@@ -786,7 +762,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "eth_cat": {
       "description": "Coded string: (1 = New Zealand European; 2 = Māori; 3 = Pacific; 4 = Asian)",
@@ -798,7 +774,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "euro": {
       "description": "Code string (Binary): (0 = not European, 1 = European)",
@@ -810,7 +786,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "extraversion": {
       "description": "Mini-IPIP6 Extraversion dimension: (i) I am the life of the party. (ii) I don't talk a lot. (r) (iii) I keep in the background. (r) (iv) I talk to a lot of different people at parties.",
@@ -826,7 +802,7 @@
       "keywords": "personality",
       "reversed_items": [2, 3],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "family_money_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -838,7 +814,7 @@
       "name": "family_money_binary",
       "reference": "sibley2021",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "family_time_binary": {
       "name": "family_time_binary",
@@ -850,7 +826,7 @@
       "keywords": "cooperation",
       "reference": "sibley2021",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "forgiveness": {
       "name": "forgiveness",
@@ -864,7 +840,7 @@
       "waves": "10-current",
       "keywords": "reflective-present",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "free_speech": {
       "name": "free_speech",
@@ -880,7 +856,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "friends_money_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -892,7 +868,7 @@
       ],
       "name": "friends_money_binary",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "friends_time_binary": {
       "name": "friends_time_binary",
@@ -904,7 +880,7 @@
       "waves": "10-13",
       "keywords": "cooperation",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "gratitude": {
       "name": "gratitude",
@@ -919,14 +895,14 @@
       "keywords": "reflective-life",
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "has_siblings": {
       "description": "\"Do you have siblings?\"",
       "reference": "stronge2019onlychild",
       "name": "has_siblings",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "hlth_bmi": {
       "name": "hlth_bmi",
@@ -938,7 +914,7 @@
       "waves": "2-current",
       "keywords": "health",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "hlth_disability_binary": {
       "description": "We assessed disability with a one-item indicator adapted from Verbrugge (1997). It asks, \"Do you have a health condition or disability that limits you and that has lasted for 6+ months?\" (1 = Yes, 0 = No).",
@@ -950,7 +926,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "hlth_fatigue": {
       "waves": "5-current",
@@ -969,7 +945,7 @@
         "4 = All Of The Time"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "hlth_sleep_hours": {
       "name": "hlth_sleep_hours",
@@ -981,7 +957,7 @@
       "waves": "5-current",
       "keywords": "health",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "honesty_humility": {
       "description": "Mini-IPIP6 Honesty-Humility dimension: (i) I feel entitled to more of everything. (r) (ii) I deserve more things in life. (r) (iii) I would like to be seen driving around in a very expensive car. (r) (iv) I would get a lot of pleasure from owning expensive luxury goods. (r)",
@@ -997,7 +973,7 @@
       "keywords": "personality",
       "reversed_items": [1, 2, 3, 4],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "hours_charity": {
       "name": "hours_charity",
@@ -1009,7 +985,7 @@
       "waves": "1-current",
       "keywords": "cooperation",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "hours_children": {
       "description": "Numerical: open-ended response",
@@ -1021,7 +997,7 @@
       ],
       "name": "hours_children",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "hours_commute": {
       "description": "",
@@ -1033,7 +1009,7 @@
       ],
       "name": "hours_commute",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "hours_comp_games": {
       "description": "Numerical: open-ended response",
@@ -1045,19 +1021,7 @@
       ],
       "name": "hours_comp_games",
       "standardised": true,
-      "standardised_date": "2025-08-02"
-    },
-    "hours_exercise_who_cat_num": {
-      "name": "hours_exercise_who_cat_num",
-      "description": "Responses classified by WHO codes: 1. Inactive: 0 h/week 2. Insufficiently active: > 0 to < 2.5 h/week (< 150 min/week) 3. Meeting guidelines: ≥ 2.5 to < 5 h/week (150–300 min/week) 4. Highly active: ≥ 5 to < 7.5 h/week (300–450 min/week) 5. Very highly active: ≥ 7.5 h/week (> 450 min/week) )",
-      "reference": "who_2010_exercise",
-      "waves": "1,4-current",
-      "keywords": ["health", "hours"],
-      "items": [
-        "'Hours spent...exercising/physical activity' (coded numeric 1-5)"
-      ],
-      "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "household_inc": {
       "name": "household_inc",
@@ -1068,7 +1032,7 @@
       "keywords": "demography",
       "reference": "sibley2021",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "kessler_latent_anxiety": {
       "name": "kessler_latent_anxiety",
@@ -1089,7 +1053,7 @@
         "4 = All Of The Time"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "kessler_latent_depression": {
       "name": "kessler_latent_depression",
@@ -1110,7 +1074,7 @@
         "4 = All Of The Time"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "kessler6": {
       "reference": "kessler2002",
@@ -1134,7 +1098,7 @@
         "4 = All Of The Time"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "kessler6_sum": {
       "reference": "kessler2002",
@@ -1158,7 +1122,7 @@
         "4 = All Of The Time"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "life_satisfaction": {
       "name": "life_satisfaction",
@@ -1171,7 +1135,7 @@
         "the conditions of my life are excellent"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "lifesat": {
       "name": "lifesat",
@@ -1186,7 +1150,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "log_hours_children": {
       "description": "We took the natural log of the response + 1.",
@@ -1197,7 +1161,7 @@
         "Hours spent...looking after children."
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "log_hours_commute": {
       "name": "log_hours_commute",
@@ -1209,7 +1173,7 @@
       "reference": "sibley2021",
       "keywords": "hours",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "log_hours_exercise": {
       "description": "We took the natural log of the response + 1.",
@@ -1221,7 +1185,7 @@
       ],
       "keywords": "hours",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "log_hours_housework": {
       "description": "We took the natural log of the response + 1.",
@@ -1233,7 +1197,7 @@
       ],
       "keywords": "hours",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "log_hours_work": {
       "description": "We took the natural log of the response + 1.",
@@ -1245,7 +1209,7 @@
       ],
       "keywords": "hours",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "log_household_inc": {
       "name": "log_household_inc",
@@ -1257,7 +1221,7 @@
       "keywords": "demography",
       "reference": "sibley2021",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "male": {
       "description": "We asked participants' gender in an open-ended question: \"what is your gender?\" or \"Are you male or female?\" (waves: 1-5). Female was coded as 0, Male was coded as 1, and gender diverse coded as 3 (Fraser et al., 2020). (or 0.5 = neither female nor male). Here, we coded all those who responded as Male as 1, and those who did not as 0.",
@@ -1269,7 +1233,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "male_binary": {
       "description": "Here, we coded all those who responded as Male as 1, and those who did not as 0.",
@@ -1281,7 +1245,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "meaning_purpose": {
       "name": "meaning_purpose",
@@ -1295,7 +1259,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "meaning_sense": {
       "name": "meaning_sense",
@@ -1309,7 +1273,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "mistrust_emphasis_on_science": {
       "reference": "hartman2017",
@@ -1326,7 +1290,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "mistrust_free_speech": {
       "reference": "dore2022boundaries",
@@ -1343,7 +1307,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "mistrust_official_version_truth": {
       "reference": "knowles2009malleability",
@@ -1359,7 +1323,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "mistrust_police": {
       "reference": "tyler2005",
@@ -1378,7 +1342,7 @@
       ],
       "reversed_items": [1, 3],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "mistrust_politicians": {
       "reference": "sibley2020a",
@@ -1395,7 +1359,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "mistrust_scientific_community": {
       "reference": "nisbet2015",
@@ -1412,7 +1376,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "modesty": {
       "description": "Participants indicated the extent to which they agree with the following four statements from Campbell et al. (2004), and Sibley et al. (2011) (1 = Strongly Disagree to 7 = Strongly Agree): (i) I want people to know that I am an important person of high status, (Waves: 1, 10-14); (ii) I am an ordinary person who is no better than others. (all waves); (iii) I wouldn't want people to treat me as though I were superior to them. (all waves); (iv) I think that I am entitled to more respect than the average person is. (all waves)",
@@ -1420,7 +1384,7 @@
       "reference": "campbell2004",
       "name": "modesty",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "neighbourhood_community": {
       "name": "neighbourhood_community",
@@ -1434,7 +1398,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "neuroticism": {
       "description": "Mini-IPIP6 Neuroticism dimension: (i) I have frequent mood swings. (ii) I am relaxed most of the time. (r) (iii) I get upset easily. (iv) I seldom feel blue. (r)",
@@ -1450,7 +1414,7 @@
       "keywords": "personality",
       "reversed_items": [2, 4],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "not_heterosexual_binary": {
       "name": "not_heterosexual_binary",
@@ -1462,7 +1426,7 @@
       "waves": "5-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "not_lost": {
       "name": "not_lost",
@@ -1473,7 +1437,7 @@
       "waves": "1-current",
       "keywords": "coding",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "nz_dep2018": {
       "name": "nz_dep2018",
@@ -1485,7 +1449,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "nzsei_13_l": {
       "description": "This index uses the income, age, and education of a reference group, in this case, the 2013 New Zealand census, to calculate a score for each occupational group. Scores range from 10 (Lowest) to 90 (Highest). This list of index scores for occupational groups was used to assign each participant a NZSEI-13 score based on their occupation.",
@@ -1497,7 +1461,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "openness": {
       "description": "Mini-IPIP6 Openness to Experience dimension: (i) I have a vivid imagination. (ii) I have difficulty understanding abstract ideas. (r) (iii) I do not have a good imagination. (r) (iv) I am not interested in abstract ideas. (r)",
@@ -1513,7 +1477,7 @@
       "keywords": "personality",
       "reversed_items": [2, 3, 4],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "parent": {
       "name": "parent",
@@ -1524,7 +1488,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "parent_binary": {
       "description": "Parents were coded as 1, while the others were coded as 0.",
@@ -1536,14 +1500,14 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "partner": {
       "description": "\"What is your relationship status?\" (e.g., single, married, de-facto, civil union, widowed, living together, etc.)",
       "reference": "sibley2021",
       "name": "partner",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "partner_binary": {
       "name": "partner_binary",
@@ -1555,7 +1519,7 @@
       "keywords": "demography",
       "reference": "sibley2021",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "perc_age_discrim": {
       "name": "perc_age_discrim",
@@ -1570,7 +1534,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "perc_discrim": {
       "name": "perc_discrim",
@@ -1580,7 +1544,7 @@
       "waves": "1-current",
       "keywords": "prejudice",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "perc_gend_discrim": {
       "name": "perc_gend_discrim",
@@ -1595,7 +1559,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "perc_religious_discrim": {
       "name": "perc_religious_discrim",
@@ -1609,7 +1573,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "perfectionism": {
       "name": "perfectionism",
@@ -1625,7 +1589,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "pol_politician_trust": {
       "name": "pol_politician_trust",
@@ -1641,14 +1605,14 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "pol_wing": {
       "description": "We measured participants' political right-wing orientation using a single item adapted from Jost (2006): \"Please rate how politically left-wing versus right-wing you see yourself as being.\" (1 = Extremely left-wing to 7 = Extremely right-wing)",
       "reference": "jost_end_2006-1",
       "name": "pol_wing",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "police_trust": {
       "name": "police_trust",
@@ -1667,7 +1631,7 @@
       ],
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "political_conservative": {
       "waves": "1-current",
@@ -1683,7 +1647,7 @@
         "7 = Extremely Conservative"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "power_no_control_composite": {
       "reference": "overall2016power",
@@ -1700,7 +1664,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "power_others_control": {
       "name": "power_others_control",
@@ -1716,7 +1680,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "power_self_nocontrol": {
       "reference": "overall2016power",
@@ -1732,7 +1696,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "pwb_standard_living": {
       "name": "pwb_standard_living",
@@ -1746,7 +1710,7 @@
       "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
       "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "pwb_your_future_security": {
       "name": "pwb_your_future_security",
@@ -1760,7 +1724,7 @@
       "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
       "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "pwb_your_health": {
       "name": "pwb_your_health",
@@ -1774,7 +1738,7 @@
       "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
       "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "pwb_your_relationships": {
       "name": "pwb_your_relationships",
@@ -1788,7 +1752,7 @@
       "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
       "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_believe_god": {
       "name": "religion_believe_god",
@@ -1800,7 +1764,7 @@
       "waves": "2-current",
       "keywords": "religion",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_believe_god_binary": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -1812,7 +1776,7 @@
       ],
       "name": "religion_believe_god_binary",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_believe_spirit": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -1824,7 +1788,7 @@
       ],
       "name": "religion_believe_spirit",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_believe_spirit_binary": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -1836,7 +1800,7 @@
       ],
       "name": "religion_believe_spirit_binary",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_bigger_denominations": {
       "name": "religion_bigger_denominations",
@@ -1848,7 +1812,7 @@
       "keywords": "religion",
       "description": "Open-ended (string). Coded from New Zealand Census Categories. Levels are: \"Not Religious\",\"Anglican\",\"Buddhist\", \"Catholic\", \"Christian (Non-Denominational)\", \"Christian (Other Denominations)\",\"Hindu\", \"Jewish\", \"Muslim\",\"Presbyterian, Congregational, Reformed\", \"Other Religions\".",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_church": {
       "name": "religion_church",
@@ -1860,7 +1824,7 @@
       "waves": "2-11; 12(imputed); 13(partial)- current.",
       "keywords": "religion",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_church_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -1872,7 +1836,7 @@
       ],
       "name": "religion_church_binary",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_identification_level": {
       "name": "religion_identification_level",
@@ -1888,7 +1852,7 @@
         "7 = Very Important"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_prayer": {
       "description": "Numerical: open-ended response",
@@ -1900,7 +1864,7 @@
       ],
       "name": "religion_prayer",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_prayer_binary": {
       "description": "Numerical: open-ended response",
@@ -1912,7 +1876,7 @@
       ],
       "name": "religion_prayer_binary",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_religious": {
       "name": "religion_religious",
@@ -1924,7 +1888,7 @@
       "waves": "1-current",
       "keywords": "religion",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_religious_binary": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -1936,7 +1900,7 @@
       ],
       "name": "religion_religious_binary",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_scripture": {
       "description": "Numerical: open-ended response",
@@ -1948,7 +1912,7 @@
       ],
       "name": "religion_scripture",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_scripture_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -1960,7 +1924,7 @@
       ],
       "name": "religion_scripture_binary",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_spiritual_identification": {
       "reference": "postmes2013single",
@@ -1976,7 +1940,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "religion_spiritual_identification_level": {
       "reference": "postmes2013single",
@@ -1992,7 +1956,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "rumination": {
       "name": "rumination",
@@ -2004,7 +1968,7 @@
       "waves": "2-current",
       "keywords": "psychological-wellbeing",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "rural_gch_2018_l": {
       "name": "rural_gch_2018_l",
@@ -2016,7 +1980,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "rwa": {
       "name": "rwa",
@@ -2034,7 +1998,7 @@
       "description": "Right Wing Authoritarianism was measured using the following items:",
       "reversed_items": 6,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "sample_frame_opt_in_binary": {
       "name": "sample_frame_opt_in_binary",
@@ -2046,7 +2010,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "sdo": {
       "name": "sdo",
@@ -2064,7 +2028,7 @@
       "description": "Social Dominance Orientation was measured using the following items:",
       "reversed_items": [4, 5, 6],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "self_control": {
       "name": "self_control",
@@ -2082,7 +2046,7 @@
       ],
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "self_control_have_lots": {
       "name": "self_control_have_lots",
@@ -2096,7 +2060,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "self_control_wish_more_reversed": {
       "name": "self_control_wish_more_reversed",
@@ -2110,7 +2074,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "self_esteem": {
       "name": "self_esteem",
@@ -2127,7 +2091,7 @@
       "scale_anchors": "1 = Very inaccurate to 7 = Very accurate",
       "reversed_items": 3,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "sexual_satisfaction": {
       "name": "sexual_satisfaction",
@@ -2139,7 +2103,7 @@
       "waves": "10-current",
       "keywords": "reflective-present",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "sfhealth": {
       "reference": "instrument1992mos",
@@ -2158,7 +2122,7 @@
       ],
       "reversed_items": [2, 3],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "short_form_health": {
       "name": "short_form_health",
@@ -2174,7 +2138,7 @@
         "7 = Excellent"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "smoker_binary": {
       "name": "smoker_binary",
@@ -2186,7 +2150,7 @@
       "waves": "4-current",
       "keywords": "health",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "support": {
       "waves": "1-current",
@@ -2205,7 +2169,7 @@
       ],
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "support_help": {
       "reference": "cutrona1987",
@@ -2221,7 +2185,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "support_noguidance_reversed": {
       "reference": "cutrona1987",
@@ -2238,7 +2202,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "support_turnto": {
       "reference": "cutrona1987",
@@ -2254,7 +2218,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "trust_free_speech": {
       "reference": "dore2022boundaries",
@@ -2270,7 +2234,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "trust_not_official_version_truth": {
       "reference": "knowles2009malleability",
@@ -2286,7 +2250,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "trust_science": {
       "reference": "hartman2017",
@@ -2303,7 +2267,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "trust_science_high_confidence_scientific_community": {
       "name": "trust_science_high_confidence_scientific_community",
@@ -2319,7 +2283,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "trust_science_high_confidence_scientific_community_cat": {
       "description": "Quantiles of",
@@ -2336,7 +2300,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "trust_science_low_confidence_scientific_community": {
       "reference": "nisbet2015",
@@ -2353,7 +2317,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "trust_science_our_society_places_too_much_emphasis_reversed": {
       "name": "trust_science_our_society_places_too_much_emphasis_reversed",
@@ -2369,7 +2333,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "trust_scientists": {
       "reference": "nisbet2015",
@@ -2385,7 +2349,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "urban_binary": {
       "description": "We coded whether they are living in an urban or rural area (1 = Urban, 0 = Rural) based on the addresses provided.",
@@ -2393,7 +2357,7 @@
       "reference": "sibley2021",
       "name": "urban_binary",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "vengeful_rumin": {
       "name": "vengeful_rumin",
@@ -2410,14 +2374,14 @@
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "volunteers": {
       "description": "We measured hours of volunteering using one item from Sibley et al. (2011): \"Hours spent … voluntary/charitable work.\" To stabilise this indicator, we took the natural log of the response + 1.",
       "reference": "sibley2011",
       "name": "volunteers",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "w_gend_age_ethnic": {
       "name": "w_gend_age_ethnic",
@@ -2429,7 +2393,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "w_gend_age_euro": {
       "description": "Sample weights for NZ population (NZ Census)",
@@ -2441,7 +2405,7 @@
       ],
       "name": "w_gend_age_euro",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_asians": {
       "name": "warm_asians",
@@ -2454,7 +2418,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_chinese": {
       "reference": "Modelled on United States National Election Study.",
@@ -2467,7 +2431,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_disabled": {
       "reference": "Modelled on United States National Election Study.",
@@ -2480,7 +2444,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_elderly": {
       "reference": "Modelled on United States National Election Study.",
@@ -2493,7 +2457,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_immigrants": {
       "reference": "Modelled on United States National Election Study.",
@@ -2506,7 +2470,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_indians": {
       "reference": "Modelled on United States National Election Study.",
@@ -2519,7 +2483,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_lgbtq": {
       "reference": "Modelled on United States National Election Study.",
@@ -2532,7 +2496,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_maori": {
       "reference": "Modelled on United States National Election Study.",
@@ -2545,7 +2509,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_mental_illness": {
       "reference": "Modelled on United States National Election Study.",
@@ -2558,7 +2522,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_muslims": {
       "reference": "Modelled on United States National Election Study.",
@@ -2571,7 +2535,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_nz_euro": {
       "reference": "Modelled on United States National Election Study.",
@@ -2584,7 +2548,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_overweight": {
       "reference": "Modelled on United States National Election Study.",
@@ -2597,7 +2561,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_pacific": {
       "reference": "Modelled on United States National Election Study.",
@@ -2610,7 +2574,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     },
     "warm_refugees": {
       "reference": "Modelled on United States National Election Study.",
@@ -2623,15 +2587,15 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-08-02"
+      "standardised_date": "2025-08-01"
     }
   },
   "methods": {
     "analytic_approach": {
-      "general_approach_cate_long": "\n### Moderators and treatment policies\n\nWe asked whether individualised targeting, guided by conditional average treatment effects $\\hat{\\tau}(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.\n\n#### Pre-processing and honest model training\n\nDirection was standardised by sign-flipping outcomes whose valence opposed that of the exposure; the affected measures were {{flipped_list}}. Each analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.\n\n#### Stage 1: Omnibus and Rank Average Treatment Effect Analysis (RATE)\n\nOn the evaluation data, we first ran an omnibus test for differential prediction and calibration to detect any systematic prediction error. Concurrently, we computed RATE-AUTOC (Area Under the Targeting Operating Characteristic) and RATE-Qini (weighted area emphasising broader improvements) statistics. All RATE tests employed five-fold cross-validation following [@wager2024_sequential_validation_hte]. Detailed results are reported in S{{appendix_rate}}.\n\n#### Stage 2: Budget-specific exploration\n\nFor outcomes passing Stage 1 (i.e., at least one non-negative RATE result), we conducted exploratory analysis using Qini curves. Assuming a unit treatment cost per participant, we examined potential gains at the top 10 % and 40% of the population (highly restricted/restricted resources). This analysis quantifies the expected uplift from targeted treatment under realistic budget scenarios, with 95% confidence intervals indicating precision. Results are exploratory and intended to inform resource allocation decisions.\n\n#### Stage 3: Transparent decision rules\n\nFor outcomes showing promise in Stage 2, we developed interpretable 'if–then' rules using depth-2 policy trees [@policytree_package_2024; @athey_2021_policy_tree_econometrica]. To ensure robustness, we employed `margot::margot_policy_tree_stability()` with {{n_iterations}} iterations of varying train/test splits. Variables appearing consistently (>{{stability_threshold}} % frequency) indicate reliable treatment effect modifiers, while high variability suggests the decision boundaries may be unstable.\n\nThis staged approach -- forest $\\rightarrow$ omnibus and rate diagnostics $\\rightarrow$ Qini-screening $\\rightarrow$ stability-based rule extraction -- ensures we only develop targeting strategies for outcomes with solid evidence of heterogeneity, quantifies their practical value under resource constraints, and delivers decision rules that practitioners can implement with confidence. Algorithmic details appear in S{{appendix_explain_grf}}.\n",
+      "general_approach_cate_long": "\n### Moderators and treatment policies\n\nWe pursued two complementary objectives: (i) to test whether personalised targeting, based on individual conditional average treatment effects $\\hat\\tau(x)$, yields welfare gains, and (ii) to convert any such gains into transparent, practitioner‐ready decision rules.\n\n#### Pre-processing and honest model training\n\nOur protocol is as follows: in settings where the exposure is positive, outcomes for which lower is better are sign‐flipped so that larger values always index improvement. Similarly, where the exposure is negative, outcomes for which 'higher is better' are sign flipped. Here, we flipped: {{flipped_list}}.\n\nEach model estimate used an honest {{sample_ratio_policy}} split: the training fold built the causal forest with grf [@grf2024], while the held-out fold powered all diagnostic checks and provided data for fitting policy trees.  This separation curbs over-fitting yet keeps the workflow simple.\n\n#### Budget-based screening with Qini curves.\n\nBefore constructing rules we asked a budget question: If resources allow treatment of only the top 20% or 50% of individuals ranked by $\\hat\\tau(x)$, what uplift is purchased relative to treating everyone?\nQini curves quantified the incremental gain; outcomes whose 95% confidence intervals excluded zero at either spend level were labelled actionable, signalling meaningful heterogeneity in benefit.\n\n#### Deriving transparent decision rules.\n\nFor each actionable outcome we trained depth-2 policy trees with policytree [@policytree_package_2024; @athey_2021_policy_tree_econometrica] on the validation data.  The resulting if–then statements maximise expected welfare under the same budget cap and remain auditable by domain experts.\n\n####  Global heterogeneity tests (supplementary).\n\nS{{#appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.\n\nOverall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in S{{appendix_explain_grf}}.\n",
       "general_approach_cate_long_no_flip": "\n### Moderators and treatment policies\n\nWe pursued two complementary objectives: (i) to test whether personalised targeting, based on individual conditional average treatment effects $\\hat\\tau(x)$, yields welfare gains, and (ii) to convert any such gains into transparent, practitioner‐ready decision rules.\n\n#### Pre-processing and honest model training\n\nEach model estimate used an honest {{sample_ratio_policy}} split: the training fold built the causal forest with grf [@grf2024], while the held-out fold powered all diagnostic checks and provided data for fitting policy trees.  This separation curbs over-fitting yet keeps the workflow simple.\n\n#### Budget-based screening with Qini curves.\n\nBefore constructing rules we asked a budget question: If resources allow treatment of only the top 20% or 50% of individuals ranked by $\\hat\\tau(x)$, what uplift is purchased relative to treating everyone?\nQini curves quantified the incremental gain; outcomes whose 95% confidence intervals excluded zero at either spend level were labelled actionable, signalling meaningful heterogeneity in benefit.\n\n#### Deriving transparent decision rules.\n\nFor each actionable outcome we trained depth-2 policy trees with policytree [@policytree_package_2024; @athey_2021_policy_tree_econometrica] on the validation data.  The resulting if–then statements maximise expected welfare under the same budget cap and remain auditable by domain experts.\n\n####  Global heterogeneity tests (supplementary).\n\nS{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics, asking whether any covariate information can beat a uniform policy.  These tests, controlled for false discovery at q={{cate_alpha}} via {{cate_adjustment}}, are informative but not required for the budget-first pipeline.\n\nOverall, combining Qini curves to screen and shallow policy trees to act isolates budget-relevant treatment heterogeneity and distils it into actionable rules, avoiding the chase for spurious complexity. Full technical details appear in Appendix {{appendix_explain_grf}}.\n",
-      "general_approach_cate_short": "\n### Heterogeneous Treatment Effects: moderators and treatment policies\n\nWe asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.\n\n#### Pre-processing and honest forests\n\nEach analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.\n\n#### Diagnostics\n\nOn the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. S{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.\n\n#### Budget-focused evidence\n\nBecause programme budgets are finite, we next asked: If resources permit treating only the top 10% ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.\n\nNote that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.\n\n#### Transparent decision rules\n\nFor each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.\n\nThe workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.\n\n#### Challenges in estimating heterogeneous treatment effects\n\nEstimating individualised treatment effects poses several fundamental challenges. First, inferring $\\hat\\tau(x)$ requires modelling how treatment effects vary with high-dimensional covariates, which risks severe overfitting when sample sizes are modest or predictors are numerous. Second, treatment assignment must satisfy overlap (positivity) across all covariate strata: sparse or empty regions in $X$ undermine the credibility of any estimated heterogeneity, inflating variance or introducing bias.\n\nThird, standard machine-learning algorithms optimise predictive accuracy, not causal effect estimation; naively applying them can produce systematically mis-calibrated CATEs. Honest splitting (or cross-fitting) mitigates this, but at the cost of reduced effective sample size in each fold. Fourth, unmeasured confounding or model‐misspecification can masquerade as heterogeneity, so rigorous diagnostic tests (e.g. omnibus, RATE-AUTOC, RATE-Qini) are essential to distinguish genuine treatment effect variation from artefacts of imbalance or noise.\n\nFinally, the trade-off between flexibility and interpretability looms large: highly flexible methods (causal forests, deep nets) can uncover subtle patterns but yield complex CATE surfaces, whereas simpler parametric models may miss non-linear interactions. Our staged pipeline—forest $\\rightarrow$ diagnostics $\\rightarrow$ Qini-screening $\\rightarrow$ policy-tree—navigates these trade-offs by first safeguarding against overfitting and false positives, then focusing on budget‐relevant gains, and finally distilling results into transparent, low-depth decision rules. Furhter details on our approach and algorithms appear in S{{appendix_explain_grf}}.\n",
-      "general_approach_cate_short_no_flip": "\n### Heterogeneous Treatment Effects: moderators and treatment policies\n\nWe asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.\n\n#### Pre-processing and honest forests\n\nEach analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.\n\n#### Diagnostics\n\nOn the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. S{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.\n\n#### Budget-focused evidence\n\nBecause programme budgets are finite, we next asked: If resources permit treating only the top 10% ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.\n\nNote that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.\n\n#### Transparent decision rules\n\nFor each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.\n\nThe workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement. \n\n#### Challenges in estimating heterogeneous treatment effects\n\nEstimating individualised treatment effects poses several fundamental challenges. First, inferring $\\hat\\tau(x)$ requires modelling how treatment effects vary with high-dimensional covariates, which risks severe overfitting when sample sizes are modest or predictors are numerous. Second, treatment assignment must satisfy overlap (positivity) across all covariate strata: sparse or empty regions in $X$ undermine the credibility of any estimated heterogeneity, inflating variance or introducing bias.  \n\nThird, standard machine-learning algorithms optimise predictive accuracy, not causal effect estimation; naively applying them can produce systematically mis-calibrated CATEs. Honest splitting (or cross-fitting) mitigates this, but at the cost of reduced effective sample size in each fold. Fourth, unmeasured confounding or model‐misspecification can masquerade as heterogeneity, so rigorous diagnostic tests (e.g. omnibus, RATE-AUTOC, RATE-Qini) are essential to distinguish genuine treatment effect variation from artefacts of imbalance or noise.  \n\nFinally, the trade-off between flexibility and interpretability looms large: highly flexible methods (causal forests, deep nets) can uncover subtle patterns but yield complex CATE surfaces, whereas simpler parametric models may miss non-linear interactions. Our staged pipeline—forest $\\rightarrow$ diagnostics $\\rightarrow$ Qini-screening $\\rightarrow$ policy-tree—navigates these trade-offs by first safeguarding against overfitting and false positives, then focusing on budget‐relevant gains, and finally distilling results into transparent, low-depth decision rules. Furhter details on our approach and algorithms appear in S{{appendix_explain_grf}}.\n\n",
+      "general_approach_cate_short": "\n### Moderators and treatment policies\n\nWe asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.\n\n#### Pre-processing and honest forests\n\nDirection was standardised by sign-flipping outcomes whose valence opposed that of the exposure; the affected measures were {{flipped_list}}.  Each analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.\n\n#### Diagnostics\n\nOn the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. S{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.\n\n#### Budget-focused evidence\n\nBecause programme budgets are finite, we next asked: If resources permit treating only the top 20 % or 50 % ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.\n\nNote that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.\n\n#### Transparent decision rules\n\nFor each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.\n\nThe workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in S{{appendix_explain_grf}}.",
+      "general_approach_cate_short_no_flip": "\n### Moderators and treatment policies\n\nWe asked whether individualised targeting, guided by conditional average treatment effects $\\hat\\tau(x)$, can out-perform a one-size-fits-all strategy, and how any gains might be converted into rules that practitioners trust.\n\n#### Pre-processing and honest forests\n\nEach analysis used an honest {{sample_ratio_policy}} split: the training fold built a causal forest with grf [@grf2024], while the held-out fold supplied every diagnostic and served as the data set for learning policy trees.  This partition keeps each estimate out-of-sample and protects against over-fitting.\n\n#### Diagnostics\n\nOn the evaluation fold we first verified forest calibration, then computed RATE-AUTOC and RATE-Qini statistics, formal tests of whether any covariate information can beat uniform treatment [@wager2018].  p-values were adjusted by the Benjamini–Hochberg procedure at q={{cate_alpha}} using {{cate_adjustment}} [@benjamini1995controlling]. S{{appendix_rate}} reports RATE-AUTOC and RATE-Qini statistics.\n\n#### Budget-focused evidence\n\nBecause programme budgets are finite, we next asked: If resources permit treating only the top 20 % or 50 % ranked by $\\hat\\tau(x)$, what uplift should planners expect?  Qini curves answer this question and flag an outcome as actionable when the 95% confidence interval for incremental gain excluded zero at either spending level.\n\nNote that RATE and Qini provide complementary lenses—global versus budget-specific evidence -- and either can justify the move to rule learning.\n\n#### Transparent decision rules\n\nFor each actionable outcome we fitted a depth-2 policy tree with policytree on the validation data [@policytree_package_2024; @athey_2021_policy_tree_econometrica].  The tree yields an if–then allocation rule that maximises expected welfare under the chosen budget cap and remains fully auditable.\n\nThe workflow—forest $\\rightarrow$ diagnostics $\\rightarrow$ tree—identifies meaningful heterogeneity, quantifies the payoff to targeting, and delivers concise decision rules that practitioners can implement.  Details of all algorithms appear in Appendix {{appendix_explain_grf}}.",
       "simple_general_approach_cate_long": "\n### Learning Moderators and Deriving Practical Treatment Rules\n\nAfter estimating the average treatment effect, we asked *for whom* the exposure helps and *how* to act on that knowledge.  The workflow:\n\n1. **Orient outcomes.** All scales were re-coded so that higher scores had the same valence as the exposure (flipped: {{flipped_list}}).\n2. **Honest causal forest.** A {{sample_ratio_policy}} split trained the forest and produced out-of-sample CATEs $\\hat\\tau(x)$ on the validation fold [@grf2024].\n3. **Global heterogeneity test.** On the validation fold we computed **RATE-AUTOC** and **RATE-Qini**; FDR was controlled with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling] (see S{{appendix_rate}}).\n4. **Budget lens.** **Qini curves** compared “treat top–ranked” to “treat all”, revealing expected uplift at budget caps (S{{appendix_qini_curve}}).\n5. **Transparent policy.** When heterogeneity looked actionable, we fitted depth-2 **policy trees** on the validation fold, turning the black-box forest into concise *if–then* rules (details in S{{appendix_explain_grf}}).\n\nThis pipeline converts complex CATE estimates into interpretable, out-of-sample decision policies while controlling both over-fitting and multiple testing.",
       "simple_general_approach_cate_long_no_flip": "\n### Learning Moderators and Deriving Practical Treatment Rules\n\nAfter estimating the average treatment effect, we asked *for whom* the exposure helps and *how* to act on that knowledge.  The workflow:\n\n1. **Orient outcomes.** All scales were re-coded so that higher scores had the same valence as the exposure (flipped: {{flipped_list}}).\n2. **Honest causal forest.** A {{sample_ratio_policy}} split trained the forest and produced out-of-sample CATEs $\\hat\\tau(x)$ on the validation fold [@grf2024].\n3. **Global heterogeneity test.** On the validation fold we computed **RATE-AUTOC** and **RATE-Qini**; FDR was controlled with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling] (see S{{appendix_rate}}).\n4. **Budget lens.** **Qini curves** compared “treat top–ranked” to “treat all”, revealing expected uplift at budget caps (Appendix {{appendix_qini_curve}}).\n5. **Transparent policy.** When heterogeneity looked actionable, we fitted depth-2 **policy trees** on the validation fold, turning the black-box forest into concise *if–then* rules (details in Appendix {{appendix_explain_grf}}).\n\nThis pipeline converts complex CATE estimates into interpretable, out-of-sample decision policies while controlling both over-fitting and multiple testing.",
       "simple_general_approach_cate_short": "\n### Learning Moderators and Deriving Practical Treatment Rules\n\nAfter estimating the average treatment effect, we asked *for whom* the exposure helps and *how* to act on that knowledge.  The workflow:\n\n1. **Orient outcomes.** All scales were re-coded so that higher scores had the same valence as the exposure (flipped: {{flipped_list}}).\n2. **Honest causal forest.** A {{sample_ratio_policy}} split trained the forest and produced out-of-sample CATEs $\\hat\\tau(x)$ on the validation fold [@grf2024].\n3. **Global heterogeneity test.** On the validation fold we computed **RATE-AUTOC** and **RATE-Qini**; FDR was controlled with {{cate_adjustment}} at q = {{cate_alpha}} [@benjamini1995controlling] (see S{{appendix_rate}}).\n4. **Budget lens.** **Qini curves** compared “treat top–ranked” to “treat all”, revealing expected uplift at budget caps (S{{appendix_qini_curve}}).\n5. **Transparent policy.** When heterogeneity looked actionable, we fitted depth-2 **policy trees** on the validation fold, turning the black-box forest into concise *if–then* rules (details in S{{appendix_explain_grf}}).\n\nThis pipeline converts complex CATE estimates into interpretable, out-of-sample decision policies while controlling both over-fitting and multiple testing.",
@@ -2646,8 +2610,8 @@
       "basic": "#### Interventions\nThis study considers the following causal interventions on the exposure variable '{{exposure_var}}':\n\n{{interventions_list}}\n\n#### Contrasts\n\n{{contrasts_text}}\n\nThis approach to defining interventions and contrasts allows us to systematically evaluate the causal effects of interest in our study.",
       "grf": "\n### Causal Inference\n\nWhen researchers analyse data, they often seek to understand causal relationships: what would happen if we could intervene on certain variables? To investigate such questions with observational data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.\n\nHere, we ask:\n\n> 'What is the effect on an outcome if we set a binary exposure variable to a specific level for everyone, compared to setting it to an alternative level, considering individual characteristics?'\n\nTo answer this, we compare two hypothetical exposures:\n\n1.  **{{name_exposure_threshold}}**: We hypothetically assign everyone to have the exposure set to `{{value_exposure}}`.\n2.  **{{name_control_threshold}}**: We hypothetically assign everyone to have the exposure set to `{{value_control}}`.\n\nOur goal is to estimate how the effect of the {{name_exposure_threshold}} exposure compared to the {{name_control_threshold}} exposure varies across individuals based on their baseline characteristics. We aim to compute the **Conditional Average Treatment Effect (CATE)**, defined as:\n\n$$ \\tau(x) = E[Y({{value_exposure}}) - Y({{value_control}})|X = x] $$\n\nHere, $Y({{value_exposure}})$ is the potential outcome if an individual received the {{name_exposure_threshold}} exposure, $Y({{value_control}})$ is the potential outcome if they received the {{name_control_threshold}} exposure, and $X$ represents the full set of baseline covariates measured before the exposure. The CATE, $\\tau(x)$, estimates the average difference in outcomes between the two exposures for individuals with specific characteristics $x$.\n\n(Refer to [S{{appendix_assumptions_grf}}](#appendix-assumptions_grf) and [{{appendix_explain_grf}}](#appendix-explain-grf), w further details). The target population is {{name_target_population}}.",
       "grf_simple_text": "\n### Average treatment effect\n\nTo learn how the outcome would shift if everyone received a different exposure, we emulate a **target trial** [@hernan2016c]. Making the hypothetical experiment explicit fixes the estimand, the data requirements, and the assumptions.\n\nOur guiding question is:\n\n> *How would the outcomes change if, for every individual, we set the exposure to **{{value_exposure}}** rather than **{{value_control}}**, conditional on their baseline characteristics?*\n\nWe compare two interventions:\n\n1. **{{name_exposure_threshold}}** — every participant is set to {{value_exposure}}.\n2. **{{name_control_threshold}}** — every participant is set to {{value_control}}.\n\nThe difference in population means defines the **average treatment effect (ATE)**. Figure @fig-exposure plots the exposure distribution and its dichotomisation; the centre dashed line marks the mean, flanked by one standard deviation.\n\n```{r}\n#| label: fig-exposure\n#| fig-cap: \"Histogram of exposure with binary groupin\"\n#| eval: true\n#| echo: false\n#| fig-height: 12   # tweak if needed\n#| fig-width: 12    # tweak if needed\n\ngraph_cut\n\n```\n\nBecause we test several outcomes, we adjust the ATE confidence intervals for multiplicity with {{ate_adjustment}} at $\\alpha = {{ate_alpha}}$.\n\nThe longitudinal design and rich baseline covariates allow us -- under the standard identification assumptions of consistency, positivity, and no unmeasured confounding -- to attribute the differences between the two exposure means as a causal effect. Conditioning on demographics, personality traits, and other pretreatment factors renders exposure assignment ignorable [@rosenbaum1983central].",
-      "lmtp_multi_wave": "\n### Causal Inference\n\nWhen psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{name_exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.\n\nHere, we ask:\n\n  > 'What if, at each wave, we intervened to set {{name_exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'\n\nTo answer this, we compare two hypothetical interventions. Each intervention shifts {{name_exposure_variable}} across {{number_exposure_waves}} waves, with outcomes measured after the year following the final exposure wave.  A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained there after are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @tbl-plan).\n\nFollowing a modified treatment policies approach, we define **shift functions** describing each intervention:\n\n1. **{{name_exposure_regime}}**\n\n{{value_exposure_regime}}\n\n2. **{{name_control_regime}}**\n\n{{value_control_regime}}\n\n::: {#tbl-plan}\n```{=latex}\n\\vizfive\n```\nWe contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of {{name_exposure_variable}} and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is 'as good as random.' Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.\n:::\n\nWe then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies *{{name_exposure_regime}}* and *{{name_control_regime}}*. We define a 'confounder' as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline {{name_exposure_variable}} and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{name_exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.\n\n::: {#tbl-feedback}\n```{=latex}\n\\feedbackB\n```\nCommon cause of Treatment 1 and downstream confounder of Treatment 2 is a collider.\n:::\n\n### Causal Contrasts\n\nWe compute the average expected outcome under and {{name_exposure_regime}} and {{name_control_regime}}, and then contrast these expected averages on the difference scale (i.e., subtracting the expected outcome under {{name_exposure_regime}} from that under {{name_control_regime}}. We obtain confidence intervals using the cross-fitted influence-function approach in the `lmtp` package [@williams2021]. This approach employs sequentially doubly robust (SDR) estimator, as developed by @diaz2021_non_parametric_lmtp, which remains valid if either the outcome model or the propensity model is correctly specified, thereby requiring weaker assumptions than standard approaches. By setting up our data as if it came from a hypothetical experiment, we gain clarity about which causal effects we are estimating and as well as confidence about our causal effect estimates (refer to @hernan2024WHATIF, @bulbulia2022; @bulbulia2023).\n\nOur estimation relies on standard causal assumptions:\n\n1.  **No unmeasured confounding**: all relevant common causes of the exposure and outcome are included in $X$.\n2.  **Consistency**: an individual's observed outcome corresponds to their potential outcome under the exposure they actually received.\n3.  **Positivity**: within strata defined by $X$, there is a non-zero probability of receiving either exposure level (`{{value_exposure}}` or `{{value_control}}`).\n\n(Refer to [S{{appendix_assumptions}}](#appendix-assumptions) for further details). The target population is {{name_target_population}}.",
-      "lmtp_multi_wave_long": "\n### Causal Inference\n\nWhen psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{name_exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.\n\nHere, we ask:\n\n  > 'What if, at each wave, we intervened to set {{name_exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'\n\nTo answer this, we compare two hypothetical interventions. Each intervention shifts {{name_exposure_variable}} across {{number_exposure_waves}} waves, with outcomes measured after the year following the final exposure wave.  A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained there after are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @tbl-plan).\n\nFollowing a modified treatment policies approach, we define **shift functions** describing each intervention:\n\n1. **{{name_exposure_regime}}**\n\n{{value_exposure_regime}}\n\n2. **{{name_control_regime}}**\n\n{{value_control_regime}}\n\n::: {#tbl-plan}\n```{=latex}\n\\vizfive\n```\nWe contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of {{name_exposure_variable}} and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is 'as good as random.' Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.\n:::\n\nWe then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies *{{name_exposure_regime}}* and *{{name_control_regime}}*. We define a 'confounder' as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline {{name_exposure_variable}} and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{name_exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.\n\n::: {#tbl-feedback}\n```{=latex}\n\\feedbackB\n```\nCommon cause of Treatment 1 and downstream confounder of Treatment 2 is a collider.\n:::\n\n### Causal Contrasts\n\nWe compute the average expected outcome under and {{name_exposure_regime}} and {{name_control_regime}}, and then contrast these expected averages on the difference scale (i.e., subtracting the expected outcome under {{name_exposure_regime}} from that under {{name_control_regime}}. We obtain confidence intervals using the cross-fitted influence-function approach in the `lmtp` package [@williams2021]. This approach employs sequentially doubly robust (SDR) estimator, as developed by @diaz2021_non_parametric_lmtp, which remains valid if either the outcome model or the propensity model is correctly specified, thereby requiring weaker assumptions than standard approaches. By setting up our data as if it came from a hypothetical experiment, we gain clarity about which causal effects we are estimating and as well as confidence about our causal effect estimates (refer to @hernan2024WHATIF, @bulbulia2022; @bulbulia2023).\n\nOur estimation relies on standard causal assumptions:\n\n1.  **No unmeasured confounding**: all relevant common causes of the exposure and outcome are included in $X$.\n2.  **Consistency**: an individual's observed outcome corresponds to their potential outcome under the exposure they actually received.\n3.  **Positivity**: within strata defined by $X$, there is a non-zero probability of receiving either exposure level (`{{value_exposure}}` or `{{value_control}}`).\n\n(Refer to [S{{appendix_assumptions}}](#appendix-assumptions) for further details). The target population is {{name_target_population}}."
+      "lmtp_multi_wave": "\n### Causal Inference\n\nWhen psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{name_exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.\n\nHere, we ask:\n\n  > 'What if, at each wave, we intervened to set {{name_exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'\n\nTo answer this, we compare two hypothetical interventions. Each intervention shifts {{name_exposure_variable}} across {{number_exposure_waves}} waves, with outcomes measured after the year following the final exposure wave.  A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained there after are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @tbl-plan).\n\nFollowing a modified treatment policies approach, we define **shift functions** describing each intervention:\n\n1. **{{name_exposure_regime}}**\n\n{{value_exposure_regime}}\n\n2. **{{name_control_regime}}**\n\n{{value_control_regime}}\n\n::: {#tbl-plan}\n```{=latex}\n\\vizfive\n```\nWe contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of {{name_exposure_variable}} and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is 'as good as random.' Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.\n:::\n\nWe then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies *{{name_exposure_regime}}* and *{{name_control_regime}}*. We define a 'confounder' as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline {{name_exposure_variable}} and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{name_exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.\n\n::: {#tbl-feedback}\n```{=latex}\n\\feedbackB\n```\nCommon cause of Treatment 1 and downstream confounder of Treatment 2 is a collider.\n:::\n\n### Causal Contrasts\n\nWe compute the average expected outcome under and {{name_exposure_regime}} and {{name_control_regime}}, and then contrast these expected averages on the difference scale (i.e., subtracting the expected outcome under {{name_exposure_regime}} from that under {{name_control_regime}}. We obtain confidence intervals using the cross-fitted influence-function approach in the `lmtp` package [@williams2021]. This approach employs sequentially doubly robust (SDR) estimator, as developed by @diaz2021_non_parametric_lmtp, which remains valid if either the outcome model or the propensity model is correctly specified, thereby requiring weaker assumptions than standard approaches. By setting up our data as if it came from a hypothetical experiment, we gain clarity about which causal effects we are estimating and as well as confidence about our causal effect estimates (refer to @hernan2024WHATIF, @bulbulia2022; @bulbulia2023).\n\nOur estimation relies on standard causal assumptions:\n\n1.  **No unmeasured confounding**: all relevant common causes of the exposure and outcome are included in $X$.\n2.  **Consistency**: an individual's observed outcome corresponds to their potential outcome under the exposure they actually received.\n3.  **Positivity**: within strata defined by $X$, there is a non-zero probability of receiving either exposure level (`{{value_exposure}}` or `{{value_control}}`).\n\n(Refer to [Appendix {{appendix_assumptions}}](#appendix-assumptions) for further details). The target population is {{name_target_population}}.",
+      "lmtp_multi_wave_long": "\n### Causal Inference\n\nWhen psychologists analyse time-series data, they often use growth models to describe how variables evolve over time. However, many questions are causal: we want to know what would happen if we could intervene on certain variables (such as {{name_exposure_variable}}). To investigate these questions with observational time-series data, we must clearly define our causal question and design our analysis to emulate a hypothetical randomised controlled trial—often called a **target trial** [@hernan2016]. A target trial asks, setting aside practicalities and ethics, *what experiment are we attempting to emulate with our data?* Without explicitly stating this hypothetical experiment, it can be unclear which causal effect we are actually estimating.\n\nHere, we ask:\n\n  > 'What if, at each wave, we intervened to set {{name_exposure_variable}} to a certain level, and then measured everyone's outcomes at the final wave?'\n\nTo answer this, we compare two hypothetical interventions. Each intervention shifts {{name_exposure_variable}} across {{number_exposure_waves}} waves, with outcomes measured after the year following the final exposure wave.  A rich set of indicators covariates in the baseline wave -- the wave before the first exposure wave -- as well measurements of time-varying confounders at each exposure wave obtained there after are necessary to control for common causes of the exposures and outcomes measured at the end of study (refer to @tbl-plan).\n\nFollowing a modified treatment policies approach, we define **shift functions** describing each intervention:\n\n1. **{{name_exposure_regime}}**\n\n{{value_exposure_regime}}\n\n2. **{{name_control_regime}}**\n\n{{value_control_regime}}\n\n::: {#tbl-plan}\n```{=latex}\n\\vizfive\n```\nWe contrast outcomes from two treatment regimes: (1) {{name_exposure_regime}} (2) {{name_control_regime}}. $a^{+}$ denotes {{value_exposure_regime}}; $a^{-}$ denotes {{value_control_regime}}. Our statistical models control for baseline-wave confounders, and subsequent time-varying confounders for all exposure waves. We include baseline measurments of {{name_exposure_variable}} and baseline measurements of all outcomes as confounders. We assume that conditional on these confounders, treatment assignment is 'as good as random.' Outcomes, here denoted $Y_\\tau$, are measured in the wave following the final treatment.\n:::\n\nWe then organise our data to resemble a randomised sequential experiment that assigns each person to one of two longitudinal treatment strategies *{{name_exposure_regime}}* and *{{name_control_regime}}*. We define a 'confounder' as a variable that, once included in the model, along with other included variables, removes any non-causal association between the treatment and outcome. Here, as mentioned, we adjust for a rich set of demographic and personality variables, as well as baseline {{name_exposure_variable}} and baseline measures of all outcomes. We also adjust for time-varying confounders at each wave {{time_varying_confounders}}. We assume these time-varying confounders can influence {{name_exposure_variable}} and outcomes, potentially biasing our estimates. We ensure there is no reverse causation by measuring the outcomes at the end of the study, one year after the final treatment wave.\n\n::: {#tbl-feedback}\n```{=latex}\n\\feedbackB\n```\nCommon cause of Treatment 1 and downstream confounder of Treatment 2 is a collider.\n:::\n\n### Causal Contrasts\n\nWe compute the average expected outcome under and {{name_exposure_regime}} and {{name_control_regime}}, and then contrast these expected averages on the difference scale (i.e., subtracting the expected outcome under {{name_exposure_regime}} from that under {{name_control_regime}}. We obtain confidence intervals using the cross-fitted influence-function approach in the `lmtp` package [@williams2021]. This approach employs sequentially doubly robust (SDR) estimator, as developed by @diaz2021_non_parametric_lmtp, which remains valid if either the outcome model or the propensity model is correctly specified, thereby requiring weaker assumptions than standard approaches. By setting up our data as if it came from a hypothetical experiment, we gain clarity about which causal effects we are estimating and as well as confidence about our causal effect estimates (refer to @hernan2024WHATIF, @bulbulia2022; @bulbulia2023).\n\nOur estimation relies on standard causal assumptions:\n\n1.  **No unmeasured confounding**: all relevant common causes of the exposure and outcome are included in $X$.\n2.  **Consistency**: an individual's observed outcome corresponds to their potential outcome under the exposure they actually received.\n3.  **Positivity**: within strata defined by $X$, there is a non-zero probability of receiving either exposure level (`{{value_exposure}}` or `{{value_control}}`).\n\n(Refer to [Appendix {{appendix_assumptions}}](#appendix-assumptions) for further details). The target population is {{name_target_population}}."
     },
     "confounding_control": {
       "vanderweele": "\n### Confounding Control\n\nTo manage confounding in our analysis, we implement @vanderweele2019's *modified disjunctive cause criterion* by following these steps:\n\n1. **Identified all common causes** of both the treatment and outcomes.\n2. **Excluded instrumental variables** that affect the exposure but not the outcome. Instrumental variables do not contribute to controlling confounding and can reduce the efficiency of the estimates.\n3. **Included proxies for unmeasured confounders** affecting both exposure and outcome. According to the principles of d-separation @pearl2009a, using proxies allows us to control for their associated unmeasured confounders indirectly.\n4. **Controlled for baseline exposure** and **baseline outcome**. Both are used as proxies for unmeasured common causes, enhancing the robustness of our causal estimates, refer to @vanderweele2020.\n"
@@ -2667,7 +2631,7 @@
       "missing_lmtp_time_varying": "\n### Missing Data\n\nTo mitigate bias from missing data, we implement the following strategies:\n\n#### Baseline missingness\n\nWe used predictive mean matching from the `mice` package [@vanbuuren2018] to impute missing baseline values (comprising `r percent_missing_baseline` of the baseline data). Following [@zhang2023shouldMultipleImputation], we performed single imputation using only baseline data. For each column with missing values, we created a binary indicator of missingness so that the machine learning algorithms we employed could condition on missingness information during estimation (see `lmtp` documentation [@williams2021]).\n\n#### Missingness in Time-Varying Variables\n\nWhen a time-varying value was missing in any wave but a future value was observed, we carried forward the previous response and included a missingness indicator. Again, this approach let the patterns of missingness inform nonparametric machine learning. If no future value was observed, we considered the participant censored and used inverse probability of treatment weights to address attrition.\n\n#### Outcome missingness\n\nTo address confounding and selection bias arising from missing responses and panel attrition at the end of study {{outcome_wave}}, we applied censoring weights obtained using nonparametric machine learning ensembles afforded by the `lmtp` package (and its dependencies) in R [@williams2021]."
     },
     "outcomes": {
-      "outcomewide_flourishing": "\n### Wellbeing Outcomes\n\nWe adopt an outcome-wide approach, modelling every outcome in a domain. This strategy reduces cherry-picking and selectivity biases, and offers a meta-analytic perspective on the concepts of interest [@vanderweele2017a; @vanderweele2020]. We categorised outcomes into five domains—health, psychological well-being, present-reflective outcomes, life-reflective outcomes, and social outcomes—based on validated scales and measures. Outcomes were based on those modelled in an earlier outcome-wide flourispaper @pedro_2024effects. @tbl-outcomes summarises each domain and its associated measures. For instance, health outcomes included BMI and hours of sleep, whereas psychological well-being included anxiety and depression. Outcomes were converted to z-scores (standardised), and the causal effect estimates may be therefore be interpreted as effect sizes.\n\n|       Domain        |                 Dimension                |\n  |---------------------|------------------------------------------------|\n  |       Health        | BMI, Hours of Sleep, Hours of Exercise, Short Form Health |\n  | Psychological Well-Being | Anxiety, Depression, Fatigue, Rumination      |\n  | Present-Reflective  | Body Satisfaction, Forgiveness, Perfectionism, Self-Control, Self-Esteem, Sexual Satisfaction |\n  | Life-Reflective     | Gratitude, Life Satisfaction, Meaning (Sense & Purpose), Personal Wellbeing Index |\n  |       Social        | Social Belonging, Social Support, Neighbourhood Community |\n\n: Outcome domains and example dimensions. Data summaries for all measures used in this study are provided in [S{{appendix_outcomes}}](#appendix-outcomes). {#tbl-outcomes}",
+      "outcomewide_flourishing": "\n### Wellbeing Outcomes\n\nWe adopt an outcome-wide approach, modelling every outcome in a domain. This strategy reduces cherry-picking and selectivity biases, and offers a meta-analytic perspective on the concepts of interest [@vanderweele2017a; @vanderweele2020]. We categorised outcomes into five domains—health, psychological well-being, present-reflective outcomes, life-reflective outcomes, and social outcomes—based on validated scales and measures. Outcomes were based on those modelled in an earlier outcome-wide flourispaper @pedro_2024effects. @tbl-outcomes summarises each domain and its associated measures. For instance, health outcomes included BMI and hours of sleep, whereas psychological well-being included anxiety and depression. Outcomes were converted to z-scores (standardised), and the causal effect estimates may be therefore be interpreted as effect sizes.\n\n|       Domain        |                 Dimension                |\n  |---------------------|------------------------------------------------|\n  |       Health        | BMI, Hours of Sleep, Hours of Exercise, Short Form Health |\n  | Psychological Well-Being | Anxiety, Depression, Fatigue, Rumination      |\n  | Present-Reflective  | Body Satisfaction, Forgiveness, Perfectionism, Self-Control, Self-Esteem, Sexual Satisfaction |\n  | Life-Reflective     | Gratitude, Life Satisfaction, Meaning (Sense & Purpose), Personal Wellbeing Index |\n  |       Social        | Social Belonging, Social Support, Neighbourhood Community |\n\n: Outcome domains and example dimensions. Data summaries for all measures used in this study are provided in [Appendix {{appendix_outcomes}}](#appendix-outcomes). {#tbl-outcomes}",
       "outcomewide_personality": "### Personality Outcomes\n\nWe adopt an outcome-wide approach, modelling every outcome in a domain. This strategy reduces cherry-picking and selectivity biases, and offers a meta-analytic perspective on the concepts of interest [@vanderweele2017a; @vanderweele2020]. We categorised personality outcomes into six domains based on the Mini-IPIP6 [@sibley2011]. @tbl-outcomes summarises each domain and its associated measures. For instance, extraversion includes being the life of the party and talking to different people at parties, whereas agreeableness includes sympathising with others' feelings and feeling others' emotions. Outcomes were converted to z-scores (standardised), and the causal effect estimates may therefore be interpreted as effect sizes.\n\n| Domain | Items |\n|--------|-------|\n| Extraversion | Am the life of the party.  |\n|  | Don't talk a lot. (R) |\n|  | Keep in the background. (R) |\n|  | Talk to a lot of different people at parties. |\n| Agreeableness | Sympathize with others' feelings. |\n|  | Am not interested in other people's problems. (R) |\n|  | Feel others' emotions. |\n|  | Am not really interested in others. (R) |\n| Conscientiousness | Get chores done right away. |\n|  | Like order. |\n|  | Make a mess of things. (R) |\n|  | Often forget to put things back in their proper place. (R) |\n| Neuroticism/Emotional Stability | Have frequent mood swings. |\n|  | Am relaxed most of the time. (R) |\n|  | Get upset easily. |\n|  | Seldom feel blue. (R) |\n| Openness to Experience | Have a vivid imagination. |\n|  | Have difficulty understanding abstract ideas. (R) |\n|  | Do not have a good imagination. (R) |\n|  | Am not interested in abstract ideas. (R) |\n| Honesty-Humility | Feel entitled to more of everything. (R) |\n|  | Deserve more things in life. (R) |\n|  | Would like to be seen driving around in a very expensive car. (R) |\n|  | Would get a lot of pleasure from owning expensive luxury goods. (R) |\n\n: Personality domains and associated items from the Mini-IPIP6. (R) indicates reverse-scored items. Data summaries for all measures used in this study are provided in [S{{appendix_outcomes}}](#appendix-outcomes). {#tbl-outcomes}"
     },
     "overlap": "\n### Overlap\n\n```{r, results = 'asis'}\noverlap$text_summary\n```\n\n@fig-overlap graphs the propensity score distribution, where values closer to zero indicate a lower probability of treatment, and values closer to one indicate a higher probability of treatment. The dashed lines indicate regions of common support.\n\n```{r}\n#| label: fig-overlap\n#| fig-cap: \"Histogram of exposure with binary groupin\"\n#| eval: true\n#| echo: false\n#| fig-height: 12   # tweak if needed\n#| fig-width: 12    # tweak if needed\n\noverlap$propensity_plots$exposure\n```\n\n\n",

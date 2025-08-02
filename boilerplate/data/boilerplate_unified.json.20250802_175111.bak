@@ -225,30 +225,6 @@
       "standardised": true,
       "standardised_date": "2025-08-02"
     },
-    "bmi_cat": {
-      "name": "bmi_cat",
-      "description": "Responses classified by WHO codes: 1. Underweight: BMI less than 18.5 2. Normal weight: BMI 18.5 to 24.9 3. Overweight: BMI 25.0 to 29.9 4. Obese Class I: BMI 30.0 to 34.9 5. Obese Class II: BMI 35.0 to 39.9 6. Obese Class III: BMI 40.0 or higher",
-      "reference": "WHO1995Anthropometry",
-      "waves": "2-current",
-      "keywords": "health",
-      "items": [
-        "'What is your height? (meters)'/'How much do you weigh? (kgs)'"
-      ],
-      "standardised": true,
-      "standardised_date": "2025-08-02"
-    },
-    "bmi_cat_num": {
-      "name": "bmi_cat_num",
-      "description": "Responses classified by WHO codes: 1. Underweight: BMI less than 18.5 2. Normal weight: BMI 18.5 to 24.9 3. Overweight: BMI 25.0 to 29.9 4. Obese Class I: BMI 30.0 to 34.9 5. Obese Class II: BMI 35.0 to 39.9 6. Obese Class III: BMI 40.0 or higher (coded numeric)",
-      "reference": "WHO1995Anthropometry",
-      "waves": "2-current",
-      "keywords": "health",
-      "items": [
-        "'What is your height? (meters)'/'How much do you weigh? (kgs)'"
-      ],
-      "standardised": true,
-      "standardised_date": "2025-08-02"
-    },
     "bodysat": {
       "name": "bodysat",
       "items": [
