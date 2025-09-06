@@ -1134,6 +1134,8 @@ unified_db<- boilerplate_update_entry(
 
 
 
+#
+
 
 
 # checks
@@ -1155,121 +1157,107 @@ boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
 # statistical estimator sections
 # ------------------------------------------------------
 
-# lmtp short
 lmtp_short_explanation_text <- "
-We estimated the causal effect of {{name_exposure_variable}} on {{name_outcome_variable}}, adjusting for covariates. We used a 'modified treatment policy' (MTP) estimand [@haneuse2013estimation; @diaz2012population; @young2014identification; @diaz2023lmtp].
+We estimated the causal effect of {{name_exposure_variable}} on {{name_outcome_variable}} using a modified treatment policy (MTP) estimand [@haneuse2013estimation; @diaz2012population; @young2014identification; @diaz2023lmtp].
 
-This estimand captures the difference in the expected outcome under two scenarios, assuming no censoring ($C=1$):
+This estimand compares the expected outcome under a hypothetical policy that modifies exposure to the expected outcome under the natural course (identity policy), all defined under no loss to follow-up (R = 1):
 
-1.  **Observed exposure:** $\\E(Y^{C=1})$.
-2.  **Hypothetical exposure (intervention):** $\\E(Y^{\\dd, C=1})$, where $\\dd(A)$ is a function that specifies how {{name_exposure_variable}} ($A$) is modified.
+1.  Natural course (identity policy): $E\\bigl[Y^{\\mathbf{d_0}, R=1}\\bigr]$, which equals $E\\bigl[Y^{R=1}\\bigr]$.
+2.  Hypothetical policy: $E\\bigl[Y^{\\dd, R=1}\\bigr]$, where $\\dd(A)$ specifies how {{name_exposure_variable}} ($A$) is modified (e.g., {{shift_intervention}}).
 
-The MTP estimand is:
+Our primary effect is the policy contrast:
+
+\\Delta_{\\dd}
+;=;
+E\bigl(Y^{\\dd, R=1}\bigr)
+; - ;
+E\bigl(Y^{\\mathbf{d_0}, R=1}\bigr),
+$$
+
+with $\\mathbf{d_0}$ the identity (natural-course) policy. Here, $R=1$ denotes remaining under observation at each wave (i.e., no censoring, including baseline).
+
+We interpret $\\Delta_{\\dd}$ causally under three identifying conditions:
+
+1.  Conditional exchangeability (sequential): Given measured covariates, there is no unmeasured confounding for the exposure–outcome and censoring–outcome relations.
+2.  Positivity: Within covariate strata, individuals have non-zero probability of the policy-relevant exposure support and of remaining uncensored ($R=1$) at each time. The natural course itself imposes no additional exposure-positivity requirements beyond the observed process.
+3.  Consistency: Each individual’s observed outcome equals the potential outcome under their realised exposure and censoring history.
+
+We estimated $\\Delta_{\\dd}$ with a cross-fitted ($k = {{n_folds}}$) doubly robust TMLE for MTPs implemented in lmtp [@diaz2023lmtp; @williams2023lmtp]. Nuisance components included the outcome, exposure, and censoring mechanisms. We used Super Learner [@polley2023; @vanderlaan2007super] with SL.glmnet, SL.ranger, and SL.xgboost [@friedman2010regularization; @wright2017ranger; @chen2016xgboost]. Results, tables, and figures were produced with the margot R package [@margot2024]. See S{{appendix_technical_lmtp}} for technical details.
+"
+
+lmtp_short_explanation_text_2 <- "
+We used a modified treatment policy (MTP) estimand [@haneuse2013estimation; @diaz2012population; @young2014identification; @diaz2023lmtp] to quantify the effect of {{name_exposure_variable}} on {{name_outcome_variable}}.
+
+All estimands are defined under no loss to follow-up ($R=1$; i.e., remaining under observation at each wave, including baseline). We contrast:
+1.  Natural course (identity policy): the expected outcome under the observed exposure process, $E\\bigl[Y^{\\mathbf{d_0}, R=1}\\bigr] = E\\bigl[Y^{R=1}\\bigr]$.
+2.  Hypothetical policy (intervention): the expected outcome under a modified exposure distribution, $E\\bigl[Y^{\\dd, R=1}\\bigr]$, where $\\dd(A)$ specifies how {{name_exposure_variable}} is changed ({{shift_intervention}}).
+
+The MTP contrast is
+$$
+E\bigl(Y^{\\dd, R=1}\bigr) ;-; E\bigl(Y^{\\mathbf{d_0}, R=1}\bigr).
+$$
+
+Under the following conditions we interpret this difference causally:
+1.  Conditional exchangeability (sequential): Given the measured covariates (including time-varying history), exposure assignment and censoring are independent of the potential outcomes.
+2.  Positivity: Within covariate strata, there is non-zero probability of exposure levels required by $\\dd$ and of remaining uncensored ($R=1$) at each time; the natural course imposes no extra exposure-positivity burden.
+3.  Consistency: The observed outcome equals the potential outcome under the realised exposure and censoring.
+
+We estimated these functionals using a cross-fitted ($k = {{n_folds}}$) TMLE for MTPs [@diaz2023lmtp; @williams2023lmtp], with Super Learner [@polley2023; @vanderlaan2007super] combining regularised regression (SL.glmnet), random forests (SL.ranger), and gradient boosting (SL.xgboost) [@friedman2010regularization; @wright2017ranger; @chen2016xgboost]. We generated all outputs with the margot R package [@margot2024]. See S{{appendix_technical_lmtp}} for full details.
+"
+
+lmtp_long_explanation_text <- "
+We estimated the effect of {{name_exposure_variable}} on {{name_outcome_variable}} using observational data and a modified treatment policy (MTP) framework to address time-varying confounding and censoring. Our target answers a pragmatic ‘what if?’: How would the average {{name_outcome_variable}} change if we implemented a specified modification to {{name_exposure_variable}} in the population, compared with leaving exposure as observed?
+
+Let $\\dd(A)$ define the policy (e.g., {{shift_intervention}}). We report the contrast between the expected outcome under $\\dd$ and under the natural course (identity policy), with all quantities defined under no loss to follow-up:
 
 $$
-\\E\bigl(Y^{\\dd, C=1}\bigr) \\;-\\; \\E\bigl(Y^{C=1}\bigr).
+\\Delta_{\\dd}
+;=;
+E\bigl( Y^{\\dd, R=1} \bigr)
+; - ;
+E\bigl( Y^{\\mathbf{d_0}, R=1} \bigr),
 $$
 
-We interpret this difference as the causal effect of changing {{name_exposure_variable}} according to $\\dd(\\cdot)$.
+where $\\mathbf{d_0}$ leaves exposure unchanged at each wave (the identity policy), and $R=1$ denotes remaining under observation at each wave (including baseline pre-exposure censoring). Note that $E\\bigl[ Y^{\\mathbf{d_0}, R=1} \\bigr] = E\\bigl[ Y^{R=1} \\bigr]$.
 
-We used three identifying assumptions:
+We include the natural course for two reasons: (i) it yields a directly interpretable baseline reflecting the observed exposure process, and (ii) compared with static counterfactual rules (e.g., ‘always/never’), it avoids additional exposure-positivity requirements for the reference arm, which can be restrictive in practice.
 
-1.  **Conditional exchangeability:** Given observed covariates, there is no unmeasured confounding for the exposure–outcome and censoring–outcome relationships.
+Identification assumptions. We interpret $\\Delta_{\\dd}$ causally under:
+1.  Sequential exchangeability (no unmeasured confounding): Given observed history, there is no unmeasured confounding for the exposure–outcome and censoring–outcome relations.
+2.  Positivity: For each time and covariate history, the policy $\\dd$ maps into exposure values with positive probability in the observed data, and the probability of remaining uncensored satisfies $\\Pr(R=1 \\mid \\text{history}) > 0$.
+3.  Consistency: If an individual’s exposure path equals the policy-imposed path and they remain uncensored, their observed outcome equals the corresponding potential outcome.
 
-2.  **Positivity:** Every individual has a non-zero probability of receiving their observed exposure level and remaining uncensored, within each covariate stratum.
+Estimation. We used a cross-fitted ($k = {{n_folds}}$) doubly robust TMLE (as implemented in lmtp) to estimate both $E(Y^{\\dd, R=1})$ and $E(Y^{\\mathbf{d_0}, R=1})$ [@diaz2023lmtp; @williams2023lmtp]. The procedure estimates:
 
-3.  **Consistency:** The observed outcome corresponds to the potential outcome for each individual's actual exposure history.
+* the outcome mechanism,
+* the exposure mechanism (relative to the policy $\\dd$), and
+* the censoring mechanism $\\Pr(R=1 \\mid \\text{history})$ (including baseline pre-exposure censoring).
 
-We estimated this parameter using a cross-fitted ($k = {{n_folds}}$), doubly robust, non-parametric targeted minimum loss-based estimator (TMLE) for MTPs [@diaz2023lmtp; @williams2023lmtp]. This procedure involves estimating:
-- The outcome mechanism,
-- The exposure mechanism, and
-- The censoring mechanism.
+We used the Super Learner ensemble [@polley2023; @vanderlaan2007super] with SL.glmnet, SL.ranger, and SL.xgboost [@friedman2010regularization; @wright2017ranger; @chen2016xgboost] and employed cross-fitting to preserve valid inference with flexible learners.
 
-We used the Super Learner ensemble algorithm [@polley2023; @vanderlaan2007super] with `SL.glmnet`, `SL.ranger`, and `SL.xgboost` as base learners [@friedman2010regularization; @wright2017ranger; @chen2016xgboost].
+All results, tables, and figures were generated with the margot R package [@margot2024]. For mathematical and computational specifics, see S{{appendix_technical_lmtp}}.
+"
 
-We produced all results, tables, and figures with the `margot` R package [@margot2024]. See [S{{appendix_technical_lmtp}}](#appendix-technical-lmtp) for technical details."
 
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
+unified_db <- boilerplate_update_entry(
+  db   = unified_db,
   path = "methods.statistical_models.lmtp_short_explanation",
   value = lmtp_short_explanation_text
 )
 
-
-
-lmtp_short_explanation_text_2 <-  "We used a 'modified treatment policy' (MTP) estimand [@haneuse2013estimation; @diaz2012population; @young2014identification; @diaz2023lmtp] to quantify the effect of {{name_exposure_variable}} on {{name_outcome_variable}}.
-
-This estimand captures the difference in the expected outcome under two scenarios, assuming no censoring ($C=1$):
-
-1.  **Observed exposure:** The expected outcome ($Y$) given the observed exposure distribution, $\\E(Y^{C=1})$.
-2.  **Hypothetical exposure (intervention):** The expected outcome under a modified exposure distribution, $\\E(Y^{\\dd, C=1})$, where $\\dd(A)$ is a function specifying how {{name_exposure_variable}} ($A$) is hypothetically changed (i.e., {{shift_intervention}}).
-
-The MTP estimand is the difference between these two expectations:
-
-$$
-\\E\bigl(Y^{\\dd, C=1}\bigr) \\;-\\; \\E\bigl(Y^{C=1}\bigr).
-$$
-
-We interpret this difference causally under three standard identifying assumptions:
-
-1.  **Conditional Exchangeability:** Given the measured covariates ($L$), exposure assignment and censoring are independent of potential outcomes (i.e., no unmeasured confounding).
-2.  **Positivity:** Within strata defined by covariates, every individual has a non-zero probability of receiving their observed exposure level and remaining uncensored.
-3.  **Consistency:** An individual's observed outcome is the potential outcome corresponding to their actual exposure history.
-
-We estimated this target parameter using a cross-fitted ($k = {{n_folds}}$), doubly robust, non-parametric targeted minimum loss-based estimator (TMLE) specifically designed for MTPs [@diaz2023lmtp; @williams2023lmtp]. This TMLE procedure requires estimating several components of the data-generating process, often called nuisance parameters:
-
-- **Outcome mechanism:** The expected outcome given exposure and covariates, $\\E(Y | A, L)$.
-- **Exposure mechanism:** The probability (or density) of receiving a specific exposure level given covariates, $P(A | L)$ (also related to the propensity score).
-- **Censoring mechanism:** The probability of remaining uncensored ($C=1$) given exposure and covariates, $P(C=1 | A, L)$.
-
-We estimated these mechanisms using the Super Learner ensemble algorithm [@polley2023; @vanderlaan2007super]. Super Learner combines predictions from multiple algorithms (base learners) to improve estimation accuracy. Our base learners included regularised regression (`SL.glmnet`), random forests (`SL.ranger`), and gradient boosting (`SL.xgboost`) [@friedman2010regularization; @wright2017ranger; @chen2016xgboost].
-
-We produced all results, tables, and figures with the `margot` R package [@margot2024]. Please see [S{{appendix_technical_lmtp}}](#appendix-technical-lmtp) for complete technical details."
-
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
+unified_db <- boilerplate_update_entry(
+  db   = unified_db,
   path = "methods.statistical_models.lmtp_short_explanation_2",
   value = lmtp_short_explanation_text_2
 )
 
-
-
-# lmtp long
-lmtp_long_explanation_text <- "
-We aimed to estimate the effect of {{name_exposure_variable}} on {{name_outcome_variable}} using observational data. Because simple comparisons or standard regression may not fully capture the impact of real-world scenarios or adequately handle confounding and participant dropout (censoring), we used advanced causal inference methods.
-
-Our specific goal was to answer a 'what if?' question: How would the average {{name_outcome_variable}} change if we could implement a specific modification to {{name_exposure_variable}} in the population, compared to leaving things as they are? We define this modification using a rule, denoted $\\dd(A)$, which specifies how an individual's exposure ($A$) would hypothetically be changed (e.g., {{shift_intervention}}). This type of 'what if?' question simulates the potential effect of a realistic policy or intervention and is known as a 'modified treatment policy' (MTP) estimand [@haneuse2013estimation; @diaz2012population; @young2014identification; @diaz2023lmtp].
-
-Formally, we estimate the difference between the expected outcome ($Y$) under the hypothetical intervention ($\\dd$) and the expected outcome under the observed exposure distribution, assuming no one dropped out (censoring indicator $C=1$): $\\E(Y^{\\dd, C=1}) - \\E(Y^{C=1})$.
-
-To ensure our estimate reflects a causal effect, rather than just correlation, we rely on three standard assumptions:
-
-1.  **No Unmeasured Confounding (Conditional Exchangeability):** We assume that by accounting for the measured covariates, we have effectively controlled for all factors that influence both the exposure and the outcome, similar to how randomisation works in experiments. We also assume this holds for factors influencing dropout.
-
-2.  **Sufficient Overlap (Positivity):** We assume that within groups of individuals with similar characteristics (based on covariates), there are people who experience the different relevant levels of exposure and non-dropout. This overlap is necessary to fairly compare the effects of the exposure.
-
-3.  **Consistency:** We assume that the outcome we observed for an individual is precisely the outcome they would have experienced given their actual exposure history. This links the observed data to the hypothetical scenarios.
-
-To calculate the effect estimate under these assumptions, we used a state-of-the-art statistical method called Targeted Minimum Loss-based Estimation (TMLE) using the `lmtp` package in R [@diaz2023lmtp; @williams2023lmtp]. TMLE is designed specifically for estimating causal effects like MTPs. Advantages include:
-
-- **Double Robustness:** We obtain reliable estimate if *either* our statistical model for the outcome *or* our models for exposure and dropout are correctly specified, offering some protection against modelling errors.
-- **Machine Learning Integration:** We can use of flexible machine learning algorithms to model the complex relationships between covariates, exposure, dropout, and the outcome, without specifying the functional form of these relationships, potentially biasing the final effect estimate.
-
-We used an ensemble method called Super Learner to implement the machine learning component [@polley2023; @vanderlaan2007super]. Instead of relying on a single algorithm, Super Learner combines predictions from several (here: regularised regression via `SL.glmnet`, random forests via `SL.ranger`, and gradient boosting via `SL.xgboost` to improve prediction accuracy for the different parts of the TMLE calculation [@polley2023; @xgboost2023; @Ranger2017; @SuperLearner2023]. We also used {{n_folds}}-fold cross-fitting, a resampling technique that helps prevent overfitting and ensures the statistical validity of our results.
-
-We generated results, tables, and figures using the `margot` R package [@margot2024]. For readers interested in the mathematical and computational specifics, please see [S{{appendix_technical_lmtp}}](#appendix-technical-lmtp)."
-
-
-
-
-unified_db<- boilerplate_update_entry(
-  db = unified_db,
+unified_db <- boilerplate_update_entry(
+  db   = unified_db,
   path = "methods.statistical_models.lmtp_long_explanation",
   value = lmtp_long_explanation_text
 )
 
-boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
-
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
 
 
 
@@ -2659,7 +2647,7 @@ Formally:
 #### {{name_exposure_regime}} $\\bigl(\\boldsymbol{\\text{d}}(a_k^+)\\bigr)$
 $$
 \\boldsymbol{\\text{d}} (a_k^+)
-\\;=\\;
+\;=\;
 \\begin{cases}
 {{value_exposure_set_low}}, & \\text{if } A_k < {{value_exposure_set_high}},\\\\[6pt]
 A_k, & \\text{otherwise.}
@@ -2668,7 +2656,7 @@ $$
 #### {{name_control_regime}} $\\bigl(\\boldsymbol{\\text{d}}(a_k^\\null)\\bigr)$
 $$
 \\boldsymbol{\\text{d}}(a_k^\\emptyset)
-\\;=\\;
+\;=\;
 \\begin{cases}
 {{value_exposure_set_low}}, & \\text{if } A_k > {{value_exposure_set_low}},\\\\[6pt]
 A_k, & \\text{otherwise.}
@@ -2679,11 +2667,11 @@ Here, $A_k$ is the observed {{exposure_var}} at Wave $k$. The shift function $\\
 We compare the average well-being under the **{{name_exposure_regime}}** regime, $\\boldsymbol{\\bar{\\boldsymbol{\\text{d}}}}(a^+)$, to the average well-being under the **{{name_control_regime}}** regime, $\\boldsymbol{\\bar{\\boldsymbol{\\text{d}}}}(a^\\emptyset)$. Specifically, the average treatment effect (ATE) is given:
 $$
 \\text{ATE}^{\\text{outcomes}}
-\\;=\\;
+\;=\;
 \\mathbb{E}
 \\Bigl[
   Y_\\tau\\!\\bigl(\\boldsymbol{\\text{d}}(a^+)\\bigr)
-  \\;-\\;
+  \;-\;
   Y_\\tau\\!\\bigl(\\boldsymbol{\\text{d}}(a^\\emptyset)\\bigr)
 \\Bigr].
 $$
@@ -2696,7 +2684,7 @@ Mathematically, for conditional exchangeability, we write:
 $$
 \\Bigl\\{
   Y\\bigl(\\boldsymbol{\\text{d}}(a^+)\\bigr),
-  \\;
+  \;
   Y\\bigl(\\boldsymbol{\\text{d}}(a^\\emptyset)\\bigr)
 \\Bigr\\}
 \\coprod
