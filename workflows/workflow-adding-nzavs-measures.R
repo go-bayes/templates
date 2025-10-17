@@ -4980,6 +4980,28 @@ The target population for this analysis is {{name_target_population}}."
 #
 # When no statistically significant evidence of treatment effect heterogeneity is detected (the confidence interval crosses zero), we cannot reliably conclude that personalisation would be better than a standard approach.
 
+unified_db$measures$kessler6
+unified_db$measures$kessler_latent_anxiety <- list(
+  "During the past 30 days, how often did...you feel nervous?",
+  "During the past 30 days, how often did...you feel restless or fidgety?",
+  "During the past 30 days, how often did...you feel that everything was an effort?"
+)
+unified_db$measures$kessler_latent_depression
+unified_db$measures$kessler_latent_depression$items <- list(
+    "During the past 30 days, how often did...you feel hopeless?",
+    "During the past 30 days, how often did...you feel so depressed nothing could cheer you up?",
+    "During the past 30 days, how often did...you feel worthless?"
+  )
+
+df_long_temp_7[, kessler_latent_depression := rowMeans(.SD, na.rm = TRUE),
+               .SDcols = c("kessler_depressed", "kessler_hopeless", "kessler_worthless")
+]
+
+df_long_temp_7[, kessler_latent_anxiety := rowMeans(.SD, na.rm = TRUE),
+               .SDcols = c("kessler_effort", "kessler_nervous", "kessler_restless")
+]
+
+
 
 # measures ----------------------------------------------------------------
 str(unified_db, max.level = 1)

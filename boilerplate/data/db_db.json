@@ -42,7 +42,7 @@
     "url": "https://raw.githubusercontent.com/go-bayes/templates/refs/heads/main/bib/references.bib",
     "local_path": "references2.bib",
     "validate": true,
-    "last_updated": "2025-10-17 22:15:25"
+    "last_updated": "2025-08-01 14:34:35"
   },
   "discussion": {
     "acknowlegements": {
@@ -86,7 +86,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "agreeableness": {
       "description": "Mini-IPIP6 Agreeableness dimension: (i) I sympathize with others' feelings. (ii) I am not interested in other people's problems. (r) (iii) I feel others' emotions. (iv) I am not really interested in others. (r)",
@@ -102,7 +102,7 @@
       "keywords": "personality",
       "reversed_items": 4,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "alcohol_frequency": {
       "name": "alcohol_frequency",
@@ -114,7 +114,7 @@
       "waves": "1-current",
       "keywords": "health",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "alcohol_intensity": {
       "name": "alcohol_intensity",
@@ -126,7 +126,7 @@
       "waves": "6-current",
       "keywords": "health",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "alert_level_combined": {
       "name": "alert_level_combined",
@@ -138,20 +138,23 @@
       "waves": "10-11",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "anxiety": {
       "name": "anxiety",
       "description": "Anxiety was measured using a standard anxiety scale",
       "reference": "anxiety_reference",
       "waves": "1-3",
-      "keywords": ["anxiety", "mental health"],
+      "keywords": [
+        "anxiety",
+        "mental health"
+      ],
       "items": [
         "feeling nervous or anxious",
         "worrying too much about different things"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "ban_hate_speech": {
       "name": "ban_hate_speech",
@@ -167,7 +170,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "belong": {
       "description": "We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument (Hagerty & Patusky, 1995): (1) \"Know that people in my life accept and value me\"; (2) \"Feel like an outsider\"; (3) \"Know that people around me share my attitudes and beliefs\". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.",
@@ -182,7 +185,7 @@
       "keywords": "cooperation",
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "belong_accept": {
       "reference": "hagerty1995",
@@ -198,7 +201,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "belong_beliefs": {
       "description": "We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument (Hagerty & Patusky, 1995): (1) \"Know that people in my life accept and value me\"; (2) \"Feel like an outsider\"; (3) \"Know that people around me share my attitudes and beliefs\". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.",
@@ -210,7 +213,7 @@
       ],
       "name": "belong_beliefs",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "belong_routside_reversed": {
       "description": "We assessed felt belongingness with three items adapted from the Sense of Belonging Instrument (Hagerty & Patusky, 1995): (1) \"Know that people in my life accept and value me\"; (2) \"Feel like an outsider\"; (3) \"Know that people around me share my attitudes and beliefs\". Participants responded on a scale from 1 (Very Inaccurate) to 7 (Very Accurate). The second item was reversely coded.",
@@ -223,7 +226,7 @@
       "name": "belong_routside_reversed",
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "bmi_cat": {
       "name": "bmi_cat",
@@ -235,7 +238,7 @@
         "'What is your height? (meters)'/'How much do you weigh? (kgs)'"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "bmi_cat_num": {
       "name": "bmi_cat_num",
@@ -247,7 +250,7 @@
         "'What is your height? (meters)'/'How much do you weigh? (kgs)'"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "bodysat": {
       "name": "bodysat",
@@ -261,7 +264,7 @@
       "scale_info": "1 = Very inaccurate to 7 = Very accurate",
       "scale_anchors": "1 = Very inaccurate to 7 = Very accurate",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "born_nz": {
       "description": "Open-ended response coded as binary.",
@@ -273,7 +276,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "born_nz_binary": {
       "description": "Coded binary (1 = New Zealand; 0 = elsewhere.)",
@@ -285,14 +288,14 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "charitable_donations": {
       "description": "Using one item from Hoverd and Sibley (2010), we asked participants, \"How much money have you donated to charity in the last year?\". To stabilise this indicator, we took the natural log of the response + 1.",
       "reference": "hoverd_religious_2010",
       "name": "charitable_donations",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "charity_donate": {
       "name": "charity_donate",
@@ -304,7 +307,7 @@
       "waves": "1-current",
       "keywords": "cooperation",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "children_num": {
       "description": "We measured the number of children using one item from Bulbulia et al. (2015). We asked participants, \"How many children have you given birth to, fathered, or adopted?\" or \"How many children have you given birth to, fathered, and/or parented?\" (waves: 12-15).",
@@ -312,7 +315,7 @@
       "reference": "bulbulia_2015",
       "name": "children_num",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "community_money_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -324,7 +327,7 @@
       ],
       "name": "community_money_binary",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "community_time_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -336,7 +339,7 @@
       ],
       "name": "community_time_binary",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "conscientiousness": {
       "description": "Mini-IPIP6 Conscientiousness dimension: (i) I get chores done right away. (ii) I like order. (iii) I make a mess of things. (r) (iv) I often forget to put things back in their proper place. (r)",
@@ -351,7 +354,7 @@
       ],
       "keywords": "personality",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "conspiracy_beliefs": {
       "name": "conspiracy_beliefs",
@@ -367,20 +370,23 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "depression": {
       "name": "depression",
       "description": "Depression was measured using a standard depression scale",
       "reference": "depression_reference",
       "waves": "1-3",
-      "keywords": ["depression", "mental health"],
+      "keywords": [
+        "depression",
+        "mental health"
+      ],
       "items": [
         "feeling down or depressed",
         "having little interest in doing things"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "doubts_official_version": {
       "reference": "knowles2009malleability",
@@ -396,7 +402,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "doubts_official_version_truth": {
       "reference": "knowles2009malleability",
@@ -412,7 +418,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "education_level_coarsen": {
       "description": "We asked participants, \"What is your highest level of qualification?\". We coded participans highest finished degree according to the New Zealand Qualifications Authority. Ordinal-Rank 0-10 NZREG codes (with overseas school qualifications coded as Level 3, and all other ancillary categories coded as missing)",
@@ -424,19 +430,22 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "emp_job_sat": {
       "name": "emp_job_sat",
       "description": "Job satisfaction was measured with a single item:",
       "reference": "eisenbarth2022aspects",
       "waves": "1-present",
-      "keywords": ["employment", "mental health"],
+      "keywords": [
+        "employment",
+        "mental health"
+      ],
       "items": [
         "How satisfied are you with your current job?"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "emp_job_secure": {
       "description": "Participants indicated their feeling of job security by answering \"How secure do you feel in your current job?\" on a scale from 1 (not secure) to 7 (very secure).",
@@ -444,31 +453,37 @@
       "reference": "sibley2021",
       "name": "emp_job_secure",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "emp_job_valued": {
       "name": "emp_job_valued",
       "description": "Perceved organizational gratitude was measured with a single item:",
       "reference": "sibley2021",
       "waves": "10-present",
-      "keywords": ["employment", "mental health"],
+      "keywords": [
+        "employment",
+        "mental health"
+      ],
       "items": [
         "How valued do you feel by your current organization?"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "emp_job_valued_binary": {
       "name": "emp_job_valued_binary",
       "description": "Perceved organizational gratitude was measured with a single item.",
       "reference": "sibley2021",
       "waves": "10-present",
-      "keywords": ["employment", "mental health"],
+      "keywords": [
+        "employment",
+        "mental health"
+      ],
       "items": [
         "How valued do you feel by your current organization?"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "employed": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -480,7 +495,7 @@
       ],
       "name": "employed",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "employed_binary": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -492,7 +507,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_1080poison": {
       "name": "env_1080poison",
@@ -506,7 +521,7 @@
       "scale_info": "1 = \"Strongly Oppose\" to 7 = \"Strongly Support\"",
       "scale_anchors": "1 = \"Strongly Oppose\" to 7 = \"Strongly Support\"",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_climate_chg_cause": {
       "name": "env_climate_chg_cause",
@@ -522,7 +537,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_climate_chg_concern": {
       "reference": "sibley2021",
@@ -538,7 +553,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_climate_chg_real": {
       "reference": "sibley2013model",
@@ -554,7 +569,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_efficacy": {
       "reference": "sharma2008we",
@@ -571,7 +586,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_efficacy_action_belief": {
       "name": "env_efficacy_action_belief",
@@ -587,7 +602,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_efficacy_action_feeling": {
       "reference": "sharma2008we",
@@ -603,7 +618,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_not_climate_chg_cause": {
       "reference": "sibley2013model",
@@ -620,7 +635,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_not_climate_chg_concern": {
       "reference": "sibley2021",
@@ -637,7 +652,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_not_climate_chg_real": {
       "reference": "sibley2013model",
@@ -654,7 +669,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_not_env_efficacy": {
       "reference": "sharma2008we",
@@ -670,9 +685,12 @@
         "1 = Strongly Disagree",
         "7 = Strongly Agree"
       ],
-      "reversed_items": [1, 2],
+      "reversed_items": [
+        1,
+        2
+      ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_not_sat_nz_environment": {
       "reference": "tiliouine_measuring_2006",
@@ -689,7 +707,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_routine_made": {
       "name": "env_routine_made",
@@ -705,7 +723,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_routine_willing": {
       "reference": "liu2012hope",
@@ -721,7 +739,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_sac_made": {
       "name": "env_sac_made",
@@ -737,7 +755,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_sac_willing": {
       "reference": "liu2012hope",
@@ -753,7 +771,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "env_sat_nz_environment": {
       "name": "env_sat_nz_environment",
@@ -769,7 +787,7 @@
         "10 =  Completely Datisfied"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "envefficacy": {
       "reference": "sharma2008we",
@@ -786,7 +804,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "eth_cat": {
       "description": "Coded string: (1 = New Zealand European; 2 = Māori; 3 = Pacific; 4 = Asian)",
@@ -798,7 +816,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "euro": {
       "description": "Code string (Binary): (0 = not European, 1 = European)",
@@ -810,7 +828,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "extraversion": {
       "description": "Mini-IPIP6 Extraversion dimension: (i) I am the life of the party. (ii) I don't talk a lot. (r) (iii) I keep in the background. (r) (iv) I talk to a lot of different people at parties.",
@@ -824,9 +842,12 @@
         "I talk to a lot of different people at parties."
       ],
       "keywords": "personality",
-      "reversed_items": [2, 3],
+      "reversed_items": [
+        2,
+        3
+      ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "family_money_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -838,7 +859,7 @@
       "name": "family_money_binary",
       "reference": "sibley2021",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "family_time_binary": {
       "name": "family_time_binary",
@@ -850,7 +871,7 @@
       "keywords": "cooperation",
       "reference": "sibley2021",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "forgiveness": {
       "name": "forgiveness",
@@ -864,7 +885,7 @@
       "waves": "10-current",
       "keywords": "reflective-present",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "free_speech": {
       "name": "free_speech",
@@ -880,7 +901,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "friends_money_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -892,7 +913,7 @@
       ],
       "name": "friends_money_binary",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "friends_time_binary": {
       "name": "friends_time_binary",
@@ -904,7 +925,7 @@
       "waves": "10-13",
       "keywords": "cooperation",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "gratitude": {
       "name": "gratitude",
@@ -919,14 +940,14 @@
       "keywords": "reflective-life",
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "has_siblings": {
       "description": "\"Do you have siblings?\"",
       "reference": "stronge2019onlychild",
       "name": "has_siblings",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "hlth_bmi": {
       "name": "hlth_bmi",
@@ -938,7 +959,7 @@
       "waves": "2-current",
       "keywords": "health",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "hlth_disability_binary": {
       "description": "We assessed disability with a one-item indicator adapted from Verbrugge (1997). It asks, \"Do you have a health condition or disability that limits you and that has lasted for 6+ months?\" (1 = Yes, 0 = No).",
@@ -950,7 +971,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "hlth_fatigue": {
       "waves": "5-current",
@@ -969,7 +990,7 @@
         "4 = All Of The Time"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "hlth_sleep_hours": {
       "name": "hlth_sleep_hours",
@@ -981,7 +1002,7 @@
       "waves": "5-current",
       "keywords": "health",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "honesty_humility": {
       "description": "Mini-IPIP6 Honesty-Humility dimension: (i) I feel entitled to more of everything. (r) (ii) I deserve more things in life. (r) (iii) I would like to be seen driving around in a very expensive car. (r) (iv) I would get a lot of pleasure from owning expensive luxury goods. (r)",
@@ -995,9 +1016,14 @@
         "I would get a lot of pleasure from owning expensive luxury goods (reversed)."
       ],
       "keywords": "personality",
-      "reversed_items": [1, 2, 3, 4],
+      "reversed_items": [
+        1,
+        2,
+        3,
+        4
+      ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "hours_charity": {
       "name": "hours_charity",
@@ -1009,7 +1035,7 @@
       "waves": "1-current",
       "keywords": "cooperation",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "hours_children": {
       "description": "Numerical: open-ended response",
@@ -1021,7 +1047,7 @@
       ],
       "name": "hours_children",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "hours_commute": {
       "description": "",
@@ -1033,7 +1059,7 @@
       ],
       "name": "hours_commute",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "hours_comp_games": {
       "description": "Numerical: open-ended response",
@@ -1045,19 +1071,22 @@
       ],
       "name": "hours_comp_games",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "hours_exercise_who_cat_num": {
       "name": "hours_exercise_who_cat_num",
       "description": "Responses classified by WHO codes: 1. Inactive: 0 h/week 2. Insufficiently active: > 0 to < 2.5 h/week (< 150 min/week) 3. Meeting guidelines: ≥ 2.5 to < 5 h/week (150–300 min/week) 4. Highly active: ≥ 5 to < 7.5 h/week (300–450 min/week) 5. Very highly active: ≥ 7.5 h/week (> 450 min/week) )",
       "reference": "who_2010_exercise",
       "waves": "1,4-current",
-      "keywords": ["health", "hours"],
+      "keywords": [
+        "health",
+        "hours"
+      ],
       "items": [
         "'Hours spent...exercising/physical activity' (coded numeric 1-5)"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "household_inc": {
       "name": "household_inc",
@@ -1068,19 +1097,14 @@
       "keywords": "demography",
       "reference": "sibley2021",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
-    "kessler_latent_anxiety": [
-      "During the past 30 days, how often did...you feel nervous?",
-      "During the past 30 days, how often did...you feel restless or fidgety?",
-      "During the past 30 days, how often did...you feel that everything was an effort?"
-    ],
-    "kessler_latent_depression": {
-      "name": "kessler_latent_depression",
+    "kessler_latent_anxiety": {
+      "name": "kessler_latent_anxiety",
       "items": [
-        "During the past 30 days, how often did...you feel hopeless?",
-        "During the past 30 days, how often did...you feel so depressed nothing could cheer you up?",
-        "During the past 30 days, how often did...you feel worthless?"
+        "During the past 30 days, how often did...you feel restless or fidgety?",
+        "During the past 30 days, how often did...you feel that everything was an effort?",
+        "During the past 30 days, how often did...you feel nervous?"
       ],
       "reference": "kessler2002",
       "waves": "2-current",
@@ -1094,7 +1118,28 @@
         "4 = All Of The Time"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
+    },
+    "kessler_latent_depression": {
+      "name": "kessler_latent_depression",
+      "items": [
+        "During the past 30 days, how often did...you feel hopeless?",
+        "During the past 30 days, how often did...you feel so depressed that nothing could cheer you up?",
+        "During the past 30 days, how often did...you feel you feel restless or fidgety?"
+      ],
+      "reference": "kessler2002",
+      "waves": "2-current",
+      "keywords": "psychological-well-being",
+      "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-08-02"
     },
     "kessler6": {
       "reference": "kessler2002",
@@ -1118,7 +1163,7 @@
         "4 = All Of The Time"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "kessler6_sum": {
       "reference": "kessler2002",
@@ -1142,20 +1187,23 @@
         "4 = All Of The Time"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "life_satisfaction": {
       "name": "life_satisfaction",
       "description": "Life satisfaction was measured using a standard scale",
       "reference": "satisfaction_reference",
       "waves": "1-4",
-      "keywords": ["wellbeing", "satisfaction"],
+      "keywords": [
+        "wellbeing",
+        "satisfaction"
+      ],
       "items": [
         "i am satisfied with my life",
         "the conditions of my life are excellent"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "lifesat": {
       "name": "lifesat",
@@ -1170,7 +1218,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "log_hours_children": {
       "description": "We took the natural log of the response + 1.",
@@ -1181,7 +1229,7 @@
         "Hours spent...looking after children."
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "log_hours_commute": {
       "name": "log_hours_commute",
@@ -1193,7 +1241,7 @@
       "reference": "sibley2021",
       "keywords": "hours",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "log_hours_exercise": {
       "description": "We took the natural log of the response + 1.",
@@ -1205,7 +1253,7 @@
       ],
       "keywords": "hours",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "log_hours_housework": {
       "description": "We took the natural log of the response + 1.",
@@ -1217,7 +1265,7 @@
       ],
       "keywords": "hours",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "log_hours_work": {
       "description": "We took the natural log of the response + 1.",
@@ -1229,7 +1277,7 @@
       ],
       "keywords": "hours",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "log_household_inc": {
       "name": "log_household_inc",
@@ -1241,7 +1289,7 @@
       "keywords": "demography",
       "reference": "sibley2021",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "male": {
       "description": "We asked participants' gender in an open-ended question: \"what is your gender?\" or \"Are you male or female?\" (waves: 1-5). Female was coded as 0, Male was coded as 1, and gender diverse coded as 3 (Fraser et al., 2020). (or 0.5 = neither female nor male). Here, we coded all those who responded as Male as 1, and those who did not as 0.",
@@ -1253,7 +1301,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "male_binary": {
       "description": "Here, we coded all those who responded as Male as 1, and those who did not as 0.",
@@ -1265,7 +1313,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "meaning_purpose": {
       "name": "meaning_purpose",
@@ -1279,7 +1327,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "meaning_sense": {
       "name": "meaning_sense",
@@ -1293,7 +1341,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "mistrust_emphasis_on_science": {
       "reference": "hartman2017",
@@ -1310,7 +1358,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "mistrust_free_speech": {
       "reference": "dore2022boundaries",
@@ -1327,7 +1375,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "mistrust_official_version_truth": {
       "reference": "knowles2009malleability",
@@ -1343,7 +1391,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "mistrust_police": {
       "reference": "tyler2005",
@@ -1360,9 +1408,12 @@
         "1 = Strongly Disagree",
         "7 = Strongly Agree"
       ],
-      "reversed_items": [1, 3],
+      "reversed_items": [
+        1,
+        3
+      ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "mistrust_politicians": {
       "reference": "sibley2020a",
@@ -1379,7 +1430,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "mistrust_scientific_community": {
       "reference": "nisbet2015",
@@ -1396,7 +1447,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "modesty": {
       "description": "Participants indicated the extent to which they agree with the following four statements from Campbell et al. (2004), and Sibley et al. (2011) (1 = Strongly Disagree to 7 = Strongly Agree): (i) I want people to know that I am an important person of high status, (Waves: 1, 10-14); (ii) I am an ordinary person who is no better than others. (all waves); (iii) I wouldn't want people to treat me as though I were superior to them. (all waves); (iv) I think that I am entitled to more respect than the average person is. (all waves)",
@@ -1404,7 +1455,7 @@
       "reference": "campbell2004",
       "name": "modesty",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "neighbourhood_community": {
       "name": "neighbourhood_community",
@@ -1418,7 +1469,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "neuroticism": {
       "description": "Mini-IPIP6 Neuroticism dimension: (i) I have frequent mood swings. (ii) I am relaxed most of the time. (r) (iii) I get upset easily. (iv) I seldom feel blue. (r)",
@@ -1432,9 +1483,12 @@
         "I seldom feel blue (reversed)."
       ],
       "keywords": "personality",
-      "reversed_items": [2, 4],
+      "reversed_items": [
+        2,
+        4
+      ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "not_heterosexual_binary": {
       "name": "not_heterosexual_binary",
@@ -1446,7 +1500,7 @@
       "waves": "5-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "not_lost": {
       "name": "not_lost",
@@ -1457,7 +1511,7 @@
       "waves": "1-current",
       "keywords": "coding",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "nz_dep2018": {
       "name": "nz_dep2018",
@@ -1469,7 +1523,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "nzsei_13_l": {
       "description": "This index uses the income, age, and education of a reference group, in this case, the 2013 New Zealand census, to calculate a score for each occupational group. Scores range from 10 (Lowest) to 90 (Highest). This list of index scores for occupational groups was used to assign each participant a NZSEI-13 score based on their occupation.",
@@ -1481,7 +1535,7 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "openness": {
       "description": "Mini-IPIP6 Openness to Experience dimension: (i) I have a vivid imagination. (ii) I have difficulty understanding abstract ideas. (r) (iii) I do not have a good imagination. (r) (iv) I am not interested in abstract ideas. (r)",
@@ -1495,9 +1549,13 @@
         "I am not interested in abstract ideas (reversed)."
       ],
       "keywords": "personality",
-      "reversed_items": [2, 3, 4],
+      "reversed_items": [
+        2,
+        3,
+        4
+      ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "parent": {
       "name": "parent",
@@ -1508,7 +1566,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "parent_binary": {
       "description": "Parents were coded as 1, while the others were coded as 0.",
@@ -1520,14 +1578,14 @@
       ],
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "partner": {
       "description": "\"What is your relationship status?\" (e.g., single, married, de-facto, civil union, widowed, living together, etc.)",
       "reference": "sibley2021",
       "name": "partner",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "partner_binary": {
       "name": "partner_binary",
@@ -1539,7 +1597,7 @@
       "keywords": "demography",
       "reference": "sibley2021",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "perc_age_discrim": {
       "name": "perc_age_discrim",
@@ -1554,7 +1612,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "perc_discrim": {
       "name": "perc_discrim",
@@ -1564,7 +1622,7 @@
       "waves": "1-current",
       "keywords": "prejudice",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "perc_gend_discrim": {
       "name": "perc_gend_discrim",
@@ -1579,7 +1637,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "perc_religious_discrim": {
       "name": "perc_religious_discrim",
@@ -1593,7 +1651,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "perfectionism": {
       "name": "perfectionism",
@@ -1609,7 +1667,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "pol_politician_trust": {
       "name": "pol_politician_trust",
@@ -1625,14 +1683,14 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "pol_wing": {
       "description": "We measured participants' political right-wing orientation using a single item adapted from Jost (2006): \"Please rate how politically left-wing versus right-wing you see yourself as being.\" (1 = Extremely left-wing to 7 = Extremely right-wing)",
       "reference": "jost_end_2006-1",
       "name": "pol_wing",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "police_trust": {
       "name": "police_trust",
@@ -1651,7 +1709,7 @@
       ],
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "political_conservative": {
       "waves": "1-current",
@@ -1667,7 +1725,7 @@
         "7 = Extremely Conservative"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "power_no_control_composite": {
       "reference": "overall2016power",
@@ -1684,7 +1742,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "power_others_control": {
       "name": "power_others_control",
@@ -1700,7 +1758,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "power_self_nocontrol": {
       "reference": "overall2016power",
@@ -1716,7 +1774,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "pwb_standard_living": {
       "name": "pwb_standard_living",
@@ -1730,7 +1788,7 @@
       "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
       "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "pwb_your_future_security": {
       "name": "pwb_your_future_security",
@@ -1744,7 +1802,7 @@
       "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
       "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "pwb_your_health": {
       "name": "pwb_your_health",
@@ -1758,7 +1816,7 @@
       "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
       "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "pwb_your_relationships": {
       "name": "pwb_your_relationships",
@@ -1772,7 +1830,7 @@
       "scale_info": "0 = completely dissatisfied to 10 = completely satisfied",
       "scale_anchors": "0 = completely dissatisfied to 10 = completely satisfied",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_believe_god": {
       "name": "religion_believe_god",
@@ -1784,7 +1842,7 @@
       "waves": "2-current",
       "keywords": "religion",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_believe_god_binary": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -1796,7 +1854,7 @@
       ],
       "name": "religion_believe_god_binary",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_believe_spirit": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -1808,7 +1866,7 @@
       ],
       "name": "religion_believe_spirit",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_believe_spirit_binary": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -1820,7 +1878,7 @@
       ],
       "name": "religion_believe_spirit_binary",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_bigger_denominations": {
       "name": "religion_bigger_denominations",
@@ -1832,7 +1890,7 @@
       "keywords": "religion",
       "description": "Open-ended (string). Coded from New Zealand Census Categories. Levels are: \"Not Religious\",\"Anglican\",\"Buddhist\", \"Catholic\", \"Christian (Non-Denominational)\", \"Christian (Other Denominations)\",\"Hindu\", \"Jewish\", \"Muslim\",\"Presbyterian, Congregational, Reformed\", \"Other Religions\".",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_church": {
       "name": "religion_church",
@@ -1844,7 +1902,7 @@
       "waves": "2-11; 12(imputed); 13(partial)- current.",
       "keywords": "religion",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_church_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -1856,7 +1914,7 @@
       ],
       "name": "religion_church_binary",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_identification_level": {
       "name": "religion_identification_level",
@@ -1872,7 +1930,7 @@
         "7 = Very Important"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_prayer": {
       "description": "Numerical: open-ended response",
@@ -1884,7 +1942,7 @@
       ],
       "name": "religion_prayer",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_prayer_binary": {
       "description": "Numerical: open-ended response",
@@ -1896,7 +1954,7 @@
       ],
       "name": "religion_prayer_binary",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_religious": {
       "name": "religion_religious",
@@ -1908,7 +1966,7 @@
       "waves": "1-current",
       "keywords": "religion",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_religious_binary": {
       "description": "Binary response: (0 = No, 1 = Yes)",
@@ -1920,7 +1978,7 @@
       ],
       "name": "religion_religious_binary",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_scripture": {
       "description": "Numerical: open-ended response",
@@ -1932,7 +1990,7 @@
       ],
       "name": "religion_scripture",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_scripture_binary": {
       "description": "Code string (Binary): (0 = 0, 1 = greater than 0)",
@@ -1944,7 +2002,7 @@
       ],
       "name": "religion_scripture_binary",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_spiritual_identification": {
       "reference": "postmes2013single",
@@ -1960,7 +2018,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "religion_spiritual_identification_level": {
       "reference": "postmes2013single",
@@ -1976,7 +2034,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "rumination": {
       "name": "rumination",
@@ -1988,7 +2046,7 @@
       "waves": "2-current",
       "keywords": "psychological-wellbeing",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "rural_gch_2018_l": {
       "name": "rural_gch_2018_l",
@@ -2000,7 +2058,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "rwa": {
       "name": "rwa",
@@ -2018,7 +2076,7 @@
       "description": "Right Wing Authoritarianism was measured using the following items:",
       "reversed_items": 6,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "sample_frame_opt_in_binary": {
       "name": "sample_frame_opt_in_binary",
@@ -2030,7 +2088,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "sdo": {
       "name": "sdo",
@@ -2046,9 +2104,13 @@
       "waves": "1-current",
       "keywords": "demography",
       "description": "Social Dominance Orientation was measured using the following items:",
-      "reversed_items": [4, 5, 6],
+      "reversed_items": [
+        4,
+        5,
+        6
+      ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "self_control": {
       "name": "self_control",
@@ -2066,7 +2128,7 @@
       ],
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "self_control_have_lots": {
       "name": "self_control_have_lots",
@@ -2080,7 +2142,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "self_control_wish_more_reversed": {
       "name": "self_control_wish_more_reversed",
@@ -2094,7 +2156,7 @@
       "scale_info": "1 = Strongly Disagree to 7 = Strongly Agree",
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "self_esteem": {
       "name": "self_esteem",
@@ -2111,7 +2173,7 @@
       "scale_anchors": "1 = Very inaccurate to 7 = Very accurate",
       "reversed_items": 3,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "sexual_satisfaction": {
       "name": "sexual_satisfaction",
@@ -2123,7 +2185,7 @@
       "waves": "10-current",
       "keywords": "reflective-present",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "sfhealth": {
       "reference": "instrument1992mos",
@@ -2140,9 +2202,12 @@
         "1 = Strongly Disagree",
         "7 = Strongly Agree"
       ],
-      "reversed_items": [2, 3],
+      "reversed_items": [
+        2,
+        3
+      ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "short_form_health": {
       "name": "short_form_health",
@@ -2158,7 +2223,7 @@
         "7 = Excellent"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "smoker_binary": {
       "name": "smoker_binary",
@@ -2170,7 +2235,7 @@
       "waves": "4-current",
       "keywords": "health",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "support": {
       "waves": "1-current",
@@ -2189,7 +2254,7 @@
       ],
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "support_help": {
       "reference": "cutrona1987",
@@ -2205,7 +2270,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "support_noguidance_reversed": {
       "reference": "cutrona1987",
@@ -2222,7 +2287,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "support_turnto": {
       "reference": "cutrona1987",
@@ -2238,7 +2303,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "trust_free_speech": {
       "reference": "dore2022boundaries",
@@ -2254,7 +2319,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "trust_not_official_version_truth": {
       "reference": "knowles2009malleability",
@@ -2270,7 +2335,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "trust_science": {
       "reference": "hartman2017",
@@ -2287,7 +2352,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "trust_science_high_confidence_scientific_community": {
       "name": "trust_science_high_confidence_scientific_community",
@@ -2303,7 +2368,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "trust_science_high_confidence_scientific_community_cat": {
       "description": "Quantiles of",
@@ -2320,7 +2385,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "trust_science_low_confidence_scientific_community": {
       "reference": "nisbet2015",
@@ -2337,7 +2402,7 @@
       ],
       "reversed_items": 1,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "trust_science_our_society_places_too_much_emphasis_reversed": {
       "name": "trust_science_our_society_places_too_much_emphasis_reversed",
@@ -2353,7 +2418,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "trust_scientists": {
       "reference": "nisbet2015",
@@ -2369,7 +2434,7 @@
         "7 = Strongly Agree"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "urban_binary": {
       "description": "We coded whether they are living in an urban or rural area (1 = Urban, 0 = Rural) based on the addresses provided.",
@@ -2377,7 +2442,7 @@
       "reference": "sibley2021",
       "name": "urban_binary",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "vengeful_rumin": {
       "name": "vengeful_rumin",
@@ -2394,14 +2459,14 @@
       "scale_anchors": "1 = Strongly Disagree to 7 = Strongly Agree",
       "reversed_items": 2,
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "volunteers": {
       "description": "We measured hours of volunteering using one item from Sibley et al. (2011): \"Hours spent … voluntary/charitable work.\" To stabilise this indicator, we took the natural log of the response + 1.",
       "reference": "sibley2011",
       "name": "volunteers",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "w_gend_age_ethnic": {
       "name": "w_gend_age_ethnic",
@@ -2413,7 +2478,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "w_gend_age_euro": {
       "description": "Sample weights for NZ population (NZ Census)",
@@ -2425,7 +2490,7 @@
       ],
       "name": "w_gend_age_euro",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_asians": {
       "name": "warm_asians",
@@ -2438,7 +2503,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_chinese": {
       "reference": "Modelled on United States National Election Study.",
@@ -2451,7 +2516,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_disabled": {
       "reference": "Modelled on United States National Election Study.",
@@ -2464,7 +2529,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_elderly": {
       "reference": "Modelled on United States National Election Study.",
@@ -2477,7 +2542,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_immigrants": {
       "reference": "Modelled on United States National Election Study.",
@@ -2490,7 +2555,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_indians": {
       "reference": "Modelled on United States National Election Study.",
@@ -2503,7 +2568,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_lgbtq": {
       "reference": "Modelled on United States National Election Study.",
@@ -2516,7 +2581,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_maori": {
       "reference": "Modelled on United States National Election Study.",
@@ -2529,7 +2594,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_mental_illness": {
       "reference": "Modelled on United States National Election Study.",
@@ -2542,7 +2607,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_muslims": {
       "reference": "Modelled on United States National Election Study.",
@@ -2555,7 +2620,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_nz_euro": {
       "reference": "Modelled on United States National Election Study.",
@@ -2568,7 +2633,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_overweight": {
       "reference": "Modelled on United States National Election Study.",
@@ -2581,7 +2646,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_pacific": {
       "reference": "Modelled on United States National Election Study.",
@@ -2594,7 +2659,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     },
     "warm_refugees": {
       "reference": "Modelled on United States National Election Study.",
@@ -2607,7 +2672,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2025-10-17"
+      "standardised_date": "2025-08-02"
     }
   },
   "methods": {
