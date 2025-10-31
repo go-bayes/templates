@@ -16,7 +16,7 @@ if (!require(boilerplate, quietly = TRUE)) {
 
 library(boilerplate)
 
-
+here::here()
 
 # # set path ----------------------------------------------------------------
 # # my_data_path <- "/Users/joseph/GIT/templates/boilerplate_data" Old path
@@ -63,14 +63,14 @@ library(boilerplate)
 # #
 #
 #
-# use_data_path = here::here("boilerplate", "data")
+use_data_path = here::here("boilerplate", "data")
 #
 #
 #
 #
 #
 # # import data -------------------------------------------------------------
-# proto_unified_db <- boilerplate_import( data_path = use_data_path)
+proto_unified_db <- boilerplate_import( data_path = use_data_path)
 #
 # boilerplate_save(
 #   proto_unified_db,
@@ -117,7 +117,10 @@ library(boilerplate)
 # import data
 use_data_path = here::here("boilerplate", "data")
 
-unified_db <- boilerplate_import( data_path = use_data_path)
+#vim_data_path =  here::here("GIT", "templates", "boilerplate", "data")
+unified_db <- boilerplate_import(data_path = use_data_path)
+
+
 #boilerplate_save(unified_db, create_backup = FALSE)
 
 # add bibliography --------------------------------------------------------
@@ -145,7 +148,7 @@ unified_db$measures <- boilerplate_standardise_measures(unified_db$measures)
 boilerplate_measures_report(unified_db$measures, return_report = TRUE)
 
 # save db
-boilerplate_save(unified_db, data_path = use_data_path, create_backup = FALSE)
+boilerplate_save(unified_db, data_path = use_data_path, create_backup = TRUE)
 
 
 # 6. Validate before manuscript submission
@@ -4980,11 +4983,13 @@ The target population for this analysis is {{name_target_population}}."
 #
 # When no statistically significant evidence of treatment effect heterogeneity is detected (the confidence interval crosses zero), we cannot reliably conclude that personalisation would be better than a standard approach.
 
-unified_db$measures$kessler6
-unified_db$measures$kessler_latent_anxiety <- list(
-  "During the past 30 days, how often did...you feel nervous?",
-  "During the past 30 days, how often did...you feel restless or fidgety?",
-  "During the past 30 days, how often did...you feel that everything was an effort?"
+name = "Perceive Gratitude from Organisation",
+description = "Perceved organizational gratitude was measured with a single item:",
+reference = "sibley2021",
+waves = "10-present",
+keywords = c("employment", "mental health"),
+items = list(
+  "How valued do you feel by your current organization?"
 )
 unified_db$measures$kessler_latent_depression
 unified_db$measures$kessler_latent_depression$items <- list(
@@ -5054,6 +5059,22 @@ unified_db$measures$hours_exercise_who_cat <- list(
     "'Hours spent...exercising/physical activity' (coded)"
   )
 )
+unified_db$measures$kessler_latent_depression
+unified_db$measures$kessler_latent_anxiety <- list(
+name = "kessler_latent_depression",
+reference = "kessler2002",
+scale_anchors = list("0 = None Of The Time","1 = A Little Of The Time","2= Some Of The Time","3 = Most Of The Time","4 = All Of The Time"),
+waves = "2-current",
+keywords = "psychological-well-being",
+scale_info = "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
+items = list(
+  "During the past 30 days, how often did...you feel nervous?",
+  "During the past 30 days, how often did...you feel restless or fidgety?",
+  "During the past 30 days, how often did...you feel that everything was an effort?"
+)
+)
+
+
 
 unified_db$measures$hours_exercise_who_cat_num <- list(
   name = "Weekly hours exercising/physical activity (WHO 2010 classification)",
