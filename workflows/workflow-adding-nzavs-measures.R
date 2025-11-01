@@ -5006,7 +5006,22 @@ df_long_temp_7[, kessler_latent_anxiety := rowMeans(.SD, na.rm = TRUE),
                .SDcols = c("kessler_effort", "kessler_nervous", "kessler_restless")
 ]
 
+# REVISED NZ REG
 
+
+# revised nz reg
+# ============================================================
+
+master_path <- "/Users/joseph/GIT/templates/boilerplate/data/boilerplate_unified.json"
+
+unified_db <- boilerplate::boilerplate_import(data_path = master_path)
+
+
+cat(unified_db$measures$education_level_coarsen$description)
+
+
+unified_db$measures$education_level_coarsen$description <- 
+"We asked participants, 'What is your highest level of qualification?'. We coded participants' highest finished degree according to the New Zealand Qualifications and Credentials Framework (NZQCF), which comprises 10 levels (Levels 1-10) of increasing complexity and depth of knowledge. We added a Level 0 category to represent no formal qualification, resulting in an 11-category ordinal measure (0-10).\n The levels are defined as follows: Level 0 represents no formal qualification. Levels 1-3 cover basic to operational knowledge. Level 4 covers broader operational and theoretical knowledge. Level 5 covers broad operational or technical knowledge within a specific field. Level 6 covers specialised technical or theoretical knowledge with depth. Level 7 includes bachelor's degrees, graduate certificates, and graduate diplomas. Level 8 includes bachelor honours degrees, postgraduate certificates, and postgraduate diplomas. Level 9 represents master's degrees. Level 10 represents doctoral degrees.\n To ensure adequate cell counts and satisfy the positivity assumption required for causal inference, we coarsened the 11-category measure (0-10) into seven ordinal categories: no qualification (Level 0), certificates Levels 1-4 (foundation through broader vocational qualifications), certificates Levels 5-6 (advanced certificates and diplomas), bachelor's degree (Level 7), postgraduate qualifications (Level 8), master's degree (Level 9), and doctorate (Level 10). This coarsening preserves meaningful educational gradients while ensuring sufficient sample sizes across all covariate strata. In our statistical models, these ordinal categories are represented as binary indicators."
 
 # measures ----------------------------------------------------------------
 str(unified_db, max.level = 1)
@@ -5136,9 +5151,12 @@ unified_db$discussion$acknowlegements
 boilerplate_list_files(data_path = use_data_path)
 unified_db$measures$emp_job_valued
 use_data_path
-boilerplate::boilerplate_save(unified_db, data_path = use_data_path,
-                             # format = "both",
-                              create_backup = TRUE)
+
+
+bib_path <- "/Users/joseph/GIT/templates/boilerplate/data/"
+
+
+boilerplate::boilerplate_save(unified_db, data_path = bib_path,create_backup = TRUE)
 
 use_data_path
 

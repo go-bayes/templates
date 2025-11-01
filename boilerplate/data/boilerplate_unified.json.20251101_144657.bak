@@ -145,10 +145,7 @@
       "description": "Anxiety was measured using a standard anxiety scale",
       "reference": "anxiety_reference",
       "waves": "1-3",
-      "keywords": [
-        "anxiety",
-        "mental health"
-      ],
+      "keywords": ["anxiety", "mental health"],
       "items": [
         "feeling nervous or anxious",
         "worrying too much about different things"
@@ -377,10 +374,7 @@
       "description": "Depression was measured using a standard depression scale",
       "reference": "depression_reference",
       "waves": "1-3",
-      "keywords": [
-        "depression",
-        "mental health"
-      ],
+      "keywords": ["depression", "mental health"],
       "items": [
         "feeling down or depressed",
         "having little interest in doing things"
@@ -421,7 +415,7 @@
       "standardised_date": "2025-10-31"
     },
     "education_level_coarsen": {
-      "description": "We asked participants, 'What is your highest level of qualification?'. We coded participants' highest finished degree according to the New Zealand Qualifications and Credentials Framework (NZQCF), which comprises 10 levels (Levels 1-10) of increasing complexity and depth of knowledge. We added a Level 0 category to represent no formal qualification, resulting in an 11-category ordinal measure (0-10).\n The levels are defined as follows: Level 0 represents no formal qualification. Levels 1-3 cover basic to operational knowledge. Level 4 covers broader operational and theoretical knowledge. Level 5 covers broad operational or technical knowledge within a specific field. Level 6 covers specialised technical or theoretical knowledge with depth. Level 7 includes bachelor's degrees, graduate certificates, and graduate diplomas. Level 8 includes bachelor honours degrees, postgraduate certificates, and postgraduate diplomas. Level 9 represents master's degrees. Level 10 represents doctoral degrees.\n To ensure adequate cell counts and satisfy the positivity assumption required for causal inference, we coarsened the 11-category measure (0-10) into seven ordinal categories: no qualification (Level 0), certificates Levels 1-4 (foundation through broader vocational qualifications), certificates Levels 5-6 (advanced certificates and diplomas), bachelor's degree (Level 7), postgraduate qualifications (Level 8), master's degree (Level 9), and doctorate (Level 10). This coarsening preserves meaningful educational gradients while ensuring sufficient sample sizes across all covariate strata. In our statistical models, these ordinal categories are represented as binary indicators.",
+      "description": "We asked participants, \"What is your highest level of qualification?\". We coded participans highest finished degree according to the New Zealand Qualifications Authority. Ordinal-Rank 0-10 NZREG codes (with overseas school qualifications coded as Level 3, and all other ancillary categories coded as missing)",
       "waves": "1, 4-current",
       "reference": "sibley2021",
       "name": "education_level_coarsen",
@@ -437,10 +431,7 @@
       "description": "Job satisfaction was measured with a single item:",
       "reference": "eisenbarth2022aspects",
       "waves": "1-present",
-      "keywords": [
-        "employment",
-        "mental health"
-      ],
+      "keywords": ["employment", "mental health"],
       "items": [
         "How satisfied are you with your current job?"
       ],
@@ -460,10 +451,7 @@
       "description": "Perceved organizational gratitude was measured with a single item:",
       "reference": "sibley2021",
       "waves": "10-present",
-      "keywords": [
-        "employment",
-        "mental health"
-      ],
+      "keywords": ["employment", "mental health"],
       "items": [
         "How valued do you feel by your current organization?"
       ],
@@ -475,10 +463,7 @@
       "description": "Perceved organizational gratitude was measured with a single item.",
       "reference": "sibley2021",
       "waves": "10-present",
-      "keywords": [
-        "employment",
-        "mental health"
-      ],
+      "keywords": ["employment", "mental health"],
       "items": [
         "How valued do you feel by your current organization?"
       ],
@@ -685,10 +670,7 @@
         "1 = Strongly Disagree",
         "7 = Strongly Agree"
       ],
-      "reversed_items": [
-        1,
-        2
-      ],
+      "reversed_items": [1, 2],
       "standardised": true,
       "standardised_date": "2025-10-31"
     },
@@ -842,10 +824,7 @@
         "I talk to a lot of different people at parties."
       ],
       "keywords": "personality",
-      "reversed_items": [
-        2,
-        3
-      ],
+      "reversed_items": [2, 3],
       "standardised": true,
       "standardised_date": "2025-10-31"
     },
@@ -1016,12 +995,7 @@
         "I would get a lot of pleasure from owning expensive luxury goods (reversed)."
       ],
       "keywords": "personality",
-      "reversed_items": [
-        1,
-        2,
-        3,
-        4
-      ],
+      "reversed_items": [1, 2, 3, 4],
       "standardised": true,
       "standardised_date": "2025-10-31"
     },
@@ -1078,10 +1052,7 @@
       "description": "Responses classified by WHO codes: 1. Inactive: 0 h/week 2. Insufficiently active: > 0 to < 2.5 h/week (< 150 min/week) 3. Meeting guidelines: ≥ 2.5 to < 5 h/week (150–300 min/week) 4. Highly active: ≥ 5 to < 7.5 h/week (300–450 min/week) 5. Very highly active: ≥ 7.5 h/week (> 450 min/week) )",
       "reference": "who_2010_exercise",
       "waves": "1,4-current",
-      "keywords": [
-        "health",
-        "hours"
-      ],
+      "keywords": ["health", "hours"],
       "items": [
         "'Hours spent...exercising/physical activity' (coded numeric 1-5)"
       ],
@@ -1194,10 +1165,7 @@
       "description": "Life satisfaction was measured using a standard scale",
       "reference": "satisfaction_reference",
       "waves": "1-4",
-      "keywords": [
-        "wellbeing",
-        "satisfaction"
-      ],
+      "keywords": ["wellbeing", "satisfaction"],
       "items": [
         "i am satisfied with my life",
         "the conditions of my life are excellent"
@@ -1408,10 +1376,7 @@
         "1 = Strongly Disagree",
         "7 = Strongly Agree"
       ],
-      "reversed_items": [
-        1,
-        3
-      ],
+      "reversed_items": [1, 3],
       "standardised": true,
       "standardised_date": "2025-10-31"
     },
@@ -1483,10 +1448,7 @@
         "I seldom feel blue (reversed)."
       ],
       "keywords": "personality",
-      "reversed_items": [
-        2,
-        4
-      ],
+      "reversed_items": [2, 4],
       "standardised": true,
       "standardised_date": "2025-10-31"
     },
@@ -1549,11 +1511,7 @@
         "I am not interested in abstract ideas (reversed)."
       ],
       "keywords": "personality",
-      "reversed_items": [
-        2,
-        3,
-        4
-      ],
+      "reversed_items": [2, 3, 4],
       "standardised": true,
       "standardised_date": "2025-10-31"
     },
@@ -2104,11 +2062,7 @@
       "waves": "1-current",
       "keywords": "demography",
       "description": "Social Dominance Orientation was measured using the following items:",
-      "reversed_items": [
-        4,
-        5,
-        6
-      ],
+      "reversed_items": [4, 5, 6],
       "standardised": true,
       "standardised_date": "2025-10-31"
     },
@@ -2202,10 +2156,7 @@
         "1 = Strongly Disagree",
         "7 = Strongly Agree"
       ],
-      "reversed_items": [
-        2,
-        3
-      ],
+      "reversed_items": [2, 3],
       "standardised": true,
       "standardised_date": "2025-10-31"
     },
