@@ -107,7 +107,7 @@ From @stronge2015facebook
 
 #### Charitable Donations
 
-Using one item from @hoverd_religious_2010, we asked participants "How much money have you donated to charity in the last year?". 
+Using one item from @hoverd_religious_2010, we asked participants "How much money have you donated to charity in the last year?".
 
 <!-- To stablise this indicator, we took the natural log of the response + 1. -->
 
@@ -148,10 +148,10 @@ Participants were asked "What is your highest level of qualification?". We coded
 
 #### Emotional Regulation
 
-We measured participants' levels of emotional regulation using three items adapted from @gratz_multidimensional_2004 and @gross_individual_2003: 
+We measured participants' levels of emotional regulation using three items adapted from @gratz_multidimensional_2004 and @gross_individual_2003:
 
 (1) "When I feel negative emotions, my emotions feel out of control.";
-(2) "When I feel negative emotions, I suppress or hide my emotions."; 
+(2) "When I feel negative emotions, I suppress or hide my emotions.";
 (3) "When I feel negative emotions, I change the way I think to help me stay calm."
 
 
@@ -176,7 +176,7 @@ We assessed ethnic group impermeability using one item from @mummendey_social_19
 
 #### Fatigue (ordinal)
 
-* "During the last 30 days, how often did ... you feel exhausted?" 
+* "During the last 30 days, how often did ... you feel exhausted?"
 
 Ordinal responses: 0 = None of The Time, 1 = A little of The Time, 2 = Some of The Time, 3 = Most of The Time, 4 = All of The Time.
 
@@ -187,13 +187,13 @@ From @sibley2020effects
 
 #### Forgiveness
 
-We assessed participants' forgiveness using reversed scores of a the NZAVS "vengeful rumination scale." This scale contains three items, adapted from @caprara_indicators_1986 and @berry_forgivingness_2005, and developed for NZAVS: 
+We assessed participants' forgiveness using reversed scores of a the NZAVS "vengeful rumination scale." This scale contains three items, adapted from @caprara_indicators_1986 and @berry_forgivingness_2005, and developed for NZAVS:
 
-(1) Sometimes I can't sleep because of thinking about past wrongs I have suffered; 
-(2) I can usually forgive and forget when someone does me wrong (reversed scored); 
-(3) I find myself regularly thinking about past times that I have been wronged. 
+(1) Sometimes I can't sleep because of thinking about past wrongs I have suffered;
+(2) I can usually forgive and forget when someone does me wrong (reversed scored);
+(3) I find myself regularly thinking about past times that I have been wronged.
 
-Participants indicated their agreement with these items (1 = Strongly Disagree to 7 = Strongly Agree). 
+Participants indicated their agreement with these items (1 = Strongly Disagree to 7 = Strongly Agree).
 
 
 
@@ -203,9 +203,9 @@ We asked participants' gender in an open-ended question ("what is your gender?".
 
 #### Gratitude  (1 = Strongly Disagree to 7 = Strongly Agree).
 
-We assessed the extent to which participants have gratitude, using three items from @mccullough_grateful_2002: 
+We assessed the extent to which participants have gratitude, using three items from @mccullough_grateful_2002:
 
-(1) "I have much in my life to be thankful for."; 
+(1) "I have much in my life to be thankful for.";
 (2) "When I look at the world, I don't see much to be grateful for."; (reversed)
 (3) "I am grateful to a wide variety of people."
 
@@ -231,7 +231,7 @@ We measured hours of housework using one item from @sibley2011: "Hours spent …
 
 #### Hours of Exercise
 
-We measured hours of exercise using one item from @sibley2011: "Hours spent … exercising/physical activity" 
+We measured hours of exercise using one item from @sibley2011: "Hours spent … exercising/physical activity"
 
 <!-- To stablise this indicator, we took the natural log of the response + 1. -->
 
@@ -257,21 +257,21 @@ Participants indicated their feeling of job security by answering "How secure do
 #### Kessler 6 Anxiety and Kessler 6 Depression (ordinal) (waves: 2-3,4-15)
 
 We measured psychological distress using the Kessler-6 scale (kessler2002?), which exhibits
-strong diagnostic concordance for moderate and severe psychological distress in large, crosscultural samples [@kessler2002; @kessler2010?; @prochaska2012]. 
+strong diagnostic concordance for moderate and severe psychological distress in large, crosscultural samples [@kessler2002; @kessler2010?; @prochaska2012].
 
 
 Participants rated during the past 30 days, how often did...
 
-(1) "... you feel hopeless"; 
-(2) "...you feel so depressed that nothing could cheer you up"; 
-(3) "...you feel restless or fidgety"; 
-(4)"...you feel that everything was an effort"; 
-(5) "... you feel worthless"; 
+(1) "... you feel hopeless";
+(2) "...you feel so depressed that nothing could cheer you up";
+(3) "...you feel restless or fidgety";
+(4)"...you feel that everything was an effort";
+(5) "... you feel worthless";
 (6) "...you feel nervous?"
 
 Ordinal responses: 0 = None of The Time, 1 = A little of The Time, 2 = Some of The Time, 3 = Most of The Time, 4 = All of The Time.
 
-A two-factor model fits this scale. We describe the decomposition as: 
+A two-factor model fits this scale. We describe the decomposition as:
 
 **Kesser-6-latent-anxiety**:  "… you feel restless or fidgety”; ” you feel nervous?” “… you feel that everything was
 an effort."
@@ -279,7 +279,7 @@ an effort."
 **Kesser-6-latent-anxiety**:  “… you feel hopeless”; “… you feel so depressed that nothing
 could cheer you up”; “… you feel worthless.”
 
-A two-factor model fits this scale. We describe the decomposition as: 
+A two-factor model fits this scale. We describe the decomposition as:
 
 **Kesser-6-latent-anxiety**:  "… you feel restless or fidgety”; ” you feel nervous?” “… you feel that everything was
 an effort."
@@ -294,7 +294,7 @@ could cheer you up”; “… you feel worthless.”
 The New Zealand Attitudes and Values Study allows opt-ins to the study. Because the opt-in population may differ from those sampled randomly from the New Zealand electoral role; although the opt-in rate is low, we include an indicator (yes/no) for this variable.
 
 
-#### Political Orientation: Politically Conservative 
+#### Political Orientation: Politically Conservative
 
 We measured participants' political conservative orientation using a single item adapted from @jost_end_2006-1.
 
@@ -303,7 +303,7 @@ We measured participants' political conservative orientation using a single item
 (1 = Extremely Liberal to 7 = Extremely Conservative)
 
 
-#### Political Orientation: Politically Right Wing 
+#### Political Orientation: Politically Right Wing
 
 We measured participants' political right-wing orientation using a single item adapted from @jost_end_2006-1.
 
@@ -315,7 +315,7 @@ We measured participants' political right-wing orientation using a single item a
 #### Life Meaning (1 = Strongly Disagree to 7 = Strongly Agree)
 
 (1) "My life has a clear sense of purpose;"
-(2) "I have a good sense of what makes my life meaningful." 
+(2) "I have a good sense of what makes my life meaningful."
 
 From @steger_meaning_2006
 
@@ -324,8 +324,8 @@ We assessed these dimensions separately.
 
 #### Life Satisfaction (1 = Strongly Disagree to 7 = Strongly Agree)
 
-1. "I am satisfied with my life"  
-2. "In most ways my life is close to ideal". 
+1. "I am satisfied with my life"
+2. "In most ways my life is close to ideal".
 
 From the Satisfaction with Life Scale @diener1985a.
 
@@ -403,11 +403,11 @@ Participants were asekd "Do you live with your partner?" (1 = Yes, 0 = No).
 
 We assessed participants' perfectionism using three items from @rice_short_2014.
 
-(1) Doing my best never seems to be enough; 
-(2) My performance rarely measures up to my standards; 
-(3) I am hardly ever satisfied with my performance. 
+(1) Doing my best never seems to be enough;
+(2) My performance rarely measures up to my standards;
+(3) I am hardly ever satisfied with my performance.
 
-Participants indicated the extent to which they agree with these items 
+Participants indicated the extent to which they agree with these items
 
 
 #### Permeability of the Self (1 = Strongly Disagree to 7 = Strongly Agree)
@@ -422,10 +422,10 @@ We measured participants' political orientation using a single item adapted from
 
 #### Power Dependence (1 = Strongly Disagree to 7 = Strongly Agree).
 
-Participants' Power dependence was measured using two items: 
+Participants' Power dependence was measured using two items:
 
-(1) I do not have enough power or control over important parts of my life; 
-(2) Other people have too much power or control over important parts of my life. 
+(1) I do not have enough power or control over important parts of my life;
+(2) Other people have too much power or control over important parts of my life.
 
 From @overall2016power.
 
@@ -469,9 +469,9 @@ Participants were asked to indicate whether they were retiered or not in the las
 #### Rumination (ordinal)
 
 
-* "During the last 30 days, how often did...you have negative thoughts that repeated over and over?" and indicated their frequency of rumination on an ordinal scale 
+* "During the last 30 days, how often did...you have negative thoughts that repeated over and over?" and indicated their frequency of rumination on an ordinal scale
 
-From @nolen-hoeksema_effects_1993 
+From @nolen-hoeksema_effects_1993
 
 Ordinal responses: 0 = None of The Time, 1 = A little of The Time, 2 = Some of The Time, 3 = Most of The Time, 4 = All of The Time.
 
@@ -490,10 +490,10 @@ Wave enrolled in NZAVS, see @sibley2021.
 
 #### Self-Esteem (1 = Very inaccurate to 7 = Very accurate)
 
-Participants were instructed to circle the number that best represents how accurately each statement describes them. Participants responded to the items 
+Participants were instructed to circle the number that best represents how accurately each statement describes them. Participants responded to the items
 
 1. "On the whole am satisfied with myself;"
-2. "Take a positive attitude toward myself;" 
+2. "Take a positive attitude toward myself;"
 3. "Am inclined to feel that I am a failure." (reversed)
 
 Adapted from @Rosenberg1965.
@@ -503,7 +503,7 @@ Adapted from @Rosenberg1965.
 Participants were asked to indicate the extent to which they endorse the two items:
 
 1. "In general, I have a lot of self-control"
-2. "I wish I had more self-discipline" from @tangney_high_2004. 
+2. "I wish I had more self-discipline" from @tangney_high_2004.
 
 We assessed these dimensions separatedly
 
@@ -516,9 +516,9 @@ We assessed participants' levels of self-respect using an item adapted from @tyl
 
 #### Sense of Belonging (1 = Very Inaccurate to 7  = Very Accurate)
 
-(1) "Know that people in my life accept and value me"; 
-(2) "Feel like an outsider" (reversed); 
-(3) "Know that people around me share my attitudes and beliefs". 
+(1) "Know that people in my life accept and value me";
+(2) "Feel like an outsider" (reversed);
+(3) "Know that people around me share my attitudes and beliefs".
 
 Adapted from the Sense of Belonging Instrument [@hagerty1995]
 
@@ -526,12 +526,12 @@ Adapted from the Sense of Belonging Instrument [@hagerty1995]
 #### Social Support (1 = Strongly Disagree to 7 = Strongly Agree)
 
 (1) "There are people I can depend on to help me if I really need
-it;" 
+it;"
 (2) "There is no one I can turn to for guidance in times of stress;"  (reversed)
-(3) "I know there are people I can turn to when I need help." 
+(3) "I know there are people I can turn to when I need help."
 
 
-From @cutrona1987 and @williams2000cyberostracism 
+From @cutrona1987 and @williams2000cyberostracism
 
 #### Semiretired
 
@@ -547,8 +547,8 @@ Participants were asked to report their sexual orientation: "How would you descr
 
 #### Siblings (time 8, time 10)
 
-Participants were asked the following questions related to sibling counts: 
- 
+Participants were asked the following questions related to sibling counts:
+
  - Were you the 1st born, 2nd born, or 3rd born, etc, child of your mother?
  - Do you have siblings?
  - How many older sisters do you have?
@@ -556,7 +556,7 @@ Participants were asked the following questions related to sibling counts:
  - How many older brothers do you have?
  - How many younger brothers do you have?
 
-A single score was obtained from sibling counts by summing responses to the "How many..." items. From these scores an ordered factor was created ranging from 0 to 7, where participants with more than 7 siblings were grouped into the highest category. 
+A single score was obtained from sibling counts by summing responses to the "How many..." items. From these scores an ordered factor was created ranging from 0 to 7, where participants with more than 7 siblings were grouped into the highest category.
 
 #### Smoker
 
@@ -582,7 +582,7 @@ Participants' perceived social support was measured using three items from @cutr
 
 #### Support received: money (waves 10-12) (Study 4 outcomes)
 
-The NZAVS has a 'revealed' measure of received help and support measured in hours of support in the previous week. The items are: 
+The NZAVS has a 'revealed' measure of received help and support measured in hours of support in the previous week. The items are:
 
 
 *Please estimate how much help you have received from the following sources in the last week?*
@@ -619,7 +619,7 @@ Alternative
 
 #### Personal Well-being Relationships  (0 = completely dissatisfied to 10 = completely satisfied)
 
-Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
+Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item:
 
 * "Your personal relationships."
 
@@ -628,26 +628,26 @@ From the Australian Unity Wellbeing Index [@cummins_developing_2003]
 
 #### Personal Well-being Security  (0 = completely dissatisfied to 10 = completely satisfied)
 
-Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
+Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item:
 
-* "Your future security" 
+* "Your future security"
 
 From the Australian Unity Wellbeing Index [@cummins_developing_2003].
 
 
 #### Personal Well-being Standard Living  (0 = completely dissatisfied to 10 = completely satisfied)
 
-Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
+Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item:
 
 
-* "Your standard of living" 
+* "Your standard of living"
 
 From the Australian Unity Wellbeing Index [@cummins_developing_2003].
 
 
 #### Personal Well-being Your Health   (0 = completely dissatisfied to 10 = completely satisfied)
 
-Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item: 
+Participants read an instruction ("Please rate your level of satisfaction with the following aspects of your life and New Zealand.") and responded to an item:
 
 
 * "Your Health"
