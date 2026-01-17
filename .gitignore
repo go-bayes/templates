@@ -20,3 +20,5 @@ mods/*
 figs/*
 #scripts/*
 
+
+**/*.quarto_ipynb

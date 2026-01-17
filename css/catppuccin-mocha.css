@@ -1,0 +1,362 @@
+/* catppuccin mocha theme for quarto revealjs presentations */
+/* https://github.com/catppuccin/catppuccin */
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* catppuccin mocha palette */
+  --ctp-rosewater: #f5e0dc;
+  --ctp-flamingo: #f2cdcd;
+  --ctp-pink: #f5c2e7;
+  --ctp-mauve: #cba6f7;
+  --ctp-red: #f38ba8;
+  --ctp-maroon: #eba0ac;
+  --ctp-peach: #fab387;
+  --ctp-yellow: #f9e2af;
+  --ctp-green: #a6e3a1;
+  --ctp-teal: #94e2d5;
+  --ctp-sky: #89dceb;
+  --ctp-sapphire: #74c7ec;
+  --ctp-blue: #89b4fa;
+  --ctp-lavender: #b4befe;
+  --ctp-text: #cdd6f4;
+  --ctp-subtext1: #bac2de;
+  --ctp-subtext0: #a6adc8;
+  --ctp-overlay2: #9399b2;
+  --ctp-overlay1: #7f849c;
+  --ctp-overlay0: #6c7086;
+  --ctp-surface2: #585b70;
+  --ctp-surface1: #45475a;
+  --ctp-surface0: #313244;
+  --ctp-base: #1e1e2e;
+  --ctp-mantle: #181825;
+  --ctp-crust: #11111b;
+
+  /* override revealjs variables */
+  --r-background-color: #1e1e2e;
+  --r-main-color: #cdd6f4;
+  --r-heading-color: #cba6f7;
+  --r-link-color: #74c7ec;
+  --r-link-color-hover: #89dceb;
+  --r-selection-background-color: #45475a;
+  --r-selection-color: #cdd6f4;
+}
+
+/* background - multiple selectors for full coverage */
+html,
+body,
+.reveal-viewport,
+.reveal,
+.reveal .slides,
+.reveal .slide-background,
+.reveal .slide-background-content {
+  background: #1e1e2e !important;
+  background-color: #1e1e2e !important;
+}
+
+/* base text */
+.reveal,
+.reveal .slides,
+.reveal .slides section,
+.reveal p,
+.reveal li {
+  font-family: "Fira Code", monospace !important;
+  font-size: 24px;
+  color: #cdd6f4 !important;
+}
+
+/* headings */
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  font-family: "Fira Code", monospace !important;
+  text-transform: none !important;
+  text-shadow: none !important;
+}
+
+.reveal h1 {
+  font-size: 2.2em !important;
+  color: #b4befe !important;
+}
+
+.reveal h2 {
+  font-size: 1.8em !important;
+  color: #cba6f7 !important;
+}
+
+.reveal h3 {
+  font-size: 1.4em !important;
+  color: #f5c2e7 !important;
+}
+
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  color: #f5c2e7 !important;
+}
+
+/* links */
+.reveal a,
+.reveal a:link,
+.reveal a:visited {
+  color: #74c7ec !important;
+  text-decoration: none;
+}
+
+.reveal a:hover {
+  color: #89dceb !important;
+}
+
+/* text emphasis */
+.reveal strong,
+.reveal b {
+  color: #fab387 !important;
+  font-weight: 600;
+}
+
+.reveal em,
+.reveal i {
+  color: #f5e0dc !important;
+}
+
+/* lists */
+.reveal ul,
+.reveal ol {
+  color: #cdd6f4 !important;
+}
+
+.reveal li::marker {
+  color: #94e2d5 !important;
+}
+
+/* inline code */
+.reveal code {
+  font-family: "Fira Code", monospace !important;
+  background-color: #313244 !important;
+  color: #a6e3a1 !important;
+  padding: 0.1em 0.3em !important;
+  border-radius: 4px !important;
+}
+
+/* code blocks */
+.reveal pre {
+  background-color: #181825 !important;
+  border: 1px solid #45475a !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+  width: 100% !important;
+}
+
+.reveal pre code {
+  background-color: transparent !important;
+  color: #cdd6f4 !important;
+  padding: 1em !important;
+}
+
+/* syntax highlighting */
+.reveal .hljs {
+  background: #181825 !important;
+  color: #cdd6f4 !important;
+}
+
+.reveal .hljs-keyword,
+.reveal .hljs-selector-tag,
+.reveal .hljs-built_in,
+.reveal .hljs-name,
+.reveal .hljs-tag {
+  color: #cba6f7 !important;
+}
+
+.reveal .hljs-string,
+.reveal .hljs-title,
+.reveal .hljs-section,
+.reveal .hljs-attribute,
+.reveal .hljs-literal,
+.reveal .hljs-template-tag,
+.reveal .hljs-template-variable,
+.reveal .hljs-type,
+.reveal .hljs-addition {
+  color: #a6e3a1 !important;
+}
+
+.reveal .hljs-number,
+.reveal .hljs-symbol,
+.reveal .hljs-bullet,
+.reveal .hljs-link,
+.reveal .hljs-meta,
+.reveal .hljs-selector-id,
+.reveal .hljs-title.function_ {
+  color: #fab387 !important;
+}
+
+.reveal .hljs-comment,
+.reveal .hljs-quote,
+.reveal .hljs-deletion {
+  color: #7f849c !important;
+  font-style: italic;
+}
+
+.reveal .hljs-variable,
+.reveal .hljs-params {
+  color: #89b4fa !important;
+}
+
+/* blockquotes */
+.reveal blockquote {
+  background-color: #313244 !important;
+  border-left: 4px solid #b4befe !important;
+  color: #bac2de !important;
+  padding: 1em !important;
+  font-style: italic !important;
+  width: 90% !important;
+  margin: 0 auto !important;
+}
+
+/* tables */
+.reveal table {
+  border-collapse: collapse !important;
+}
+
+.reveal table th {
+  background-color: #45475a !important;
+  color: #b4befe !important;
+  border: 1px solid #585b70 !important;
+  padding: 0.5em !important;
+}
+
+.reveal table td {
+  background-color: #313244 !important;
+  color: #cdd6f4 !important;
+  border: 1px solid #585b70 !important;
+  padding: 0.5em !important;
+}
+
+.reveal table tr:nth-child(even) td {
+  background-color: #181825 !important;
+}
+
+/* images */
+.reveal img,
+.reveal section img {
+  max-width: 100%;
+  max-height: 70vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* slide number */
+.reveal .slide-number {
+  color: #7f849c !important;
+  background-color: #313244 !important;
+  font-family: "Fira Code", monospace !important;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+/* progress bar */
+.reveal .progress {
+  background: #313244 !important;
+  height: 4px !important;
+}
+
+.reveal .progress span {
+  background: #cba6f7 !important;
+}
+
+/* title slide specific */
+.reveal .quarto-title-block .title,
+.reveal section.title .title {
+  color: #b4befe !important;
+}
+
+.reveal .quarto-title-block .subtitle,
+.reveal section.title .subtitle {
+  color: #cba6f7 !important;
+}
+
+.reveal .quarto-title-block .author,
+.reveal section.title .author,
+.reveal .quarto-title-authors {
+  color: #cdd6f4 !important;
+}
+
+.reveal .quarto-title-block .date,
+.reveal section.title .date {
+  color: #a6adc8 !important;
+}
+
+/* figure captions */
+.reveal figcaption,
+.reveal .fig-caption {
+  color: #a6adc8 !important;
+  font-size: 0.8em !important;
+  font-style: italic !important;
+}
+
+/* callout boxes (quarto) */
+.reveal .callout {
+  border-radius: 8px !important;
+  border-left-width: 4px !important;
+  background-color: #313244 !important;
+}
+
+.reveal .callout-note {
+  border-left-color: #89b4fa !important;
+}
+
+.reveal .callout-tip {
+  border-left-color: #a6e3a1 !important;
+}
+
+.reveal .callout-warning {
+  border-left-color: #f9e2af !important;
+}
+
+.reveal .callout-important,
+.reveal .callout-caution {
+  border-left-color: #f38ba8 !important;
+}
+
+.reveal .callout-title {
+  color: #cdd6f4 !important;
+}
+
+.reveal .callout-body {
+  color: #bac2de !important;
+}
+
+/* footer */
+.reveal .footer {
+  color: #7f849c !important;
+}
+
+/* selection */
+.reveal ::selection {
+  background-color: #45475a !important;
+  color: #cdd6f4 !important;
+}
+
+/* speaker notes */
+.reveal .speaker-notes {
+  background-color: #181825 !important;
+  color: #cdd6f4 !important;
+}
+
+/* panel tabset (quarto) */
+.reveal .panel-tabset .nav-link {
+  color: #a6adc8 !important;
+  background-color: #313244 !important;
+}
+
+.reveal .panel-tabset .nav-link.active {
+  color: #cdd6f4 !important;
+  background-color: #45475a !important;
+  border-color: #cba6f7 !important;
+}

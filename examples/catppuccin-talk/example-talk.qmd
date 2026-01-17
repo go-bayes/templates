@@ -1,0 +1,296 @@
+---
+title: "Catppuccin Theme Example"
+subtitle: "A cosy presentation template"
+author: "Joseph A. Bulbulia"
+date: today
+format:
+  revealjs:
+    theme: dark
+    css: /Users/joseph/GIT/templates/css/catppuccin-mocha.css
+    slide-number: true
+    preview-links: auto
+    code-fold: true
+    code-overflow: scroll
+    code-line-numbers: true
+    highlight-style: monokai
+    progress: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(ggplot2)
+library(tidyr)
+source("/Users/joseph/GIT/templates/R/theme_catppuccin.R")
+```
+
+::: {.notes}
+welcome everyone. this talk demonstrates the catppuccin mocha theme for quarto revealjs presentations.
+:::
+
+## overview
+
+this example demonstrates the **catppuccin mocha** theme for quarto revealjs presentations.
+
+- warm, pastel colours
+- easy on the eyes
+- consistent aesthetic
+
+::: {.notes}
+speaker notes appear here. press 's' during the presentation to open the speaker view. you'll see the current slide, next slide, elapsed time, and these notes.
+:::
+
+## code example
+
+```{r}
+#| echo: true
+#| eval: false
+
+# fit a simple linear model
+library(ggplot2)
+
+model <- lm(mpg ~ wt + hp, data = mtcars)
+summary(model)
+```
+
+::: {.notes}
+this slide demonstrates syntax highlighting for R code. the code-fold option in the YAML lets you collapse code blocks.
+:::
+
+## ggplot2: scatter plot
+
+```{r}
+#| echo: true
+#| fig-width: 9
+#| fig-height: 4.5
+
+source("/Users/joseph/GIT/templates/R/theme_catppuccin.R")
+
+ggplot(mtcars, aes(x = wt, y = mpg, colour = factor(cyl))) +
+  geom_point(size = 3, alpha = 0.8) +
+  geom_smooth(method = "lm", se = FALSE, linewidth = 1) +
+  scale_colour_ctp() +
+  labs(
+    title = "fuel efficiency by weight",
+    x = "weight (1000 lbs)",
+    y = "miles per gallon",
+    colour = "cylinders"
+  ) +
+  theme_catppuccin()
+```
+
+::: {.notes}
+this scatter plot uses theme_catppuccin() and scale_colour_ctp() for consistent styling.
+:::
+
+## ggplot2: bar chart
+
+```{r}
+#| echo: true
+#| fig-width: 9
+#| fig-height: 4.5
+
+source("/Users/joseph/GIT/templates/R/theme_catppuccin.R")
+
+ggplot(mpg, aes(x = class, fill = class)) +
+  geom_bar() +
+  scale_fill_ctp() +
+  labs(
+    title = "vehicle classes in mpg dataset",
+    x = "class",
+    y = "count"
+  ) +
+  theme_catppuccin() +
+  theme(legend.position = "none")
+```
+
+::: {.notes}
+bar chart using scale_fill_ctp() for the fill colours. legend hidden as colours are self-explanatory.
+:::
+
+## ggplot2: boxplot
+
+```{r}
+#| echo: true
+#| fig-width: 9
+#| fig-height: 4.5
+
+source("/Users/joseph/GIT/templates/R/theme_catppuccin.R")
+
+ggplot(iris, aes(x = Species, y = Sepal.Length, fill = Species)) +
+  geom_boxplot(alpha = 0.8, colour = ctp_mocha$text) +
+  scale_fill_ctp() +
+  labs(
+    title = "sepal length by species",
+    x = "species",
+    y = "sepal length (cm)"
+  ) +
+  theme_catppuccin() +
+  theme(legend.position = "none")
+```
+
+::: {.notes}
+boxplot with catppuccin fill colours. outline uses the text colour for visibility.
+:::
+
+## ggplot2: density plot
+
+```{r}
+#| echo: true
+#| fig-width: 9
+#| fig-height: 4.5
+
+source("/Users/joseph/GIT/templates/R/theme_catppuccin.R")
+
+ggplot(iris, aes(x = Sepal.Width, fill = Species)) +
+  geom_density(alpha = 0.6) +
+  scale_fill_ctp() +
+  labs(
+    title = "sepal width distribution",
+    x = "sepal width (cm)",
+    y = "density"
+  ) +
+  theme_catppuccin()
+```
+
+::: {.notes}
+overlapping density plots with transparency. the catppuccin palette maintains readability even with overlap.
+:::
+
+## ggplot2: faceted plot
+
+```{r}
+#| echo: true
+#| fig-width: 9
+#| fig-height: 4.5
+
+source("/Users/joseph/GIT/templates/R/theme_catppuccin.R")
+
+ggplot(mpg, aes(x = displ, y = hwy, colour = factor(cyl))) +
+  geom_point(alpha = 0.7) +
+  facet_wrap(~drv) +
+  scale_colour_ctp() +
+  labs(
+    title = "highway mpg by displacement and drive type",
+    x = "displacement (L)",
+    y = "highway mpg",
+    colour = "cylinders"
+  ) +
+  theme_catppuccin()
+```
+
+::: {.notes}
+faceted plot showing how the theme handles strip backgrounds and multiple panels.
+:::
+
+## ggplot2: line chart
+
+```{r}
+#| echo: true
+#| fig-width: 9
+#| fig-height: 4.5
+
+source("/Users/joseph/GIT/templates/R/theme_catppuccin.R")
+
+economics_long <- tidyr::pivot_longer(
+  economics[, c("date", "unemploy", "pce")],
+  cols = -date,
+  names_to = "variable",
+  values_to = "value"
+)
+
+ggplot(economics_long, aes(x = date, y = value, colour = variable)) +
+  geom_line(linewidth = 1) +
+  scale_colour_ctp() +
+  labs(
+    title = "us economic indicators over time",
+    x = "date",
+    y = "value",
+    colour = "indicator"
+  ) +
+  theme_catppuccin()
+```
+
+::: {.notes}
+time series line chart. colours remain distinct and readable on the dark background.
+:::
+
+## maths support
+
+inline: $\hat{\beta} = (X'X)^{-1}X'y$
+
+display:
+
+$$
+\tau_i(x) = E[Y_i(1) - Y_i(0) \mid X_i = x]
+$$
+
+::: {.notes}
+- the first equation is the OLS estimator
+- the second is the conditional average treatment effect (CATE)
+- mathjax renders these beautifully
+:::
+
+## emphasis styles
+
+- **bold text** stands out in peach
+- *italic text* appears in rosewater
+- `inline code` uses green on surface
+
+> blockquotes have a lavender accent
+
+::: {.notes}
+catppuccin uses semantic colours: peach for emphasis, rosewater for subtle highlights, green for code. the palette is designed for readability.
+:::
+
+## tables
+
+| outcome | estimate | 95% CI |
+|---------|----------|--------|
+| wellbeing | 0.23 | [0.12, 0.34] |
+| cooperation | 0.18 | [0.08, 0.28] |
+| meaning | 0.31 | [0.19, 0.43] |
+
+::: {.notes}
+tables use alternating row colours (surface0 and mantle) for readability. headers are styled with lavender text on surface1 background.
+:::
+
+## callouts
+
+::: {.callout-note}
+this is a note callout
+:::
+
+::: {.callout-tip}
+this is a tip callout
+:::
+
+::: {.callout-warning}
+this is a warning callout
+:::
+
+::: {.notes}
+callouts use catppuccin accent colours: blue for notes, green for tips, yellow for warnings, red for important/caution.
+:::
+
+## links and references
+
+- [catppuccin palette](https://github.com/catppuccin/catppuccin)
+- [quarto revealjs docs](https://quarto.org/docs/presentations/revealjs/)
+
+::: {.notes}
+links use sapphire (#74c7ec) and hover to sky (#89dceb). these are easy to distinguish from regular text.
+:::
+
+## thank you
+
+questions?
+
+::: {.notes}
+remember to:
+
+- thank the organisers
+- mention collaborators
+- point to the github repo for code
+:::
+

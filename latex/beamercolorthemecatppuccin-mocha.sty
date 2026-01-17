@@ -1,0 +1,122 @@
+% beamercolorthemecatppuccin-mocha.sty
+% catppuccin mocha colour theme for beamer presentations
+% https://github.com/catppuccin/catppuccin
+
+\ProvidesPackage{beamercolorthemecatppuccin-mocha}[2025/01/17 Catppuccin Mocha Beamer Theme]
+
+\RequirePackage{xcolor}
+
+\mode<presentation>
+
+% apply colours immediately after definition
+\beamertemplatenavigationsymbolsempty
+
+% catppuccin mocha palette
+\definecolor{ctp-rosewater}{HTML}{f5e0dc}
+\definecolor{ctp-flamingo}{HTML}{f2cdcd}
+\definecolor{ctp-pink}{HTML}{f5c2e7}
+\definecolor{ctp-mauve}{HTML}{cba6f7}
+\definecolor{ctp-red}{HTML}{f38ba8}
+\definecolor{ctp-maroon}{HTML}{eba0ac}
+\definecolor{ctp-peach}{HTML}{fab387}
+\definecolor{ctp-yellow}{HTML}{f9e2af}
+\definecolor{ctp-green}{HTML}{a6e3a1}
+\definecolor{ctp-teal}{HTML}{94e2d5}
+\definecolor{ctp-sky}{HTML}{89dceb}
+\definecolor{ctp-sapphire}{HTML}{74c7ec}
+\definecolor{ctp-blue}{HTML}{89b4fa}
+\definecolor{ctp-lavender}{HTML}{b4befe}
+\definecolor{ctp-text}{HTML}{cdd6f4}
+\definecolor{ctp-subtext1}{HTML}{bac2de}
+\definecolor{ctp-subtext0}{HTML}{a6adc8}
+\definecolor{ctp-overlay2}{HTML}{9399b2}
+\definecolor{ctp-overlay1}{HTML}{7f849c}
+\definecolor{ctp-overlay0}{HTML}{6c7086}
+\definecolor{ctp-surface2}{HTML}{585b70}
+\definecolor{ctp-surface1}{HTML}{45475a}
+\definecolor{ctp-surface0}{HTML}{313244}
+\definecolor{ctp-base}{HTML}{1e1e2e}
+\definecolor{ctp-mantle}{HTML}{181825}
+\definecolor{ctp-crust}{HTML}{11111b}
+
+% backgrounds
+\setbeamercolor{background canvas}{bg=ctp-base}
+\setbeamercolor{background}{bg=ctp-base}
+
+% normal text
+\setbeamercolor{normal text}{fg=ctp-text,bg=ctp-base}
+
+% structure (bullets, etc.)
+\setbeamercolor{structure}{fg=ctp-mauve}
+
+% title page
+\setbeamercolor{title}{fg=ctp-lavender}
+\setbeamercolor{subtitle}{fg=ctp-mauve}
+\setbeamercolor{author}{fg=ctp-text}
+\setbeamercolor{institute}{fg=ctp-subtext0}
+\setbeamercolor{date}{fg=ctp-subtext0}
+\setbeamercolor{titlegraphic}{fg=ctp-text}
+
+% frame titles
+\setbeamercolor{frametitle}{fg=ctp-lavender,bg=ctp-mantle}
+\setbeamercolor{framesubtitle}{fg=ctp-mauve}
+
+% blocks
+\setbeamercolor{block title}{fg=ctp-base,bg=ctp-blue}
+\setbeamercolor{block body}{fg=ctp-text,bg=ctp-surface0}
+
+\setbeamercolor{block title alerted}{fg=ctp-base,bg=ctp-red}
+\setbeamercolor{block body alerted}{fg=ctp-text,bg=ctp-surface0}
+
+\setbeamercolor{block title example}{fg=ctp-base,bg=ctp-green}
+\setbeamercolor{block body example}{fg=ctp-text,bg=ctp-surface0}
+
+% itemise/enumerate
+\setbeamercolor{item}{fg=ctp-teal}
+\setbeamercolor{subitem}{fg=ctp-sapphire}
+\setbeamercolor{subsubitem}{fg=ctp-blue}
+
+\setbeamercolor{enumerate item}{fg=ctp-teal}
+\setbeamercolor{enumerate subitem}{fg=ctp-sapphire}
+\setbeamercolor{enumerate subsubitem}{fg=ctp-blue}
+
+\setbeamercolor{description item}{fg=ctp-peach}
+
+% captions
+\setbeamercolor{caption}{fg=ctp-subtext1}
+\setbeamercolor{caption name}{fg=ctp-mauve}
+
+% footnotes
+\setbeamercolor{footnote}{fg=ctp-subtext0}
+\setbeamercolor{footnote mark}{fg=ctp-mauve}
+
+% bibliography
+\setbeamercolor{bibliography entry author}{fg=ctp-text}
+\setbeamercolor{bibliography entry title}{fg=ctp-sapphire}
+\setbeamercolor{bibliography entry location}{fg=ctp-subtext0}
+\setbeamercolor{bibliography entry note}{fg=ctp-subtext0}
+
+% navigation
+\setbeamercolor{navigation symbols}{fg=ctp-overlay1}
+\setbeamercolor{navigation symbols dimmed}{fg=ctp-surface2}
+
+% page numbers
+\setbeamercolor{page number in head/foot}{fg=ctp-overlay1}
+
+% sections in toc
+\setbeamercolor{section in toc}{fg=ctp-lavender}
+\setbeamercolor{subsection in toc}{fg=ctp-mauve}
+
+% hyperlinks
+\hypersetup{
+  colorlinks=true,
+  linkcolor=ctp-sapphire,
+  urlcolor=ctp-sky,
+  citecolor=ctp-green
+}
+
+% activate the colours
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{background canvas}{\color{ctp-base}\rule{\paperwidth}{\paperheight}}
+
+\mode<all>

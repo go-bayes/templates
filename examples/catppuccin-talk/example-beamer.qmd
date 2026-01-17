@@ -1,0 +1,69 @@
+---
+title: "Catppuccin Beamer Example"
+subtitle: "A cosy PDF presentation template"
+author: "Joseph A. Bulbulia"
+date: today
+format:
+  beamer:
+    theme: default
+    aspectratio: 169
+    navigation: horizontal
+    include-in-header:
+      - /Users/joseph/GIT/templates/latex/beamercolorthemecatppuccin-mocha.sty
+---
+
+## overview
+
+this example demonstrates the **catppuccin mocha** theme for beamer presentations.
+
+- warm, pastel colours
+- easy on the eyes
+- works with PDF output
+
+## code example
+
+```r
+# fit a simple linear model
+library(ggplot2)
+
+model <- lm(mpg ~ wt + hp, data = mtcars)
+summary(model)
+```
+
+## maths support
+
+inline: $\hat{\beta} = (X'X)^{-1}X'y$
+
+display:
+
+$$\tau_i(x) = E[Y_i(1) - Y_i(0) \mid X_i = x]$$
+
+## blocks
+
+\begin{block}{note}
+this is a standard block with blue header
+\end{block}
+
+\begin{alertblock}{warning}
+this is an alert block with red header
+\end{alertblock}
+
+\begin{exampleblock}{example}
+this is an example block with green header
+\end{exampleblock}
+
+## lists
+
+- first item in **teal**
+- second item with *emphasis*
+- third item with `inline code`
+
+numbered:
+
+1. first numbered
+2. second numbered
+3. third numbered
+
+## thank you
+
+questions?
