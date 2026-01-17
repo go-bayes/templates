@@ -22,6 +22,15 @@ format:
 library(ggplot2)
 library(tidyr)
 source("/Users/joseph/GIT/templates/R/theme_catppuccin.R")
+
+# tikz setup for svg output
+Sys.setenv(LIBGS = "/opt/homebrew/lib/libgs.dylib")
+font_opts <- list(
+  dvisvgm.opts = "--font-format=woff --exact-bbox",
+  extra.preamble = "\\input{/Users/joseph/GIT/templates/latex/catppuccin-tikz.tex}",
+  density = 300,
+  fig.ext = "svg"
+)
 ```
 
 ::: {.notes}
@@ -213,6 +222,56 @@ ggplot(economics_long, aes(x = date, y = value, colour = variable)) +
 
 ::: {.notes}
 time series line chart. colours remain distinct and readable on the dark background.
+:::
+
+## tikz: causal diagram
+
+```{tikz engine.opts=font_opts}
+#| fig-width: 8
+#| fig-height: 3
+#| out-width: "90%"
+
+\begin{tikzpicture}[
+  node distance=2.5cm,
+  every node/.style={font=\LARGE}
+]
+\node[color=ctpexposure] (A) at (0, 0) {\textsf{Exposure}};
+\node[color=ctpoutcome] (Y) at (5, 0) {\textsf{Outcome}};
+\node[color=ctpconfounder] (C) at (2.5, 2) {\textsf{Confounder}};
+
+\draw[-latex, very thick, color=ctparrow] (A) -- (Y);
+\draw[-latex, very thick, color=ctpconfounder] (C) -- (A);
+\draw[-latex, very thick, color=ctpconfounder] (C) -- (Y);
+\end{tikzpicture}
+```
+
+::: {.notes}
+tikz diagram using catppuccin colours. blue for exposure, green for outcome, peach for confounder, mauve for arrows.
+:::
+
+## tikz: mediation
+
+```{tikz engine.opts=font_opts}
+#| fig-width: 8
+#| fig-height: 3
+#| out-width: "90%"
+
+\begin{tikzpicture}[
+  node distance=2.5cm,
+  every node/.style={font=\LARGE}
+]
+\node[color=ctpexposure] (A) at (0, 0) {$A$};
+\node[color=ctpmediator] (M) at (2.5, 0) {$M$};
+\node[color=ctpoutcome] (Y) at (5, 0) {$Y$};
+
+\draw[-latex, very thick, color=ctppositive] (A) -- node[above, color=ctp-text, font=\Large] {$+$} (M);
+\draw[-latex, very thick, color=ctppositive] (M) -- node[above, color=ctp-text, font=\Large] {$+$} (Y);
+\draw[-latex, very thick, color=ctpneutral, bend right=30] (A) to node[below, color=ctp-text, font=\Large] {$?$} (Y);
+\end{tikzpicture}
+```
+
+::: {.notes}
+mediation diagram with teal mediator. green arrows show positive effects, grey for unknown direct effect.
 :::
 
 ## maths support

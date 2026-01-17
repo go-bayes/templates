@@ -1,7 +1,7 @@
 /* catppuccin mocha theme for quarto revealjs presentations */
 /* https://github.com/catppuccin/catppuccin */
 
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
 :root {
   /* catppuccin mocha palette */
@@ -60,9 +60,26 @@ body,
 .reveal .slides section,
 .reveal p,
 .reveal li {
-  font-family: "Fira Code", monospace !important;
-  font-size: 24px;
+  font-family: "JetBrains Mono", monospace !important;
+  font-size: 28px !important;
   color: #cdd6f4 !important;
+}
+
+/* math fonts - larger size */
+.reveal .math,
+.reveal .MathJax,
+.reveal .katex,
+.reveal .mjx-math,
+.reveal .mjx-chtml {
+  font-size: 120% !important;
+}
+
+/* display math even larger */
+.reveal .math.display,
+.reveal .MathJax_Display,
+.reveal .katex-display {
+  font-size: 140% !important;
+  margin: 1em 0 !important;
 }
 
 /* headings */
@@ -72,7 +89,7 @@ body,
 .reveal h4,
 .reveal h5,
 .reveal h6 {
-  font-family: "Fira Code", monospace !important;
+  font-family: "JetBrains Mono", monospace !important;
   text-transform: none !important;
   text-shadow: none !important;
 }
@@ -134,7 +151,7 @@ body,
 
 /* inline code */
 .reveal code {
-  font-family: "Fira Code", monospace !important;
+  font-family: "JetBrains Mono", monospace !important;
   background-color: #313244 !important;
   color: #a6e3a1 !important;
   padding: 0.1em 0.3em !important;
@@ -255,7 +272,7 @@ body,
 .reveal .slide-number {
   color: #7f849c !important;
   background-color: #313244 !important;
-  font-family: "Fira Code", monospace !important;
+  font-family: "JetBrains Mono", monospace !important;
   border-radius: 4px;
   padding: 4px 8px;
 }
