@@ -8,20 +8,28 @@ $endif$
 $for(by-author)$
 \usepackage{academicons}
 \usepackage{xcolor}
-
-  \author{$by-author.name.literal$}
+  \author{$by-author.name.literal$$if(by-author.attributes.corresponding)$\textsuperscript{*}$endif$$if(by-author.orcid)$~\textcolor[HTML]{A6CE39}{\aiOrcid}\hspace{0.1em}\href{https://orcid.org/$by-author.orcid$}{$by-author.orcid$}$endif$}
   $if(by-author.affiliations)$
     $for(by-author.affiliations)$
-      \affil{%
-        $if(by-author.affiliations.name)$
-     \small{     $by-author.affiliations.name$
-          ORCID \textcolor[HTML]{A6CE39}{\aiOrcid} ~$by-author.orcid$ }
-        $endif$
-      }
+      \affil{$if(by-author.affiliations.name)$\small{$by-author.affiliations.name$}$endif$}
     $endfor$
   $endif$
 $endfor$
 
-
-
 \date{$date$}
+
+\makeatletter
+\newcommand{\correspondenceline}{%
+  \vspace{0.5em}%
+  \noindent\small{%
+    \textsuperscript{*}Correspondence:
+    $for(by-author)$
+      $if(by-author.attributes.corresponding)$
+        \href{mailto:$by-author.email$}{$by-author.email$}%
+      $endif$
+    $endfor$
+  }%
+}
+\let\oldmaketitle\maketitle
+\renewcommand{\maketitle}{\oldmaketitle\correspondenceline}
+\makeatother
