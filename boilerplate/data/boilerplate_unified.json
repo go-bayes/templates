@@ -55,7 +55,7 @@
     "ethics": {
       "nzavs_2021_2027": "\n### Ethics\n\nThe University of Auckland Human Participants Ethics Committee reviews the NZAVS every three years. Our most recent ethics approval statement is as follows: The New Zealand Attitudes and Values Study was approved by the University of Auckland Human Participants Ethics Committee on 26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576."
     },
-    "future_directions": null,
+    "future_directions": {},
     "implications": {
       "clinical": "\n### Implications Clinical\n\n\n\n",
       "policy": "\n### Implications Policy\n\n\n\n",
@@ -1038,7 +1038,7 @@
       "standardised_date": "2025-10-31"
     },
     "hours_children": {
-      "description": "Numerical: open-ended response",
+      "description": "Hours spent looking after children in a typical week. Numerical: open-ended response.",
       "reference": "sibley2021",
       "waves": "1, 4-current",
       "keywords": "hours",
@@ -1050,7 +1050,7 @@
       "standardised_date": "2025-10-31"
     },
     "hours_commute": {
-      "description": "",
+      "description": "Hours spent commuting in a typical week. Numerical: open-ended response.",
       "reference": "sibley2021",
       "waves": "1,4-current",
       "keywords": "hours",
@@ -1100,7 +1100,7 @@
       "standardised_date": "2025-10-31"
     },
     "kessler_latent_anxiety": {
-      "name": "kessler_latent_anxiety",
+      "name": "Kessler 6 (Anxiety)",
       "reference": "kessler2002",
       "scale_anchors": [
         "0 = None Of The Time",
@@ -1121,7 +1121,7 @@
       "standardised_date": "2025-10-31"
     },
     "kessler_latent_depression": {
-      "name": "kessler_latent_depression",
+      "name": "Kessler 6 (Depression)",
       "items": [
         "During the past 30 days, how often did...you feel hopeless?",
         "During the past 30 days, how often did...you feel so depressed nothing could cheer you up?",
@@ -1930,7 +1930,8 @@
         "7 = Very Important"
       ],
       "standardised": true,
-      "standardised_date": "2025-10-31"
+      "standardised_date": "2025-10-31",
+      "description": "\"Do you identify with a religion and/or spiritual group?\" If no, coded 1; if yes, \"How important is your religion to how you see yourself?\" measured on a 1 (Not Important) to 7 (Very Important) scale."
     },
     "religion_prayer": {
       "description": "Numerical: open-ended response",
@@ -2061,7 +2062,7 @@
       "standardised_date": "2025-10-31"
     },
     "rwa": {
-      "name": "rwa",
+      "name": "Right-Wing Authoritarianism",
       "items": [
         "It is always better to trust the judgment of the proper authorities in government and religion than to listen to the noisy rabble-rousers in our society who are trying to create doubt in people's minds.",
         "It would be best for everyone if the proper authorities censored magazines so that people could not get their hands on trashy and disgusting material.",
@@ -2091,7 +2092,7 @@
       "standardised_date": "2025-10-31"
     },
     "sdo": {
-      "name": "sdo",
+      "name": "Social Dominance Orientation",
       "items": [
         "It is OK if some groups have more of a chance in life than others.",
         "Inferior groups should stay in their place.",
@@ -2673,6 +2674,25 @@
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
       "standardised_date": "2025-10-31"
+    },
+    "hours_exercise": {
+      "name": "hours_exercise_who_cat_num",
+      "description": "Hours spent exercising in a typical week. Numerical: open-ended response.",
+      "reference": "sibley2021",
+      "waves": "1,4-current",
+      "keywords": [
+        "health",
+        "hours"
+      ],
+      "items": [
+        "'Hours spent...exercising/physical activity' (coded numeric 1-5)"
+      ],
+      "standardised": true,
+      "standardised_date": "2025-10-31"
+    },
+    "hours_housework": {
+      "description": "Hours spent on housework in a typical week. Numerical: open-ended response.",
+      "reference": "sibley2021"
     }
   },
   "methods": {

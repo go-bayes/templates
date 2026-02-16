@@ -117,9 +117,10 @@ proto_unified_db <- boilerplate_import( data_path = use_data_path)
 # import data
 use_data_path = here::here("boilerplate", "data")
 
-#vim_data_path =  here::here("GIT", "templates", "boilerplate", "data")
+# vim_data_path =  here::here("GIT", "templates", "boilerplate", "data")
 unified_db <- boilerplate_import(data_path = use_data_path)
-
+str(unified_db, max.level = 1)
+unified_db
 
 #boilerplate_save(unified_db, create_backup = FALSE)
 
@@ -5020,7 +5021,7 @@ unified_db <- boilerplate::boilerplate_import(data_path = master_path)
 cat(unified_db$measures$education_level_coarsen$description)
 
 
-unified_db$measures$education_level_coarsen$description <- 
+unified_db$measures$education_level_coarsen$description <-
 "We asked participants, 'What is your highest level of qualification?'. We coded participants' highest finished degree according to the New Zealand Qualifications and Credentials Framework (NZQCF), which comprises 10 levels (Levels 1-10) of increasing complexity and depth of knowledge. We added a Level 0 category to represent no formal qualification, resulting in an 11-category ordinal measure (0-10).\n The levels are defined as follows: Level 0 represents no formal qualification. Levels 1-3 cover basic to operational knowledge. Level 4 covers broader operational and theoretical knowledge. Level 5 covers broad operational or technical knowledge within a specific field. Level 6 covers specialised technical or theoretical knowledge with depth. Level 7 includes bachelor's degrees, graduate certificates, and graduate diplomas. Level 8 includes bachelor honours degrees, postgraduate certificates, and postgraduate diplomas. Level 9 represents master's degrees. Level 10 represents doctoral degrees.\n To ensure adequate cell counts and satisfy the positivity assumption required for causal inference, we coarsened the 11-category measure (0-10) into seven ordinal categories: no qualification (Level 0), certificates Levels 1-4 (foundation through broader vocational qualifications), certificates Levels 5-6 (advanced certificates and diplomas), bachelor's degree (Level 7), postgraduate qualifications (Level 8), master's degree (Level 9), and doctorate (Level 10). This coarsening preserves meaningful educational gradients while ensuring sufficient sample sizes across all covariate strata. In our statistical models, these ordinal categories are represented as binary indicators."
 
 # measures ----------------------------------------------------------------
@@ -5142,6 +5143,13 @@ unified_db$measures$bmi_cat <- list(
   )
 )
 
+### NEW MEASUERS TO FIX using this template: unified_db$measures$hours_children
+# unified_db$measures$hours_commute
+# unified_db$measures$hours_exercise # description here should be a note ??gcck"
+
+
+
+
 boilerplate_measures_report(unified_db$measures)
 
 unified_db$measures <- boilerplate_standardise_measures(unified_db$measures)
@@ -5151,6 +5159,9 @@ unified_db$discussion$acknowlegements
 boilerplate_list_files(data_path = use_data_path)
 unified_db$measures$emp_job_valued
 use_data_path
+
+
+
 
 
 bib_path <- "/Users/joseph/GIT/templates/boilerplate/data/"
@@ -5164,10 +5175,3 @@ use_data_path
 # SHIFT INTERVENTION ------------------------------------------------------
 
 # We defined $\\dd(A)$ as a hypothetical intervention that increased the value of the {{name_exposure_variable}} by 20% (i.e., multiplied each person's value by 1.2).
-
-
-
-
-
-
-
