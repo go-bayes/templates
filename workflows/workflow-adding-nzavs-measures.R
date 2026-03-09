@@ -5143,11 +5143,92 @@ unified_db$measures$bmi_cat <- list(
   )
 )
 
+library(jsonlite)
+
+# path <- "/Users/joseph/GIT/templates/boilerplate_data/boilerplate_unified.json"
+#
+# unified_db <- read_json(path, simplifyVector = FALSE)
+#
+
+unified_db$measures$honesty_humility <- list(
+  name = "honesty_humility",
+  description = paste(
+    "Mini-IPIP6 Honesty-Humility dimension:",
+    "(i) I feel entitled to more of everything. (r)",
+    "(ii) I deserve more things in life. (r)",
+    "(iii) I would like to be seen driving around in a very expensive car. (r)",
+    "(iv) I would get a lot of pleasure from owning expensive luxury goods. (r)"
+  ),
+  reference = "sibley2011",
+  waves = "1-current",
+  keywords = c("personality"),
+  items = list(
+    "I feel entitled to more of everything (reversed).",
+    "I deserve more things in life (reversed).",
+    "I would like to be seen driving around in a very expensive car (reversed).",
+    "I would get a lot of pleasure from owning expensive luxury goods (reversed)."
+  ),
+  reversed_items = c(1, 2, 3, 4),
+  standardised = TRUE,
+  standardised_date = format(Sys.Date())
+)
+
+
+boilerplate::boilerplate_save(unified_db, data_path = use_data_path,create_backup = TRUE)
+
+
+path <- "/Users/joseph/GIT/templates/boilerplate_data/boilerplate_unified.json"
+
+check <- read_json(path, simplifyVector = TRUE)
+check$measures$honesty_humility$items
+
+# write_json(
+#   unified_db,
+#   path,
+#   pretty = TRUE,
+#   auto_unbox = TRUE
+# )
+
+
+
 ### NEW MEASUERS TO FIX using this template: unified_db$measures$hours_children
 # unified_db$measures$hours_commute
 # unified_db$measures$hours_exercise # description here should be a note ??gcck"
 
 
+library(jsonlite)
+
+path <- "/Users/joseph/GIT/templates/boilerplate_data/boilerplate_unified.json"
+
+unified_db <- read_json(path, simplifyVector = FALSE)
+
+unified_db$measures$honesty_humility <- list(
+  name = "honesty_humility",
+  description = paste(
+    "Mini-IPIP6 Honesty-Humility dimension:",
+    "(i) I feel entitled to more of everything. (r)",
+    "(ii) I deserve more things in life. (r)",
+    "(iii) I would like to be seen driving around in a very expensive car. (r)",
+    "(iv) I would get a lot of pleasure from owning expensive luxury goods. (r)"
+  ),
+  reference = "sibley2011",
+  waves = "1-current",
+  keywords = c("personality"),
+  items = list(
+    "I feel entitled to more of everything (reversed).",
+    "I deserve more things in life (reversed).",
+    "I would like to be seen driving around in a very expensive car (reversed).",
+    "I would get a lot of pleasure from owning expensive luxury goods (reversed)."
+  ),
+  reversed_items = c(1, 2, 3, 4),
+  standardised = TRUE,
+  standardised_date = format(Sys.Date())
+)
+
+write_json(unified_db, path, pretty = TRUE, auto_unbox = TRUE)
+
+check <- read_json(path, simplifyVector = TRUE)
+check$measures$honesty_humility$items
 
 
 boilerplate_measures_report(unified_db$measures)
