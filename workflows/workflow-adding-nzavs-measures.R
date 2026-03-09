@@ -5198,37 +5198,36 @@ check$measures$honesty_humility$items
 
 library(jsonlite)
 
+library(jsonlite)
+
 path <- "/Users/joseph/GIT/templates/boilerplate_data/boilerplate_unified.json"
 
 unified_db <- read_json(path, simplifyVector = FALSE)
 
 unified_db$measures$honesty_humility <- list(
-  name = "honesty_humility",
-  description = paste(
-    "Mini-IPIP6 Honesty-Humility dimension:",
-    "(i) I feel entitled to more of everything. (r)",
-    "(ii) I deserve more things in life. (r)",
-    "(iii) I would like to be seen driving around in a very expensive car. (r)",
-    "(iv) I would get a lot of pleasure from owning expensive luxury goods. (r)"
-  ),
-  reference = "sibley2011",
+  description = "Mini-IPIP6 Honesty-Humility dimension: (i) I feel entitled to more of everything. (r) (ii) I deserve more things in life. (r) (iii) I would like to be seen driving around in a very expensive car. (r) (iv) I would get a lot of pleasure from owning expensive luxury goods. (r)",
   waves = "1-current",
-  keywords = c("personality"),
+  reference = "sibley2011",
+  name = "honesty_humility",
   items = list(
-    "I feel entitled to more of everything (reversed).",
-    "I deserve more things in life (reversed).",
-    "I would like to be seen driving around in a very expensive car (reversed).",
-    "I would get a lot of pleasure from owning expensive luxury goods (reversed)."
+    "I feel entitled to more of everything.",
+    "I deserve more things in life.",
+    "I would like to be seen driving around in a very expensive car.",
+    "I would get a lot of pleasure from owning expensive luxury goods."
   ),
-  reversed_items = c(1, 2, 3, 4),
+  keywords = "personality",
+  reversed_items = list(1, 2, 3, 4),
   standardised = TRUE,
-  standardised_date = format(Sys.Date())
+  standardised_date = "2025-05-29"
 )
+
+unified_db$measures$honesty_humility
 
 write_json(unified_db, path, pretty = TRUE, auto_unbox = TRUE)
 
-check <- read_json(path, simplifyVector = TRUE)
-check$measures$honesty_humility$items
+check <- read_json(path, simplifyVector = FALSE)
+check$measures$honesty_humility
+unified_db$measures$honesty_humility
 
 
 boilerplate_measures_report(unified_db$measures)

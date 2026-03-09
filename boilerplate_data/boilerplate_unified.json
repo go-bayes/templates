@@ -69,7 +69,10 @@
       "description": "Anxiety was measured using a standard anxiety scale",
       "reference": "anxiety_reference",
       "waves": "1-3",
-      "keywords": ["anxiety", "mental health"],
+      "keywords": [
+        "anxiety",
+        "mental health"
+      ],
       "items": [
         "feeling nervous or anxious",
         "worrying too much about different things"
@@ -86,7 +89,10 @@
       "keywords": "institutional_trust",
       "reference": "dore2022boundaries",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -114,7 +120,10 @@
       ],
       "name": "belong_accept",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -256,7 +265,10 @@
       "waves": "11-current",
       "keywords": "institutional_trust",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -265,7 +277,10 @@
       "description": "Depression was measured using a standard depression scale",
       "reference": "depression_reference",
       "waves": "1-3",
-      "keywords": ["depression", "mental health"],
+      "keywords": [
+        "depression",
+        "mental health"
+      ],
       "items": [
         "feeling down or depressed",
         "having little interest in doing things"
@@ -282,7 +297,10 @@
       ],
       "name": "doubts_official_version",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -295,7 +313,10 @@
       ],
       "name": "doubts_official_version_truth",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -316,7 +337,10 @@
       "description": "Job satisfaction was measured with a single item.",
       "reference": "eisenbarth2022aspects",
       "waves": "1-present",
-      "keywords": ["employment", "mental health"],
+      "keywords": [
+        "employment",
+        "mental health"
+      ],
       "items": [
         "How satisfied are you with your current job?"
       ],
@@ -336,7 +360,10 @@
       "description": "Perceved organizational gratitude was measured with a single item.",
       "reference": "sibley2021",
       "waves": "10-present",
-      "keywords": ["employment", "mental health"],
+      "keywords": [
+        "employment",
+        "mental health"
+      ],
       "items": [
         "How valued do you feel by your current organization?"
       ],
@@ -348,7 +375,10 @@
       "description": "Perceved organizational gratitude was measured with a single item.",
       "reference": "sibley2021",
       "waves": "10-present",
-      "keywords": ["employment", "mental health"],
+      "keywords": [
+        "employment",
+        "mental health"
+      ],
       "items": [
         "How valued do you feel by your current organization?"
       ],
@@ -402,7 +432,10 @@
       "waves": "1-current",
       "keywords": "environment",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -415,7 +448,10 @@
       ],
       "name": "env_climate_chg_concern",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -428,7 +464,10 @@
       ],
       "name": "env_climate_chg_real",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -442,7 +481,10 @@
       ],
       "name": "env_efficacy",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -455,7 +497,10 @@
       "waves": "1-9;12-15",
       "keywords": "environment",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -468,7 +513,10 @@
       ],
       "name": "env_efficacy_action_feeling",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -481,7 +529,10 @@
       ],
       "name": "env_not_climate_chg_cause",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -495,7 +546,10 @@
       ],
       "name": "env_not_climate_chg_concern",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -509,7 +563,10 @@
       ],
       "name": "env_not_climate_chg_real",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -524,8 +581,14 @@
       ],
       "name": "env_not_env_efficacy",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
-      "reversed_items": [1, 2],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": [
+        1,
+        2
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -538,7 +601,10 @@
       ],
       "name": "env_not_sat_nz_environment",
       "scale_info": "0 = Completely Dissatisfied, 10 =  Completely Datisfied",
-      "scale_anchors": ["0 = Completely Dissatisfied", "10 =  Completely Datisfied"],
+      "scale_anchors": [
+        "0 = Completely Dissatisfied",
+        "10 =  Completely Datisfied"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -552,7 +618,10 @@
       "keywords": "environment",
       "reference": "liu2012hope",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -565,7 +634,10 @@
       ],
       "name": "env_routine_willing",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -578,7 +650,10 @@
       "keywords": "environment",
       "reference": "liu2012hope",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -591,7 +666,10 @@
       ],
       "name": "env_sac_willing",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -604,7 +682,10 @@
       "waves": "1-current",
       "keywords": "environment",
       "scale_info": "0 = Completely Dissatisfied, 10 =  Completely Datisfied",
-      "scale_anchors": ["0 = Completely Dissatisfied", "10 =  Completely Datisfied"],
+      "scale_anchors": [
+        "0 = Completely Dissatisfied",
+        "10 =  Completely Datisfied"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -618,7 +699,10 @@
       ],
       "name": "envefficacy",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -658,7 +742,10 @@
         "I talk to a lot of different people at parties."
       ],
       "keywords": "personality",
-      "reversed_items": [2, 3],
+      "reversed_items": [
+        2,
+        3
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -709,7 +796,10 @@
       "waves": "11-current",
       "keywords": "institutional_trust",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -792,7 +882,13 @@
       ],
       "keywords": "psychological-well-being",
       "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
-      "scale_anchors": ["0 = None Of The Time", "1 = A Little Of The Time", "2= Some Of The Time", "3 = Most Of The Time", "4 = All Of The Time"],
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -814,13 +910,18 @@
       "reference": "sibley2011",
       "name": "honesty_humility",
       "items": [
-        "I feel entitled to more of everything (reversed).",
-        "I deserve more things in life (reversed).",
-        "I deserve more things in life (reversed).",
-        "I would get a lot of pleasure from owning expensive luxury goods (reversed)."
+        "I feel entitled to more of everything.",
+        "I deserve more things in life.",
+        "I would like to be seen driving around in a very expensive car.",
+        "I would get a lot of pleasure from owning expensive luxury goods."
       ],
       "keywords": "personality",
-      "reversed_items": [1, 2, 3, 4],
+      "reversed_items": [
+        1,
+        2,
+        3,
+        4
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -894,7 +995,13 @@
       "waves": "2-current",
       "keywords": "psychological-well-being",
       "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
-      "scale_anchors": ["0 = None Of The Time", "1 = A Little Of The Time", "2= Some Of The Time", "3 = Most Of The Time", "4 = All Of The Time"],
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -909,7 +1016,13 @@
       "waves": "2-current",
       "keywords": "psychological-well-being",
       "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
-      "scale_anchors": ["0 = None Of The Time", "1 = A Little Of The Time", "2= Some Of The Time", "3 = Most Of The Time", "4 = All Of The Time"],
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -927,7 +1040,13 @@
       ],
       "name": "kessler6",
       "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
-      "scale_anchors": ["0 = None Of The Time", "1 = A Little Of The Time", "2= Some Of The Time", "3 = Most Of The Time", "4 = All Of The Time"],
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -945,7 +1064,13 @@
       ],
       "name": "kessler6_sum",
       "scale_info": "0 = None Of The Time; 1 = A Little Of The Time; 2= Some Of The Time; 3 = Most Of The Time; 4 = All Of The Time",
-      "scale_anchors": ["0 = None Of The Time", "1 = A Little Of The Time", "2= Some Of The Time", "3 = Most Of The Time", "4 = All Of The Time"],
+      "scale_anchors": [
+        "0 = None Of The Time",
+        "1 = A Little Of The Time",
+        "2= Some Of The Time",
+        "3 = Most Of The Time",
+        "4 = All Of The Time"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -954,7 +1079,10 @@
       "description": "Life satisfaction was measured using a standard scale",
       "reference": "satisfaction_reference",
       "waves": "1-4",
-      "keywords": ["wellbeing", "satisfaction"],
+      "keywords": [
+        "wellbeing",
+        "satisfaction"
+      ],
       "items": [
         "i am satisfied with my life",
         "the conditions of my life are excellent"
@@ -1109,7 +1237,10 @@
       ],
       "name": "mistrust_emphasis_on_science",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -1123,7 +1254,10 @@
       ],
       "name": "mistrust_free_speech",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -1137,7 +1271,10 @@
       ],
       "name": "mistrust_official_version_truth",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1152,8 +1289,14 @@
       ],
       "name": "mistrust_police",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
-      "reversed_items": [1, 3],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": [
+        1,
+        3
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1166,7 +1309,10 @@
       ],
       "name": "mistrust_politicians",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -1180,7 +1326,10 @@
       ],
       "name": "mistrust_scientific_community",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -1219,7 +1368,10 @@
         "I seldom feel blue (reversed)."
       ],
       "keywords": "personality",
-      "reversed_items": [2, 4],
+      "reversed_items": [
+        2,
+        4
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1282,7 +1434,11 @@
         "I am not interested in abstract ideas (reversed)."
       ],
       "keywords": "personality",
-      "reversed_items": [2, 3, 4],
+      "reversed_items": [
+        2,
+        3,
+        4
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1336,7 +1492,10 @@
       "waves": "2-current",
       "keywords": "prejudice",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1358,7 +1517,10 @@
       "waves": "2-current",
       "keywords": "prejudice",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1369,7 +1531,10 @@
       ],
       "waves": "7-current",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1398,7 +1563,10 @@
       "keywords": "institutional_trust",
       "reference": "sibley2020a",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1420,7 +1588,10 @@
       "waves": "7,9-current",
       "keywords": "institutional_trust",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 2,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -1434,7 +1605,10 @@
       ],
       "keywords": "demography",
       "scale_info": "1 = Extremely Liberal, 7 = Extremely Conservative",
-      "scale_anchors": ["1 = Extremely Liberal", "7 = Extremely Conservative"],
+      "scale_anchors": [
+        "1 = Extremely Liberal",
+        "7 = Extremely Conservative"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1448,7 +1622,10 @@
       ],
       "name": "power_no_control_composite",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1461,7 +1638,10 @@
       "keywords": "present",
       "reference": "overall2016power",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1474,7 +1654,10 @@
       ],
       "name": "power_self_nocontrol",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1627,7 +1810,10 @@
       "keywords": "religion",
       "reference": "sibley2021",
       "scale_info": "1 = Not Important, 7 = Very Important",
-      "scale_anchors": ["1 = Not Important", "7 = Very Important"],
+      "scale_anchors": [
+        "1 = Not Important",
+        "7 = Very Important"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1712,7 +1898,10 @@
       ],
       "name": "religion_spiritual_identification",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1725,7 +1914,10 @@
       ],
       "name": "religion_spiritual_identification_level",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1797,7 +1989,11 @@
       "waves": "1-current",
       "keywords": "demography",
       "description": "Social Dominance Orientation was measured using the following items:",
-      "reversed_items": [4, 5, 6],
+      "reversed_items": [
+        4,
+        5,
+        6
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1811,7 +2007,10 @@
       "waves": "5-current",
       "keywords": "present",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 2,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -1884,8 +2083,14 @@
       ],
       "name": "sfhealth",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
-      "reversed_items": [2, 3],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
+      "reversed_items": [
+        2,
+        3
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1898,7 +2103,10 @@
       "waves": "5-current",
       "keywords": "health",
       "scale_info": "1 = Poor, 7 = Excellent",
-      "scale_anchors": ["1 = Poor", "7 = Excellent"],
+      "scale_anchors": [
+        "1 = Poor",
+        "7 = Excellent"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1925,7 +2133,10 @@
       ],
       "keywords": "social",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 2,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -1939,7 +2150,10 @@
       ],
       "name": "support_help",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1952,7 +2166,10 @@
       ],
       "name": "support_noguidance_reversed",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -1966,7 +2183,10 @@
       ],
       "name": "support_turnto",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1979,7 +2199,10 @@
       ],
       "name": "trust_free_speech",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -1992,7 +2215,10 @@
       ],
       "name": "trust_not_official_version_truth",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -2005,7 +2231,10 @@
       ],
       "name": "trust_science",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -2019,7 +2248,10 @@
       "waves": "11-current",
       "keywords": "institutional_trust",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -2033,7 +2265,10 @@
       ],
       "name": "trust_science_high_confidence_scientific_community_cat",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -2046,7 +2281,10 @@
       ],
       "name": "trust_science_low_confidence_scientific_community",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "reversed_items": 1,
       "standardised": true,
       "standardised_date": "2025-05-29"
@@ -2060,7 +2298,10 @@
       "waves": "11-current",
       "keywords": "institutional_trust",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -2073,7 +2314,10 @@
       ],
       "name": "trust_scientists",
       "scale_info": "1 = Strongly Disagree, 7 = Strongly Agree",
-      "scale_anchors": ["1 = Strongly Disagree", "7 = Strongly Agree"],
+      "scale_anchors": [
+        "1 = Strongly Disagree",
+        "7 = Strongly Agree"
+      ],
       "standardised": true,
       "standardised_date": "2025-05-29"
     },
@@ -2433,13 +2677,13 @@
     "ethics": {
       "nzavs_2021_2027": "\n### Ethics\n\nThe University of Auckland Human Participants Ethics Committee reviews the NZAVS every three years. Our most recent ethics approval statement is as follows: The New Zealand Attitudes and Values Study was approved by the University of Auckland Human Participants Ethics Committee on 26/05/2021 for six years until 26/05/2027, Reference Number UAHPEC22576."
     },
-    "future_directions": null,
+    "future_directions": {},
     "implications": {
-      "clinical": null,
-      "policy": null,
-      "theoretical": null
+      "clinical": {},
+      "policy": {},
+      "theoretical": {}
     },
-    "limitations": null,
+    "limitations": {},
     "nzavs_acknowledgements_2025": "\n### Acknowledgements\n\nThe New Zealand Attitudes and Values Study is supported by a grant from the Templeton Religious Trust (TRT0196; TRT0418). JB received support from the Max Plank Institute for the Science of Human History. The funders had no role in preparing the manuscript or deciding to publish it.",
     "nzavs_data_availabily": "\n### Data Availability\n\nThe data described in the paper are part of the New Zealand Attitudes and Values Study. Members of the NZAVS management team and research group hold full copies of the NZAVS data. A de-identified dataset containing only the variables analysed in this manuscript is available upon request from the corresponding author or any member of the NZAVS advisory board for replication or checking of any published study using NZAVS data. The code for the analysis can be found at [OSF link](https://osf.io/ab7cx/).",
     "strengths": {
