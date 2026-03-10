@@ -1399,16 +1399,17 @@
       "standardised_date": "2025-05-29"
     },
     "nz_dep2018": {
+      "description": "We used the New Zealand Deprivation Index 2018 to assign each participant a score based on where they live. This score combines data such as income, home ownership, employment, qualifications, family structure, housing, and access to transport and communication for an area into one deprivation score.",
+      "waves": "1-current",
+      "reference": "atkinson2019",
       "name": "nz_dep2018",
       "items": [
         "New Zealand Deprivation - Decile Index - Using 2018 Census Data"
       ],
-      "description": "Numerical: (1-10)",
-      "reference": "atkinson2019",
-      "waves": "1-current",
       "keywords": "demography",
+      "scale_info": "Numerical: (1-10)",
       "standardised": true,
-      "standardised_date": "2025-05-29"
+      "standardised_date": "2026-03-10"
     },
     "nzsei_13_l": {
       "description": "We assessed occupational prestige and status using the New Zealand Socio-Economic Index 2013 (NZSEI-13). This index uses the income, age, and education of a reference group, in this case, the 2013 New Zealand census, to calculate a score for each occupational group. Scores range from 10 (Lowest) to 90 (Highest). This list of index scores for occupational groups was used to assign each participant a NZSEI-13 score based on their occupation.",
