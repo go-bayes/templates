@@ -1,0 +1,64 @@
+\documentclass[border=8pt]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[table]{xcolor}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% muted palette
+\definecolor{covblue}{RGB}{100,149,237}
+\definecolor{expamber}{RGB}{250,199,100}
+\definecolor{outred}{RGB}{200,80,70}
+\definecolor{censgrey}{RGB}{196,194,209}
+
+\begin{document}
+
+\huge
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{36pt}
+\begin{tabular}{@{}c@{}}
+% data table
+\begin{tabular}{
+   c
+   >{\columncolor{covblue!30}}c
+   >{\columncolor{censgrey!40}}c
+   >{\columncolor{expamber!45}}c
+   >{\columncolor{censgrey!40}}c
+   >{\columncolor{outred!30}}c
+}
+\toprule
+ &
+\multicolumn{2}{c}{\textbf{T\textsubscript{0} (baseline)}} &
+\multicolumn{2}{c}{\textbf{T\textsubscript{1} (exposure)}} &
+\multicolumn{1}{c}{\textbf{T\textsubscript{2} (outcomes)}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-6}
+\textbf{ID} &
+$\boldsymbol{L}^{t_0}$ &
+$\boldsymbol{R}^{t_0}$ &
+$\boldsymbol{A}^{t_1}$ &
+$\boldsymbol{R}^{t_1}$ &
+$\boldsymbol{Y}^{t_2}$ \\
+\midrule
+1        & 0.2\;\ldots\;0.8 & 1 & 0.5      & 1        & 0.80 \\
+2        & 0.3\;\ldots\;0.5 & 1 & 1.0      & 1        & 0.37 \\
+3        & 0.7\;\ldots\;0.4 & 0 & NA       & NA       & NA \\
+$\vdots$ & $\vdots$         & 1 & $\vdots$ & $\vdots$ & $\vdots$ \\
+$N$      & 0.9\;\ldots\;1.1 & 1 & 0.5      & 0        & NA \\
+\bottomrule
+\end{tabular} \\[10pt]
+% legend
+{\Large
+\colorbox{covblue!30}{\strut\;$L^{t_0}$\;} baseline covariates\quad
+\colorbox{censgrey!40}{\strut\;$R$\;} censoring indicator\quad
+\colorbox{expamber!45}{\strut\;$A^{t_1}$\;} work hours\quad
+\colorbox{outred!30}{\strut\;$Y^{t_2}$\;} well-being outcomes
+} \\[6pt]
+{\large\itshape
+Row 3: $R^{t_0}\!=\!0$ illustrates baseline censoring, addressed via IPCW to avoid immortal-time bias.
+}
+\end{tabular}
+
+\end{document}
