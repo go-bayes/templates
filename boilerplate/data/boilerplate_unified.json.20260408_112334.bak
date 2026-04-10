@@ -2523,17 +2523,16 @@
       "items": [
         "Please rate your feelings of WARMTH toward the following groups using the 'feeling thermometer scale' for each group...Asians in general."
       ],
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "1-current",
       "keywords": "cooperation",
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward Asians was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_chinese": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "1-current",
       "keywords": "cooperation",
       "items": [
@@ -2543,11 +2542,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward Chinese people was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_disabled": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "12-15",
       "keywords": "cooperation",
       "items": [
@@ -2557,11 +2555,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward disabled people was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_elderly": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "9-16",
       "keywords": "cooperation",
       "items": [
@@ -2571,11 +2568,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward elderly people was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_immigrants": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "1-current",
       "keywords": "cooperation",
       "items": [
@@ -2585,11 +2581,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward immigrants was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_indians": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "2-current",
       "keywords": "cooperation",
       "items": [
@@ -2599,11 +2594,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward Indians was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_lgbtq": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "12-current",
       "keywords": "cooperation",
       "items": [
@@ -2613,11 +2607,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward LGBTQ people was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_maori": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "1-current",
       "keywords": "cooperation",
       "items": [
@@ -2627,11 +2620,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward Māori was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_mental_illness": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "9-current",
       "keywords": "cooperation",
       "items": [
@@ -2641,11 +2633,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward people with mental illness was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_muslims": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "4-current",
       "keywords": "cooperation",
       "items": [
@@ -2655,11 +2646,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward Muslims was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_nz_euro": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "1-current",
       "keywords": "cooperation",
       "items": [
@@ -2669,11 +2659,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward NZ Europeans was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_overweight": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "1-current",
       "keywords": "cooperation",
       "items": [
@@ -2683,11 +2672,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward overweight people was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_pacific": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "1-current",
       "keywords": "cooperation",
       "items": [
@@ -2697,11 +2685,10 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward Pacific peoples was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     },
     "warm_refugees": {
-      "reference": "sibley2020",
+      "reference": "Modelled on United States National Election Study.",
       "waves": "9-current",
       "keywords": "cooperation",
       "items": [
@@ -2711,8 +2698,7 @@
       "scale_info": "Feel LEAST WARM Toward This Group = 1,… 4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "scale_anchors": "4 = Neutral… 7 = Feel MOST WARM Toward This Group",
       "standardised": true,
-      "standardised_date": "2026-03-10",
-      "description": "Warmth toward refugees was measured with a single feeling-thermometer item"
+      "standardised_date": "2026-03-10"
     }
   },
   "methods": {
