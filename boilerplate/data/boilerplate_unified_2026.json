@@ -2472,6 +2472,21 @@
       "standardised": true,
       "standardised_date": "2025-10-31"
     },
+    "target_nz_population_weights": {
+      "name": "target_nz_population_weights",
+      "items": [
+        "Within each wave, respondents were calibrated to annual New Zealand population benchmarks for age, gender, and prioritised ethnicity.",
+        "Age was grouped as 18-29, 30-49, and 50+; gender was treated as male versus not_male to match the NZAVS coding; ethnicity used the prioritised NZAVS categories NZ European/Pakeha, Maori, Pacific, and Asian.",
+        "Weights were constructed using wave-specific raking, then trimmed to the interval [0.3, 5] and renormalised to mean 1 within wave.",
+        "Respondents from sample_frame 4.1 received a relative base-weight correction for deprivation oversampling before raking."
+      ],
+      "description": "A new parallel descriptive weight series for the NZAVS. These weights were built to align observed respondents in each wave to the New Zealand adult population using annual benchmark targets for age, gender, and prioritised ethnicity. They are not a reconstruction of the legacy NZAVS production weights. Instead, they provide a transparent, documented calibration workflow that leaves the older weight columns unchanged. In downstream analysis workflows, these weights should be preferred where available, with legacy weights used only as fallbacks if the new target weight is missing.",
+      "reference": "sibley2021",
+      "waves": "1-current",
+      "keywords": "demography",
+      "standardised": true,
+      "standardised_date": "2026-04-18"
+    },
     "w_gend_age_ethnic": {
       "name": "w_gend_age_ethnic",
       "items": [
